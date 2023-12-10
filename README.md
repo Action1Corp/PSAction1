@@ -38,7 +38,7 @@ The getting started guide can be found here.
 Once you have followed the instructions to obtain an API key, you should have an "APIKey" (Client ID) value and "Secret" (Client Secret) value.
 
 
-**You are now ready to get started, lets GO!** :tada:
+**You are now ready to get started, let's GO!** :tada:
 
 
 ## Using this module
@@ -145,7 +145,8 @@ vulnerability_status : UNDEFINED
   - Settings
 
 :left_speech_bubble: **Note:** _Notice here that some queries are plural some are singular, all that are plural return a collection of items of that type.  
-The singular ones target an object by its **-Id** property , if the object is not found, the return will be NULL, and you will receive an error message indicating the specified ID could not be found. Also, notice here I did to specify **-Query**, as query is the first bound param, it can be implied._
+  
+The singular ones target an object by its **-Id** property , if the object is not found, the return will be NULL, and you will receive an error message indicating the specified ID could not be found. Also, notice here I did not specify **-Query**, as it is the first bound param, it can be implied._
 
 This returns the same object as above, directly without having to pull all objects and search, which is multifold more efficient.  
 ```PowerShell
