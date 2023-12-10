@@ -149,6 +149,7 @@ vulnerability_status : UNDEFINED
 The singular ones target an object by its **-Id** property , if the object is not found, the return will be NULL, and you will receive an error message indicating the specified ID could not be found. Also, notice here I did not specify **-Query**, as it is the first bound param, it can be implied._
 
 This returns the same object as above, directly without having to pull all objects and search, which is multifold more efficient.  
+
 ```PowerShell
 
 PS C:\> Get-Action1 Endpoint -Id ef17c844-5b7c-4b32-9724-f2716b596639
@@ -208,7 +209,8 @@ exclude_filter : {}
 contents       : https://app.action1.com/api/3.0/endpoints/groups/88c8b425-871e-4ff6-9afc-00df8592c6db/Some_New_Name_1702095463270/contents
 
 ```
-:left_speech_bubble: **Note:** _When using **-Clone** it accepts an Id as a parameter, so it implies **-Id**_  
+
+:left_speech_bubble: **Note:** _When using **-Clone** it accepts an Id as a param, so it implies **-Id**_  
 
 The syntax for modifying should come naturally when you know how to query and create but we do it with Update-Action1.  
   
@@ -260,10 +262,47 @@ exclude_filter : {}
 contents       : https://app.action1.com/api/3.0/endpoints/groups/88c8b425-871e-4ff6-9afc-00df8592c6db/MyNewGroup_1702147189271/contents
 
 ```
+
+These helper methods are usually to manage group actions where more than one value is set at once,  handle object collections where multiple values must be set on one object and specific case/structure must be enforced, or perform bulk actions.
+
+Examples of all three being as follows, using an Automation clone as an example.  
+In this case we specify just the ID of the Endpoint or EndpointGroup as "Endpoint/EndpointGroup" is implied by the method name.  
+The method ensures that the case sensitive attributes that are implied here, as well as the JSONs formating, are created properly using ID alone as a param.
+Clear methods require no params as they imply an absolute action.  
+
+:left_speech_bubble: **Note:** _When using Delete...() methods, the identifier used will be either the ID or the Name of the objet to be removed. This will vary in cases such as in EndpointGroups where 'Filters' are added by name, in Automations 'Endpoints/EndpointGroups' are added by ID._
+
+```PowerShell
+PS C:\> $clone = get-Action1 Settings -For Automation -Clone PolicyStore_Do_this_thing_1699034505782
+PS C:\> $clone.ClearEndpoints()                                        
+PS C:\> $clone.AddEndpoint('ef17c844-5b7c-4b32-9724-f2716b596639')
+PS C:\> $clone.AddEndpointGroup('Service_1696554367754')               
+PS C:\> $clone
+
+name          : Policy Store Do this thing
+settings      : DISABLED
+retry_minutes : 1440
+endpoints     : {@{id=ef17c844-5b7c-4b32-9724-f2716b596639; type=Endpoint}, @{id=Service_1696554367754; type=EndpointGroup}}
+actions       : {@{name=Run Command; template_id=run_script; params=; id=Run_Command_0d499d60-7a73-11ee-a574-3509a7afa959}}
+
+PS C:\> $clone.DeleteEndpointGroup('Service_1696554367754')
+PS C:\> $clone
+
+name          : Policy Store Do this thing
+settings      : DISABLED
+retry_minutes : 1440
+endpoints     : {@{id=ef17c844-5b7c-4b32-9724-f2716b596639; type=Endpoint}}
+actions       : {@{name=Run Command; template_id=run_script; params=; id=Run_Command_0d499d60-7a73-11ee-a574-3509a7afa959}}
+       
+```
+
+:left_speech_bubble: **Note:** _It is also both important and comforting to note here, that all of these these actions are being performed on an in memory object client side. None of these changes are actually committed to the server, until the object is passed as the **-Data** param to an execution of an **Update-Action1** or **New-Action1**. Changes made here can be made, reviewed, or discarded without commitment, with no adverse effects. So please do review and get familiar with how these helper methods work before committing them to the server. A good primer in their function will be to create an object in the Action1 console, and then pull that object into PSAction1. Look at how the data comes structured in the system, methods will format data following that pattern._
+
 Then we could can delete an object, so let's target the clone we just made and pushed up.  
 Delete operations prompt for confirmation by default, **-Force** overrides that behavior.
 
-  :stop_sign: **Important:** _Deleting an object is irreversible. Use extreme scrutiny when deleting **ESPECIALLY** if utilizing the **-Force** option!_
+  :stop_sign: **Important:** _Deleting an object is irreversible. Use extreme scrutiny and caution when deleting, **ESPECIALLY** if utilizing the **-Force** option!_
+  
 ```PowerShell
 PS C:\> Update-Action1 Delete -Type Group -Id MyNewGroup_1702147189271 -Force 
 ```
@@ -277,4 +316,4 @@ PS C:\> Set-Action1Debug $true
 PS C:\> Set-Action1Debug $false
 ```
 
-And you can always reach out to me directly on our [Discord](https://discord.com/channels/841428478669881356/841428479266258946) server or our [Reddit](https://www.reddit.com/r/Action1/) sub.
+### And you can always reach out to myself or the community directly on our [Discord](https://discord.com/channels/841428478669881356/841428479266258946) server or our [Reddit](https://www.reddit.com/r/Action1/) sub.
