@@ -1,5 +1,5 @@
 ![Action1_Company_Logo](https://www.action1.com/wp-content/uploads/2022/02/action1-logo.svg)
-**Risk-Based Patch Manangement**
+**Risk-Based Patch Management**
   
 [**First 100 endpoints are free, fully featured, forever.**](https://www.action1.com/free)
 ***
@@ -53,12 +53,12 @@ PS C:\> Set-Action1Credentials -APIKey api-key-example_e0983b7c-45e8-4c82-9f98-b
 
 ```
 Next you will have to set an organization context.  
-Each orgnization will have a uniqe ID, you can locate it in the url when you log into Action1.  
+Each organization will have a unique ID, you can locate it in the url when you log into Action1.  
 By default there is only one organization. If you are a Managed Service Provider (MSP) or an enterprise with multiple entities, you can create multiple organizations to separate their data from each other.  
   
 https[]()://app.action1.com/console/dashboard?org=**88c8b425-871e-4ff6-9afc-00df8592c6db** <- This is your Org_ID
 
-Like the APIKey and Secret, this value is remembered for the duration of the session, as well if not specified beforehand, you will be prompted when needed. If you wish to do something in the context of another organization, you need to sets the context before performing additonal actions.  
+Like the APIKey and Secret, this value is remembered for the duration of the session, as well if not specified beforehand, you will be prompted when needed. If you wish to do something in the context of another organization, you need to sets the context before performing additional actions.  
   
 :stop_sign: **Important:**  _You can only operate in the context of one organization at a time as all functions relate to a specific organization._
 
@@ -68,7 +68,7 @@ PS C:\> Set-Action1DefaultOrg -Org_ID 88c8b425-871e-4ff6-9afc-00df8592c6db
 
 ```
 
-### You are all set up, let's do somehtign usefull.
+### You are all set up, let's do something useful.
 
 There are four main commands:
   - **Get-Action1**
@@ -154,9 +154,9 @@ PS C:\> Get-Action1 Endpoint -Id ef17c844-5b7c-4b32-9724-f2716b596639
 
 ```
 
-Let's do more than just look, let's change somethign!
+Let's do more than just look, let's change something!
 
-- I start by querying the groups, to find one with the name matching what we are lookign for.  
+- I start by querying the groups, to find one with the name matching what we are looking for.  
 - Next I just verified the group object visually, this is not required and is just for demonstration.  
 - Next I made a clone of that group object, this would duplicate the group into an editable template to push back for creation.  
 - And again I just verify for demonstration.  
@@ -209,7 +209,7 @@ contents       : https://app.action1.com/api/3.0/endpoints/groups/88c8b425-871e-
 ```
 :left_speech_bubble: **Note:** _When using **-Clone** it accepts an Id as a parameter, so it implies **-Id**_  
 
-The syntax for modifying shoud come naturally when you know how to query and create but we do it with Update-Action1.  
+The syntax for modifying should come naturally when you know how to query and create but we do it with Update-Action1.  
   
 ```PowerShell
 PS C:\> $group = Get-Action1 EndpointGroups | ?{$_.name -eq 'Some New Name'}
@@ -260,7 +260,7 @@ contents       : https://app.action1.com/api/3.0/endpoints/groups/88c8b425-871e-
 
 ```
 Then we could can delete an object, so let's target the clone we just made and pushed up.  
-Delete operations prompt for confirmaiton by default, -Force overrides that behavior.
+Delete operations prompt for confirmation by default, **-Force** overrides that behavior.
 
   :stop_sign: **Important:** _Deleting an object is irreversible. Use extreme scrutiny when deleting **ESPECIALLY** if utilizing the **-Force** option!_
 ```PowerShell
@@ -268,7 +268,7 @@ PS C:\> Update-Action1 Delete -Type Group -Id MyNewGroup_1702147189271 -Force
 ```
 
 ### Troubleshooting
- At any time you can enable and disable debug to get more informaiton about what is occuring "under the hood", and what is being exchanged with the server. This is especially usefull when looking at JSON POST/PATCH data going to the server.
+ At any time you can enable and disable debug to get more information about what is occurring "under the hood", and what is being exchanged with the server. This is especially useful when looking at JSON POST/PATCH data going to the server.
 
 ```PowerShell
 PS C:\> Set-Action1Debug $true
@@ -276,4 +276,4 @@ PS C:\> Set-Action1Debug $true
 PS C:\> Set-Action1Debug $false
 ```
 
-And you can always reach out to me direclty on our [Discord](https://discord.com/channels/841428478669881356/841428479266258946) server or our [Reddit](https://www.reddit.com/r/Action1/) sub.
+And you can always reach out to me directly on our [Discord](https://discord.com/channels/841428478669881356/841428479266258946) server or our [Reddit](https://www.reddit.com/r/Action1/) sub.
