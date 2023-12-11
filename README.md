@@ -43,7 +43,7 @@ Once you have followed the instructions to obtain an API key, you should have an
 
 ## Using this module
 
-The first order of operation is to set up authentication, if you do not supply these values beforehand, you will be prompted for them when needed.  
+The first order of operation is to set up authentication, if you do not supply these values beforehand, you will be prompted for them when needed. Authentication sessions have a timeout, but the module accounts for that. When PSAction1 stores the bearer token for you, it checks before use, and if necessary will renew it on demand. This does introduce a very small delay when this happens much like first use, but the impact is minimal and likely not even noticed if not explained. When debug is on, you will see this in process. So once authenticated, there is no furher authentication required for the duration of the session regardless of length.
   
 :stop_sign: **Important:**  _These are example values and DO NOT belong to a live instance, substitute the values with those obtained from the instructions above._
 
@@ -231,7 +231,7 @@ contents       : https://app.action1.com/api/3.0/endpoints/groups/88c8b425-871e-
 
 ```
 
-Cloning is useful when you have an object that is mostly what you want and want to tweak for another purpose, but you can start from scratch as well.
+Cloning is useful when you have an object that is mostly what you want and want to tweak for another purpose, but you _can_ start from scratch as well.
 Both in Clones and New Settings, there are helper methods to add things like include/exclude filters.
 
 ```PowerShell
@@ -306,8 +306,18 @@ Delete operations prompt for confirmation by default, **-Force** overrides that 
 ```PowerShell
 PS C:\> Update-Action1 Delete -Type Group -Id MyNewGroup_1702147189271 -Force 
 ```
+### Extending / testing / playground
+
+This interface is not exhaustive, it used the most commonly requested features of the API, but the API if far larger and feature rich than represented here. That said, the PSAction1 module can still assist. You can use the authentication mechanism to run custom URIs for the purpose of rapidly exploring the API or extending it for more function. To do this the PSAction1 module contains a RawURI method in Get-Action1.
+
+```PowerShell
+
+PS C:\> Get-Action1 RawURI -URI https://app.action1.com/api/3.0/policies/schedules/88c8b425-871e-4ff6-9afc-00df8592c6db/PolicyStore_Do_this_thing_1699034505782
+
+```
 
 ### Troubleshooting
+
  At any time you can enable and disable debug to get more information about what is occurring "under the hood", and what is being exchanged with the server. This is especially useful when looking at JSON POST/PATCH data going to the server.
 
 ```PowerShell
