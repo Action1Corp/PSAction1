@@ -6,7 +6,6 @@
 # PSAction1 - PowerShell interface to the Action1 API
 
 :stop_sign: **IMPORTANT, READ CAREFULLY!** _The module provided and outlined here along with examples are for an convenience. Though care has been taken to provide proper function and no adverse effects, each environment can be different. Carefully read, understand, and test before using in production, executing it on a test environment first. It is the responsibility of you, the user, to ensure all use function behaves as expected and creates no adverse conditions. Your use implies you have read and accept these conditions._
-# Action1 Corporation holds no liability for any damages directly or indirectly caused by running these tools and samples.
 
 ## Install from PowerShell Gallery
 Once installed from the PowerShell gallery, this module will remain resident and does not have to be explicitly imported on each execution.
@@ -327,3 +326,7 @@ PS C:\> Set-Action1Debug $false
 ```
 
 ### And you can always reach out to myself or the community directly on our [Discord](https://discord.com/channels/841428478669881356/841428479266258946) server or our [Reddit](https://www.reddit.com/r/Action1/) sub.
+
+# WARNING: Carefully study the provided scripts and components before using them. Test in your non-production lab first.
+
+# LIMITATION OF LIABILITY. IN NO EVENT SHALL ACTION1 OR ITS SUPPLIERS, OR THEIR RESPECTIVE OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE WITH RESPECT TO THE WEBSITE OR THE COMPONENTS OR THE SERVICES UNDER ANY CONTRACT, NEGLIGENCE, TORT, STRICT LIABILITY OR OTHER LEGAL OR EQUITABLE THEORY (I)FOR ANY AMOUNT IN THE AGGREGATE IN EXCESS OF THE GREATER OF FEES PAID BY YOU THEREFOR OR $100; (II) FOR ANY INDIRECT, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES OF ANY KIND WHATSOEVER; (III) FOR DATA LOSS OR COST OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; OR (IV) FOR ANY MATTER BEYOND ACTION1’S REASONABLE CONTROL. SOME STATES DO NOT ALLOW THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATIONS AND EXCLUSIONS MAY NOT APPLY TO YOU.
