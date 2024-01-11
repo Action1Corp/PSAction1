@@ -1,8 +1,8 @@
-﻿# Action1 API PowerShell Module
-# Documentation: https://www.action1.com/api-documentation
-
-# The script provided below is an example script. Carefully read it and consider executing it on a test environment first.
-# Action1 Corporation holds no liability for any damages directly or indirectly caused by running this script.
+# Name: PSAction1
+# Description: PowerShell Cmdlet Module for Action1 API 
+# Copyright (C) 2024 Action1 Corporation
+# Documentation: https://github.com/Action1Corp/PSAction1/
+# Use Action1 Roadmap system (https://roadmap.action1.com/) to submit feedback or enhancement requests.
 
 $Script:Action1_APIKey
 $Script:Action1_Secret
