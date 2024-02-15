@@ -56,8 +56,8 @@ $URILookUp = @{
 class EndpointGroup { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object[]]$include_filter; [object[]]$exclude_filter; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
 class Organization { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
 class Endpoint { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$comment; [object]Splat([string]$name, [string]$comment) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($comment)) { return $null }$this.name = $name; $this.description = $comment; return $this } }
-class GroupAddEndpoint { hidden[string]$method = 'POST'; [object]$data; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.data = @{endpoint_id = $EndpointID; type = 'Endpoint' }; return $this } } }
-class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.endpoint_id = $EndpointID }; return $this } } 
+class GroupAddEndpoint { hidden[string]$method = 'POST'; [object]$data; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.data += @{endpoint_id = $EndpointID; type = 'Endpoint' }}; return $this } } 
+class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else {$this.data = @{method='DELETE';$this.endpoint_id = $EndpointID} }; return $this } } 
 class GroupFilter { [ValidateNotNullOrEmpty()][string]$type; [ValidateNotNullOrEmpty()][string]$field_name; [ValidateNotNullOrEmpty()][string]$field_value; [ValidateNotNullOrEmpty()][string]$mode; }
 
 $ClassLookup = @{
@@ -434,7 +434,7 @@ function Update-Action1 {
         [Parameter(Mandatory)]
         [ValidateSet(
             'Modify',
-            #'ModifyMembers', # removed in favor of injected methods.
+            'ModifyMembers', 
             'Delete'
         )]
         [String]$Action,
@@ -454,7 +454,7 @@ function Update-Action1 {
         switch ($Action) {
             'ModifyMembers' {
                 switch ($Type) {
-                    'Group' { 
+                    'EndpointGroup' { 
                         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupMembers"] -Org_ID $(CheckOrg) -Object_ID $id)
                         return PushData -Method POST -Path $Path -Body $Data -Label "$Action=>$Type"
                     }
