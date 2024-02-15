@@ -270,19 +270,19 @@ function Get-Action1 {
             if ($Clone) {
                 switch ($For) {
                     'EndpointGroup' {  
-                        $Pull = Get-Action1 EndpointGroups | ? { $_.id -eq ($Clone) }
+                        $Pull = Get-Action1 EndpointGroups | Where-Object { $_.id -eq ($Clone) }
                         if (!$Pull) {
                             Write-Error "No $For found matching id $clone."
                             return $null
                         }
                         else {
                             $sbAddIncludeFilter = { param( [string]$field_name, [string]$field_value, [string]$mode) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
-                            $sbDeleteIncludeFilter = { param([string]$field_name) $this.include_filter = @($this.include_filter | ? { !($_.field_name -eq $field_name) }) }
+                            $sbDeleteIncludeFilter = { param([string]$field_name) $this.include_filter = @($this.include_filter | Where-Object { !($_.field_name -eq $field_name) }) }
                             $sbClearIncludeFilter = { $this.include_filter = @() }
                             $sbAddExcludeFilter = { param([string]$type, [string]$field_name, [string]$field_value, [string]$mode) $this.exclude_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
-                            $sbDeleteExcludeFilter = { param([string]$field_name) $this.exclude_filter = @($this.exclude_filter | ? { !($_.field_name -eq $field_name) }) }
+                            $sbDeleteExcludeFilter = { param([string]$field_name) $this.exclude_filter = @($this.exclude_filter | Where-Object { !($_.field_name -eq $field_name) }) }
                             $sbClearExcludeFilter = { $this.exclude_filter = @() }
-                            @('id', 'type', 'self', 'contents', 'uptime_alerts', 'endpoints') | % { $Pull.PSObject.Members.Remove($_) }
+                            @('id', 'type', 'self', 'contents', 'uptime_alerts', 'endpoints') | ForEach-Object { $Pull.PSObject.Members.Remove($_) }
                             $Pull | Add-Member -MemberType ScriptMethod -Name "AddIncludeFilter" -Value $sbAddIncludeFilter
                             $Pull | Add-Member -MemberType ScriptMethod -Name "DeleteIncludeFilter" -Value $sbDeleteIncludeFilter
                             $Pull | Add-Member -MemberType ScriptMethod -Name "ClearIncludeFilter" -Value $sbClearIncludeFilter
@@ -293,7 +293,7 @@ function Get-Action1 {
                         }
                     }
                     'Automation' {
-                        $Pull = Get-Action1 Automations | ? { $_.id -eq ($Clone) }
+                        $Pull = Get-Action1 Automations | Where-Object { $_.id -eq ($Clone) }
                         if (!$Pull) {
                             Write-Error "No $For found matching id $clone."
                             return $null
@@ -301,12 +301,12 @@ function Get-Action1 {
                         else {
                             $sbAddEndpoint = { param([string]$Id) $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'Endpoint' } }
                             $sbAddEndpointGroup = { param([string]$Id) $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup' } }
-                            $sbDeleteEndpoint = { param([string]$Id) $this.endpoints = @($this.endpoints | ? { !($_.type -eq 'Endpoint' -and $_.id -eq $Id) }) }
-                            $sbDeleteEndpointGroup = { param([string]$Id) $this.endpoints = @($this.endpoints | ? { !($_.type -eq 'EndpointGroup' -and $_.id -eq $Id) }) }
+                            $sbDeleteEndpoint = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'Endpoint' -and $_.id -eq $Id) }) }
+                            $sbDeleteEndpointGroup = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'EndpointGroup' -and $_.id -eq $Id) }) }
                             $sbClearEndpoints = { $this.endpoints = @() }
-                            @('id', 'type', 'self', 'last_run', 'next_run', 'system', 'randomize_start') | % { $Pull.PSObject.Members.Remove($_) }
+                            @('id', 'type', 'self', 'last_run', 'next_run', 'system', 'randomize_start') | ForEach-Object { $Pull.PSObject.Members.Remove($_) }
                             $CleanEndpoints = @()
-                            $Pull.endpoints | % { $CleanEndpoints += New-Object psobject -Property @{id = $_.id; type = $_.type } }
+                            $Pull.endpoints | ForEach-Object { $CleanEndpoints += New-Object psobject -Property @{id = $_.id; type = $_.type } }
                             $Pull.endpoints = $CleanEndpoints
                             $Pull | Add-Member -MemberType ScriptMethod -Name "AddEndpoint" -Value $sbAddEndpoint
                             $Pull | Add-Member -MemberType ScriptMethod -Name "AddEndpointGroup" -Value $sbAddEndpointGroup
@@ -324,10 +324,10 @@ function Get-Action1 {
                     #Case out specific mods for any one base type.
                     'EndpointGroup' {
                         $sbAddIncludeFilter = {param([string]$field_name, [string]$field_value, [string]$mode) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
-                        $sbDeleteIncludeFilter = { param([string]$field_name) $this.include_filter = @($this.include_filter | ? { !($_.field_name -eq $field_name) }) }
+                        $sbDeleteIncludeFilter = { param([string]$field_name) $this.include_filter = @($this.include_filter | Where-Object { !($_.field_name -eq $field_name) }) }
                         $sbClearIncludeFilter = { $this.include_filter = @() }
                         $sbAddExcludeFilter = {param([string]$field_name, [string]$field_value, [string]$mode) $this.exclude_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
-                        $sbDeleteExcludeFilter = { param([string]$field_name) $this.exclude_filter = @($this.exclude_filter | ? { !($_.field_name -eq $field_name) }) }
+                        $sbDeleteExcludeFilter = { param([string]$field_name) $this.exclude_filter = @($this.exclude_filter | Where-Object { !($_.field_name -eq $field_name) }) }
                         $sbClearExcludeFilter = { $this.exclude_filter = @() }
                         $ret = $ClassLookup[$For]
                         $ret.include_filter = @()
@@ -375,7 +375,7 @@ function Get-Action1 {
         if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs -Raw } else { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs }
         if ($Page.items) {
             if ($Query -eq 'PolicyResults') {
-                $page.Items | % {
+                $page.Items | ForEach-Object {
                     $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
                     Write-Output $_
                 }
@@ -385,7 +385,7 @@ function Get-Action1 {
                 Debug-Host "[$Query] Next page..."
                 if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Page.next_page -Label $Query -Raw }else { $Page = DoGet -Path $Page.next_page -Label $Query }
                 if ($Query -eq 'PolicyResults') {
-                    $page.Items | % {
+                    $page.Items | ForEach-Object {
                         $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
                         Write-Output $_
                     }
