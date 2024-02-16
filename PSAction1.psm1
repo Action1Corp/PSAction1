@@ -1,5 +1,5 @@
-﻿# Name: PSAction1EndpointGroupPolicyComparisonCSV.ps1
-# Description: script is designed to generate CSV that shows what endpoints and groups are assisgned to automations
+﻿# Name: PSAction1
+# Description: Powershell module for working with the Aciton1 API.
 # Copyright (C) 2024 Action1 Corporation
 # Documentation: https://github.com/Action1Corp/PSAction1/
 # Use Action1 Roadmap system (https://roadmap.action1.com/) to submit feedback or enhancement requests.
@@ -57,7 +57,7 @@ class EndpointGroup { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullO
 class Organization { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
 class Endpoint { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$comment; [object]Splat([string]$name, [string]$comment) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($comment)) { return $null }$this.name = $name; $this.description = $comment; return $this } }
 class GroupAddEndpoint { hidden[string]$method = 'POST'; [object]$data; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.data += @{endpoint_id = $EndpointID; type = 'Endpoint' }}; return $this } } 
-class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else {$this.data = @{method='DELETE';$this.endpoint_id = $EndpointID} }; return $this } } 
+class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else {$this.endpoint_id = $EndpointID}; return $this } } 
 class GroupFilter { [ValidateNotNullOrEmpty()][string]$type; [ValidateNotNullOrEmpty()][string]$field_name; [ValidateNotNullOrEmpty()][string]$field_value; [ValidateNotNullOrEmpty()][string]$mode; }
 
 $ClassLookup = @{

@@ -1,5 +1,5 @@
-# Name: PSAction1EndpointGroupPolicyComparisonCSV.ps1
-# Description: script is designed to generate CSV that shows what endpoints and groups are assisgned to automations
+# Name: PSAction1
+# Description: Powershell module for working with the Aciton1 API.
 # Copyright (C) 2024 Action1 Corporation
 # Documentation: https://github.com/Action1Corp/PSAction1/
 # Use Action1 Roadmap system (https://roadmap.action1.com/) to submit feedback or enhancement requests.
@@ -23,7 +23,7 @@
 RootModule = 'PSAction1.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.2.9'
+ModuleVersion = '1.3.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
