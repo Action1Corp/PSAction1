@@ -20,7 +20,8 @@
 $Script:Action1_APIKey
 $Script:Action1_Secret
 $Script:Action1_Token
-$Script:Action1_BaseURI = "https://app.action1.com/api/3.0"
+$script:Action1_Hosts = [ordered]@{'North America'='https://app.action1.com/api/3.0';Europe='https://app.eu.action1.com/api/3.0'}
+$Script:Action1_BaseURI = ''
 $Script:Action1_Default_Org
 $Script:Action1_DebugEnabled = $false
 
@@ -87,23 +88,33 @@ function CheckToken() {
     }
 }
 
+function CheckRoot{
+    while ($Script:Action1_BaseURI -eq ''){0..($Action1_Hosts.Count-1) | `
+        ForEach-Object{
+                        Write-Host "$($_ + 1) : $($($Action1_Hosts.Keys -Split '`n')[$_])" }; 
+                        $Script:Action1_BaseURI=$($Action1_Hosts.Values -Split '`n')[[int]::TryParse((Read-Host -Prompt 'Select your data center locale (Default/Blank = North America)'),[ref]0)]
+                    }
+    return $true
+}
 function CheckOrg {
     while ($null -eq $Script:Action1_Default_Org) { Set-Action1DefaultOrg }
     return $Script:Action1_Default_Org
 }
 function FetchToken {
-    if ([string]::IsNullOrEmpty($Script:Action1_APIKey) -or [string]::IsNullOrEmpty($Script:Action1_Secret) ) { Set-Action1Credentials }
-    try {
-        $Token = (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri "$Script:Action1_BaseURI/oauth2/token" -Method POST -Body @{client_id = $Script:Action1_APIKey; client_secret = $Script:Action1_Secret }).Content )  
-        $Token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$Token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
-        $Script:Action1_Token = $Token
-        return $Token
+    if (CheckRoot){
+        if ([string]::IsNullOrEmpty($Script:Action1_APIKey) -or [string]::IsNullOrEmpty($Script:Action1_Secret) ) { Set-Action1Credentials }
+        try {
+            $Token = (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri "$Script:Action1_BaseURI/oauth2/token" -Method POST -Body @{client_id = $Script:Action1_APIKey; client_secret = $Script:Action1_Secret }).Content )  
+            $Token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$Token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
+            $Script:Action1_Token = $Token
+            return $Token
+        }
+        catch [System.Net.WebException] {
+            Write-Error "Error fetching auth token: $($_)."
+            Write-Error $Token
+            return $null
+        }     
     }
-    catch [System.Net.WebException] {
-        Write-Error "Error fetching auth token: $($_)."
-        Write-Error $Token
-        return $null
-    }     
 }
 
 function BuildArgs {
@@ -204,7 +215,7 @@ function Set-Action1DefaultOrg {
     $Script:Action1_Default_Org = $Org_ID
 }
 
-function Set-Action1DataLocation {
+function Set-Action1Locale {
     param (
         [Parameter(Mandatory)]
         [ValidateSet('NorthAmerica', 'Europe')]
