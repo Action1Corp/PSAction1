@@ -1,5 +1,5 @@
 ![Action1_Company_Logo](https://www.action1.com/wp-content/uploads/2022/02/action1-logo.svg)
-**Risk-Based Patch Management**
+**Patch Management That Just Works**
   
 [**First 100 endpoints are free, fully featured, forever.**](https://www.action1.com/free)
 ***
