@@ -96,7 +96,7 @@ function CheckRoot {
                 0..($Action1_Hosts.Count - 1) | `
                     ForEach-Object {
                     Write-Host "$($_) : $($($Action1_Hosts.Keys -Split '`n')[$_])" }; 
-                $Script:Action1_BaseURI = $($Action1_Hosts.Values -Split '`n')[[int]::Parse($(Read-Host -Prompt 'Select your data center region (Default/Blank = North America)'))]
+                $Script:Action1_BaseURI = $($Action1_Hosts.Values -Split '`n')[[int]::Parse($(Read-Host -Prompt 'Select your data center region.'))]
 
             }
             return $true
