@@ -42,12 +42,14 @@ Once you have followed the instructions to obtain an API key, you should have an
 
 ## Using this module
 
-The first order of operation is to set up authentication, if you do not supply these values beforehand, you will be prompted for them when needed. Authentication sessions have a timeout, but the module accounts for that. When PSAction1 stores the bearer token for you, it checks before use, and if necessary will renew it on demand. This does introduce a very small delay when this happens much like first use, but the impact is minimal and likely not even noticed if not explained. When debug is on, you will see this in process. So once authenticated, there is no furher authentication required for the duration of the session regardless of length.
+The first order of operation is to set up authentication, if you do not supply these values beforehand, the script will error telling you what required value is missing. Alteratively if you would rather walk through it step by step, you can set the option **Set-Action1Interactve = $true**. Authentication sessions have a timeout, but the module accounts for that. 
+
+When PSAction1 stores the bearer token for you, it checks before use, and if necessary will renew it on demand. This does introduce a very small delay when this happens much like first use, but the impact is minimal and likely not even noticed if not explained. When debug is on, you will see this in process. So once authenticated, there is no furher authentication required for the duration of the session regardless of length.
   
 :stop_sign: **Important:**  _These are example values and DO NOT belong to a live instance, substitute the values with those obtained from the instructions above._
 
 ```PowerShell
-
+PS C:\> Set-Action1Region NorthAmerica # Choices are currently NorthAmerica and Europe, more coming soon.
 PS C:\> Set-Action1Credentials -APIKey api-key-example_e0983b7c-45e8-4c82-9f98-b63bdc4dcb33@action1.com -Secret 652b47a18e212e695e9fbfaa
 
 ```
@@ -74,7 +76,7 @@ There are four main commands:
     - Retrieves data only makes no changes to actual instance.
   - **New-Action1**
     - Creates items and returns the new object.
-  - **Set-Action1**
+  - **Set-Action1[KeyWord]**
     - Sets values in module only, does not interact with server data directly.
   - **Update-Action1**
     - Used to modify or delete items.
