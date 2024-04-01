@@ -20,45 +20,46 @@
 $Script:Action1_APIKey
 $Script:Action1_Secret
 $Script:Action1_Token
-$script:Action1_Hosts = [ordered]@{'North America'='https://app.action1.com/api/3.0';Europe='https://app.eu.action1.com/api/3.0'}
+$script:Action1_Hosts = [ordered]@{'North America' = 'https://app.action1.com/api/3.0'; Europe = 'https://app.eu.action1.com/api/3.0' }
 $Script:Action1_BaseURI = ''
 $Script:Action1_Default_Org
 $Script:Action1_DebugEnabled = $false
+$Script:Action1_Interactive = $false
 
 $URILookUp = @{
-    G_AdvancedSettings      = { param($Org_ID) "/setting_templates/$Org_ID" }
-    G_AgentDepoyment        = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
-    G_Automations           = { param($Org_ID) "/policies/schedules/$Org_ID" }
-    G_Endpoint              = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    G_Endpoints             = { param($Org_ID) "/endpoints/managed/$Org_ID" }
-    G_EndpointGroupMembers  = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    G_EndpointGroups        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    G_Me                    = { "/Me" }
-    G_MissingUpdates        = { param($Org_ID) "/updates/$Org_ID" }
-    G_Organizations         = { "/organizations" }
-    G_Packages              = { "/packages/all" }
-    G_Policy                = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
-    G_Policies              = { param($Org_ID)  "/policies/instances/$Org_ID" }
-    G_PolicyResults         = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
-    G_ReportData            = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/data" }
-    G_ReportExport          = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
-    G_Reports               = { "/reports/all" } 
-    G_Scripts               = { param($Org_ID) "/scripts/$Org_ID" } 
-    G_Vulnerabilities       = { param($Org_ID) "/Vulnerabilities/$Org_ID" }
-    N_Automation            = { param($Org_ID)  "/policies/schedules/$Org_ID" }
-    N_EndpointGroup         = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    N_Organization          = { "/organizations" }
-    U_Endpoint              = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    U_GroupModify           = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
-    U_GroupMembers          = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    U_Automation            = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
+    G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
+    G_AgentDepoyment       = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
+    G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
+    G_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
+    G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }
+    G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
+    G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
+    G_Me                   = { "/Me" }
+    G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID" }
+    G_Organizations        = { "/organizations" }
+    G_Packages             = { "/packages/all" }
+    G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
+    G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
+    G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
+    G_ReportData           = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/data" }
+    G_ReportExport         = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
+    G_Reports              = { "/reports/all" } 
+    G_Scripts              = { param($Org_ID) "/scripts/$Org_ID" } 
+    G_Vulnerabilities      = { param($Org_ID) "/Vulnerabilities/$Org_ID" }
+    N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
+    N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
+    N_Organization         = { "/organizations" }
+    U_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
+    U_GroupModify          = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
+    U_GroupMembers         = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
+    U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
 }
 
 class EndpointGroup { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object[]]$include_filter; [object[]]$exclude_filter; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
 class Organization { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
 class Endpoint { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$comment; [object]Splat([string]$name, [string]$comment) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($comment)) { return $null }$this.name = $name; $this.description = $comment; return $this } }
-class GroupAddEndpoint { hidden[string]$method = 'POST'; [object]$data; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.data += @{endpoint_id = $EndpointID; type = 'Endpoint' }}; return $this } } 
-class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else {$this.endpoint_id = $EndpointID}; return $this } } 
+class GroupAddEndpoint { hidden[string]$method = 'POST'; [object]$data; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.data += @{endpoint_id = $EndpointID; type = 'Endpoint' } }; return $this } } 
+class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.endpoint_id = $EndpointID }; return $this } } 
 class GroupFilter { [ValidateNotNullOrEmpty()][string]$type; [ValidateNotNullOrEmpty()][string]$field_name; [ValidateNotNullOrEmpty()][string]$field_value; [ValidateNotNullOrEmpty()][string]$mode; }
 
 $ClassLookup = @{
@@ -88,21 +89,48 @@ function CheckToken() {
     }
 }
 
-function CheckRoot{
-    while ($Script:Action1_BaseURI -eq ''){0..($Action1_Hosts.Count-1) | `
-        ForEach-Object{
-                        Write-Host "$($_ + 1) : $($($Action1_Hosts.Keys -Split '`n')[$_])" }; 
-                        $Script:Action1_BaseURI=$($Action1_Hosts.Values -Split '`n')[[int]::TryParse((Read-Host -Prompt 'Select your data center locale (Default/Blank = North America)'),[ref]0)]
-                    }
+function CheckRoot {
+    if ($Script:Action1_BaseURI -eq '') {
+        if ($Script:Action1_Interactive) {
+            while ($Script:Action1_BaseURI -eq '') {
+                0..($Action1_Hosts.Count - 1) | `
+                    ForEach-Object {
+                    Write-Host "$($_) : $($($Action1_Hosts.Keys -Split '`n')[$_])" }; 
+                $Script:Action1_BaseURI = $($Action1_Hosts.Values -Split '`n')[[int]::Parse($(Read-Host -Prompt 'Select your data center region (Default/Blank = North America)'))]
+
+            }
+            return $true
+        }
+        else {
+            Write-Error "Region not set, call Set-Action1Region prior to making any calls to the API."
+            exit
+        }
+    }
     return $true
 }
 function CheckOrg {
-    while ($null -eq $Script:Action1_Default_Org) { Set-Action1DefaultOrg }
-    return $Script:Action1_Default_Org
+    if ($null -eq $Script:Action1_Default_Org) {
+        if ($Script:Action1_Interactive) {
+            while ($null -eq $Script:Action1_Default_Org) { Set-Action1DefaultOrg }
+        }
+        else {
+            Write-Error "Default Org not set, call Set-Action1DefaultOrg prior to making any calls to the API."
+            exit
+        }
+    }
+    return $Script:Action1_Default_Org 
 }
 function FetchToken {
-    if (CheckRoot){
-        if ([string]::IsNullOrEmpty($Script:Action1_APIKey) -or [string]::IsNullOrEmpty($Script:Action1_Secret) ) { Set-Action1Credentials }
+    if (CheckRoot) {
+        if ([string]::IsNullOrEmpty($Script:Action1_APIKey) -or [string]::IsNullOrEmpty($Script:Action1_Secret)) {
+            if ($Script:Action1_Interactive) {
+                Set-Action1Credentials 
+            }
+            else { 
+                Write-Error "Authentication details are not set, call Set-Action1Credentials prior to making any calls to the API."
+                exit
+            } 
+        }
         try {
             $Token = (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri "$Script:Action1_BaseURI/oauth2/token" -Method POST -Body @{client_id = $Script:Action1_APIKey; client_secret = $Script:Action1_Secret }).Content )  
             $Token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$Token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
@@ -219,12 +247,31 @@ function Set-Action1Locale {
     param (
         [Parameter(Mandatory)]
         [ValidateSet('NorthAmerica', 'Europe')]
-        [String]$Locale
+        [String]$Region
     )
-    switch ($Locale) {
+    Write-Host "Locale set, Note:Set-Action1Locale is being depreciated, please modify all scripts to use Set-Action1Region instead." -ForegroundColor Red
+    Set-Action1Region -Region $Region
+}
+
+function Set-Action1Region {
+    param (
+        [Parameter(Mandatory)]
+        [ValidateSet('NorthAmerica', 'Europe')]
+        [String]$Region
+    )
+    switch ($Region) {
         NorthAmerica { $Script:Action1_BaseURI = "https://app.action1.com/api/3.0" }
         Europe { $Script:Action1_BaseURI = "https://app.eu.action1.com/api/3.0" }
     }
+}
+
+function Set-Action1Interactive {
+    param(
+        [Parameter(Mandatory)]
+        [boolean]$Enabled
+    )
+    if ($Enabled) { Debug-Host "Interactive mode enabled, you will be prompted for variables that are required but not set." }
+    $Script:Action1_Interactive = $Enabled
 }
 
 function Get-Action1 {
@@ -334,10 +381,10 @@ function Get-Action1 {
                 switch ($For) {
                     #Case out specific mods for any one base type.
                     'EndpointGroup' {
-                        $sbAddIncludeFilter = {param([string]$field_name, [string]$field_value, [string]$mode) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
+                        $sbAddIncludeFilter = { param([string]$field_name, [string]$field_value, [string]$mode) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
                         $sbDeleteIncludeFilter = { param([string]$field_name) $this.include_filter = @($this.include_filter | Where-Object { !($_.field_name -eq $field_name) }) }
                         $sbClearIncludeFilter = { $this.include_filter = @() }
-                        $sbAddExcludeFilter = {param([string]$field_name, [string]$field_value, [string]$mode) $this.exclude_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
+                        $sbAddExcludeFilter = { param([string]$field_name, [string]$field_value, [string]$mode) $this.exclude_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
                         $sbDeleteExcludeFilter = { param([string]$field_name) $this.exclude_filter = @($this.exclude_filter | Where-Object { !($_.field_name -eq $field_name) }) }
                         $sbClearExcludeFilter = { $this.exclude_filter = @() }
                         $ret = $ClassLookup[$For]
