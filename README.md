@@ -71,7 +71,7 @@ PS C:\> Set-Action1DefaultOrg -Org_ID 88c8b425-871e-4ff6-9afc-00df8592c6db
 
 ### You are all set up, let's do something useful.
 
-There are four main commands:
+There are five main commands:
   - **Get-Action1**
     - Retrieves data only makes no changes to actual instance.
   - **New-Action1**
@@ -80,6 +80,8 @@ There are four main commands:
     - Sets values in module only, does not interact with server data directly.
   - **Update-Action1**
     - Used to modify or delete items.
+  - **Start-Action1Requery**
+    - Used to request the system do a refresh of data.
 
 Let's start by querying endpoints.
 
@@ -126,10 +128,12 @@ vulnerability_status : UNDEFINED
 
   - Automations
   - AdvancedSettings
+  - Apps
   - EndpointGroupMembers
   - EndpointGroups
   - Me
   - Endpoint
+  - EndpointApps
   - Endpoints
   - MissingUpdates
   - Organizations
@@ -143,6 +147,7 @@ vulnerability_status : UNDEFINED
   - Scripts
   - AgentDepoyment
   - Vulnerabilities
+  - RawURI
   - Settings
 
 :left_speech_bubble: **Note:** _Notice here that some queries are plural some are singular, all that are plural return a collection of items of that type.  
