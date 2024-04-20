@@ -27,32 +27,37 @@ $Script:Action1_DebugEnabled = $false
 $Script:Action1_Interactive = $false
 
 $URILookUp = @{
-    G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
-    G_AgentDepoyment       = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
-    G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
-    G_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }
-    G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    G_Me                   = { "/Me" }
-    G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID" }
-    G_Organizations        = { "/organizations" }
-    G_Packages             = { "/packages/all" }
-    G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
-    G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
-    G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
-    G_ReportData           = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/data" }
-    G_ReportExport         = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
-    G_Reports              = { "/reports/all" } 
-    G_Scripts              = { param($Org_ID) "/scripts/$Org_ID" } 
-    G_Vulnerabilities      = { param($Org_ID) "/Vulnerabilities/$Org_ID" }
-    N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
-    N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    N_Organization         = { "/organizations" }
-    U_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    U_GroupModify          = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
-    U_GroupMembers         = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
+    G_AdvancedSettings          = { param($Org_ID) "/setting_templates/$Org_ID" }
+    G_AgentDepoyment            = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
+    G_Apps                      = { param($Org_ID) "/apps/$Org_ID/data" }
+    G_Automations               = { param($Org_ID) "/policies/schedules/$Org_ID" }
+    G_Endpoint                  = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
+    G_Endpoints                 = { param($Org_ID) "/endpoints/managed/$Org_ID" }
+    G_EndpointApps              = { param($Org_ID, $Object_ID) "/apps/$Org_ID/data/$Object_ID" }
+    G_EndpointGroupMembers      = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
+    G_EndpointGroups            = { param($Org_ID) "/endpoints/groups/$Org_ID" }
+    G_Me                        = { "/Me" }
+    G_MissingUpdates            = { param($Org_ID) "/updates/$Org_ID" }
+    G_Organizations             = { "/organizations" }
+    G_Packages                  = { "/packages/all" }
+    G_Policy                    = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
+    G_Policies                  = { param($Org_ID)  "/policies/instances/$Org_ID" }
+    G_PolicyResults             = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
+    G_ReportData                = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/data" }
+    G_ReportExport              = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
+    G_Reports                   = { "/reports/all" } 
+    G_Scripts                   = { param($Org_ID) "/scripts/$Org_ID" } 
+    G_Vulnerabilities           = { param($Org_ID) "/Vulnerabilities/$Org_ID" }
+    N_Automation                = { param($Org_ID)  "/policies/schedules/$Org_ID" }
+    N_EndpointGroup             = { param($Org_ID) "/endpoints/groups/$Org_ID" }
+    N_Organization              = { "/organizations" }
+    R_ReportData                = { param($Org_ID, $Object_ID) "/reportdata/$Org_ID/$Object_ID/requery" }
+    R_InstalledAppsInventory    = { param($Org_ID, $Object_ID) "/apps/$Org_ID/requery/$Object_ID" }
+    R_InstalledUpdatesInventory = { param($Org_ID) "/updates/installed/$Org_ID/requery" }
+    U_Endpoint                  = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
+    U_GroupModify               = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
+    U_GroupMembers              = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
+    U_Automation                = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
 }
 
 class EndpointGroup { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object[]]$include_filter; [object[]]$exclude_filter; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
@@ -280,10 +285,12 @@ function Get-Action1 {
         [ValidateSet(   
             'Automations',
             'AdvancedSettings',
+            'Apps',
             'EndpointGroupMembers',
             'EndpointGroups',
             'Me',
             'Endpoint',
+            'EndpointApps',
             'Endpoints',
             'MissingUpdates',
             'Organizations',
@@ -563,5 +570,37 @@ function Update-Action1 {
             }
             default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
         }
+    }
+}
+
+function Start-Action1Requery {
+    param(
+        [Parameter(Mandatory)]
+        [ValidateSet(
+            'ReportData',
+            'InstalledAppsInventory',
+            'InstalledUpdatesInventory'
+        )]
+        [string]$Type,
+        [string]$Endpoint_Id                    
+    )
+    if (CheckToken) {
+        if (!$URILookUp["R_$Type"].ToString().Contains("`$Org_ID")) {
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"])
+        }
+        else {
+            if ($Endpoint_Id) {
+                if ($URILookUp["R_$Type"].ToString().Contains("`$Object_ID")) {
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"] -Org_ID $(CheckOrg) -Object_ID $Endpoint_Id)
+                }else{
+                    Write-Error "Endpoint_Id was specified but this action is not endpoint specific, can continue, defaulting to system wide."
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"] -Org_ID $(CheckOrg))
+                } 
+            }
+            else {
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"] -Org_ID $(CheckOrg))
+            }
+        } 
+        return PushData -Method POST -Path $Path.TrimEnd('/') -Label "Requery=>$Type"
     }
 }
