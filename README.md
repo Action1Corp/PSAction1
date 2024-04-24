@@ -312,6 +312,52 @@ Delete operations prompt for confirmation by default, **-Force** overrides that 
 ```PowerShell
 PS C:\> Update-Action1 Delete -Type Group -Id MyNewGroup_1702147189271 -Force 
 ```
+### Reporting
+
+You can pull report data as well through PSAction1, reports an be retrieved as objects for property manipulation, such as ...
+
+```PowerShell
+PS C:\> Get-Action1 ReportData -Id 'installed_software_1635264799139'
+
+id              : ZDesigner%2520Windows%2520Printer%2520Driver%2520Version                                                                                                                                        type            : ReportRow                                                                                                                                                                                       self            : https://app.action1.com/api/3.0/reportdata/df137c59-f12a-03c6-7b7e-63701cb6eba3/installed_software_1635264799139/data/ZDesigner%2520Windows%2520Printer%2520Driver%2520Version                  
+fields          : @{Name=ZDesigner Windows Printer Driver Version; Details=2}
+drilldown_field : Details
+drilldown       : https://app.action1.com/api/3.0/reportdata/df137c59-f12a-03c6-7b7e-63701cb6eba3/installed_software_1635264799139/data/ZDesigner%2520Windows%2520Printer%2520Driver%2520Version/drilldown        
+
+id              : Zebra%2520Font%2520Downloader
+type            : ReportRow
+self            : https://app.action1.com/api/3.0/reportdata/df137c59-f12a-03c6-7b7e-63701cb6eba3/installed_software_1635264799139/data/Zebra%2520Font%2520Downloader
+fields          : @{Name=Zebra Font Downloader; Details=1}
+drilldown_field : Details
+drilldown       : https://app.action1.com/api/3.0/reportdata/df137c59-f12a-03c6-7b7e-63701cb6eba3/installed_software_1635264799139/data/Zebra%2520Font%2520Downloader/drilldown
+
+...
+```
+This retrieves an object collection with the id and other details of each of your report objects. Mostly this is useful for determining the id of a particular report you would like to retrieve data for. 
+
+Then you can use that id to pull the actual data in CSV format for integration with or consumption by other systems.
+
+```PowerShell
+PS C:\> Get-Action1 ReportExport -Id 'installed_software_1635264799139'
+
+Name,Details
+ZDesigner Windows Printer Driver Version,2
+Zebra Font Downloader,1
+
+...
+```
+
+Last but not least, is that because report data is polled, there is a chance when you check at any instant all data will not be up to the minute current.
+
+```PowerShell
+PS C:\> Start-Action1Requery -Type InstalledSoftware 
+PS C:\> Start-Action1Requery -Type InstalledSoftware -Endpoint_Id 'ef17c844-5b7c-4b32-9724-f2716b596639'
+```
+
+These statements are non-blocking, meaning they initiate a re-query of the data, but the re-query is not instantaneous and can vary depending on your particular deployment. Therefore an immediate attempt to export data again may or may not contain the complete information set from this request. After a reasonable period however it should improve the accuracy of the reported data for all endpoints that are reachable. In the case of **ReportData** and **InstalledSoftware**, these re-query actions can be made as granular as the endpoint, however in the case of **InstaledUpdates** it is only system wide.  
+
+:left_speech_bubble: **Note:** _When this request it made it will be honored the next time an endpoint is visible, it has no affect on offline endpoints until they reconnect.._
+
 ### Extending / testing / playground
 
 This interface is not exhaustive, it used the most commonly requested features of the API, but the API if far larger and feature rich than represented here. That said, the PSAction1 module can still assist. You can use the authentication mechanism to run custom URIs for the purpose of rapidly exploring the API or extending it for more function. To do this the PSAction1 module contains a RawURI method in Get-Action1.
