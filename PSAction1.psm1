@@ -423,6 +423,9 @@ function Get-Action1 {
                 $Page.items | Write-Output
             }
         }
+        $sbCustomFieldSet = { param([string]$name, [string]$value)($this.custom | Where-Object{$_.name -eq $name}).value = $value}
+        $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object{$_.name -eq $name}).value}
+
         if ($Limit -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "limit=$Limit" }
         if ($From -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "from=$From" }
         #Add more URI arguments here?..
@@ -439,27 +442,53 @@ function Get-Action1 {
         } 
         if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs -Raw } else { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs }
         if ($Page.items) {
-            if ($Query -eq 'PolicyResults') {
-                $page.Items | ForEach-Object {
-                    $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
-                    Write-Output $_
-                }
-            }
-            else { $Page.Items | Write-Output }
-            While (![string]::IsNullOrEmpty($Page.next_page)) {
-                Debug-Host "[$Query] Next page..."
-                if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Page.next_page -Label $Query -Raw }else { $Page = DoGet -Path $Page.next_page -Label $Query }
-                if ($Query -eq 'PolicyResults') {
+            switch -Wildcard ($Query){
+                'PolicyResults'{
                     $page.Items | ForEach-Object {
                         $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
                         Write-Output $_
                     }
                 }
-                else { $Page.Items | Write-Output }
+                'Endpoint*'{
+                    $page.Items | ForEach-Object {
+                        $_ | Add-Member -MemberType ScriptMethod -Name "SetCustomAttribute" -Value $sbCustomFieldSet
+                        $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
+                        Write-Output $_
+                    }  
+                }
+                default {$Page.Items | Write-Output }
+            }
+            While (![string]::IsNullOrEmpty($Page.next_page)) {
+                Debug-Host "[$Query] Next page..."
+                if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Page.next_page -Label $Query -Raw } else { $Page = DoGet -Path $Page.next_page -Label $Query }
+                switch -Wildcard ($Query){
+                    'PolicyResults'{
+                        $page.Items | ForEach-Object {
+                            $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
+                            Write-Output $_
+                        }
+                    }
+                    'Endpoint*'{
+                        $page.Items | ForEach-Object {
+                            $_ | Add-Member -MemberType ScriptMethod -Name "SetCustomAttribute" -Value $sbCustomFieldSet
+                            $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
+                            Write-Output $_
+                        }  
+                    }
+                    default {$Page.Items | Write-Output }
+                }
             }
         }
         else {
-            Write-Output $Page 
+            switch -Wildcard ($Query){
+                'Endpoint*'{
+                    $Page | Add-Member -MemberType ScriptMethod -Name "SetCustomAttribute" -Value $sbCustomFieldSet
+                    $Page | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
+                    Write-Output $Page
+                    
+                }
+                default {Write-Output $Page }
+            }
         }                
     }
 }
