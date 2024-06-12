@@ -123,7 +123,18 @@ update_status        : UNDEFINED
 vulnerability_status : UNDEFINED
 
 ```
+:left_speech_bubble: **Note:** _All endpoints have custom attributes that can be set by using two extension methods CustomAttributeGet and CustomAttributeSet. The following example demonstrates how to use these attributes._
 
+```PowerShell
+
+PS C:\> $ep = Get-Action1 Endpoint -Id 'ef17c844-5b7c-4b32-9724-f2716b596639'
+PS C:\> $ep.SetCustomAttribute('Custom Attribute 1','Test value')
+PS C:\> $ep.GetCustomAttribute('Custom Attribute 1')
+Test Value
+
+```
+
+ 
 ### The list of additional query expressions:
 
   - Automations
