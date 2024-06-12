@@ -536,11 +536,14 @@ function Update-Action1 {
         [ValidateSet(
             'EndpointGroup',
             'Endpoint',
-            'Automation'
+            'Automation',
+            'CustomAttribute'
         )]
         [string]$Type,
         [object]$Data,
         [string]$Id,
+        [string]$AttributeName,
+        [string]$AttributeValue,
         [switch]$Force
     )
     Debug-Host "Trying update for $Action => $Type."
@@ -558,17 +561,23 @@ function Update-Action1 {
             'Modify' {              
                 if (!$Id) { Write-Error "When perfoming $Action=>$Type, the value for -Id must be specified to know what object to act on."; return $null } 
                 switch ($Type) {
-                    'EndpointGroup' { 
-                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupModify"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                        return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type"
-                    }
-                    'Endpoint' { 
-                        Write-Error "$Action not valid for $type  ERROR: Not implemented."
-                        return $null
-                    }
                     'Automation' {
                         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
                         return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                    }
+                    'CustomAttribute'{
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                        $Data = New-Object psobject -Property @{"custom:$AttributeName" = $AttributeValue;}
+                        return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                    }
+                    'Endpoint' { 
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                        $Data.PSObject.Members | ForEach-Object {if(@('name','comment') -notcontains $_.Name){$Data.PSObject.Members.Remove($_.Name)}}
+                        return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                    }
+                    'EndpointGroup' { 
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupModify"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                        return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type"
                     }
                     default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
                 }   
