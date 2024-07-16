@@ -36,6 +36,7 @@ $URILookUp = @{
     G_EndpointApps         = { param($Org_ID, $Object_ID) "/apps/$Org_ID/data/$Object_ID" }
     G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
     G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
+    G_Logs                 = { param($Org_ID) "/logs/$Org_ID" }
     G_Me                   = { "/Me" }
     G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID" }
     G_Organizations        = { "/organizations" }
@@ -51,6 +52,7 @@ $URILookUp = @{
     N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
     N_Organization         = { "/organizations" }
+    N_Remediation          = { param($Org_ID)  "/policies/instances/$Org_ID" }
     R_ReportData           = { param($Org_ID, $Object_ID) "/reportdata/$Org_ID/$Object_ID/requery" }
     R_InstalledSoftware    = { param($Org_ID, $Object_ID) "/apps/$Org_ID/requery/$Object_ID" }
     R_InstalledUpdates     = { param($Org_ID) "/updates/installed/$Org_ID/requery" }
@@ -75,6 +77,83 @@ $ClassLookup = @{
     'GroupDeleteEndpoint' = [GroupDeleteEndpoint]::new()
     'GroupFilter'         = [GroupFilter]::new()
 }
+
+
+#----------------------------------JSON object templates---------------------------------------
+$AutomationTemplate = @"
+{
+  "name": "<Display name>",
+  "endpoints": [
+    {
+      "id": "ALL",
+      "type": "EndpointGroup"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Deploy Update",
+      "template_id": "deploy_update",
+       "params": {
+            "display_summary": "<Summary detail>",
+            "packages": [
+              {
+               "default":"default"
+              }
+            ],
+            "update_approval": "manual",
+            "automatic_approval_delay_days": 7,
+            "scope": "Specified",
+        "reboot_options": {
+          "auto_reboot": "yes",
+          "show_message": "yes",
+          "message_text": "Your computer requires maintenance and will be rebooted. Please save all work and reboot now to avoid losing any data.",
+          "timeout": 240
+        }
+      }
+    }
+  ],
+  "retry_minutes": "30",
+  "settings": "ENABLED ONCE AT:HH-mm-ss DATE:yyyy-MM-dd",
+  "randomize_start": "0"
+}
+"@
+
+$RemediationTemplate = @"
+{
+  "name": "",
+  "retry_minutes": "1440",
+  "endpoints": [
+    {
+      "id": "ALL",
+      "type": "EndpointGroup"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Deploy Update",
+      "template_id": "deploy_update",
+      "params": {
+        "display_summary": "",
+        "packages": [
+          {
+            "default": "default"
+          }
+        ],
+        "update_approval": "manual",
+        "automatic_approval_delay_days": 7,
+        "scope": "Specified",
+        "reboot_options": {
+          "auto_reboot": "yes",
+          "show_message": "yes",
+          "message_text": "Your computer requires maintenance and will be rebooted. Please save all work and reboot now to avoid losing any data.",
+          "timeout": 240
+        }
+      }
+    }
+  ]
+}
+"@
+#----------------------------------JSON object templates---------------------------------------
 
 function CheckToken() {
     if (($null -ne $Script:Action1_Token) -and ($Script:Action1_Token.expires_at -ge $(Get-Date))) {
@@ -286,12 +365,14 @@ function Get-Action1 {
             'Automations',
             'AdvancedSettings',
             'Apps',
+            'CutomAttribute',
             'EndpointGroupMembers',
             'EndpointGroups',
             'Me',
             'Endpoint',
             'EndpointApps',
             'Endpoints',
+            'Logs',
             'MissingUpdates',
             'Organizations',
             'Packages',
@@ -319,7 +400,8 @@ function Get-Action1 {
             'Organization',
             'GroupAddEndpoint',
             'GroupDeleteEndpoint',
-            "GroupFilter"
+            "GroupFilter",
+            "Remediation"
         )]
         [string]$For,
         [string]$Clone
@@ -405,13 +487,46 @@ function Get-Action1 {
                         $ret | Add-Member -MemberType ScriptMethod -Name "ClearExcludeFilter" -Value $sbClearExcludeFilter
                         return $ret
                     }
+                    'Remediation' { 
+                        $deploy = ConvertFrom-Json $RemediationTemplate
+                        $deploy.name = "External $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
+                        $deploy.actions[0].params.display_summary = "$For via external API call."
+                        $sbAddCVE = {
+                            param([string]$CVE_ID) 
+                            $vul = ((Get-Action1 Vulnerabilities | Where-Object{$_.cve_id -eq $CVE_ID}).software).available_updates
+                            $upd = $vul.package_id
+                            $ver = $vul.version
+                            $name = $vul.name
+                            if($null -eq $vul){
+                                Write-Host "No patch for $CVE_ID found in Action1." -ForegroundColor Red}
+                                else{ 
+                                    if(!($null -eq $test.actions.params.packages[0].$upd)){
+                                        Debug-Host "$name has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."}
+                                    else{
+                                        Debug-Host "Adding $name to the package list for $CVE_ID."
+                                        if($null -eq $test.actions.params.packages[0].'default'){
+                                            $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd=$ver}}
+                                            else{
+                                                $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$upd=$ver}
+                                        }
+                                    }
+                                }
+                        }
+                        $sbAddEndpointGroup = { param([string]$Id) if($this.endpoints[0].id -eq 'All'){$this.endpoints[0] = New-Object psobject -Property @{id = $Id; type = 'EndpointGroup'}}else{$this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup'} } }
+                       
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "AddCVE" -Value $sbAddCVE
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpointGroup" -Value $sbAddEndpointGroup
+                        #Temporary untill we add scheduling options for Automation.
+                        #if($For -eq 'Automation'){$deploy.settings = "ENABLED ONCE AT:$((Get-Date).ToUniversalTime().AddMinutes(10).ToString("HH-mm-ss")) DATE:$((Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))"}
+                        return $deploy
+                    }
                     default { return $ClassLookup[$For] } # otherwise return empty base
                 }
             }
         } 
     }
     # Note things that do not get procesed post API call, and should be delivered unaltered.
-    $Rawlist = @('ReportExport')
+    $Rawlist = @('ReportExport','Logs')
 
     if (CheckToken) {
         $AddArgs = ""
@@ -423,7 +538,6 @@ function Get-Action1 {
                 $Page.items | Write-Output
             }
         }
-        $sbCustomFieldSet = { param([string]$name, [string]$value)($this.custom | Where-Object{$_.name -eq $name}).value = $value}
         $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object{$_.name -eq $name}).value}
 
         if ($Limit -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "limit=$Limit" }
@@ -451,7 +565,6 @@ function Get-Action1 {
                 }
                 'Endpoint*'{
                     $page.Items | ForEach-Object {
-                        $_ | Add-Member -MemberType ScriptMethod -Name "SetCustomAttribute" -Value $sbCustomFieldSet
                         $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
                         Write-Output $_
                     }  
@@ -470,7 +583,6 @@ function Get-Action1 {
                     }
                     'Endpoint*'{
                         $page.Items | ForEach-Object {
-                            $_ | Add-Member -MemberType ScriptMethod -Name "SetCustomAttribute" -Value $sbCustomFieldSet
                             $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
                             Write-Output $_
                         }  
@@ -482,7 +594,6 @@ function Get-Action1 {
         else {
             switch -Wildcard ($Query){
                 'Endpoint*'{
-                    $Page | Add-Member -MemberType ScriptMethod -Name "SetCustomAttribute" -Value $sbCustomFieldSet
                     $Page | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
                     Write-Output $Page
                     
@@ -499,7 +610,8 @@ function New-Action1 {
         [ValidateSet(
             'EndpointGroup',
             'Organization',
-            'Automation'
+            'Automation',
+            'Remediation'
         )]
         [string]$Item,
         [Parameter(Mandatory)]
