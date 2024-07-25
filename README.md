@@ -42,7 +42,7 @@ Once you have followed the instructions to obtain an API key, you should have an
 
 ## Using this module
 
-The first order of operation is to set up authentication, if you do not supply these values beforehand, the script will error telling you what required value is missing. Alteratively if you would rather walk through it step by step, you can set the option **Set-Action1Interactve = $true**. Authentication sessions have a timeout, but the module accounts for that. 
+The first order of operation is to set up authentication, if you do not supply these values beforehand, the script will error telling you what required value is missing. Alteratively if you would rather walk through it step by step, you can set the option **Set-Action1Interactive $true**. Authentication sessions have a timeout, but the module accounts for that. 
 
 When PSAction1 stores the bearer token for you, it checks before use, and if necessary will renew it on demand. This does introduce a very small delay when this happens much like first use, but the impact is minimal and likely not even noticed if not explained. When debug is on, you will see this in process. So once authenticated, there is no furher authentication required for the duration of the session regardless of length.
   
