@@ -25,6 +25,7 @@ $Script:Action1_BaseURI = ''
 $Script:Action1_Default_Org
 $Script:Action1_DebugEnabled = $false
 $Script:Action1_Interactive = $false
+$PSDefaultParameterValues['*:UseBasicParsing'] = $true
 
 $URILookUp = @{
     G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
