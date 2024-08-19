@@ -320,6 +320,21 @@ Delete operations prompt for confirmation by default, **-Force** overrides that 
 ```PowerShell
 PS C:\> Update-Action1 Delete -Type Group -Id MyNewGroup_1702147189271 -Force 
 ```
+### Deploying patches and software packages
+
+As of version 1.3.8, you can now deploy both patches and software packages through PSAction1! Like many of the other actions, it starts by getting a settings template for the operation, adding relevant information about what you would like to deploy, and then creating a new object in action1 to kick it off. In this case the type of object created is a policy instance. This is a special type of automation that runs once on demand and does not leave a template in the automations section inside Action1, but it can still be found in the history of any endpoint that it was assigned to.
+
+Let’s look at an example of issuing a remediation to an endpoint for a particular vulnerability. When patching a vulnerability, it is identified by its CVS id, so we start by getting a Remediation settings template, adding one or more CVE’s to be addressed to it, assigning it to one or more endpoint groups, and then push it back to the server.
+
+:left_speech_bubble: **Note:** _ It is not only likely, it is common, that a single patch will address multiple CVEs in one install. PSAction1 will intelligently address this by detecting that the patch for any given CVE is already added to the queue if you attempt to add additional CVEs from the same patch. This allows you to add all CVEs you wish to address, and the resulting patch list will resolve itself. However, note as well, that all CVEs addressed by that patch will be covered, not **just** the one you added._
+
+```Powershell
+PS C:\> $push = Get-Action1 Settings -For Remediation
+PS C:\> $push.AddCVE('CVE_ID')
+PS C:\> $push.AddEndpointGroup('endpoint_group_id')
+PS C:\> New-Action1 Remediation -Data $push
+```
+
 ### Reporting
 
 You can pull report data as well through PSAction1, reports an be retrieved as objects for property manipulation, such as ...
