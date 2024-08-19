@@ -20,7 +20,7 @@
 $Script:Action1_APIKey
 $Script:Action1_Secret
 $Script:Action1_Token
-$script:Action1_Hosts = [ordered]@{'North America' = 'https://app.action1.com/api/3.0'; Europe = 'https://app.eu.action1.com/api/3.0' }
+$script:Action1_Hosts = [ordered]@{'North America' = 'https://app.action1.com/api/3.0'; Europe = 'https://app.eu.action1.com/api/3.0'; Australia = 'https://app.au.action1.com/api/3.0' }
 $Script:Action1_BaseURI = ''
 $Script:Action1_Default_Org
 $Script:Action1_DebugEnabled = $false
@@ -38,9 +38,9 @@ $URILookUp = @{
     G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
     G_Logs                 = { param($Org_ID) "/logs/$Org_ID" }
     G_Me                   = { "/Me" }
-    G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID" }
+    G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID`?limit=9999" }
     G_Organizations        = { "/organizations" }
-    G_Packages             = { "/packages/all" }
+    G_Packages             = { "/packages/all?limit=9999" }
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
     G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
     G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
@@ -48,11 +48,12 @@ $URILookUp = @{
     G_ReportExport         = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
     G_Reports              = { "/reports/all" } 
     G_Scripts              = { param($Org_ID) "/scripts/$Org_ID" } 
-    G_Vulnerabilities      = { param($Org_ID) "/Vulnerabilities/$Org_ID" }
+    G_Vulnerabilities      = { param($Org_ID) "/Vulnerabilities/$Org_ID`?limit=9999" }
     N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
     N_Organization         = { "/organizations" }
     N_Remediation          = { param($Org_ID)  "/policies/instances/$Org_ID" }
+    N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
     R_ReportData           = { param($Org_ID, $Object_ID) "/reportdata/$Org_ID/$Object_ID/requery" }
     R_InstalledSoftware    = { param($Org_ID, $Object_ID) "/apps/$Org_ID/requery/$Object_ID" }
     R_InstalledUpdates     = { param($Org_ID) "/updates/installed/$Org_ID/requery" }
@@ -80,43 +81,6 @@ $ClassLookup = @{
 
 
 #----------------------------------JSON object templates---------------------------------------
-$AutomationTemplate = @"
-{
-  "name": "<Display name>",
-  "endpoints": [
-    {
-      "id": "ALL",
-      "type": "EndpointGroup"
-    }
-  ],
-  "actions": [
-    {
-      "name": "Deploy Update",
-      "template_id": "deploy_update",
-       "params": {
-            "display_summary": "<Summary detail>",
-            "packages": [
-              {
-               "default":"default"
-              }
-            ],
-            "update_approval": "manual",
-            "automatic_approval_delay_days": 7,
-            "scope": "Specified",
-        "reboot_options": {
-          "auto_reboot": "yes",
-          "show_message": "yes",
-          "message_text": "Your computer requires maintenance and will be rebooted. Please save all work and reboot now to avoid losing any data.",
-          "timeout": 240
-        }
-      }
-    }
-  ],
-  "retry_minutes": "30",
-  "settings": "ENABLED ONCE AT:HH-mm-ss DATE:yyyy-MM-dd",
-  "randomize_start": "0"
-}
-"@
 
 $RemediationTemplate = @"
 {
@@ -147,6 +111,36 @@ $RemediationTemplate = @"
           "show_message": "yes",
           "message_text": "Your computer requires maintenance and will be rebooted. Please save all work and reboot now to avoid losing any data.",
           "timeout": 240
+        }
+      }
+    }
+  ]
+}
+"@
+
+$PackageDeployTemplate =@"
+{
+  "name": "",
+  "retry_minutes": "1440",
+  "endpoints": [
+    {
+      "id": "ALL",
+      "type": "EndpointGroup"
+    }
+  ],
+ "actions": [
+    {
+      "name": "Deploy Software",
+      "template_id": "deploy_package",
+      "params": {
+        "display_summary": "",
+        "packages": [
+          {
+            "default": "default"
+          }
+        ],
+        "reboot_options": {
+          "auto_reboot": "no"
         }
       }
     }
@@ -234,7 +228,7 @@ function BuildArgs {
         [String]$In,
         [String]$Add
     )
-    if ([string]::IsNullOrEmpty($In)) { return $Add }else { return "$In&$Add" }
+    if ([string]::IsNullOrEmpty($In)) { return $Add }else{ return "$In&$Add" }
 }
 
 function DoGet {
@@ -340,12 +334,13 @@ function Set-Action1Locale {
 function Set-Action1Region {
     param (
         [Parameter(Mandatory)]
-        [ValidateSet('NorthAmerica', 'Europe')]
+        [ValidateSet('NorthAmerica', 'Europe','Australia')]
         [String]$Region
     )
     switch ($Region) {
         NorthAmerica { $Script:Action1_BaseURI = "https://app.action1.com/api/3.0" }
         Europe { $Script:Action1_BaseURI = "https://app.eu.action1.com/api/3.0" }
+        Australia {$Script:Action1_BaseURI = 'https://app.au.action1.com/api/3.0' }
     }
 }
 
@@ -390,8 +385,8 @@ function Get-Action1 {
         )]
         [String]$Query,
         [string]$Id,
-        [int]$Limit,
-        [int]$From,
+        #[int]$Limit,
+        #[int]$From,
         [string]$URI,
         [ValidateSet(
             'Automation',
@@ -400,8 +395,9 @@ function Get-Action1 {
             'Organization',
             'GroupAddEndpoint',
             'GroupDeleteEndpoint',
-            "GroupFilter",
-            "Remediation"
+            'GroupFilter',
+            'Remediation',
+            'DeploySoftware'
         )]
         [string]$For,
         [string]$Clone
@@ -500,24 +496,61 @@ function Get-Action1 {
                             if($null -eq $vul){
                                 Write-Host "No patch for $CVE_ID found in Action1." -ForegroundColor Red}
                                 else{ 
-                                    if(!($null -eq $test.actions.params.packages[0].$upd)){
+                                    if(!($null -eq $this.actions.params.packages[0].$upd)){
                                         Debug-Host "$name has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."}
                                     else{
                                         Debug-Host "Adding $name to the package list for $CVE_ID."
-                                        if($null -eq $test.actions.params.packages[0].'default'){
+                                        if($null -eq $this.actions.params.packages[0].'default'){
                                             $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd=$ver}}
                                             else{
                                                 $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$upd=$ver}
                                         }
                                     }
-                                }
+                            }
                         }
                         $sbAddEndpointGroup = { param([string]$Id) if($this.endpoints[0].id -eq 'All'){$this.endpoints[0] = New-Object psobject -Property @{id = $Id; type = 'EndpointGroup'}}else{$this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup'} } }
                        
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddCVE" -Value $sbAddCVE
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpointGroup" -Value $sbAddEndpointGroup
-                        #Temporary untill we add scheduling options for Automation.
-                        #if($For -eq 'Automation'){$deploy.settings = "ENABLED ONCE AT:$((Get-Date).ToUniversalTime().AddMinutes(10).ToString("HH-mm-ss")) DATE:$((Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))"}
+                        #$deploy.settings = "ENABLED ONCE AT:$((Get-Date).ToUniversalTime().AddMinutes(10).ToString("HH-mm-ss")) DATE:$((Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))"}
+                        return $deploy
+                    }
+                    'DeploySoftware'{
+                        $deploy = ConvertFrom-Json $PackageDeployTemplate
+                        $deploy.name = "External $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
+                        $deploy.actions[0].params.display_summary = "$For via external API call."
+
+                        $sbAddEndpoint = { param([string]$Id) if('All' -eq $this.endpoints[0].id){$this.ClearEndpoints()}; $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'Endpoint' } }
+                        $sbAddEndpointGroup = { param([string]$Id) if('All' -eq $this.endpoints[0].id){$this.ClearEndpoints()}; $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup' } }
+                        $sbDeleteEndpoint = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'Endpoint' -and $_.id -eq $Id) }) }
+                        $sbDeleteEndpointGroup = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'EndpointGroup' -and $_.id -eq $Id) }) }
+                        $sbClearEndpoints = { $this.endpoints = @() }
+                        $sbAddPackage = {
+                            param([string]$Package_ID) 
+                            $pack = Get-Action1 Packages | Where-Object{$_.id -eq $Package_ID}
+                            $name = $pack.name
+                            if($null -eq $pack){
+                                Write-Host "Unable to locate package $Package_ID." -ForegroundColor Red}
+                                else{ 
+                                    if(!($null -eq $this.actions.params.packages[0].$pack)){
+                                        Debug-Host "$name has already been added to this template."}
+                                    else{
+                                        $version = $(Get-Action1 RawURI -URI "$Script:Action1_BaseURI/packages/all/$Package_ID/versions").version
+                                        Debug-Host "Adding $name version $Version to the package list."
+                                        if($null -eq $this.actions.params.packages[0].'default'){
+                                            $this.actions.params.packages += New-Object PSCustomObject -Property @{$Package_ID=$version}}
+                                            else{
+                                                $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$Package_ID=$version}
+                                        }
+                                    }
+                            }
+                        }
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpoint" -Value $sbAddEndpoint
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpointGroup" -Value $sbAddEndpointGroup
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "DeleteEndpoint" -Value $sbDeleteEndpoint
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "DeleteEndpointGroup" -Value $sbDeleteEndpointGroup
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "ClearEndpoints" -Value $sbClearEndpoints
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "AddPackage" -Value $sbAddPackage
                         return $deploy
                     }
                     default { return $ClassLookup[$For] } # otherwise return empty base
@@ -611,7 +644,8 @@ function New-Action1 {
             'EndpointGroup',
             'Organization',
             'Automation',
-            'Remediation'
+            'Remediation',
+            'DeploySoftware'
         )]
         [string]$Item,
         [Parameter(Mandatory)]
@@ -711,7 +745,7 @@ function Update-Action1 {
                     }
                     'Automation' {
                         if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
-                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
                             return PushData -Method DELETE -Path $Path -Label "$Action=>$Type"
                         }
                     }

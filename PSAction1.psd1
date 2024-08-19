@@ -23,7 +23,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.3.7'
+    ModuleVersion     = '1.3.8'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -38,7 +38,7 @@
     CompanyName       = 'Action1 Corporation'
 
     # Copyright statement for this module
-    Copyright         = '(c) 2023 Action1 Corporation. All rights reserved.'
+    Copyright         = '(c) 2024 Action1 Corporation. All rights reserved.'
 
     # Description of the functionality provided by this module
     Description       = 'API Interface for Action1'
