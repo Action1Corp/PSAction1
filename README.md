@@ -1,4 +1,4 @@
-![Action1_Company_Logo](https://www.action1.com/wp-content/uploads/2022/02/action1-logo.svg)
+![_Company_Logo](https://www.action1.com/wp-content/uploads/2022/02/action1-logo.svg)
 **Patch Management That Just Works**
   
 [**First 100 endpoints are free, fully featured, forever.**](https://www.action1.com/free)
@@ -322,17 +322,25 @@ PS C:\> Update-Action1 Delete -Type Group -Id MyNewGroup_1702147189271 -Force
 ```
 ### Deploying patches and software packages
 
-As of version 1.3.8, you can now deploy both patches and software packages through PSAction1! Like many of the other actions, it starts by getting a settings template for the operation, adding relevant information about what you would like to deploy, and then creating a new object in action1 to kick it off. In this case the type of object created is a policy instance. This is a special type of automation that runs once on demand and does not leave a template in the automations section inside Action1, but it can still be found in the history of any endpoint that it was assigned to.
+As of version 1.3.8, you can now deploy both patches and software packages through PSAction1! Like many of the other actions, it starts by getting a settings template for the operation, adding relevant information about what you would like to deploy, and then creating a new object in Action1 to kick it off. In this case the type of object created is a policy instance. This is a special type of automation that runs once on demand and does not leave a template in the automations section inside Action1, but it can still be found in the history of any endpoint that it was assigned to.
 
 Let’s look at an example of issuing a remediation to an endpoint for a particular vulnerability. When patching a vulnerability, it is identified by its CVS id, so we start by getting a Remediation settings template, adding one or more CVE’s to be addressed to it, assigning it to one or more endpoint groups, and then push it back to the server.
 
-:left_speech_bubble: **Note:** _ It is not only likely, it is common, that a single patch will address multiple CVEs in one install. PSAction1 will intelligently address this by detecting that the patch for any given CVE is already added to the queue if you attempt to add additional CVEs from the same patch. This allows you to add all CVEs you wish to address, and the resulting patch list will resolve itself. However, note as well, that all CVEs addressed by that patch will be covered, not **just** the one you added._
+:left_speech_bubble: **Note:** _It is not only likely, it is common, that a single patch will address multiple CVEs in one install. PSAction1 will intelligently address this by detecting that the patch for any given CVE is already added to the queue if you attempt to add additional CVEs from the same patch. This allows you to add all CVEs you wish to address, and the resulting patch list will resolve itself. However, note as well, that all CVEs addressed by that patch will be covered, not **just** the one you added._
 
 ```Powershell
 PS C:\> $push = Get-Action1 Settings -For Remediation
-PS C:\> $push.AddCVE('CVE_ID')
-PS C:\> $push.AddEndpointGroup('endpoint_group_id')
+PS C:\> $push.AddCVE('CVE-2022-3775')
+PS C:\> $push.AddEndpointGroup('Test_1720748341834')
 PS C:\> New-Action1 Remediation -Data $push
+```
+Software packages get deployed in much the same way, they just require a package id, the script will automatically select the correct version as being the latest available for the package requested. Like remediation, the queue can have one or more packages added, and will prevent you from adding the same package twice. Also, there are helper methods to add endpoints and endpoint groups. So, we create a template object, add a software package, add endpoints and then create a new policy instance object in Action1. Like a remediation this special type of automation will show in the endpoint automation history, but not the Automation section in the Action1 console.
+
+```Powershell
+PS C:\> $data = Get-Action1 Settings -For DeploySoftware
+PS C:\> $data.AddEndpoint('bfbd1da2-d746-44dc-9c87-89382bbd4c53')
+PS C:\> $data.AddPackage('Martin_P_ikryl_WinSCP_1632062504985_builtin')   #ID of package from Get-Action1 Packages
+PS C:\> New-Action1 DeploySoftware -Data $data 
 ```
 
 ### Reporting
@@ -383,7 +391,7 @@ These statements are non-blocking, meaning they initiate a re-query of the data,
 
 ### Extending / testing / playground
 
-This interface is not exhaustive, it used the most commonly requested features of the API, but the API if far larger and feature rich than represented here. That said, the PSAction1 module can still assist. You can use the authentication mechanism to run custom URIs for the purpose of rapidly exploring the API or extending it for more function. To do this the PSAction1 module contains a RawURI method in Get-Action1.
+This interface is not exhaustive, it used the most commonly requested features of the API, but the API is far larger and feature rich than represented here. That said, the PSAction1 module can still assist. You can use the authentication mechanism to run custom URIs for the purpose of rapidly exploring the API or extending it for more function. To do this the PSAction1 module contains a RawURI method in Get-Action1.
 
 ```PowerShell
 
@@ -405,4 +413,4 @@ PS C:\> Set-Action1Debug $false
 
 ## WARNING: Carefully study the provided scripts and components before using them. Test in your non-production lab first.
 
-LIMITATION OF LIABILITY. IN NO EVENT SHALL ACTION1 OR ITS SUPPLIERS, OR THEIR RESPECTIVE OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE WITH RESPECT TO THE WEBSITE OR THE COMPONENTS OR THE SERVICES UNDER ANY CONTRACT, NEGLIGENCE, TORT, STRICT LIABILITY OR OTHER LEGAL OR EQUITABLE THEORY (I)FOR ANY AMOUNT IN THE AGGREGATE IN EXCESS OF THE GREATER OF FEES PAID BY YOU THEREFOR OR $100; (II) FOR ANY INDIRECT, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES OF ANY KIND WHATSOEVER; (III) FOR DATA LOSS OR COST OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; OR (IV) FOR ANY MATTER BEYOND ACTION1’S REASONABLE CONTROL. SOME STATES DO NOT ALLOW THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATIONS AND EXCLUSIONS MAY NOT APPLY TO YOU.
+LIMITATION OF LIABILITY. IN NO EVENT SHALL ACTION1 OR ITS SUPPLIERS, OR THEIR RESPECTIVE OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE WITH RESPECT TO THE WEBSITE OR THE COMPONENTS OR THE SERVICES UNDER ANY CONTRACT, NEGLIGENCE, TORT, STRICT LIABILITY OR OTHER LEGAL OR EQUITABLE THEORY (I)FOR ANY AMOUNT IN THE AGGREGATE IN EXCESS OF THE GREATER OF FEES PAID BY YOU THEREFOR OR $100; (II) FOR ANY INDIRECT, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES OF ANY KIND WHATSOEVER; (III) FOR DATA LOSS OR COST OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; OR (IV) FOR ANY MATTER BEYOND ’S REASONABLE CONTROL. SOME STATES DO NOT ALLOW THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATIONS AND EXCLUSIONS MAY NOT APPLY TO YOU.
