@@ -63,21 +63,21 @@ $URILookUp = @{
     U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
 }
 
-class EndpointGroup { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object[]]$include_filter; [object[]]$exclude_filter; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
-class Organization { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
-class Endpoint { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$comment; [object]Splat([string]$name, [string]$comment) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($comment)) { return $null }$this.name = $name; $this.description = $comment; return $this } }
-class GroupAddEndpoint { hidden[string]$method = 'POST'; [object]$data; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.data += @{endpoint_id = $EndpointID; type = 'Endpoint' } }; return $this } } 
-class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.endpoint_id = $EndpointID }; return $this } } 
-class GroupFilter { [ValidateNotNullOrEmpty()][string]$type; [ValidateNotNullOrEmpty()][string]$field_name; [ValidateNotNullOrEmpty()][string]$field_value; [ValidateNotNullOrEmpty()][string]$mode; }
+#class EndpointGroup { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object[]]$include_filter; [object[]]$exclude_filter; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
+#class Organization { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
+#class Endpoint { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$comment; [object]Splat([string]$name, [string]$comment) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($comment)) { return $null }$this.name = $name; $this.description = $comment; return $this } }
+#class GroupAddEndpoint { hidden[string]$method = 'POST'; [object]$data; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.data += @{endpoint_id = $EndpointID; type = 'Endpoint' } }; return $this } } 
+#class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.endpoint_id = $EndpointID }; return $this } } 
+#class GroupFilter { [ValidateNotNullOrEmpty()][string]$type; [ValidateNotNullOrEmpty()][string]$field_name; [ValidateNotNullOrEmpty()][string]$field_value; [ValidateNotNullOrEmpty()][string]$mode; }
 
-$ClassLookup = @{
-    'EndpointGroup'       = [EndpointGroup]::new()
-    'Organization'        = [Organization]::new()
-    'Endpoint'            = [Endpoint]::new()
-    'GroupAddEndpoint'    = [GroupAddEndpoint]::new()
-    'GroupDeleteEndpoint' = [GroupDeleteEndpoint]::new()
-    'GroupFilter'         = [GroupFilter]::new()
-}
+#$ClassLookup = @{
+    #'EndpointGroup'       = [EndpointGroup]::new()
+    #'Organization'        = [Organization]::new()
+    #'Endpoint'            = [Endpoint]::new()
+    #'GroupAddEndpoint'    = [GroupAddEndpoint]::new()
+    #'GroupDeleteEndpoint' = [GroupDeleteEndpoint]::new()
+    #'GroupFilter'         = [GroupFilter]::new()
+#}
 
 
 #----------------------------------JSON object templates---------------------------------------
@@ -118,7 +118,7 @@ $RemediationTemplate = @"
 }
 "@
 
-$PackageDeployTemplate =@"
+$PackageDeployTemplate = @"
 {
   "name": "",
   "retry_minutes": "1440",
@@ -228,7 +228,7 @@ function BuildArgs {
         [String]$In,
         [String]$Add
     )
-    if ([string]::IsNullOrEmpty($In)) { return $Add }else{ return "$In&$Add" }
+    if ([string]::IsNullOrEmpty($In)) { return $Add }else { return "$In&$Add" }
 }
 
 function DoGet {
@@ -334,13 +334,13 @@ function Set-Action1Locale {
 function Set-Action1Region {
     param (
         [Parameter(Mandatory)]
-        [ValidateSet('NorthAmerica', 'Europe','Australia')]
+        [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
         [String]$Region
     )
     switch ($Region) {
         NorthAmerica { $Script:Action1_BaseURI = "https://app.action1.com/api/3.0" }
         Europe { $Script:Action1_BaseURI = "https://app.eu.action1.com/api/3.0" }
-        Australia {$Script:Action1_BaseURI = 'https://app.au.action1.com/api/3.0' }
+        Australia { $Script:Action1_BaseURI = 'https://app.au.action1.com/api/3.0' }
     }
 }
 
@@ -419,13 +419,13 @@ function Get-Action1 {
                             return $null
                         }
                         else {
-                            $sbAddIncludeFilter = { param( [string]$field_name, [string]$field_value, [string]$mode) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
+                            $sbAddIncludeFilter = { param( [string]$field_name, [string]$field_value) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = 'include' } }
                             $sbDeleteIncludeFilter = { param([string]$field_name) $this.include_filter = @($this.include_filter | Where-Object { !($_.field_name -eq $field_name) }) }
                             $sbClearIncludeFilter = { $this.include_filter = @() }
-                            $sbAddExcludeFilter = { param([string]$type, [string]$field_name, [string]$field_value, [string]$mode) $this.exclude_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
+                            $sbAddExcludeFilter = { param( [string]$field_name, [string]$field_value) $this.exclude_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = 'include' } }
                             $sbDeleteExcludeFilter = { param([string]$field_name) $this.exclude_filter = @($this.exclude_filter | Where-Object { !($_.field_name -eq $field_name) }) }
                             $sbClearExcludeFilter = { $this.exclude_filter = @() }
-                            @('id', 'type', 'self', 'contents', 'uptime_alerts', 'endpoints') | ForEach-Object { $Pull.PSObject.Members.Remove($_) }
+                            @('id', 'type', 'self', 'contents', 'uptime_alerts') | ForEach-Object { $Pull.PSObject.Members.Remove($_) }
                             $Pull | Add-Member -MemberType ScriptMethod -Name "AddIncludeFilter" -Value $sbAddIncludeFilter
                             $Pull | Add-Member -MemberType ScriptMethod -Name "DeleteIncludeFilter" -Value $sbDeleteIncludeFilter
                             $Pull | Add-Member -MemberType ScriptMethod -Name "ClearIncludeFilter" -Value $sbClearIncludeFilter
@@ -466,21 +466,25 @@ function Get-Action1 {
                 switch ($For) {
                     #Case out specific mods for any one base type.
                     'EndpointGroup' {
-                        $sbAddIncludeFilter = { param([string]$field_name, [string]$field_value, [string]$mode) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
+                        $sbAddIncludeFilter = { param( [string]$field_name, [string]$field_value) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = 'include' } }
                         $sbDeleteIncludeFilter = { param([string]$field_name) $this.include_filter = @($this.include_filter | Where-Object { !($_.field_name -eq $field_name) }) }
+                        $sbSetIncludeLogic = { param([string]$value) $this.include_filter_logic = $value }
                         $sbClearIncludeFilter = { $this.include_filter = @() }
-                        $sbAddExcludeFilter = { param([string]$field_name, [string]$field_value, [string]$mode) $this.exclude_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = $mode } }
+                        $sbAddExcludeFilter = { param([string]$field_name, [string]$field_value) $this.exclude_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = 'include' } }
                         $sbDeleteExcludeFilter = { param([string]$field_name) $this.exclude_filter = @($this.exclude_filter | Where-Object { !($_.field_name -eq $field_name) }) }
+                        $sbSetExcludeLogic = { param([string]$value) $this.include_filter_logic = $value }
                         $sbClearExcludeFilter = { $this.exclude_filter = @() }
-                        $ret = $ClassLookup[$For]
-                        $ret.include_filter = @()
-                        $ret.exclude_filter = @()
+
+                        $ret = New-Object psobject -Property @{name = 'Default Group Name'; description = 'Default Description'; include_filter_logic=''; include_filter = @() ; exclude_filter = @() }
+
                         $ret | Add-Member -MemberType ScriptMethod -Name "AddIncludeFilter" -Value $sbAddIncludeFilter
                         $ret | Add-Member -MemberType ScriptMethod -Name "DeleteIncludeFilter" -Value $sbDeleteIncludeFilter
                         $ret | Add-Member -MemberType ScriptMethod -Name "ClearIncludeFilter" -Value $sbClearIncludeFilter
+                        $ret | Add-Member -MemberType ScriptMethod -Name "SetIncludeLogic" -Value $sbSetIncludeLogic
                         $ret | Add-Member -MemberType ScriptMethod -Name "AddExcludeFilter" -Value $sbAddExcludeFilter
                         $ret | Add-Member -MemberType ScriptMethod -Name "DeleteExcludeFilter" -Value $sbDeleteExcludeFilter
                         $ret | Add-Member -MemberType ScriptMethod -Name "ClearExcludeFilter" -Value $sbClearExcludeFilter
+                        $ret | Add-Member -MemberType ScriptMethod -Name "SetExcludeLogic" -Value $sbSetExcludeLogic
                         return $ret
                     }
                     'Remediation' { 
@@ -489,60 +493,66 @@ function Get-Action1 {
                         $deploy.actions[0].params.display_summary = "$For via external API call."
                         $sbAddCVE = {
                             param([string]$CVE_ID) 
-                            $vul = ((Get-Action1 Vulnerabilities | Where-Object{$_.cve_id -eq $CVE_ID}).software).available_updates
+                            $vul = ((Get-Action1 Vulnerabilities | Where-Object { $_.cve_id -eq $CVE_ID }).software).available_updates
                             $upd = $vul.package_id
                             $ver = $vul.version
                             $name = $vul.name
-                            if($null -eq $vul){
-                                Write-Host "No patch for $CVE_ID found in Action1." -ForegroundColor Red}
-                                else{ 
-                                    if(!($null -eq $this.actions.params.packages[0].$upd)){
-                                        Debug-Host "$name has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."}
-                                    else{
-                                        Debug-Host "Adding $name to the package list for $CVE_ID."
-                                        if($null -eq $this.actions.params.packages[0].'default'){
-                                            $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd=$ver}}
-                                            else{
-                                                $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$upd=$ver}
-                                        }
+                            if ($null -eq $vul) {
+                                Write-Host "No patch for $CVE_ID found in Action1." -ForegroundColor Red
+                            }
+                            else { 
+                                if (!($null -eq $this.actions.params.packages[0].$upd)) {
+                                    Debug-Host "$name has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
+                                }
+                                else {
+                                    Debug-Host "Adding $name to the package list for $CVE_ID."
+                                    if ($null -eq $this.actions.params.packages[0].'default') {
+                                        $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd = $ver }
                                     }
+                                    else {
+                                        $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$upd = $ver }
+                                    }
+                                }
                             }
                         }
-                        $sbAddEndpointGroup = { param([string]$Id) if($this.endpoints[0].id -eq 'All'){$this.endpoints[0] = New-Object psobject -Property @{id = $Id; type = 'EndpointGroup'}}else{$this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup'} } }
+                        $sbAddEndpointGroup = { param([string]$Id) if ($this.endpoints[0].id -eq 'All') { $this.endpoints[0] = New-Object psobject -Property @{id = $Id; type = 'EndpointGroup' } }else { $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup' } } }
                        
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddCVE" -Value $sbAddCVE
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpointGroup" -Value $sbAddEndpointGroup
                         #$deploy.settings = "ENABLED ONCE AT:$((Get-Date).ToUniversalTime().AddMinutes(10).ToString("HH-mm-ss")) DATE:$((Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))"}
                         return $deploy
                     }
-                    'DeploySoftware'{
+                    'DeploySoftware' {
                         $deploy = ConvertFrom-Json $PackageDeployTemplate
                         $deploy.name = "External $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
                         $deploy.actions[0].params.display_summary = "$For via external API call."
 
-                        $sbAddEndpoint = { param([string]$Id) if('All' -eq $this.endpoints[0].id){$this.ClearEndpoints()}; $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'Endpoint' } }
-                        $sbAddEndpointGroup = { param([string]$Id) if('All' -eq $this.endpoints[0].id){$this.ClearEndpoints()}; $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup' } }
+                        $sbAddEndpoint = { param([string]$Id) if ('All' -eq $this.endpoints[0].id) { $this.ClearEndpoints() }; $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'Endpoint' } }
+                        $sbAddEndpointGroup = { param([string]$Id) if ('All' -eq $this.endpoints[0].id) { $this.ClearEndpoints() }; $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup' } }
                         $sbDeleteEndpoint = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'Endpoint' -and $_.id -eq $Id) }) }
                         $sbDeleteEndpointGroup = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'EndpointGroup' -and $_.id -eq $Id) }) }
                         $sbClearEndpoints = { $this.endpoints = @() }
                         $sbAddPackage = {
                             param([string]$Package_ID) 
-                            $pack = Get-Action1 Packages | Where-Object{$_.id -eq $Package_ID}
+                            $pack = Get-Action1 Packages | Where-Object { $_.id -eq $Package_ID }
                             $name = $pack.name
-                            if($null -eq $pack){
-                                Write-Host "Unable to locate package $Package_ID." -ForegroundColor Red}
-                                else{ 
-                                    if(!($null -eq $this.actions.params.packages[0].$pack)){
-                                        Debug-Host "$name has already been added to this template."}
-                                    else{
-                                        $version = $(Get-Action1 RawURI -URI "$Script:Action1_BaseURI/packages/all/$Package_ID/versions").version
-                                        Debug-Host "Adding $name version $Version to the package list."
-                                        if($null -eq $this.actions.params.packages[0].'default'){
-                                            $this.actions.params.packages += New-Object PSCustomObject -Property @{$Package_ID=$version}}
-                                            else{
-                                                $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$Package_ID=$version}
-                                        }
+                            if ($null -eq $pack) {
+                                Write-Host "Unable to locate package $Package_ID." -ForegroundColor Red
+                            }
+                            else { 
+                                if (!($null -eq $this.actions.params.packages[0].$pack)) {
+                                    Debug-Host "$name has already been added to this template."
+                                }
+                                else {
+                                    $version = $(Get-Action1 RawURI -URI "$Script:Action1_BaseURI/packages/all/$Package_ID/versions").version
+                                    Debug-Host "Adding $name version $Version to the package list."
+                                    if ($null -eq $this.actions.params.packages[0].'default') {
+                                        $this.actions.params.packages += New-Object PSCustomObject -Property @{$Package_ID = $version }
                                     }
+                                    else {
+                                        $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$Package_ID = $version }
+                                    }
+                                }
                             }
                         }
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpoint" -Value $sbAddEndpoint
@@ -559,7 +569,7 @@ function Get-Action1 {
         } 
     }
     # Note things that do not get procesed post API call, and should be delivered unaltered.
-    $Rawlist = @('ReportExport','Logs')
+    $Rawlist = @('ReportExport', 'Logs')
 
     if (CheckToken) {
         $AddArgs = ""
@@ -571,7 +581,7 @@ function Get-Action1 {
                 $Page.items | Write-Output
             }
         }
-        $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object{$_.name -eq $name}).value}
+        $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object { $_.name -eq $name }).value }
 
         if ($Limit -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "limit=$Limit" }
         if ($From -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "from=$From" }
@@ -589,49 +599,49 @@ function Get-Action1 {
         } 
         if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs -Raw } else { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs }
         if ($Page.items) {
-            switch -Wildcard ($Query){
-                'PolicyResults'{
+            switch -Wildcard ($Query) {
+                'PolicyResults' {
                     $page.Items | ForEach-Object {
                         $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
                         Write-Output $_
                     }
                 }
-                'Endpoint*'{
+                'Endpoint*' {
                     $page.Items | ForEach-Object {
                         $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
                         Write-Output $_
                     }  
                 }
-                default {$Page.Items | Write-Output }
+                default { $Page.Items | Write-Output }
             }
             While (![string]::IsNullOrEmpty($Page.next_page)) {
                 Debug-Host "[$Query] Next page..."
                 if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Page.next_page -Label $Query -Raw } else { $Page = DoGet -Path $Page.next_page -Label $Query }
-                switch -Wildcard ($Query){
-                    'PolicyResults'{
+                switch -Wildcard ($Query) {
+                    'PolicyResults' {
                         $page.Items | ForEach-Object {
                             $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
                             Write-Output $_
                         }
                     }
-                    'Endpoint*'{
+                    'Endpoint*' {
                         $page.Items | ForEach-Object {
                             $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
                             Write-Output $_
                         }  
                     }
-                    default {$Page.Items | Write-Output }
+                    default { $Page.Items | Write-Output }
                 }
             }
         }
         else {
-            switch -Wildcard ($Query){
-                'Endpoint*'{
+            switch -Wildcard ($Query) {
+                'Endpoint*' {
                     $Page | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
                     Write-Output $Page
                     
                 }
-                default {Write-Output $Page }
+                default { Write-Output $Page }
             }
         }                
     }
@@ -711,14 +721,14 @@ function Update-Action1 {
                         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
                         return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
                     }
-                    'CustomAttribute'{
+                    'CustomAttribute' {
                         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                        $Data = New-Object psobject -Property @{"custom:$AttributeName" = $AttributeValue;}
+                        $Data = New-Object psobject -Property @{"custom:$AttributeName" = $AttributeValue; }
                         return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
                     }
                     'Endpoint' { 
                         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                        $Data.PSObject.Members | ForEach-Object {if(@('name','comment') -notcontains $_.Name){$Data.PSObject.Members.Remove($_.Name)}}
+                        $Data.PSObject.Members | ForEach-Object { if (@('name', 'comment') -notcontains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
                         return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
                     }
                     'EndpointGroup' { 
