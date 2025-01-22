@@ -30,6 +30,7 @@ $URILookUp = @{
     G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
     G_AgentDepoyment       = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
     G_Apps                 = { param($Org_ID) "/apps/$Org_ID/data" }
+    G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?limit=9999&from=0&endpoint_id=$Object_ID" }
     G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
     G_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
     G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }
@@ -41,6 +42,7 @@ $URILookUp = @{
     G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID`?limit=9999" }
     G_Organizations        = { "/organizations" }
     G_Packages             = { "/packages/all?limit=9999" }
+    G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
     G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
     G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
@@ -53,6 +55,7 @@ $URILookUp = @{
     N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
     N_Organization         = { "/organizations" }
     N_Remediation          = { param($Org_ID)  "/policies/instances/$Org_ID" }
+    N_DeferredRemediation  = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
     R_ReportData           = { param($Org_ID, $Object_ID) "/reportdata/$Org_ID/$Object_ID/requery" }
     R_InstalledSoftware    = { param($Org_ID, $Object_ID) "/apps/$Org_ID/requery/$Object_ID" }
@@ -62,23 +65,6 @@ $URILookUp = @{
     U_GroupMembers         = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
     U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
 }
-
-#class EndpointGroup { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object[]]$include_filter; [object[]]$exclude_filter; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
-#class Organization { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$description; [object]Splat([string]$name, [string]$description) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($description)) { return $null }$this.name = $name; $this.description = $description; return $this } }
-#class Endpoint { [ValidateNotNullOrEmpty()][string]$name; [ValidateNotNullOrEmpty()][string]$comment; [object]Splat([string]$name, [string]$comment) { if ([string]::IsNullOrEmpty($name) -or [string]::IsNullOrEmpty($comment)) { return $null }$this.name = $name; $this.description = $comment; return $this } }
-#class GroupAddEndpoint { hidden[string]$method = 'POST'; [object]$data; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.data += @{endpoint_id = $EndpointID; type = 'Endpoint' } }; return $this } } 
-#class GroupDeleteEndpoint { hidden[string]$method = 'DELETE'; [string]$endpoint_id; [object]splat([string]$EndpointID) { if ([string]::IsNullOrEmpty($EndpointID)) { return $null }else { $this.endpoint_id = $EndpointID }; return $this } } 
-#class GroupFilter { [ValidateNotNullOrEmpty()][string]$type; [ValidateNotNullOrEmpty()][string]$field_name; [ValidateNotNullOrEmpty()][string]$field_value; [ValidateNotNullOrEmpty()][string]$mode; }
-
-#$ClassLookup = @{
-    #'EndpointGroup'       = [EndpointGroup]::new()
-    #'Organization'        = [Organization]::new()
-    #'Endpoint'            = [Endpoint]::new()
-    #'GroupAddEndpoint'    = [GroupAddEndpoint]::new()
-    #'GroupDeleteEndpoint' = [GroupDeleteEndpoint]::new()
-    #'GroupFilter'         = [GroupFilter]::new()
-#}
-
 
 #----------------------------------JSON object templates---------------------------------------
 
@@ -210,7 +196,7 @@ function FetchToken {
             } 
         }
         try {
-            $Token = (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri "$Script:Action1_BaseURI/oauth2/token" -Method POST -Body @{client_id = $Script:Action1_APIKey; client_secret = $Script:Action1_Secret }).Content )  
+            $Token = (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri "$Script:Action1_BaseURI/oauth2/token" -Method POST -UseBasicParsing -Body @{client_id = $Script:Action1_APIKey; client_secret = $Script:Action1_Secret }).Content )  
             $Token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$Token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
             $Script:Action1_Token = $Token
             return $Token
@@ -244,10 +230,10 @@ function DoGet {
         if ($AddArgs) { $Path += "?{0}" -f $AddArgs }
         Debug-Host "GET request to $Path : Raw flag is $Raw"
         if ($Raw) {
-            return (Invoke-WebRequest -Uri $Path -Method GET -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content
+            return (Invoke-WebRequest -Uri $Path -Method GET -UseBasicParsing -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content
         }
         else { 
-            return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method GET -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content ) 
+            return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method GET -UseBasicParsing -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content ) 
         } 
     }
     catch [System.Net.WebException] {
@@ -255,6 +241,59 @@ function DoGet {
         return $null
     } 
 }
+
+function Start-Action1PackageUpload{
+    param(
+    [Parameter(Mandatory)]
+        [String]$Package_ID,
+    [Parameter(Mandatory)]
+        [String]$Version_ID,
+    [Parameter(Mandatory)]
+        [String]$Filename,
+    [Parameter(Mandatory)]
+    [ValidateSet(
+            'Windows_32',
+            'Windows_64'
+        )]
+        [String]$Platform,
+    [int32]$BufferSize = 24Mb
+    )
+$uri = "$Script:Action1_BaseURI/software-repository/all/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
+Debug-Host "Base URI is $uri"
+$UploadTarget = ""
+Debug-Host "Uploading file: '$Filename'"
+Debug-Host "Writing in chunks of $BufferSize bytes."
+$FileData = [System.IO.File]::Open($Filename, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
+if($FileData.Length -lt $BufferSize){$BufferSize = $FileData.Length;Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)"}
+$Buffer = New-Object byte[] $BufferSize
+$Place = 0
+
+$HeaderBase = @{
+    'accept' = '*/*'
+    'X-Upload-Content-Type' = 'application/octet-stream'
+   }
+   try{
+        $Headers = $HeaderBase.Clone()
+        $Headers.Add('X-Upload-Content-Length', $($FileData.Length))
+        $Headers.Add('Content-Type', 'application/json')
+        if(CheckToken){$Headers.Add('Authorization',"Bearer $(($Script:Action1_Token).access_token)");Invoke-WebRequest -Uri $uri -Method Post -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue}
+        }catch{$UploadTarget = $_.Exception.Response.Headers['X-Upload-Location']} 
+        Debug-Host "Upload URI is $UploadTarget"
+    while (($Read = $FileData.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
+         $Headers = $HeaderBase.Clone()
+         $Headers.Add('Content-Range', "bytes $($Place)-$($($Place + $Read-1))/$($FileData.Length)")
+         $Headers.Add('Content-Length',"$($Read)")
+         $Headers.Add('Content-Type', 'application/octet-stream')
+         $Place += $Read
+         try{ if(CheckToken){$Headers.Add('Authorization',"Bearer $(($Script:Action1_Token).access_token)");$response = Invoke-WebRequest -Method Put -UseBasicParsing -Uri $UploadTarget -Body $Buffer -Headers $Headers -ErrorAction SilentlyContinue}}
+         catch{Debug-Host "Last Status: $($_.Exception.Response.StatusCode)"}
+         if(($FileData.Length - $Place) -lt $BufferSize){$buffer = New-Object byte[] ($FileData.Length - $place)}
+         Debug-Host "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
+         if($Buffer.Length -eq 0){Debug-Host "Final Status:$($response.StatusCode)"}else{Debug-Host "Bytes Written: $($Buffer.Length)"}
+    }
+    $FileData.Close()
+ }
+
 
 function Debug-Host {
     param(
@@ -282,7 +321,7 @@ function PushData {
     try {
         Debug-Host "$Method request to $Path."
         if ($data) { Debug-Host "Data to be sent:`n $(ConvertTo-Json -InputObject $Body -Depth 10)" }
-        return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method $Method -Body (ConvertTo-Json -InputObject $Body -Depth 10) -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content)
+        return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method $Method -UseBasicParsing -Body (ConvertTo-Json -InputObject $Body -Depth 10) -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content)
     }
     catch [System.Net.WebException] {
         Write-Error "Error processing $($Label): $($_)"
@@ -357,6 +396,7 @@ function Get-Action1 {
     param (
         [Parameter(Mandatory)]
         [ValidateSet(   
+            'AutomationInstances',
             'Automations',
             'AdvancedSettings',
             'Apps',
@@ -371,6 +411,7 @@ function Get-Action1 {
             'MissingUpdates',
             'Organizations',
             'Packages',
+            'PackageVersions',
             'Policy',
             'Policies',
             'PolicyResults',
@@ -397,6 +438,7 @@ function Get-Action1 {
             'GroupDeleteEndpoint',
             'GroupFilter',
             'Remediation',
+            'DeferredRemediation',
             'DeploySoftware'
         )]
         [string]$For,
@@ -411,12 +453,12 @@ function Get-Action1 {
         }
         else { 
             if ($Clone) {
+                if ($Query -ne 'Settings') {Write-Error "Clone flag only allowed for query type 'Setings.'`n";return $null}
                 switch ($For) {
                     'EndpointGroup' {  
                         $Pull = Get-Action1 EndpointGroups | Where-Object { $_.id -eq ($Clone) }
                         if (!$Pull) {
-                            Write-Error "No $For found matching id $clone."
-                            return $null
+                            Write-Error "No $For found matching id $clone.`n";return $null
                         }
                         else {
                             $sbAddIncludeFilter = { param( [string]$field_name, [string]$field_value) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = 'include' } }
@@ -447,6 +489,8 @@ function Get-Action1 {
                             $sbDeleteEndpoint = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'Endpoint' -and $_.id -eq $Id) }) }
                             $sbDeleteEndpointGroup = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'EndpointGroup' -and $_.id -eq $Id) }) }
                             $sbClearEndpoints = { $this.endpoints = @() }
+                            $sbDeferExecution = {$this.settings = 'DISABLED'}
+                        
                             @('id', 'type', 'self', 'last_run', 'next_run', 'system', 'randomize_start') | ForEach-Object { $Pull.PSObject.Members.Remove($_) }
                             $CleanEndpoints = @()
                             $Pull.endpoints | ForEach-Object { $CleanEndpoints += New-Object psobject -Property @{id = $_.id; type = $_.type } }
@@ -456,6 +500,7 @@ function Get-Action1 {
                             $Pull | Add-Member -MemberType ScriptMethod -Name "DeleteEndpoint" -Value $sbDeleteEndpoint
                             $Pull | Add-Member -MemberType ScriptMethod -Name "DeleteEndpointGroup" -Value $sbDeleteEndpointGroup
                             $Pull | Add-Member -MemberType ScriptMethod -Name "ClearEndpoints" -Value $sbClearEndpoints
+                            $Pull | Add-Member -MemberType ScriptMethod -Name "DeferExecution" -Value $sbDeferExecution
                             return $Pull
                         }
                     }
@@ -487,7 +532,7 @@ function Get-Action1 {
                         $ret | Add-Member -MemberType ScriptMethod -Name "SetExcludeLogic" -Value $sbSetExcludeLogic
                         return $ret
                     }
-                    'Remediation' { 
+                    {$_ -in @('Remediation', 'DeferredRemediation')} { 
                         $deploy = ConvertFrom-Json $RemediationTemplate
                         $deploy.name = "External $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
                         $deploy.actions[0].params.display_summary = "$For via external API call."
@@ -516,9 +561,10 @@ function Get-Action1 {
                             }
                         }
                         $sbAddEndpointGroup = { param([string]$Id) if ($this.endpoints[0].id -eq 'All') { $this.endpoints[0] = New-Object psobject -Property @{id = $Id; type = 'EndpointGroup' } }else { $this.endpoints += New-Object psobject -Property @{id = $Id; type = 'EndpointGroup' } } }
-                       
+                        
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddCVE" -Value $sbAddCVE
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpointGroup" -Value $sbAddEndpointGroup
+                        if($_ -eq 'Deferredremediation'){$deploy | Add-Member -MemberType NoteProperty -Name "settings" -Value 'DISABLED'}
                         #$deploy.settings = "ENABLED ONCE AT:$((Get-Date).ToUniversalTime().AddMinutes(10).ToString("HH-mm-ss")) DATE:$((Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))"}
                         return $deploy
                     }
@@ -573,7 +619,7 @@ function Get-Action1 {
 
     if (CheckToken) {
         $AddArgs = ""
-        $sbPoilcyResultsDetail = {
+        $sbPolicyResultsDetail = {
             $Page = DoGet -Path $this.details -Label "PolicyResultsDetails"
             $Page.items | Write-Output
             While (![string]::IsNullOrEmpty($Page.next_page)) {
@@ -587,7 +633,15 @@ function Get-Action1 {
         if ($From -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "from=$From" }
         #Add more URI arguments here?..
         if (!$URILookUp["G_$Query"].ToString().Contains("`$Org_ID")) {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"])
+            if (!$URILookUp["G_$Query"].ToString().Contains("`$Object_ID")) {
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"])
+            }else{
+                if ($Id) {
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Object_ID $Id)
+                }else{
+                    Write-Error 'This options requires that you specify an Object_ID.'
+                }
+            }
         }
         else {
             if ($Id) {
@@ -602,7 +656,7 @@ function Get-Action1 {
             switch -Wildcard ($Query) {
                 'PolicyResults' {
                     $page.Items | ForEach-Object {
-                        $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
+                        $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPolicyResultsDetail
                         Write-Output $_
                     }
                 }
@@ -620,7 +674,7 @@ function Get-Action1 {
                 switch -Wildcard ($Query) {
                     'PolicyResults' {
                         $page.Items | ForEach-Object {
-                            $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPoilcyResultsDetail
+                            $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value sbPolicyResultsDetail
                             Write-Output $_
                         }
                     }
@@ -655,6 +709,7 @@ function New-Action1 {
             'Organization',
             'Automation',
             'Remediation',
+            'DeferredRemediation',
             'DeploySoftware'
         )]
         [string]$Item,
@@ -799,3 +854,4 @@ function Start-Action1Requery {
         return PushData -Method POST -Path $Path.TrimEnd('/') -Label "Requery=>$Type"
     }
 }
+

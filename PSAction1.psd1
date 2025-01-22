@@ -23,7 +23,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.3.8'
+    ModuleVersion     = '1.3.9'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -89,7 +89,8 @@
                         'Get-Action1',
                         'Update-Action1',
                         'Set-Action1Interactive',
-                        'Start-Action1Requery'
+                        'Start-Action1Requery',
+                        'Start-Action1PackageUpload'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = '*'
