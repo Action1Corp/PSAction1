@@ -67,7 +67,7 @@ jobs:
                   #    Write-Host "##vso[task.logissue type=error;]Signed but encountered status '$($signResult.Status)': $($_.FullName)"
                       #Write-Host "##vso[task.complete result=Failed;]Signed but encountered status '$($signResult.Status)': $($_.FullName)"
                       #exit 1
-                  }
+                  #}
               }
               catch {
                   Write-Host "##vso[task.logissue type=error;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
