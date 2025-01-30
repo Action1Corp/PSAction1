@@ -1,0 +1,23 @@
+trigger: none
+
+parameters:
+- name: sourceBranch
+  displayName: 'Source Branch'
+  type: string
+  default: 'main'
+
+resources:
+  repositories:
+    - repository: self
+      type: github
+      name: Action1Corp/PSAction1
+      endpoint: 'Action1 GitHub'
+
+jobs:
+- job: SignScripts
+  displayName: 'Checkout branch from GitHub'
+  steps:
+    - checkout: self
+      clean: true
+      # Use the parameter to decide which branch to checkout
+      ref: '${{ parameters.sourceBranch }}'
