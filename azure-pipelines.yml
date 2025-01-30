@@ -21,10 +21,21 @@ jobs:
       fetchDepth: 0
       persistCredentials: true
 
+    - task: AWSShellScript@1
+      displayName: 'Get codesign cert'
+      inputs:
+        awsCredentials: 'Action1 AWS'
+        regionName: 'us-east-1'
+        scriptType: 'inline'
+        inlineScript: |
+          $secret = aws secretsmanager get-secret-value --secret-id a1-builder/codesigncert --query SecretString --output text | ConvertFrom-Json
+          $pfxbase64 = $secret.codesigncert
+          $pfxdata = [System.Convert]::FromBase64String($pfxbase64)
+          [IO.File]::WriteAllBytes("$($env:BUILD_SOURCESDIRECTORY)\cert.pfx", $pfxdata)
+    
     - task: PowerShell@2
-      displayName: 'Display checked-out files'
+      displayName: 'Display sources directory files'
       inputs:
         targetType: inline
         script: |
-          Write-Host "Checked out main branch"
           Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse
