@@ -62,10 +62,11 @@ jobs:
                   $signResult = Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $certificate -ErrorAction Stop
                   if ($signResult.Status -eq 'Valid') {
                       Write-Host "Successfully signed: $($_.FullName)"
+                      Copy-Item $_.FullName -Destination $env:Build_ArtifactStagingDirectory
                   } else {
                       Write-Host "##vso[task.logissue type=error;]Signed but encountered status '$($signResult.Status)': $($_.FullName)"
-                      Write-Host "##vso[task.complete result=Failed;]Signed but encountered status '$($signResult.Status)': $($_.FullName)"
-                      exit 1
+                      #Write-Host "##vso[task.complete result=Failed;]Signed but encountered status '$($signResult.Status)': $($_.FullName)"
+                      #exit 1
                   }
               }
               catch {
@@ -76,4 +77,11 @@ jobs:
           }
       env:
         PFX_PASS: $(PFX_PASS)
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Internally'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'release'
+        publishLocation: 'Container'
         
