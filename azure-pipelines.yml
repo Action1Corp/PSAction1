@@ -32,7 +32,9 @@ jobs:
           BASE64_PFX=$(echo "$SECRET" | jq -r ".codesigncert")
           PFX_PASS=$(echo "$SECRET" | jq -r ".codesigncertpass")
           echo "$BASE64_PFX" | base64 --decode > "$(Build.SourcesDirectory)/cert.pfx"
+          echo "$PFX_PASS"
           echo "##vso[task.setvariable variable=PFX_PASS;issecret=true]$PFX_PASS"
+          echo "$PFX_PASS"
 
     - task: PowerShell@2
       displayName: 'Sign PowerShell files'
@@ -40,6 +42,7 @@ jobs:
         targetType: inline
         script: |
           Write-Host "Loading certificate from PFX: $PfxPath"
+          Write-Host $env:PFX_PASS
           try {
               $keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
                    -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
