@@ -13,9 +13,14 @@ pool:
 
 jobs:
 - job: SignScripts
-  displayName: 'Checkout branch from GitHub'
+  displayName: 'Sign scripts'
   steps:
+
     - checkout: self
       clean: true
       fetchDepth: 0
       persistCredentials: true
+
+    - script: |
+        Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse
+      displayName: 'Display all checked-out files'
