@@ -28,27 +28,45 @@ jobs:
         regionName: 'us-east-1'
         scriptType: 'inline'
         inlineScript: |
-          SECRET=$(aws secretsmanager get-secret-value --secret-id a1-builder/codesigncert --query SecretString --output text)
+          SECRET=$(aws secretsmanager get-secret-value --secret-id a1-devops/a1-builder/codesigncert --query SecretString --output text)
           BASE64_PFX=$(echo "$SECRET" | jq -r ".codesigncert")
+          PFX_PASS=$(echo "$SECRET" | jq -r ".codesigncertpass")
           echo "$BASE64_PFX" | base64 --decode > "$(Build.SourcesDirectory)/cert.pfx"
+          echo "##vso[task.setvariable variable=PFX_PASS;issecret=true]$PFX_PASS"
 
     - task: PowerShell@2
       displayName: 'Display sources directory files'
       inputs:
         targetType: inline
         script: |
+          Write-Host "Loading certificate from PFX: $PfxPath"
+          try {
+              $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
+                "$(Build.SourcesDirectory)/cert.pfx",
+                $evn:PFX_PASS,
+                [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet -bor
+                [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
+              )
+          }
+          catch {
+              Write-Host "##vso[task.logissue type=error;]Failed to load PFX certificate: $($_.Exception.Message)"
+              exit 1
+          }
           Get-ChildItem -Path $Directory -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
           ForEach-Object {
               Write-Host "Signing: $($_.FullName)"
               try {
-                  #$signResult = Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $certificate -ErrorAction Stop
-                  #if ($signResult.Status -eq 'Valid') {
-                  #    Write-Host "Successfully signed: $($_.FullName)"
-                  #} else {
-                  #    Write-Host "Signed but encountered status '$($signResult.Status)': $($_.FullName)"
-                  #}
+                  $signResult = Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $certificate -ErrorAction Stop
+                  if ($signResult.Status -eq 'Valid') {
+                      Write-Host "Successfully signed: $($_.FullName)"
+                  } else {
+                      Write-Host "##vso[task.logissue type=error;]Signed but encountered status '$($signResult.Status)': $($_.FullName)"
+                  }
               }
               catch {
-                  Write-Warning "Failed to sign '$($_.FullName)': $($_.Exception.Message)"
+                  Write-Host "##vso[task.logissue type=error;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
               }
           }
+      env:
+        PFX_PASS: $PFX_PASS
+        
