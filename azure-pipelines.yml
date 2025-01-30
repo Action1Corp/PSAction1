@@ -28,12 +28,10 @@ jobs:
         regionName: 'us-east-1'
         scriptType: 'inline'
         inlineScript: |
-          powershell -NoProfile -Command "Write-Host 'Retrieving secret...';
-            $secret = aws secretsmanager get-secret-value --secret-id a1-builder/codesigncert --query SecretString --output text | ConvertFrom-Json
-            $pfxbase64 = $secret.codesigncert
-            $pfxdata = [System.Convert]::FromBase64String($pfxbase64)
-            [IO.File]::WriteAllBytes("$(Build.SourcesDirectory)\cert.pfx", $pfxdata)
-    
+          SECRET=$(aws secretsmanager get-secret-value --secret-id a1-builder/codesigncert --query SecretString --output text)
+          BASE64_PFX=$(echo "$SECRET" | jq -r ".codesigncert")
+          echo "$BASE64_PFX" | base64 --decode > "$(Build.SourcesDirectory)/cert.pfx"
+
     - task: PowerShell@2
       displayName: 'Display sources directory files'
       inputs:
