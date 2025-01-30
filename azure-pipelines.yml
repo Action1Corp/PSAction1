@@ -32,9 +32,7 @@ jobs:
           BASE64_PFX=$(echo "$SECRET" | jq -r ".codesigncert")
           PFX_PASS=$(echo "$SECRET" | jq -r ".codesigncertpass")
           echo "$BASE64_PFX" | base64 --decode > "$(Build.SourcesDirectory)/cert.pfx"
-          echo "$PFX_PASS"
           echo "##vso[task.setvariable variable=PFX_PASS;issecret=true]$PFX_PASS"
-          echo "$PFX_PASS"
 
     - task: PowerShell@2
       displayName: 'Sign PowerShell files'
@@ -48,7 +46,7 @@ jobs:
                    -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
               $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
                 "$(Build.SourcesDirectory)/cert.pfx",
-                $evn:PFX_PASS,
+                'Lock12Lock',
                 $keyStorageFlags
               )
           }
