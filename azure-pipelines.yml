@@ -72,5 +72,5 @@ jobs:
               }
           }
       env:
-        PFX_PASS: $PFX_PASS
+        PFX_PASS: $(PFX_PASS)
         
