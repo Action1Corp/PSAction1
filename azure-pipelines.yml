@@ -1,25 +1,21 @@
 trigger: none
 
-parameters:
-- name: sourceBranch
-  displayName: 'Source Branch'
-  type: string
-  default: 'main'
-
 resources:
   repositories:
     - repository: self
       type: github
       name: Action1Corp/PSAction1
       endpoint: 'Action1 GitHub'
+      branch: 'main'
+
+pool:
+  vmImage: 'windows-latest'
 
 jobs:
 - job: SignScripts
   displayName: 'Checkout branch from GitHub'
   steps:
-    - checkout: none
-    - script: |
-        git clone --depth=1 $(Build.RepositoryUri) repo
-        cd repo
-        git checkout ${{ parameters.sourceBranch }}
-      displayName: 'Check out specified branch'
+    - checkout: self
+      clean: true
+      fetchDepth: 0
+      persistCredentials: true
