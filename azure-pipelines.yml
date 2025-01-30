@@ -41,11 +41,12 @@ jobs:
         script: |
           Write-Host "Loading certificate from PFX: $PfxPath"
           try {
+              $keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
+                   -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
               $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
                 "$(Build.SourcesDirectory)/cert.pfx",
                 $evn:PFX_PASS,
-                [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet -bor
-                [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
+                $keyStorageFlags
               )
           }
           catch {
