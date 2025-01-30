@@ -17,7 +17,9 @@ jobs:
 - job: SignScripts
   displayName: 'Checkout branch from GitHub'
   steps:
-    - checkout: self
-      clean: true
-      # Use the parameter to decide which branch to checkout
-      ref: '${{ parameters.sourceBranch }}'
+    - checkout: none
+    - script: |
+        git clone --depth=1 $(Build.RepositoryUri) repo
+        cd repo
+        git checkout ${{ parameters.sourceBranch }}
+      displayName: 'Check out specified branch'
