@@ -37,4 +37,18 @@ jobs:
       inputs:
         targetType: inline
         script: |
-          Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse
+          Get-ChildItem -Path $Directory -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
+          ForEach-Object {
+              Write-Host "Signing: $($_.FullName)"
+              try {
+                  #$signResult = Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $certificate -ErrorAction Stop
+                  #if ($signResult.Status -eq 'Valid') {
+                  #    Write-Host "Successfully signed: $($_.FullName)"
+                  #} else {
+                  #    Write-Host "Signed but encountered status '$($signResult.Status)': $($_.FullName)"
+                  #}
+              }
+              catch {
+                  Write-Warning "Failed to sign '$($_.FullName)': $($_.Exception.Message)"
+              }
+          }
