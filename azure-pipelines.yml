@@ -90,7 +90,7 @@ jobs:
           $email = "github@action1.com"
           $username = "github-action1[bot]"
           
-          $githubToken = "$(GITHUB_TOKEN)"
+          $githubToken = $GITHUB_TOKEN
           
           git config --global user.email "$email"
           git config --global user.name "$username"
