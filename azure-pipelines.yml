@@ -80,6 +80,41 @@ jobs:
       env:
         PFX_PASS: $(PFX_PASS)
 
+    - task: PowerShell@2
+      displayName: 'Create Branch, Modify Files, and Push'
+      inputs:
+        targetType: 'inline'
+        script: |          
+          $branchName = "signed-$(Get-Date -Format 'yyyyMMddHHmmss')"
+          $repoUrl = "$(Build.Repository.Uri)"
+          $email = "github@action1.com"
+          $username = "github-action1[bot]"
+          
+          $githubToken = "$(GITHUB_TOKEN)"
+          
+          git config --global user.email "$email"
+          git config --global user.name "$username"
+          
+          git checkout -b $branchName
+          
+          $filePath = "README.md"
+          if (Test-Path $filePath) {
+            Add-Content -Path $filePath -Value "`nModified on $(Get-Date)"
+          } else {
+            New-Item -Path $filePath -ItemType File -Value "This is a new file added on $(Get-Date)"
+          }
+          
+          git add .
+          git commit -m "Automated commit: Modified files in branch $branchName"
+          
+          git remote set-url origin https://x-access-token:$githubToken@github.com/$(Build.Repository.Name).git
+          git push origin $branchName
+
+          Write-Host "Branch '$branchName' created and pushed successfully."
+
+      env:
+        GITHUB_TOKEN: $(System.AccessToken)
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Internally'
       inputs:
