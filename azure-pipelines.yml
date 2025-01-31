@@ -46,7 +46,7 @@ jobs:
                    -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
               $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
                 "$(Build.SourcesDirectory)/cert.pfx",
-                "Lock12Lock",
+                "$(PFX_PASS)",
                 $keyStorageFlags
               )
           }
@@ -60,6 +60,8 @@ jobs:
               Write-Host "Signing: $($_.FullName)"
               try {
                   $signResult = Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $certificate -ErrorAction Stop
+                  # Uncomment when the production certificate is added. For now the step fails because self-signed certificate is in use
+                  # Purchase a separate codesign certificate?
                   #if ($signResult.Status -eq 'Valid') {
                       Write-Host "Successfully signed: $($_.FullName)"
                       Copy-Item $_.FullName -Destination $env:Build_ArtifactStagingDirectory
@@ -84,4 +86,3 @@ jobs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'release'
         publishLocation: 'Container'
-        
