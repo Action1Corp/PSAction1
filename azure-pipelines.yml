@@ -48,12 +48,21 @@ jobs:
         targetType: inline
         script: |
           $PFX_PATH = "$(Build.SourcesDirectory)\cert.pfx"
+          Write-Host "PFX_PATH = $PFX_PATH"
           [System.IO.File]::WriteAllBytes($PFX_PATH, [Convert]::FromBase64String("$(codesign-globalsign-2)"))
+          if([System.IO.File]::Exists($PFX_PATH))
+          {
+            Write-Host "$PFX_PATH exists"
+          }
+          else
+          {
+            Write-Host "$PFX_PATH doesn't exist"
+          }
           try {
               $keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
                    -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
               $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
-                "$(PFX_PATH)",
+                $PFX_PATH,
                 "$(PFX_PASS)",
                 $keyStorageFlags
               )
