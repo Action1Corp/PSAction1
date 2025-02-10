@@ -59,12 +59,12 @@ jobs:
             Write-Host "$PFX_PATH doesn't exist"
           }
           try {
-              $keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
-                   -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
-              $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
-                $PFX_PATH,
-                "$(PFX_PASS)",
-                $keyStorageFlags
+              #$keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
+              #     -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
+              #$certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
+              #  $PFX_PATH,
+              #  "$(PFX_PASS)",
+              #  $keyStorageFlags
               )
           }
           catch {
@@ -72,11 +72,13 @@ jobs:
               Write-Host "##vso[task.complete result=Failed;]Failed to load PFX certificate: $($_.Exception.Message)"
               exit 1
           }
+          $certificate = Import-PfxCertificate -FilePath $PFX_PATH -CertStoreLocation Cert:\CurrentUser\My
           Get-ChildItem -Path $Directory -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
           ForEach-Object {
               Write-Host "Signing: $($_.FullName)"
               try {
-                  $signResult = Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $certificate -ErrorAction Stop
+                  $signResult = Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $certificate -TimestampServer "http://timestamp.digicert.com" -ErrorAction Stop
+                  Write-Host "Signature Status: $($signResult.Status)"
                   # Uncomment when the production certificate is added. For now the step fails because self-signed certificate is in use
                   # Purchase a separate codesign certificate?
                   #if ($signResult.Status -eq 'Valid') {
