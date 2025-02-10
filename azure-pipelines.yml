@@ -21,6 +21,14 @@ jobs:
       fetchDepth: 0
       persistCredentials: true
 
+    - task: AzureKeyVault@2
+      displayName: 'Establish KeyVault Connection'
+      inputs:
+        azureSubscription: 'Action1 Azure'
+        KeyVaultName: 'a1-codesign-kv'
+        SecretsFilter: 'codesign-globalsign-2'
+        RunAsPreJob: false
+
     - task: AWSShellScript@1
       displayName: 'Get codesign cert'
       inputs:
