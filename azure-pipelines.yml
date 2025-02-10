@@ -48,9 +48,7 @@ jobs:
         targetType: inline
         script: |
           $PFX_PATH = "$(Build.SourcesDirectory)\cert.pfx"
-          [System.IO.File]::PFX_PATH($certPath, [Convert]::FromBase64String("$(codesign-globalsign-2)"))
-          Write-Host "Loading certificate from PFX: $PfxPath"
-          Write-Host $env:PFX_PASS
+          [System.IO.File]::WriteAllBytes($PFX_PATH, [Convert]::FromBase64String("$(codesign-globalsign-2)"))
           try {
               $keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
                    -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
