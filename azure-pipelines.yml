@@ -65,7 +65,7 @@ jobs:
               #  $PFX_PATH,
               #  "$(PFX_PASS)",
               #  $keyStorageFlags
-              )
+              #)
           }
           catch {
               Write-Host "##vso[task.logissue type=error;]Failed to load PFX certificate: $($_.Exception.Message)"
