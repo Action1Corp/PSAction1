@@ -36,24 +36,26 @@ jobs:
         regionName: 'us-east-1'
         scriptType: 'inline'
         inlineScript: |
-          SECRET=$(aws secretsmanager get-secret-value --secret-id a1-devops/a1-builder/codesigncert --query SecretString --output text)
-          BASE64_PFX=$(echo "$SECRET" | jq -r ".codesigncert")
-          PFX_PASS=$(echo "$SECRET" | jq -r ".codesigncertpass")
-          echo "$BASE64_PFX" | base64 --decode > "$(Build.SourcesDirectory)/cert.pfx"
-          echo "##vso[task.setvariable variable=PFX_PASS;issecret=true]$PFX_PASS"
+          #SECRET=$(aws secretsmanager get-secret-value --secret-id a1-devops/a1-builder/codesigncert --query SecretString --output text)
+          #BASE64_PFX=$(echo "$SECRET" | jq -r ".codesigncert")
+          #PFX_PASS=$(echo "$SECRET" | jq -r ".codesigncertpass")
+          #echo "$BASE64_PFX" | base64 --decode > "$(Build.SourcesDirectory)/cert.pfx"
+          #echo "##vso[task.setvariable variable=PFX_PASS;issecret=true]$PFX_PASS"
 
     - task: PowerShell@2
-      displayName: 'Sign PowerShell files'
+      displayName: 'Sign PowerShell Files'
       inputs:
         targetType: inline
         script: |
+          $PFX_PATH = "$(Build.SourcesDirectory)\cert.pfx"
+          [System.IO.File]::PFX_PATH($certPath, [Convert]::FromBase64String("$(codesign-globalsign-2)"))
           Write-Host "Loading certificate from PFX: $PfxPath"
           Write-Host $env:PFX_PASS
           try {
               $keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
                    -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
               $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
-                "$(Build.SourcesDirectory)/cert.pfx",
+                "$(PFX_PATH)",
                 "$(PFX_PASS)",
                 $keyStorageFlags
               )
