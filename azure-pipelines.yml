@@ -47,7 +47,7 @@ jobs:
       inputs:
         targetType: inline
         script: |
-          $PFX_PATH = "$(Build.SourcesDirectory)\cert.pfx"
+          $PFX_PATH = "$(Build.ArtifactStagingDirectory)\cert.pfx"
           Write-Host "PFX_PATH = $PFX_PATH"
           [System.IO.File]::WriteAllBytes($PFX_PATH, [Convert]::FromBase64String("$(codesign-globalsign-2)"))
           if([System.IO.File]::Exists($PFX_PATH))
@@ -136,6 +136,7 @@ jobs:
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Internally'
+      condition: always()
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'release'
