@@ -55,7 +55,7 @@ jobs:
                 Write-Host "Signing: $($_.FullName)"
                 try {
                   $filePath = "$($_.FullName)"
-                  $fileExtension = Split-Path $filePath -Leaf | Split-Path -Extension
+                  $fileExtension = (Get-Item $filePath).Extension
                   $hashPath = $filePath -replace ".$fileExtension", ".hash"
                   $signaturePath = $filePath -replace ".$fileExtension", ".bin"
                   $signedFilePath = $filePath -replace "$(Build.SourcesDirectory)", "$(Build.ArtifactStagingDirectory)"
