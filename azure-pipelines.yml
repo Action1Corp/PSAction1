@@ -59,7 +59,7 @@ jobs:
                   $fileExtension = (Get-Item $filePath).Extension
                   $hashPath = $filePath.Replace(".$fileExtension", ".hash")
                   $signaturePath = $filePath.Replace(".$fileExtension", ".bin")
-                  $signedFilePath = Join-Path -Path "$(Build.ArtifactStagingDirectory)" -ChildPath "$(fileBaseName).$(fileExtension)"
+                  $signedFilePath = Join-Path -Path "$(Build.ArtifactStagingDirectory)" -ChildPath "$fileBaseName.$fileExtension"
                   write-host "filePath=$filePath"
                   write-host "fileExtension=$fileExtension"
                   write-host "hashPath=$hashPath"
