@@ -87,6 +87,7 @@ jobs:
                   Write-Host "##vso[task.logissue type=error;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
                   Write-Host "##vso[task.complete result=Failed;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
                 }
+            }
       env:
         AZURE_KEY_VAULT_NAME: $(AZURE_KEY_VAULT_NAME)
         CERTIFICATE_NAME: $(CERTIFICATE_NAME)
