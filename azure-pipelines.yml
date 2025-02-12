@@ -46,6 +46,15 @@ jobs:
         AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
 
     - task: PowerShell@2
+      displayName: 'Install AZ Keyvault Extension'
+      inputs:
+        targetType: 'inline'
+        script: |
+          az extension add --name keyvault
+
+          Write-Host "Azure CLI keyvault extension installed successfully!"
+
+    - task: PowerShell@2
       displayName: 'Sign PowerShell Files'
       inputs:
         targetType: inline
