@@ -1,5 +1,8 @@
 trigger: none
 
+variables:
+- group: PSACTION1_SIGNATURE
+
 resources:
   repositories:
     - repository: self
@@ -21,149 +24,72 @@ jobs:
       fetchDepth: 0
       persistCredentials: true
 
-    - task: AzureKeyVault@2
-      displayName: 'Establish KeyVault Connection'
-      inputs:
-        azureSubscription: 'Action1 Azure'
-        KeyVaultName: 'a1-codesign-kv'
-        SecretsFilter: 'PFX'
-        RunAsPreJob: false
-
     - task: PowerShell@2
-      displayName: 'Extract and Import Code Signing Certificate'
+      displayName: 'Login to Azure CLI using Service Principal'
       inputs:
         targetType: 'inline'
         script: |
-          $certName = "PFX"
-          $certPath = "$(Build.ArtifactStagingDirectory)\$certName.pfx"
-          $certPassword = ""
+          Write-Host "Logging in to Azure CLI..."
 
-          Write-Host "Retrieving certificate from Azure Key Vault..."
-          az keyvault secret download --vault-name "a1-codesign-kv" --name $certName --file $certPath
+          az login --service-principal `
+            --username "$env:AZURE_CLIENT_ID" `
+            --password "$env:AZURE_CLIENT_SECRET" `
+            --tenant "$env:AZURE_TENANT_ID"
 
-          Write-Host "Importing certificate into local store..."
-          Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $certPassword -AsPlainText -Force)
+          az account set --subscription "$env:AZURE_SUBSCRIPTION_ID"
 
-    - task: PowerShell@2
-      displayName: 'Sign PowerShell Script'
-      inputs:
-        targetType: 'inline'
-        script: |
-          $certSubject = "E=contact@action1.com CN=Action1 Corporation O=Action1 Corporation L=Houston S=Texas C=US"
-          $cert = Get-ChildItem -Path Cert:\CurrentUser\My | Where-Object { $_.Subject -match $certSubject }
-          if ($cert -eq $null) {
-              Write-Error "Certificate not found"
-              exit 1
-          }
-
-          $scriptPath = "D:\a\1\s\PSAction1.psd1"
-          Set-AuthenticodeSignature -FilePath $scriptPath -Certificate $cert -TimestampServer "http://timestamp.digicert.com"
-
-    - task: AWSShellScript@1
-      displayName: 'Get codesign cert'
-      inputs:
-        awsCredentials: 'Action1 AWS'
-        regionName: 'us-east-1'
-        scriptType: 'inline'
-        inlineScript: |
-          #SECRET=$(aws secretsmanager get-secret-value --secret-id a1-devops/a1-builder/codesigncert --query SecretString --output text)
-          #BASE64_PFX=$(echo "$SECRET" | jq -r ".codesigncert")
-          #PFX_PASS=$(echo "$SECRET" | jq -r ".codesigncertpass")
-          #echo "$BASE64_PFX" | base64 --decode > "$(Build.SourcesDirectory)/cert.pfx"
-          #echo "##vso[task.setvariable variable=PFX_PASS;issecret=true]$PFX_PASS"
+          Write-Host "Azure CLI login successful!"
+      env:
+        AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
+        AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+        AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
 
     - task: PowerShell@2
       displayName: 'Sign PowerShell Files'
       inputs:
         targetType: inline
         script: |
-          $PFX_PATH = "$(Build.SourcesDirectory)\cert.pfx"
-          Write-Host "PFX_PATH = $PFX_PATH"
-          [System.IO.File]::WriteAllBytes($PFX_PATH, [Convert]::FromBase64String("$(codesign-globalsign-2)"))
-          if([System.IO.File]::Exists($PFX_PATH))
-          {
-            Write-Host "$PFX_PATH exists"
-          }
-          else
-          {
-            Write-Host "$PFX_PATH doesn't exist"
-          }
-          try {
-              $keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
-                   -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
-              $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
-                $PFX_PATH,
-                "",
-                $keyStorageFlags
-              )
-          }
-          catch {
-              Write-Host "##vso[task.logissue type=error;]Failed to load PFX certificate: $($_.Exception.Message)"
-              Write-Host "##vso[task.complete result=Failed;]Failed to load PFX certificate: $($_.Exception.Message)"
-              exit 1
-          }
-          #$certificate = Import-PfxCertificate -FilePath $PFX_PATH -CertStoreLocation Cert:\CurrentUser\My
-          Get-ChildItem -Path $Directory -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
-          ForEach-Object {
-              Write-Host "Signing: $($_.FullName)"
-              try {
-                  $signResult = Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $certificate -TimestampServer "http://timestamp.digicert.com" -ErrorAction Stop
-                  Write-Host "Signature Status: $($signResult.Status)"
-                  # Uncomment when the production certificate is added. For now the step fails because self-signed certificate is in use
-                  # Purchase a separate codesign certificate?
-                  #if ($signResult.Status -eq 'Valid') {
-                      Write-Host "Successfully signed: $($_.FullName)"
-                      Copy-Item $_.FullName -Destination $env:Build_ArtifactStagingDirectory
-                  #} else {
-                  #    Write-Host "##vso[task.logissue type=error;]Signed but encountered status '$($signResult.Status)': $($_.FullName)"
-                      #Write-Host "##vso[task.complete result=Failed;]Signed but encountered status '$($signResult.Status)': $($_.FullName)"
-                      #exit 1
-                  #}
-              }
-              catch {
+          Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
+            ForEach-Object {
+                Write-Host "Signing: $($_.FullName)"
+                try {
+                  $filePath = "$($_.FullName)"
+                  $fileExtension = Split-Path $filePath -Leaf | Split-Path -Extension
+                  $hashPath = $filePath -replace ".$fileExtension", ".hash"
+                  $signaturePath = $filePath -replace ".$fileExtension", ".bin"
+                  $signedFilePath = $filePath -replace "$(Build.SourcesDirectory)", "$(Build.ArtifactStagingDirectory)"
+                  write-host "filePath=$filePath"
+                  write-host "fileExtension=$fileExtension"
+                  write-host "hashPath=$hashPath"
+                  write-host "signaturePath=$signaturePath"
+                  $hashBytes = Get-FileHash -Algorithm SHA256 -Path $filePath
+                  $hashBytes.Hash | Out-File -Encoding ascii -FilePath $hashPath
+                  $hashValue = Get-Content -Path $hashPath -Raw
+                  Write-Host "SHA-256 hash generated and saved at: $hashPath"
+                  $signingResult = az keyvault sign --vault-name $env:AZURE_KEY_VAULT_NAME --name $env:CERTIFICATE_NAME --algorithm RS256 --digest $hashValue | ConvertFrom-Json
+                  $signature = $signingResult.result
+                  Write-Host "Signature generated: $signature"
+                  $signature | Out-File -Encoding ascii -FilePath $signaturePath
+                  $signatureContent = Get-Content -Path $signaturePath -Raw
+                  $signedFile = @"
+          # SIG # Begin signature block
+          $signatureContent
+          # SIG # End signature block
+
+          $(Get-Content -Path $filePath)
+          "@
+                  $signedFile | Out-File -Encoding utf8 -FilePath $signedFilePath
+
+                  Write-Host "PowerShell script signed successfully!"
+                }
+                catch{
                   Write-Host "##vso[task.logissue type=error;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
-                  Write-Host "##vso[task.complete result=Failed;]Failed to load PFX certificate: $($_.Exception.Message)"
-                  exit 1
-              }
-          }
+                  Write-Host "##vso[task.complete result=Failed;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
+                }
       env:
-        PFX_PASS: $(PFX_PASS)
-
-    - task: PowerShell@2
-      displayName: 'Create Branch, Modify Files, and Push'
-      inputs:
-        targetType: 'inline'
-        script: |          
-          $branchName = "signed-$(Get-Date -Format 'yyyyMMddHHmmss')"
-          $repoUrl = "$(Build.Repository.Uri)"
-          $email = "github@action1.com"
-          $username = "github-action1[bot]"
-          
-          $githubToken = $GITHUB_TOKEN
-          
-          git config --global user.email "$email"
-          git config --global user.name "$username"
-          
-          git checkout -b $branchName
-          
-          $filePath = "README.md"
-          if (Test-Path $filePath) {
-            Add-Content -Path $filePath -Value "`nModified on $(Get-Date)"
-          } else {
-            New-Item -Path $filePath -ItemType File -Value "This is a new file added on $(Get-Date)"
-          }
-          
-          git add .
-          git commit -m "Automated commit: Modified files in branch $branchName"
-          
-          git remote set-url origin https://x-access-token:$githubToken@github.com/$(Build.Repository.Name).git
-          git push origin $branchName
-
-          Write-Host "Branch '$branchName' created and pushed successfully."
-
-      env:
-        GITHUB_TOKEN: $(System.AccessToken)
-
+        AZURE_KEY_VAULT_NAME: $(AZURE_KEY_VAULT_NAME)
+        CERTIFICATE_NAME: $(CERTIFICATE_NAME)
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Internally'
       condition: always()
