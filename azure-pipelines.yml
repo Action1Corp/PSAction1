@@ -26,8 +26,38 @@ jobs:
       inputs:
         azureSubscription: 'Action1 Azure'
         KeyVaultName: 'a1-codesign-kv'
-        SecretsFilter: 'codesign-globalsign-2'
+        SecretsFilter: 'PFX'
         RunAsPreJob: false
+
+    - task: PowerShell@2
+      displayName: 'Extract and Import Code Signing Certificate'
+      inputs:
+        targetType: 'inline'
+        script: |
+          $certName = "PFX"
+          $certPath = "$(Build.ArtifactStagingDirectory)\$certName.pfx"
+          $certPassword = ""
+
+          Write-Host "Retrieving certificate from Azure Key Vault..."
+          az keyvault secret download --vault-name "a1-codesign-kv" --name $certName --file $certPath
+
+          Write-Host "Importing certificate into local store..."
+          Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $certPassword -AsPlainText -Force)
+
+    - task: PowerShell@2
+      displayName: 'Sign PowerShell Script'
+      inputs:
+        targetType: 'inline'
+        script: |
+          $certSubject = "E=contact@action1.com CN=Action1 Corporation O=Action1 Corporation L=Houston S=Texas C=US"
+          $cert = Get-ChildItem -Path Cert:\CurrentUser\My | Where-Object { $_.Subject -match $certSubject }
+          if ($cert -eq $null) {
+              Write-Error "Certificate not found"
+              exit 1
+          }
+
+          $scriptPath = "D:\a\1\s\PSAction1.psd1"
+          Set-AuthenticodeSignature -FilePath $scriptPath -Certificate $cert -TimestampServer "http://timestamp.digicert.com"
 
     - task: AWSShellScript@1
       displayName: 'Get codesign cert'
