@@ -50,9 +50,9 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          az extension add --name keyvault
+          az extension list-available --output table
 
-          Write-Host "Azure CLI keyvault extension installed successfully!"
+          
 
     - task: PowerShell@2
       displayName: 'Sign PowerShell Files'
@@ -78,7 +78,7 @@ jobs:
                   $hashBytes.Hash | Out-File -Encoding ascii -FilePath $hashPath
                   $hashValue = Get-Content -Path $hashPath -Raw
                   Write-Host "SHA-256 hash generated and saved at: $hashPath"
-                  $signingResult = az keyvault sign --vault-name $env:AZURE_KEY_VAULT_NAME --name $env:CERTIFICATE_NAME --algorithm RS256 --digest $hashValue
+                  $signingResult = az keyvault key sign --vault-name $env:AZURE_KEY_VAULT_NAME --name $env:CERTIFICATE_NAME --algorithm RS256 --digest $hashValue
                   $signature = ($signingResult | ConvertFrom-Json).result
                   Write-Host "Signature generated: $signature"
                   $signature | Out-File -Encoding ascii -FilePath $signaturePath
