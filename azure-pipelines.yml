@@ -57,10 +57,11 @@ jobs:
                   $filePath = "$($_.FullName)"
                   $fileBaseName = (Get-Item $filePath).BaseName
                   $fileExtension = (Get-Item $filePath).Extension
-                  $hashPath = $filePath.Replace(".$fileExtension", ".hash")
-                  $signaturePath = $filePath.Replace(".$fileExtension", ".bin")
+                  $hashPath = $filePath.Replace("$fileExtension", ".hash")
+                  $signaturePath = $filePath.Replace("$fileExtension", ".bin")
                   $signedFilePath = Join-Path -Path "$(Build.ArtifactStagingDirectory)" -ChildPath "$fileBaseName.$fileExtension"
                   write-host "filePath=$filePath"
+                  write-host "fileBaseName=$fileBaseName"
                   write-host "fileExtension=$fileExtension"
                   write-host "hashPath=$hashPath"
                   write-host "signaturePath=$signaturePath"
@@ -68,8 +69,8 @@ jobs:
                   $hashBytes.Hash | Out-File -Encoding ascii -FilePath $hashPath
                   $hashValue = Get-Content -Path $hashPath -Raw
                   Write-Host "SHA-256 hash generated and saved at: $hashPath"
-                  $signingResult = az keyvault sign --vault-name $env:AZURE_KEY_VAULT_NAME --name $env:CERTIFICATE_NAME --algorithm RS256 --digest $hashValue | ConvertFrom-Json
-                  $signature = $signingResult.result
+                  $signingResult = az keyvault sign --vault-name $env:AZURE_KEY_VAULT_NAME --name $env:CERTIFICATE_NAME --algorithm RS256 --digest $hashValue
+                  $signature = ($signingResult | ConvertFrom-Json).result
                   Write-Host "Signature generated: $signature"
                   $signature | Out-File -Encoding ascii -FilePath $signaturePath
                   $signatureContent = Get-Content -Path $signaturePath -Raw
