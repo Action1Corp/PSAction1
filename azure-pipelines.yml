@@ -55,10 +55,11 @@ jobs:
                 Write-Host "Signing: $($_.FullName)"
                 try {
                   $filePath = "$($_.FullName)"
+                  $fileBaseName = (Get-Item $filePath).BaseName
                   $fileExtension = (Get-Item $filePath).Extension
-                  $hashPath = $filePath -replace ".$fileExtension", ".hash"
-                  $signaturePath = $filePath -replace ".$fileExtension", ".bin"
-                  $signedFilePath = $filePath -replace "$(Build.SourcesDirectory)", "$(Build.ArtifactStagingDirectory)"
+                  $hashPath = $filePath.Replace(".$fileExtension", ".hash")
+                  $signaturePath = $filePath.Replace(".$fileExtension", ".bin")
+                  $signedFilePath = Join-Path -Path "$(Build.ArtifactStagingDirectory)" -ChildPath "$(fileBaseName).$(fileExtension)"
                   write-host "filePath=$filePath"
                   write-host "fileExtension=$fileExtension"
                   write-host "hashPath=$hashPath"
@@ -84,7 +85,7 @@ jobs:
                   Write-Host "PowerShell script signed successfully!"
                 }
                 catch{
-                  Write-Host "##vso[task.logissue type=error;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
+                  Write-Host "##vso[task.logissue type=error;]Failed to sign $($_.FullName): $($_.Exception.Message)"
                   Write-Host "##vso[task.complete result=Failed;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
                 }
             }
