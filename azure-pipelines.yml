@@ -47,7 +47,7 @@ jobs:
       inputs:
         targetType: inline
         script: |
-          $PFX_PATH = "$(Build.ArtifactStagingDirectory)\cert.pfx"
+          $PFX_PATH = "$(Build.SourcesDirectory)\cert.pfx"
           Write-Host "PFX_PATH = $PFX_PATH"
           [System.IO.File]::WriteAllBytes($PFX_PATH, [Convert]::FromBase64String("$(codesign-globalsign-2)"))
           if([System.IO.File]::Exists($PFX_PATH))
@@ -59,20 +59,20 @@ jobs:
             Write-Host "$PFX_PATH doesn't exist"
           }
           try {
-              #$keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
-              #     -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
-              #$certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
-              #  $PFX_PATH,
-              #  "$(PFX_PASS)",
-              #  $keyStorageFlags
-              #)
+              $keyStorageFlags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet `
+                   -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
+              $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
+                $PFX_PATH,
+                "",
+                $keyStorageFlags
+              )
           }
           catch {
               Write-Host "##vso[task.logissue type=error;]Failed to load PFX certificate: $($_.Exception.Message)"
               Write-Host "##vso[task.complete result=Failed;]Failed to load PFX certificate: $($_.Exception.Message)"
               exit 1
           }
-          $certificate = Import-PfxCertificate -FilePath $PFX_PATH -CertStoreLocation Cert:\CurrentUser\My
+          #$certificate = Import-PfxCertificate -FilePath $PFX_PATH -CertStoreLocation Cert:\CurrentUser\My
           Get-ChildItem -Path $Directory -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
           ForEach-Object {
               Write-Host "Signing: $($_.FullName)"
