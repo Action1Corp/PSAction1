@@ -242,57 +242,58 @@ function DoGet {
     } 
 }
 
-function Start-Action1PackageUpload{
+function Start-Action1PackageUpload {
     param(
-    [Parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$Package_ID,
-    [Parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$Version_ID,
-    [Parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$Filename,
-    [Parameter(Mandatory)]
-    [ValidateSet(
+        [Parameter(Mandatory)]
+        [ValidateSet(
             'Windows_32',
             'Windows_64'
         )]
         [String]$Platform,
-    [int32]$BufferSize = 24Mb
+        [int32]$BufferSize = 24Mb
     )
-$uri = "$Script:Action1_BaseURI/software-repository/all/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
-Debug-Host "Base URI is $uri"
-$UploadTarget = ""
-Debug-Host "Uploading file: '$Filename'"
-Debug-Host "Writing in chunks of $BufferSize bytes."
-$FileData = [System.IO.File]::Open($Filename, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
-if($FileData.Length -lt $BufferSize){$BufferSize = $FileData.Length;Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)"}
-$Buffer = New-Object byte[] $BufferSize
-$Place = 0
+    $uri = "$Script:Action1_BaseURI/software-repository/all/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
+    Debug-Host "Base URI is $uri"
+    $UploadTarget = ""
+    Debug-Host "Uploading file: '$Filename'"
+    Debug-Host "Writing in chunks of $BufferSize bytes."
+    $FileData = [System.IO.File]::Open($Filename, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
+    if ($FileData.Length -lt $BufferSize) { $BufferSize = $FileData.Length; Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)" }
+    $Buffer = New-Object byte[] $BufferSize
+    $Place = 0
 
-$HeaderBase = @{
-    'accept' = '*/*'
-    'X-Upload-Content-Type' = 'application/octet-stream'
-   }
-   try{
+    $HeaderBase = @{
+        'accept'                = '*/*'
+        'X-Upload-Content-Type' = 'application/octet-stream'
+    }
+    try {
         $Headers = $HeaderBase.Clone()
         $Headers.Add('X-Upload-Content-Length', $($FileData.Length))
         $Headers.Add('Content-Type', 'application/json')
-        if(CheckToken){$Headers.Add('Authorization',"Bearer $(($Script:Action1_Token).access_token)");Invoke-WebRequest -Uri $uri -Method Post -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue}
-        }catch{$UploadTarget = $_.Exception.Response.Headers['X-Upload-Location']} 
-        Debug-Host "Upload URI is $UploadTarget"
+        if (CheckToken) { $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)"); Invoke-WebRequest -Uri $uri -Method Post -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue }
+    }
+    catch { $UploadTarget = $_.Exception.Response.Headers['X-Upload-Location'] } 
+    Debug-Host "Upload URI is $UploadTarget"
     while (($Read = $FileData.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
-         $Headers = $HeaderBase.Clone()
-         $Headers.Add('Content-Range', "bytes $($Place)-$($($Place + $Read-1))/$($FileData.Length)")
-         $Headers.Add('Content-Length',"$($Read)")
-         $Headers.Add('Content-Type', 'application/octet-stream')
-         $Place += $Read
-         try{ if(CheckToken){$Headers.Add('Authorization',"Bearer $(($Script:Action1_Token).access_token)");$response = Invoke-WebRequest -Method Put -UseBasicParsing -Uri $UploadTarget -Body $Buffer -Headers $Headers -ErrorAction SilentlyContinue}}
-         catch{Debug-Host "Last Status: $($_.Exception.Response.StatusCode)"}
-         if(($FileData.Length - $Place) -lt $BufferSize){$buffer = New-Object byte[] ($FileData.Length - $place)}
-         Debug-Host "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
-         if($Buffer.Length -eq 0){Debug-Host "Final Status:$($response.StatusCode)"}else{Debug-Host "Bytes Written: $($Buffer.Length)"}
+        $Headers = $HeaderBase.Clone()
+        $Headers.Add('Content-Range', "bytes $($Place)-$($($Place + $Read-1))/$($FileData.Length)")
+        $Headers.Add('Content-Length', "$($Read)")
+        $Headers.Add('Content-Type', 'application/octet-stream')
+        $Place += $Read
+        try { if (CheckToken) { $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)"); $response = Invoke-WebRequest -Method Put -UseBasicParsing -Uri $UploadTarget -Body $Buffer -Headers $Headers -ErrorAction SilentlyContinue } }
+        catch { Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" }
+        if (($FileData.Length - $Place) -lt $BufferSize) { $buffer = New-Object byte[] ($FileData.Length - $place) }
+        Debug-Host "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
+        if ($Buffer.Length -eq 0) { Debug-Host "Final Status:$($response.StatusCode)" }else { Debug-Host "Bytes Written: $($Buffer.Length)" }
     }
     $FileData.Close()
- }
+}
 
 
 function Debug-Host {
@@ -453,12 +454,12 @@ function Get-Action1 {
         }
         else { 
             if ($Clone) {
-                if ($Query -ne 'Settings') {Write-Error "Clone flag only allowed for query type 'Setings.'`n";return $null}
+                if ($Query -ne 'Settings') { Write-Error "Clone flag only allowed for query type 'Setings.'`n"; return $null }
                 switch ($For) {
                     'EndpointGroup' {  
                         $Pull = Get-Action1 EndpointGroups | Where-Object { $_.id -eq ($Clone) }
                         if (!$Pull) {
-                            Write-Error "No $For found matching id $clone.`n";return $null
+                            Write-Error "No $For found matching id $clone.`n"; return $null
                         }
                         else {
                             $sbAddIncludeFilter = { param( [string]$field_name, [string]$field_value) $this.include_filter += New-Object psobject -Property @{field_name = $field_name; field_value = $field_value; mode = 'include' } }
@@ -489,7 +490,7 @@ function Get-Action1 {
                             $sbDeleteEndpoint = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'Endpoint' -and $_.id -eq $Id) }) }
                             $sbDeleteEndpointGroup = { param([string]$Id) $this.endpoints = @($this.endpoints | Where-Object { !($_.type -eq 'EndpointGroup' -and $_.id -eq $Id) }) }
                             $sbClearEndpoints = { $this.endpoints = @() }
-                            $sbDeferExecution = {$this.settings = 'DISABLED'}
+                            $sbDeferExecution = { $this.settings = 'DISABLED' }
                         
                             @('id', 'type', 'self', 'last_run', 'next_run', 'system', 'randomize_start') | ForEach-Object { $Pull.PSObject.Members.Remove($_) }
                             $CleanEndpoints = @()
@@ -520,7 +521,7 @@ function Get-Action1 {
                         $sbSetExcludeLogic = { param([string]$value) $this.include_filter_logic = $value }
                         $sbClearExcludeFilter = { $this.exclude_filter = @() }
 
-                        $ret = New-Object psobject -Property @{name = 'Default Group Name'; description = 'Default Description'; include_filter_logic=''; include_filter = @() ; exclude_filter = @() }
+                        $ret = New-Object psobject -Property @{name = 'Default Group Name'; description = 'Default Description'; include_filter_logic = ''; include_filter = @() ; exclude_filter = @() }
 
                         $ret | Add-Member -MemberType ScriptMethod -Name "AddIncludeFilter" -Value $sbAddIncludeFilter
                         $ret | Add-Member -MemberType ScriptMethod -Name "DeleteIncludeFilter" -Value $sbDeleteIncludeFilter
@@ -532,30 +533,32 @@ function Get-Action1 {
                         $ret | Add-Member -MemberType ScriptMethod -Name "SetExcludeLogic" -Value $sbSetExcludeLogic
                         return $ret
                     }
-                    {$_ -in @('Remediation', 'DeferredRemediation')} { 
+                    { $_ -in @('Remediation', 'DeferredRemediation') } { 
                         $deploy = ConvertFrom-Json $RemediationTemplate
                         $deploy.name = "External $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
                         $deploy.actions[0].params.display_summary = "$For via external API call."
                         $sbAddCVE = {
                             param([string]$CVE_ID) 
                             $vul = ((Get-Action1 Vulnerabilities | Where-Object { $_.cve_id -eq $CVE_ID }).software).available_updates
-                            $upd = $vul.package_id
-                            $ver = $vul.version
-                            $name = $vul.name
                             if ($null -eq $vul) {
                                 Write-Host "No patch for $CVE_ID found in Action1." -ForegroundColor Red
                             }
                             else { 
-                                if (!($null -eq $this.actions.params.packages[0].$upd)) {
-                                    Debug-Host "$name has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
-                                }
-                                else {
-                                    Debug-Host "Adding $name to the package list for $CVE_ID."
-                                    if ($null -eq $this.actions.params.packages[0].'default') {
-                                        $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd = $ver }
+                                foreach ($item in $vul) {
+                                    $upd = $item.package_id
+                                    $ver = $item.version
+                                    $name = $item.name
+                                    if (!($null -eq $this.actions.params.packages[0].$upd)) {
+                                        Debug-Host "$name has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
                                     }
                                     else {
-                                        $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$upd = $ver }
+                                        Debug-Host "Adding $name to the package list for $CVE_ID."
+                                        if ($null -eq $this.actions.params.packages[0].'default') {
+                                            $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd = $ver }
+                                        }
+                                        else {
+                                            $this.actions.params.packages[0] = New-Object PSCustomObject -Property @{$upd = $ver }
+                                        }
                                     }
                                 }
                             }
@@ -564,7 +567,7 @@ function Get-Action1 {
                         
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddCVE" -Value $sbAddCVE
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpointGroup" -Value $sbAddEndpointGroup
-                        if($_ -eq 'Deferredremediation'){$deploy | Add-Member -MemberType NoteProperty -Name "settings" -Value 'DISABLED'}
+                        if ($_ -eq 'Deferredremediation') { $deploy | Add-Member -MemberType NoteProperty -Name "settings" -Value 'DISABLED' }
                         #$deploy.settings = "ENABLED ONCE AT:$((Get-Date).ToUniversalTime().AddMinutes(10).ToString("HH-mm-ss")) DATE:$((Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))"}
                         return $deploy
                     }
@@ -635,10 +638,12 @@ function Get-Action1 {
         if (!$URILookUp["G_$Query"].ToString().Contains("`$Org_ID")) {
             if (!$URILookUp["G_$Query"].ToString().Contains("`$Object_ID")) {
                 $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"])
-            }else{
+            }
+            else {
                 if ($Id) {
                     $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Object_ID $Id)
-                }else{
+                }
+                else {
                     Write-Error 'This options requires that you specify an Object_ID.'
                 }
             }
