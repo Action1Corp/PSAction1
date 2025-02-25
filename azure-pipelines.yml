@@ -25,71 +25,38 @@ jobs:
       persistCredentials: true
 
     - task: PowerShell@2
-      displayName: 'Login to Azure CLI using Service Principal'
-      inputs:
-        targetType: 'inline'
-        script: |
-          Write-Host "Logging in to Azure CLI..."
-
-          az login --service-principal `
-            --username "$env:AZURE_CLIENT_ID" `
-            --password "$env:AZURE_CLIENT_SECRET" `
-            --tenant "$env:AZURE_TENANT_ID"
-
-          az account set --subscription "$env:AZURE_SUBSCRIPTION_ID"
-
-          Write-Host "Azure CLI login successful!"
-      env:
-        AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
-        AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
-        AZURE_TENANT_ID: $(AZURE_TENANT_ID)
-        AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
-
-    - task: PowerShell@2
       displayName: 'Sign PowerShell Files'
       inputs:
         targetType: inline
         script: |
-          Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
+          Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse -Include *.ps1, *.psm1, *.-File |
             ForEach-Object {
-                Write-Host "Signing: $($_.FullName)"
-                try {
                   $filePath = "$($_.FullName)"
                   $fileBaseName = (Get-Item $filePath).BaseName
                   $fileExtension = (Get-Item $filePath).Extension
-                  $hashPath = $filePath.Replace("$fileExtension", ".hash")
-                  $signaturePath = $filePath.Replace("$fileExtension", ".bin")
                   $signedFilePath = Join-Path -Path "$(Build.ArtifactStagingDirectory)" -ChildPath "$fileBaseName.$fileExtension"
-                  $hashBytes = Get-FileHash -Algorithm SHA256 -Path $filePath | Select-Object -ExpandProperty Hash
-                  $hashBinary = for ($i = 0; $i -lt $hashBytes.Length; $i += 2) { [Convert]::ToByte($hashBytes.Substring($i,2),16) }
-                  $hashBase64Url = [System.Convert]::ToBase64String($hashBinary) -replace '\+', '-' -replace '/', '_' -replace '='
-                  $hashBase64Url | Out-File -Encoding ascii -FilePath $hashPath
-                  $hashValue = Get-Content -Path $hashPath -Raw
-                  Write-Host "SHA-256 hash generated and saved at: $hashPath"
-                  $signingResult = az keyvault key sign --vault-name $env:AZURE_KEY_VAULT_NAME --name $env:CERTIFICATE_NAME --algorithm RS256 --digest $hashValue
-                  $signature = ($signingResult | ConvertFrom-Json).result
-                  Write-Host "Signature generated: $signature"
-                  $signature | Out-File -Encoding ascii -FilePath $signaturePath
-                  $signatureContent = Get-Content -Path $signaturePath -Raw
-                  $signedFile = @"
-          # SIG # Begin signature block
-          $signatureContent
-          # SIG # End signature block
-
-          $(Get-Content -Path $filePath)
-          "@
-                  $signedFile | Out-File -Encoding utf8 -FilePath $signedFilePath
-
-                  Write-Host "PowerShell script signed successfully!"
-                }
-                catch{
-                  Write-Host "##vso[task.logissue type=error;]Failed to sign $($_.FullName): $($_.Exception.Message)"
-                  Write-Host "##vso[task.complete result=Failed;]Failed to sign '$($_.FullName)': $($_.Exception.Message)"
-                }
+                  Copy-Item -Path $filePath -Destination $signedFilePath
             }
+
+    - task: TrustedSigning@0
+      inputs:
+        AzureTenantID: $(AZURE_TENANT_ID)
+        AzureClientID: $(AZURE_CLIENT_ID)
+        AzureClientSecret: $(AZURE_CLIENT_SECRET)
+        Endpoint: $(AZURE_TS_ENDPOINT)
+        TrustedSigningAccountName: $(AZURE_TS_ACCOUNT_NAME)
+        CertificateProfileName: $(AZURE_TS_CERTIFICATE_PROFILE_NAME)
+        FilesFolder: '$(Build.ArtifactStagingDirectory)'
+        FilesFolderFilter: 'ps1,psm1,psd1'
+        FileDigest: 'SHA256'
       env:
-        AZURE_KEY_VAULT_NAME: $(AZURE_KEY_VAULT_NAME)
-        CERTIFICATE_NAME: $(CERTIFICATE_NAME)
+        AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
+        AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+        AZURE_TS_ENDPOINT: $(AZURE_TS_ENDPOINT)
+        AZURE_TS_ACCOUNT_NAME: $(AZURE_TS_ACCOUNT_NAME)
+        AZURE_TS_CERTIFICATE_PROFILE_NAME: $(AZURE_TS_CERTIFICATE_PROFILE_NAME)
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Internally'
       condition: always()
