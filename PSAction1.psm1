@@ -612,7 +612,7 @@ function Get-Action1 {
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddPackage" -Value $sbAddPackage
                         return $deploy
                     }
-                    default { return $ClassLookup[$For] } # otherwise return empty base
+                    default { Write-Error "Invalild request for template type $For." ; return $null }
                 }
             }
         } 
