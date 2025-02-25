@@ -34,7 +34,7 @@ jobs:
                   $filePath = "$($_.FullName)"
                   $fileBaseName = (Get-Item $filePath).BaseName
                   $fileExtension = (Get-Item $filePath).Extension
-                  $signedFilePath = Join-Path -Path "$(Build.ArtifactStagingDirectory)" -ChildPath "$fileBaseName.$fileExtension"
+                  $signedFilePath = Join-Path -Path "$(Build.ArtifactStagingDirectory)" -ChildPath "$fileBaseName$fileExtension"
                   Copy-Item -Path $filePath -Destination $signedFilePath
             }
 
