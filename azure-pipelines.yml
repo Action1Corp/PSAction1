@@ -29,7 +29,7 @@ jobs:
       inputs:
         targetType: inline
         script: |
-          Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse -Include *.ps1, *.psm1, *.-File |
+          Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
             ForEach-Object {
                   $filePath = "$($_.FullName)"
                   $fileBaseName = (Get-Item $filePath).BaseName
