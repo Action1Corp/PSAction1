@@ -18,7 +18,7 @@ PS C:\> Install-Module PSAction1
 ## Install manually
 
 If you would prefer to review the code prior to use you can download the module and put it manually in your `$PSModulePath`.  
-Download it from here for the latest builds, or the [PowerShell Gallery](https://www.PowerShellgallery.com/packages/PSAction1) for the lastest stabile release.
+Download it from here for the latest builds, or the [PowerShell Gallery](https://www.PowerShellgallery.com/packages/PSAction1) for the lastest stable release.
 Then import it into your script's session, this will need to be done on each execution of your script, so it is advised to make this the first line of the script before any other code.  
   
 :stop_sign: **Important:**  _Code downloaded here will be in active development, for maximum stability you should use the module from the PowerShell gallery. You should only use the latest build from Git if you are instructed to do so by support, curious, troubleshooting a specific issue, or just the curious sort of person._
