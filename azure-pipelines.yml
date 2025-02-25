@@ -25,7 +25,7 @@ jobs:
       persistCredentials: true
 
     - task: PowerShell@2
-      displayName: 'Copy PowerShell Files to Sign'
+      displayName: 'Prepare PowerShell Files to Sign'
       inputs:
         targetType: inline
         script: |
@@ -39,6 +39,7 @@ jobs:
             }
 
     - task: AzureCLI@2
+      displayName: 'Prepare Azure Secure Connection'
       inputs:
         azureSubscription: 'Action1 Azure'
         scriptType: 'pscore'
@@ -50,21 +51,25 @@ jobs:
         addSpnToEnvironment: true
 
     - task: PowerShell@2
+      displayName: 'Establish Azure Secure Connection'
       inputs:
         targetType: 'inline'
         script: |
           az login --service-principal -u $(ARM_CLIENT_ID) --tenant $(ARM_TENANT_ID) --allow-no-subscriptions --federated-token $(ARM_ID_TOKEN)
 
     - task: TrustedSigning@0
+      displayName: 'Azure Trusted Signing'
       inputs:
         ExcludeSharedTokenCacheCredential: true
         ExcludeVisualStudioCredential: true
         ExcludeVisualStudioCodeCredential: true
-        Endpoint: 'https://eus.codesigning.azure.net/'
-        CodeSigningAccountName: 'action1'
-        CertificateProfileName: 'Action1CorporationCodeSign'
+        Endpoint: '$(AZURE_TS_ENDPOINT)'
+        CertificateProfileName: '$(AZURE_TS_CERTIFICATE_PROFILE_NAME)'
         FilesFolder: '$(Build.ArtifactStagingDirectory)'
+        FilesFolderFilter: 'psm1,psd1,ps1'
+        FilesFolderRecurse: true
         FileDigest: 'SHA256'
+        CodeSigningAccountName: '$(AZURE_TS_ACCOUNT_NAME)'
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Internally'
