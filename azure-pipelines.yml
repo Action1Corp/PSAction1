@@ -40,14 +40,13 @@ jobs:
 
     - task: TrustedSigning@0
       inputs:
-        AzureTenantID: $(AZURE_TENANT_ID)
-        AzureClientID: $(AZURE_CLIENT_ID)
-        AzureClientSecret: $(AZURE_CLIENT_SECRET)
-        Endpoint: $(AZURE_TS_ENDPOINT)
-        TrustedSigningAccountName: $(AZURE_TS_ACCOUNT_NAME)
-        CertificateProfileName: $(AZURE_TS_CERTIFICATE_PROFILE_NAME)
+        AzureTenantID: '$(AZURE_TENANT_ID)'
+        AzureClientID: '$(AZURE_CLIENT_ID)'
+        AzureClientSecret: '$(AZURE_CLIENT_SECRET)'
+        Endpoint: '$(AZURE_TS_ENDPOINT)'
+        TrustedSigningAccountName: '$(AZURE_TS_ACCOUNT_NAME)'
+        CertificateProfileName: '$(AZURE_TS_CERTIFICATE_PROFILE_NAME)'
         FilesFolder: '$(Build.ArtifactStagingDirectory)'
-        FilesFolderFilter: 'ps1,psm1,psd1'
         FileDigest: 'SHA256'
       env:
         AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
