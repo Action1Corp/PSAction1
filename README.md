@@ -1,7 +1,7 @@
 ![_Company_Logo](https://www.action1.com/wp-content/uploads/2022/02/action1-logo.svg)
 **Patch Management That Just Works**
   
-[**First 100 endpoints are free, fully featured, forever.**](https://www.action1.com/free)
+[**First 200 endpoints are free, fully featured, forever.**](https://www.action1.com/free)
 ***
 # PSAction1 - PowerShell interface to the Action1 API
 
@@ -18,7 +18,7 @@ PS C:\> Install-Module PSAction1
 ## Install manually
 
 If you would prefer to review the code prior to use you can download the module and put it manually in your `$PSModulePath`.  
-Download it from here for the latest builds, or the [PowerShell Gallery](https://www.PowerShellgallery.com/packages/PSAction1) for the lastest stabile release.
+Download it from here for the latest builds, or the [PowerShell Gallery](https://www.PowerShellgallery.com/packages/PSAction1) for the lastest stable release.
 Then import it into your script's session, this will need to be done on each execution of your script, so it is advised to make this the first line of the script before any other code.  
   
 :stop_sign: **Important:**  _Code downloaded here will be in active development, for maximum stability you should use the module from the PowerShell gallery. You should only use the latest build from Git if you are instructed to do so by support, curious, troubleshooting a specific issue, or just the curious sort of person._
@@ -42,7 +42,7 @@ Once you have followed the instructions to obtain an API key, you should have an
 
 ## Using this module
 
-The first order of operation is to set up authentication, if you do not supply these values beforehand, the script will error telling you what required value is missing. Alteratively if you would rather walk through it step by step, you can set the option **Set-Action1Interactve = $true**. Authentication sessions have a timeout, but the module accounts for that. 
+The first order of operation is to set up authentication, if you do not supply these values beforehand, the script will error telling you what required value is missing. Alteratively if you would rather walk through it step by step, you can set the option **Set-Action1Interactive $true**. Authentication sessions have a timeout, but the module accounts for that. 
 
 When PSAction1 stores the bearer token for you, it checks before use, and if necessary will renew it on demand. This does introduce a very small delay when this happens much like first use, but the impact is minimal and likely not even noticed if not explained. When debug is on, you will see this in process. So once authenticated, there is no furher authentication required for the duration of the session regardless of length.
   
