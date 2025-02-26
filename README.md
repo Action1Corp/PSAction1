@@ -1,7 +1,7 @@
 ![_Company_Logo](https://www.action1.com/wp-content/uploads/2022/02/action1-logo.svg)
 **Patch Management That Just Works**
   
-[**First 100 endpoints are free, fully featured, forever.**](https://www.action1.com/free)
+[**First 200 endpoints are free, fully featured, forever.**](https://www.action1.com/free)
 ***
 # PSAction1 - PowerShell interface to the Action1 API
 
