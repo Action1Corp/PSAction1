@@ -25,6 +25,7 @@ $Script:Action1_BaseURI = ''
 $Script:Action1_Default_Org
 $Script:Action1_DebugEnabled = $false
 $Script:Action1_Interactive = $false
+$Script:Action1_CVE_Lookup = @{}
 
 $URILookUp = @{
     G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
@@ -534,12 +535,18 @@ function Get-Action1 {
                         return $ret
                     }
                     { $_ -in @('Remediation', 'DeferredRemediation') } { 
+                        
                         $deploy = ConvertFrom-Json $RemediationTemplate
-                        $deploy.name = "External $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
+                        $deploy.name = "E$tempxternal $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
                         $deploy.actions[0].params.display_summary = "$For via external API call."
+                        $sbRefreshCVEList = {
+                            $Script:Action1_CVE_Lookup = @{}
+                            Debug-Host "Refreshing CVE list at $(Get-Date)"
+                            Get-Action1 Vulnerabilities | ForEach-Object{$Script:Action1_CVE_Lookup[$_.cve_id]=$_}
+                        }
                         $sbAddCVE = {
                             param([string]$CVE_ID) 
-                            $vul = ((Get-Action1 Vulnerabilities | Where-Object { $_.cve_id -eq $CVE_ID }).software).available_updates
+                            $vul = (($Script:Action1_CVE_Lookup[$CVE_ID]).software).available_updates
                             if ($null -eq $vul) {
                                 Write-Host "No patch for $CVE_ID found in Action1." -ForegroundColor Red
                             }
@@ -549,10 +556,10 @@ function Get-Action1 {
                                     $ver = $item.version
                                     $name = $item.name
                                     if (!($null -eq $this.actions.params.packages[0].$upd)) {
-                                        Debug-Host "$name has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
+                                        Debug-Host "$upd has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
                                     }
                                     else {
-                                        Debug-Host "Adding $name to the package list for $CVE_ID."
+                                        Debug-Host "Adding $upd to the package list for $CVE_ID."
                                         if ($null -eq $this.actions.params.packages[0].'default') {
                                             $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd = $ver }
                                         }
@@ -567,8 +574,10 @@ function Get-Action1 {
                         
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddCVE" -Value $sbAddCVE
                         $deploy | Add-Member -MemberType ScriptMethod -Name "AddEndpointGroup" -Value $sbAddEndpointGroup
+                        $deploy | Add-Member -MemberType ScriptMethod -Name "RefreshCVEList" -Value $sbRefreshCVEList
                         if ($_ -eq 'Deferredremediation') { $deploy | Add-Member -MemberType NoteProperty -Name "settings" -Value 'DISABLED' }
                         #$deploy.settings = "ENABLED ONCE AT:$((Get-Date).ToUniversalTime().AddMinutes(10).ToString("HH-mm-ss")) DATE:$((Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))"}
+                        $deploy.RefreshCVEList()
                         return $deploy
                     }
                     'DeploySoftware' {

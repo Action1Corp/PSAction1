@@ -23,7 +23,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.4.3'
+    ModuleVersion     = '1.4.4'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -38,7 +38,7 @@
     CompanyName       = 'Action1 Corporation'
 
     # Copyright statement for this module
-    Copyright         = '(c) 2024 Action1 Corporation. All rights reserved.'
+    Copyright         = '(c) 2025 Action1 Corporation. All rights reserved.'
 
     # Description of the functionality provided by this module
     Description       = 'API Interface for Action1'
@@ -122,7 +122,7 @@
             # LicenseUri = ''
 
             # A URL to the main website for this project.
-            # ProjectUri = 'https://github.com/Action1Corp/PSAction1'
+            ProjectUri = 'https://github.com/Action1Corp/PSAction1'
 
             # A URL to an icon representing this module.
             # IconUri = ''
