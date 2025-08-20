@@ -254,7 +254,10 @@ function Start-Action1PackageUpload {
         [Parameter(Mandatory)]
         [ValidateSet(
             'Windows_32',
-            'Windows_64'
+            'Windows_64',
+            'Windows_ARM64',
+            'Mac_IntelCPU',
+            'Mac_AppleSilicon'
         )]
         [String]$Platform,
         [int32]$BufferSize = 24Mb
@@ -868,4 +871,5 @@ function Start-Action1Requery {
         return PushData -Method POST -Path $Path.TrimEnd('/') -Label "Requery=>$Type"
     }
 }
+
 
