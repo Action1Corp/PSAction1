@@ -43,7 +43,7 @@ $URILookUp = @{
     G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID`?limit=9999" }
     G_Organizations        = { "/organizations" }
     G_Packages             = { "/packages/all?limit=9999" }
-    G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
+    G_PackageVersions      = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID`?fields=versions" }
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
     G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
     G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
@@ -260,15 +260,19 @@ function Start-Action1PackageUpload {
             'Mac_AppleSilicon'
         )]
         [String]$Platform,
-        [int32]$BufferSize = 24Mb
+        [int32]$BufferSize = 24Mb,
+        [String]$Org_ID = $Script:Action1_Default_Org
     )
-    $uri = "$Script:Action1_BaseURI/software-repository/all/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
+    $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
     Debug-Host "Base URI is $uri"
     $UploadTarget = ""
     Debug-Host "Uploading file: '$Filename'"
     Debug-Host "Writing in chunks of $BufferSize bytes."
     $FileData = [System.IO.File]::Open($Filename, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
-    if ($FileData.Length -lt $BufferSize) { $BufferSize = $FileData.Length; Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)" }
+    if ($FileData.Length -lt $BufferSize) {
+        $BufferSize = $FileData.Length
+        Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)" 
+    }
     $Buffer = New-Object byte[] $BufferSize
     $Place = 0
 
@@ -280,9 +284,20 @@ function Start-Action1PackageUpload {
         $Headers = $HeaderBase.Clone()
         $Headers.Add('X-Upload-Content-Length', $($FileData.Length))
         $Headers.Add('Content-Type', 'application/json')
-        if (CheckToken) { $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)"); Invoke-WebRequest -Uri $uri -Method Post -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue }
+        if (CheckToken) { 
+            $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)")
+            Invoke-WebRequest -Uri $uri -Method Post -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue 
+        }
     }
-    catch { $UploadTarget = $_.Exception.Response.Headers['X-Upload-Location'] } 
+    catch { 
+        try {
+            $UploadTarget = $_.Exception.Response.Headers['X-Upload-Location']
+        }
+        catch {
+           Write-Error "Error starting upload: $($_.Exception.Message)"
+           return $null
+        }
+    } 
     Debug-Host "Upload URI is $UploadTarget"
     while (($Read = $FileData.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
         $Headers = $HeaderBase.Clone()
@@ -290,15 +305,146 @@ function Start-Action1PackageUpload {
         $Headers.Add('Content-Length', "$($Read)")
         $Headers.Add('Content-Type', 'application/octet-stream')
         $Place += $Read
-        try { if (CheckToken) { $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)"); $response = Invoke-WebRequest -Method Put -UseBasicParsing -Uri $UploadTarget -Body $Buffer -Headers $Headers -ErrorAction SilentlyContinue } }
-        catch { Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" }
-        if (($FileData.Length - $Place) -lt $BufferSize) { $buffer = New-Object byte[] ($FileData.Length - $place) }
+        try { 
+            if (CheckToken) {
+                    $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)")
+                    $response = Invoke-WebRequest -Method Put -UseBasicParsing -Uri $UploadTarget -Body $Buffer -Headers $Headers -ErrorAction SilentlyContinue 
+                } 
+            }
+        catch { 
+            Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" 
+            if ($_.Exception.Response.StatusCode -eq '403') {
+                Debug-Host "Access denied. Requires permission: manage_software_repository."
+                return $null
+            }
+            if ($_.Exception.Response.StatusCode -eq '500') {
+                Debug-Host "Internal server error, attempting to continue upload."
+                [scriptblock] $ScriptBlock = {
+                    $resumePoint = Resume-Action1PackageUpload -Package_ID $Package_ID -Version_ID $Version_ID -Filename $Filename -Platform $Platform -UploadTarget $UploadTarget -BufferSize $BufferSize -Org_ID $Org_ID
+                    return $resumePoint
+                }
+                try {
+                    $Place = Invoke-WithRetries -ScriptBlock $ScriptBlock -MaxNumberOfAttempts 5 -MillisecondsToWaitBetweenAttempts 3000 -ExponentialBackoff $true
+                    Debug-Host "Setting position of filestream to byte $Place and resuming upload."
+                    $FileData.Seek($Place, [System.IO.SeekOrigin]::Begin) |  Out-Null
+                }
+                catch {
+                    throw "Failed to resume upload after multiple attempts."
+                }
+            }
+        }
+
+        if (($FileData.Length - $Place) -lt $BufferSize) { 
+            $buffer = New-Object byte[] ($FileData.Length - $place) 
+            Debug-Host "Remaining size is smaller than buffer size, adjusting to $($FileData.Length - $Place)"
+        }
+
         Debug-Host "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
-        if ($Buffer.Length -eq 0) { Debug-Host "Final Status:$($response.StatusCode)" }else { Debug-Host "Bytes Written: $($Buffer.Length)" }
+
+        if ($Buffer.Length -eq 0) { 
+            Debug-Host "Final Status:$($response.StatusCode)"
+        }
+        else { 
+            Debug-Host "Bytes Written: $($Buffer.Length)"
+        }
     }
     $FileData.Close()
 }
+function Resume-Action1PackageUpload {
+    param(
+        [Parameter(Mandatory)]
+        [String]$Package_ID,
+        [Parameter(Mandatory)]
+        [String]$Version_ID,
+        [Parameter(Mandatory)]
+        [String]$Filename,
+        [Parameter(Mandatory)]
+        [ValidateSet(
+            'Windows_32',
+            'Windows_64',
+            'Windows_ARM64',
+            'Mac_IntelCPU',
+            'Mac_AppleSilicon'
+        )]
+        [String]$Platform,
+        [Parameter(Mandatory)]
+        [int32]$UploadTarget,
+        [int32]$BufferSize = 24Mb,
+        [String]$Org_ID = $Script:Action1_Default_Org
+    )
+    if (CheckToken) {
+        $Headers = $HeaderBase.Clone()
+        $Headers.Add('Content-Range', "bytes */$($FileData.Length)")
+        $Headers.Add('Content-Length', "0")
+        $Headers.Add('Content-Type', 'application/octet-stream')
+        $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID/upload?platform=$Platform&upload_id=$UploadTarget"
+        Debug-Host "Querying server for resume point of: '$Filename' to $UploadTarget"
+        try {
+            if (CheckToken) {
+                $response = Invoke-WebRequest -Uri $uri -Method Put -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue 
+            }
+        }
+        catch {
+            if ($response.StatusCode -eq 308) {
+                Debug-Host "Resume point found, continuing upload."
+                return $response.Headers['Range'].Split('-')[1] -as [int]
+            }
+            elseif($response.StatusCode -eq 500) {
+                Debug-Host "Internal server error, attempting to continue upload."
+                throw
+            }
+            else {
+                Debug-Host "Error resuming upload: $($_.Exception.Message)"
+                throw
+            }
+        }
+    }
+}
+function Invoke-WithRetries {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNull()]
+    [scriptblock] $ScriptBlock,
 
+    [ValidateRange(1, [int]::MaxValue)]
+    [int] $MaxNumberOfAttempts = 5,
+
+    [ValidateRange(1, [int]::MaxValue)]
+    [int] $MillisecondsToWaitBetweenAttempts = 3000,
+
+    [ValidateRange(1, [int]::MaxValue)]
+    [int] $MaxMillisecondsToWait = 300000,
+
+    [bool] $ExponentialBackoff = $false
+
+  )
+
+  [int] $numberOfAttempts = 0
+  while ($true) {
+    try {
+      Invoke-Command -ScriptBlock $ScriptBlock
+      break 
+    } 
+    catch {
+      $numberOfAttempts++
+
+      [string] $errorMessage = $_.Exception.ToString()
+      [string] $errorDetails = $_.ErrorDetails
+      Debug-Host "Attempt number '$numberOfAttempts' of '$MaxNumberOfAttempts' failed.`nError: $errorMessage `nErrorDetails: $errorDetails"
+      if ($numberOfAttempts -ge $MaxNumberOfAttempts) {
+        throw
+    }
+      [int] $millisecondsToWait = $MillisecondsToWaitBetweenAttempts
+      if ($ExponentialBackoff) {
+        # Calculate exponential backoff time capped at MaxMillisecondsToWait
+        $millisecondsToWait = [System.Math]::Floor($MillisecondsToWaitBetweenAttempts * $numberOfAttempts,$MaxMillisecondsToWait)
+      }
+      Debug-Host "Waiting '$millisecondsToWait' milliseconds before next attempt."
+      Start-Sleep -Milliseconds $millisecondsToWait
+    }
+  }
+}
 
 function Debug-Host {
     param(
