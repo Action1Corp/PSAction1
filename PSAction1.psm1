@@ -42,8 +42,11 @@ $URILookUp = @{
     G_Me                   = { "/Me" }
     G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID`?limit=9999" }
     G_Organizations        = { "/organizations" }
+    G_Package              = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID" }
     G_Packages             = { "/packages/all?limit=9999" }
-    G_PackageVersions      = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID`?fields=versions" }
+    G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
+    G_SoftwareRepository   = { param($Org_ID) "/software-repository/$Org_ID" }
+    G_Versions             = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID`?fields=versions" }
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
     G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
     G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
@@ -58,12 +61,16 @@ $URILookUp = @{
     N_Remediation          = { param($Org_ID)  "/policies/instances/$Org_ID" }
     N_DeferredRemediation  = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
+    N_Package              = { param($Org_ID) "/software-repository/$Org_ID" }
+    N_Version              = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID/versions" }
     R_ReportData           = { param($Org_ID, $Object_ID) "/reportdata/$Org_ID/$Object_ID/requery" }
     R_InstalledSoftware    = { param($Org_ID, $Object_ID) "/apps/$Org_ID/requery/$Object_ID" }
     R_InstalledUpdates     = { param($Org_ID) "/updates/installed/$Org_ID/requery" }
     U_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
     U_GroupModify          = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
     U_GroupMembers         = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
+    U_Package              = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID" }
+    U_Version              = { param($Org_ID, $Package_ID, $Object_ID) "/software-repository/$Org_ID/$Package_ID/versions/$Object_ID" }
     U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
 }
 
@@ -291,14 +298,15 @@ function Start-Action1PackageUpload {
     }
     catch { 
         try {
-            $UploadTarget = $_.Exception.Response.Headers['X-Upload-Location']
+            $UploadTarget = $_.Exception.Response.Headers.GetValues('X-Upload-Location')[0]
         }
         catch {
            Write-Error "Error starting upload: $($_.Exception.Message)"
            return $null
         }
     } 
-    Debug-Host "Upload URI is $UploadTarget"
+    Debug-Host "Upload URI is $UploadTarget DOOOO DOOOO"
+   
     while (($Read = $FileData.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
         $Headers = $HeaderBase.Clone()
         $Headers.Add('Content-Range', "bytes $($Place)-$($($Place + $Read-1))/$($FileData.Length)")
@@ -306,6 +314,7 @@ function Start-Action1PackageUpload {
         $Headers.Add('Content-Type', 'application/octet-stream')
         $Place += $Read
         try { 
+            Debug-Host "Starting Upload of $($Buffer.Length) bytes at position $Place."
             if (CheckToken) {
                     $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)")
                     $response = Invoke-WebRequest -Method Put -UseBasicParsing -Uri $UploadTarget -Body $Buffer -Headers $Headers -ErrorAction SilentlyContinue 
@@ -313,14 +322,14 @@ function Start-Action1PackageUpload {
             }
         catch { 
             Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" 
-            if ($_.Exception.Response.StatusCode -eq '403') {
+            if ($_.Exception.Response.StatusCode.value -eq 403) {
                 Debug-Host "Access denied. Requires permission: manage_software_repository."
                 return $null
             }
-            if ($_.Exception.Response.StatusCode -eq '500') {
+            if ($_.Exception.Response.StatusCode.value -eq 500) {
                 Debug-Host "Internal server error, attempting to continue upload."
                 [scriptblock] $ScriptBlock = {
-                    $resumePoint = Resume-Action1PackageUpload -Package_ID $Package_ID -Version_ID $Version_ID -Filename $Filename -Platform $Platform -UploadTarget $UploadTarget -BufferSize $BufferSize -Org_ID $Org_ID
+                    $resumePoint = Resume-Action1PackageUpload -Package_ID $Package_ID -Version_ID $Version_ID -Filename $Filename -Platform $Platform -UploadTarget $UploadTarget.Split('=')[2] -BufferSize $BufferSize -Org_ID $Org_ID
                     return $resumePoint
                 }
                 try {
@@ -343,13 +352,44 @@ function Start-Action1PackageUpload {
 
         if ($Buffer.Length -eq 0) { 
             Debug-Host "Final Status:$($response.StatusCode)"
+            if ($response.StatusCode -eq 200) {
+                Debug-Host "Upload completed successfully."
+                $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID"
+                $file = Split-Path $Filename -leaf
+                }
+                if(CheckToken){
+                    $updatedVersion = DoGet -Path $uri -Label "Get Package Version $Version_ID"
+                }
+                
+                if($updatedVersion.file_name.Count -gt 0) {
+                    if ($null -ne $updatedVersion.file_name["$Platform"]) {
+                        $updatedVersion.file_name.$($Platform).name = "$file"
+                        $updatedVersion.file_name.$($Platform).type = "cloud"
+                        Debug-Host "$platform found, updating name to $file, and type to cloud."
+                    }
+                }
+                else {
+                    Debug-Host "$platform not found, creating new entry for $file."
+                    $updatedVersion.file_name += (@{"$Platform" = @{}})
+                    $updatedVersion.file_name.$($Platform) += @{
+                        "name" = "$file"
+                        "type" = "cloud"
+                    }
+                }
+                #
+                $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID"
+                $response = PushData -Method PATCH -Path $uri -Label "Update Package Version $Version_ID" -Body $updatedVersion
+                if ($response.StatusCode -eq 200) { Debug-Host "Package version $Version_ID updated successfully to reference uploaded file $file." }
+                else { Write-Error "Error updating package version $Version_ID to reference uploaded file $file." }
+            }
         }
         else { 
             Debug-Host "Bytes Written: $($Buffer.Length)"
         }
     }
     $FileData.Close()
-}
+
+
 function Resume-Action1PackageUpload {
     param(
         [Parameter(Mandatory)]
@@ -378,7 +418,7 @@ function Resume-Action1PackageUpload {
         $Headers.Add('Content-Length', "0")
         $Headers.Add('Content-Type', 'application/octet-stream')
         $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID/upload?platform=$Platform&upload_id=$UploadTarget"
-        Debug-Host "Querying server for resume point of: '$Filename' to $UploadTarget"
+        Debug-Host "Querying server for resume point of: '$Filename'upload."
         try {
             if (CheckToken) {
                 $response = Invoke-WebRequest -Uri $uri -Method Put -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue 
@@ -561,8 +601,11 @@ function Get-Action1 {
             'Logs',
             'MissingUpdates',
             'Organizations',
+            'Package',
             'Packages',
             'PackageVersions',
+            'SoftwareRepository',
+            'Versions',
             'Policy',
             'Policies',
             'PolicyResults',
@@ -858,6 +901,9 @@ function Get-Action1 {
                     Write-Output $Page
                     
                 }
+                'Versions' {
+                    Write-Output $page.versions
+                }
                 default { Write-Output $Page }
             }
         }                
@@ -873,11 +919,14 @@ function New-Action1 {
             'Automation',
             'Remediation',
             'DeferredRemediation',
-            'DeploySoftware'
+            'DeploySoftware',
+            'Package',
+            'Version'
         )]
         [string]$Item,
         [Parameter(Mandatory)]
-        [object]$Data                    
+        [object]$Data,
+        [string]$Object_ID                 
     )
     Debug-Host "Creating new $Item."
     if (CheckToken) {
@@ -885,9 +934,20 @@ function New-Action1 {
             if (!$URILookUp["N_$Item"].ToString().Contains("`$Org_ID")) {
                 $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"])
             }
-            else {
+            elseif(!$URILookUp["N_$Item"].ToString().Contains("`$Object_ID")) {
                 $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"] -Org_ID $(CheckOrg))
+            }
+            else {
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"] -Org_ID $(CheckOrg) -Object_ID $Object_ID)
             } 
+            switch ($Item) {
+                'Version' {
+                    $Data.PSObject.Members | ForEach-Object { if (@('id','type','self','binary_id','scoped_approvals') -contains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                }
+                'Package' {
+                    $Data.PSObject.Members | ForEach-Object { if (@('id','type','self','builtin','organization_id','platform','update_type','scope') -contains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                }
+            }
             return PushData -Method POST -Path $Path -Label $Item -Body $Data
         }
         catch {
@@ -911,11 +971,14 @@ function Update-Action1 {
             'EndpointGroup',
             'Endpoint',
             'Automation',
-            'CustomAttribute'
+            'CustomAttribute',
+            'Package',
+            'Version'
         )]
         [string]$Type,
         [object]$Data,
         [string]$Id,
+        [string]$Id2,  #Used for version updates where package ID is also required. TODO: change to hashtable?
         [string]$AttributeName,
         [string]$AttributeValue,
         [switch]$Force
@@ -953,6 +1016,16 @@ function Update-Action1 {
                         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupModify"] -Org_ID $(CheckOrg) -Object_Id $Id)
                         return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type"
                     }
+                    'Package' {
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Package"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                        $Data.PSObject.Members | ForEach-Object { if (@('id','type','self','builtin','organization_id','platform','update_type','scope') -contains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                        return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                    }
+                    'Version' {
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Version"] -Org_ID $(CheckOrg) -Object_Id $Id -Package_ID $Id2) 
+                        $Data.PSObject.Members | ForEach-Object { if (@('id','type','self','binary_id','scoped_approvals') -contains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                        return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                    }
                     default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
                 }   
             }
@@ -974,6 +1047,18 @@ function Update-Action1 {
                     'Automation' {
                         if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
                             $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                            return PushData -Method DELETE -Path $Path -Label "$Action=>$Type"
+                        }
+                    }
+                    'Package' {
+                        if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
+                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Package"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                            return PushData -Method DELETE -Path $Path -Label "$Action=>$Type"
+                        }
+                    }
+                    'Version' {
+                        if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
+                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Version"] -Org_ID $(CheckOrg) -Object_Id $Id -Package_ID $Id2) 
                             return PushData -Method DELETE -Path $Path -Label "$Action=>$Type"
                         }
                     }
