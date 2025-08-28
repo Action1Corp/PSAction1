@@ -438,18 +438,13 @@ function Invoke-WithRetries {
     [Parameter(Mandatory)]
     [ValidateNotNull()]
     [scriptblock] $ScriptBlock,
-
     [ValidateRange(1, [int]::MaxValue)]
     [int] $MaxNumberOfAttempts = 5,
-
     [ValidateRange(1, [int]::MaxValue)]
     [int] $MillisecondsToWaitBetweenAttempts = 3000,
-
     [ValidateRange(1, [int]::MaxValue)]
     [int] $MaxMillisecondsToWait = 300000,
-
     [bool] $ExponentialBackoff = $false
-
   )
 
   [int] $numberOfAttempts = 0
@@ -460,7 +455,6 @@ function Invoke-WithRetries {
     } 
     catch {
       $numberOfAttempts++
-
       [string] $errorMessage = $_.Exception.ToString()
       [string] $errorDetails = $_.ErrorDetails
       Debug-Host "Attempt number '$numberOfAttempts' of '$MaxNumberOfAttempts' failed.`nError: $errorMessage `nErrorDetails: $errorDetails"
@@ -641,7 +635,6 @@ function Get-Action1 {
         }
         else { 
             if ($Clone) {
-                if ($Query -ne 'Settings') { Write-Error "Clone flag only allowed for query type 'Setings.'`n"; return $null }
                 switch ($For) {
                     'EndpointGroup' {  
                         $Pull = Get-Action1 EndpointGroups | Where-Object { $_.id -eq ($Clone) }
@@ -833,13 +826,23 @@ function Get-Action1 {
         $arglist = @{}
         switch -Regex ($URILookUp["G_$Query"].ToString()) {
             '\$Package_ID' {
-                $arglist['Package_ID'] = $Id2;
+                if($null -ne $id2){
+                    $arglist['Package_ID'] = $Id2;
+                }
+                else{
+                    Write-Error "$Query requires that you specify a Package_ID with the Id2 parameter."
+                }
             }
             '\$Org_ID' {
                 $arglist['Org_ID'] = $(CheckOrg)
             }
             '\$Object_ID' {
-                $arglist['Object_ID'] = $Id
+                if($null -ne $id2){
+                    $arglist['Object_ID'] = $Id
+                }
+                else{
+                    Write-Error "$Query requires that you specify an Object_ID with the Id parameter."
+                }
             }
         }
         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] @arglist)
