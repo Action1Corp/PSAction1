@@ -47,6 +47,7 @@ $URILookUp = @{
     G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
     G_SoftwareRepository   = { param($Org_ID) "/software-repository/$Org_ID" }
     G_Versions             = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID`?fields=versions" }
+    G_Version              = { param($Org_ID, $Package_ID, $Object_ID) "/software-repository/$Org_ID/$Package_ID/versions/$Object_ID" }
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
     G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
     G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
@@ -305,7 +306,7 @@ function Start-Action1PackageUpload {
            return $null
         }
     } 
-    Debug-Host "Upload URI is $UploadTarget DOOOO DOOOO"
+    Debug-Host "Upload URI is $UploadTarget"
    
     while (($Read = $FileData.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
         $Headers = $HeaderBase.Clone()
@@ -354,33 +355,24 @@ function Start-Action1PackageUpload {
             Debug-Host "Final Status:$($response.StatusCode)"
             if ($response.StatusCode -eq 200) {
                 Debug-Host "Upload completed successfully."
-                $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID"
                 $file = Split-Path $Filename -leaf
+                $updatedVersion = Get-Action1 -Query Version -Id $Version_ID -Id2 $Package_ID
+                if($updatedVersion.file_name.PSobject.Properties.Name -contains $Platform){
+                    $updatedVersion.file_name.$Platform.name = $file
+                    $updatedVersion.file_name.$Platform.type = 'cloud'
                 }
-                if(CheckToken){
-                    $updatedVersion = DoGet -Path $uri -Label "Get Package Version $Version_ID"
-                }
-                
-                if($updatedVersion.file_name.Count -gt 0) {
-                    if ($null -ne $updatedVersion.file_name["$Platform"]) {
-                        $updatedVersion.file_name.$($Platform).name = "$file"
-                        $updatedVersion.file_name.$($Platform).type = "cloud"
-                        Debug-Host "$platform found, updating name to $file, and type to cloud."
+                else{
+                    Add-Member -InputObject $updatedVersion.file_name -TypeName NoteProperty -MemberType NoteProperty -Name $Platform -Value @{
+                        name = $file
+                        type = 'cloud'
                     }
                 }
+                If($null -ne (Update-Action1 -Type Version -Action Modify -Data $updatedVersion -Id $Version_ID -Id2 $Package_ID)) {
+                    Debug-Host "Package version $Version_ID updated successfully to reference uploaded file $file."
+                } 
                 else {
-                    Debug-Host "$platform not found, creating new entry for $file."
-                    $updatedVersion.file_name += (@{"$Platform" = @{}})
-                    $updatedVersion.file_name.$($Platform) += @{
-                        "name" = "$file"
-                        "type" = "cloud"
-                    }
+                    Write-Error "Error updating package version $Version_ID to reference uploaded file $file." 
                 }
-                #
-                $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID"
-                $response = PushData -Method PATCH -Path $uri -Label "Update Package Version $Version_ID" -Body $updatedVersion
-                if ($response.StatusCode -eq 200) { Debug-Host "Package version $Version_ID updated successfully to reference uploaded file $file." }
-                else { Write-Error "Error updating package version $Version_ID to reference uploaded file $file." }
             }
         }
         else { 
@@ -388,7 +380,7 @@ function Start-Action1PackageUpload {
         }
     }
     $FileData.Close()
-
+}
 
 function Resume-Action1PackageUpload {
     param(
@@ -606,6 +598,7 @@ function Get-Action1 {
             'PackageVersions',
             'SoftwareRepository',
             'Versions',
+            'Version',
             'Policy',
             'Policies',
             'PolicyResults',
@@ -620,6 +613,7 @@ function Get-Action1 {
         )]
         [String]$Query,
         [string]$Id,
+        [string]$Id2, #Secondary ID for nested objects such as versions under packages.
         #[int]$Limit,
         #[int]$From,
         [string]$URI,
@@ -836,27 +830,20 @@ function Get-Action1 {
         if ($Limit -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "limit=$Limit" }
         if ($From -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "from=$From" }
         #Add more URI arguments here?..
-        if (!$URILookUp["G_$Query"].ToString().Contains("`$Org_ID")) {
-            if (!$URILookUp["G_$Query"].ToString().Contains("`$Object_ID")) {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"])
+        $arglist = @{}
+        switch -Regex ($URILookUp["G_$Query"].ToString()) {
+            '\$Package_ID' {
+                $arglist['Package_ID'] = $Id2;
             }
-            else {
-                if ($Id) {
-                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Object_ID $Id)
-                }
-                else {
-                    Write-Error 'This options requires that you specify an Object_ID.'
-                }
+            '\$Org_ID' {
+                $arglist['Org_ID'] = $(CheckOrg)
+            }
+            '\$Object_ID' {
+                $arglist['Object_ID'] = $Id
             }
         }
-        else {
-            if ($Id) {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(CheckOrg) -Object_ID $Id)
-            }
-            else {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(CheckOrg))
-            }
-        } 
+        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] @arglist)
+
         if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs -Raw } else { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs }
         if ($Page.items) {
             switch -Wildcard ($Query) {
