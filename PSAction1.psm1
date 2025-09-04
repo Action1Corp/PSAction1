@@ -42,8 +42,12 @@ $URILookUp = @{
     G_Me                   = { "/Me" }
     G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID`?limit=9999" }
     G_Organizations        = { "/organizations" }
+    G_Package              = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID" }
     G_Packages             = { "/packages/all?limit=9999" }
     G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
+    G_SoftwareRepository   = { param($Org_ID) "/software-repository/$Org_ID" }
+    G_Versions             = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID`?fields=versions" }
+    G_Version              = { param($Org_ID, $Package_ID, $Object_ID) "/software-repository/$Org_ID/$Package_ID/versions/$Object_ID" }
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
     G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
     G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
@@ -58,12 +62,16 @@ $URILookUp = @{
     N_Remediation          = { param($Org_ID)  "/policies/instances/$Org_ID" }
     N_DeferredRemediation  = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
+    N_Package              = { param($Org_ID) "/software-repository/$Org_ID" }
+    N_Version              = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID/versions" }
     R_ReportData           = { param($Org_ID, $Object_ID) "/reportdata/$Org_ID/$Object_ID/requery" }
     R_InstalledSoftware    = { param($Org_ID, $Object_ID) "/apps/$Org_ID/requery/$Object_ID" }
     R_InstalledUpdates     = { param($Org_ID) "/updates/installed/$Org_ID/requery" }
     U_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
     U_GroupModify          = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
     U_GroupMembers         = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
+    U_Package              = { param($Org_ID, $Object_ID) "/software-repository/$Org_ID/$Object_ID" }
+    U_Version              = { param($Org_ID, $Package_ID, $Object_ID) "/software-repository/$Org_ID/$Package_ID/versions/$Object_ID" }
     U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
 }
 
@@ -254,18 +262,25 @@ function Start-Action1PackageUpload {
         [Parameter(Mandatory)]
         [ValidateSet(
             'Windows_32',
-            'Windows_64'
+            'Windows_64',
+            'Windows_ARM64',
+            'Mac_IntelCPU',
+            'Mac_AppleSilicon'
         )]
         [String]$Platform,
-        [int32]$BufferSize = 24Mb
+        [int32]$BufferSize = 24Mb,
+        [String]$Org_ID = $Script:Action1_Default_Org
     )
-    $uri = "$Script:Action1_BaseURI/software-repository/all/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
+    $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
     Debug-Host "Base URI is $uri"
     $UploadTarget = ""
     Debug-Host "Uploading file: '$Filename'"
     Debug-Host "Writing in chunks of $BufferSize bytes."
     $FileData = [System.IO.File]::Open($Filename, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
-    if ($FileData.Length -lt $BufferSize) { $BufferSize = $FileData.Length; Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)" }
+    if ($FileData.Length -lt $BufferSize) {
+        $BufferSize = $FileData.Length
+        Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)" 
+    }
     $Buffer = New-Object byte[] $BufferSize
     $Place = 0
 
@@ -277,25 +292,185 @@ function Start-Action1PackageUpload {
         $Headers = $HeaderBase.Clone()
         $Headers.Add('X-Upload-Content-Length', $($FileData.Length))
         $Headers.Add('Content-Type', 'application/json')
-        if (CheckToken) { $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)"); Invoke-WebRequest -Uri $uri -Method Post -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue }
+        if (CheckToken) { 
+            $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)")
+            Invoke-WebRequest -Uri $uri -Method Post -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue 
+        }
     }
-    catch { $UploadTarget = $_.Exception.Response.Headers['X-Upload-Location'] } 
+    catch { 
+        try {
+            $UploadTarget = $_.Exception.Response.Headers.GetValues('X-Upload-Location')[0]
+        }
+        catch {
+           Write-Error "Error starting upload: $($_.Exception.Message)"
+           return $null
+        }
+    } 
     Debug-Host "Upload URI is $UploadTarget"
+   
     while (($Read = $FileData.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
         $Headers = $HeaderBase.Clone()
         $Headers.Add('Content-Range', "bytes $($Place)-$($($Place + $Read-1))/$($FileData.Length)")
         $Headers.Add('Content-Length', "$($Read)")
         $Headers.Add('Content-Type', 'application/octet-stream')
         $Place += $Read
-        try { if (CheckToken) { $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)"); $response = Invoke-WebRequest -Method Put -UseBasicParsing -Uri $UploadTarget -Body $Buffer -Headers $Headers -ErrorAction SilentlyContinue } }
-        catch { Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" }
-        if (($FileData.Length - $Place) -lt $BufferSize) { $buffer = New-Object byte[] ($FileData.Length - $place) }
+        try { 
+            Debug-Host "Starting Upload of $($Buffer.Length) bytes at position $Place."
+            if (CheckToken) {
+                    $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)")
+                    $response = Invoke-WebRequest -Method Put -UseBasicParsing -Uri $UploadTarget -Body $Buffer -Headers $Headers -ErrorAction SilentlyContinue 
+                } 
+            }
+        catch { 
+            Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" 
+            if ($_.Exception.Response.StatusCode.value -eq 403) {
+                Debug-Host "Access denied. Requires permission: manage_software_repository."
+                return $null
+            }
+            if ($_.Exception.Response.StatusCode.value -eq 500) {
+                Debug-Host "Internal server error, attempting to continue upload."
+                [scriptblock] $ScriptBlock = {
+                    $resumePoint = Resume-Action1PackageUpload -Package_ID $Package_ID -Version_ID $Version_ID -Filename $Filename -Platform $Platform -UploadTarget $UploadTarget.Split('=')[2] -BufferSize $BufferSize -Org_ID $Org_ID
+                    return $resumePoint
+                }
+                try {
+                    $Place = Invoke-WithRetries -ScriptBlock $ScriptBlock -MaxNumberOfAttempts 5 -MillisecondsToWaitBetweenAttempts 3000 -ExponentialBackoff $true
+                    Debug-Host "Setting position of filestream to byte $Place and resuming upload."
+                    $FileData.Seek($Place, [System.IO.SeekOrigin]::Begin) |  Out-Null
+                }
+                catch {
+                    throw "Failed to resume upload after multiple attempts."
+                }
+            }
+        }
+
+        if (($FileData.Length - $Place) -lt $BufferSize) { 
+            $buffer = New-Object byte[] ($FileData.Length - $place) 
+            Debug-Host "Remaining size is smaller than buffer size, adjusting to $($FileData.Length - $Place)"
+        }
+
         Debug-Host "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
-        if ($Buffer.Length -eq 0) { Debug-Host "Final Status:$($response.StatusCode)" }else { Debug-Host "Bytes Written: $($Buffer.Length)" }
+
+        if ($Buffer.Length -eq 0) { 
+            Debug-Host "Final Status:$($response.StatusCode)"
+            if ($response.StatusCode -eq 200) {
+                Debug-Host "Upload completed successfully."
+                $file = Split-Path $Filename -leaf
+                $updatedVersion = Get-Action1 -Query Version -Id $Version_ID -Id2 $Package_ID
+                if($updatedVersion.file_name.PSobject.Properties.Name -contains $Platform){
+                    $updatedVersion.file_name.$Platform.name = $file
+                    $updatedVersion.file_name.$Platform.type = 'cloud'
+                }
+                else{
+                    Add-Member -InputObject $updatedVersion.file_name -TypeName NoteProperty -MemberType NoteProperty -Name $Platform -Value @{
+                        name = $file
+                        type = 'cloud'
+                    }
+                }
+                If($null -ne (Update-Action1 -Type Version -Action Modify -Data $updatedVersion -Id $Version_ID -Id2 $Package_ID)) {
+                    Debug-Host "Package version $Version_ID updated successfully to reference uploaded file $file."
+                } 
+                else {
+                    Write-Error "Error updating package version $Version_ID to reference uploaded file $file." 
+                }
+            }
+        }
+        else { 
+            Debug-Host "Bytes Written: $($Buffer.Length)"
+        }
     }
     $FileData.Close()
 }
 
+function Resume-Action1PackageUpload {
+    param(
+        [Parameter(Mandatory)]
+        [String]$Package_ID,
+        [Parameter(Mandatory)]
+        [String]$Version_ID,
+        [Parameter(Mandatory)]
+        [String]$Filename,
+        [Parameter(Mandatory)]
+        [ValidateSet(
+            'Windows_32',
+            'Windows_64',
+            'Windows_ARM64',
+            'Mac_IntelCPU',
+            'Mac_AppleSilicon'
+        )]
+        [String]$Platform,
+        [Parameter(Mandatory)]
+        [int32]$UploadTarget,
+        [int32]$BufferSize = 24Mb,
+        [String]$Org_ID = $Script:Action1_Default_Org
+    )
+    if (CheckToken) {
+        $Headers = $HeaderBase.Clone()
+        $Headers.Add('Content-Range', "bytes */$($FileData.Length)")
+        $Headers.Add('Content-Length', "0")
+        $Headers.Add('Content-Type', 'application/octet-stream')
+        $uri = "$Script:Action1_BaseURI/software-repository/$Org_ID/$Package_ID/versions/$Version_ID/upload?platform=$Platform&upload_id=$UploadTarget"
+        Debug-Host "Querying server for resume point of: '$Filename'upload."
+        try {
+            if (CheckToken) {
+                $response = Invoke-WebRequest -Uri $uri -Method Put -UseBasicParsing -Headers $Headers -ErrorAction SilentlyContinue 
+            }
+        }
+        catch {
+            if ($response.StatusCode -eq 308) {
+                Debug-Host "Resume point found, continuing upload."
+                return $response.Headers['Range'].Split('-')[1] -as [int]
+            }
+            elseif($response.StatusCode -eq 500) {
+                Debug-Host "Internal server error, attempting to continue upload."
+                throw
+            }
+            else {
+                Debug-Host "Error resuming upload: $($_.Exception.Message)"
+                throw
+            }
+        }
+    }
+}
+function Invoke-WithRetries {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNull()]
+    [scriptblock] $ScriptBlock,
+    [ValidateRange(1, [int]::MaxValue)]
+    [int] $MaxNumberOfAttempts = 5,
+    [ValidateRange(1, [int]::MaxValue)]
+    [int] $MillisecondsToWaitBetweenAttempts = 3000,
+    [ValidateRange(1, [int]::MaxValue)]
+    [int] $MaxMillisecondsToWait = 300000,
+    [bool] $ExponentialBackoff = $false
+  )
+
+  [int] $numberOfAttempts = 0
+  while ($true) {
+    try {
+      Invoke-Command -ScriptBlock $ScriptBlock
+      break 
+    } 
+    catch {
+      $numberOfAttempts++
+      [string] $errorMessage = $_.Exception.ToString()
+      [string] $errorDetails = $_.ErrorDetails
+      Debug-Host "Attempt number '$numberOfAttempts' of '$MaxNumberOfAttempts' failed.`nError: $errorMessage `nErrorDetails: $errorDetails"
+      if ($numberOfAttempts -ge $MaxNumberOfAttempts) {
+        throw
+    }
+      [int] $millisecondsToWait = $MillisecondsToWaitBetweenAttempts
+      if ($ExponentialBackoff) {
+        # Calculate exponential backoff time capped at MaxMillisecondsToWait
+        $millisecondsToWait = [System.Math]::Floor($MillisecondsToWaitBetweenAttempts * $numberOfAttempts,$MaxMillisecondsToWait)
+      }
+      Debug-Host "Waiting '$millisecondsToWait' milliseconds before next attempt."
+      Start-Sleep -Milliseconds $millisecondsToWait
+    }
+  }
+}
 
 function Debug-Host {
     param(
@@ -402,7 +577,7 @@ function Get-Action1 {
             'Automations',
             'AdvancedSettings',
             'Apps',
-            'CutomAttribute',
+            'CustomAttribute',
             'EndpointGroupMembers',
             'EndpointGroups',
             'Me',
@@ -412,8 +587,12 @@ function Get-Action1 {
             'Logs',
             'MissingUpdates',
             'Organizations',
+            'Package',
             'Packages',
             'PackageVersions',
+            'SoftwareRepository',
+            'Versions',
+            'Version',
             'Policy',
             'Policies',
             'PolicyResults',
@@ -428,6 +607,7 @@ function Get-Action1 {
         )]
         [String]$Query,
         [string]$Id,
+        [string]$Id2, #Secondary ID for nested objects such as versions under packages.
         #[int]$Limit,
         #[int]$From,
         [string]$URI,
@@ -455,7 +635,6 @@ function Get-Action1 {
         }
         else { 
             if ($Clone) {
-                if ($Query -ne 'Settings') { Write-Error "Clone flag only allowed for query type 'Setings.'`n"; return $null }
                 switch ($For) {
                     'EndpointGroup' {  
                         $Pull = Get-Action1 EndpointGroups | Where-Object { $_.id -eq ($Clone) }
@@ -644,27 +823,30 @@ function Get-Action1 {
         if ($Limit -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "limit=$Limit" }
         if ($From -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "from=$From" }
         #Add more URI arguments here?..
-        if (!$URILookUp["G_$Query"].ToString().Contains("`$Org_ID")) {
-            if (!$URILookUp["G_$Query"].ToString().Contains("`$Object_ID")) {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"])
-            }
-            else {
-                if ($Id) {
-                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Object_ID $Id)
+        $arglist = @{}
+        switch -Regex ($URILookUp["G_$Query"].ToString()) {
+            '\$Package_ID' {
+                if($null -ne $id2){
+                    $arglist['Package_ID'] = $Id2;
                 }
-                else {
-                    Write-Error 'This options requires that you specify an Object_ID.'
+                else{
+                    Write-Error "$Query requires that you specify a Package_ID with the Id2 parameter."
+                }
+            }
+            '\$Org_ID' {
+                $arglist['Org_ID'] = $(CheckOrg)
+            }
+            '\$Object_ID' {
+                if($null -ne $id2){
+                    $arglist['Object_ID'] = $Id
+                }
+                else{
+                    Write-Error "$Query requires that you specify an Object_ID with the Id parameter."
                 }
             }
         }
-        else {
-            if ($Id) {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(CheckOrg) -Object_ID $Id)
-            }
-            else {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(CheckOrg))
-            }
-        } 
+        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] @arglist)
+
         if ($Rawlist.Contains($Query)) { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs -Raw } else { $Page = DoGet -Path $Path -Label $Query -AddArgs $AddArgs }
         if ($Page.items) {
             switch -Wildcard ($Query) {
@@ -709,6 +891,9 @@ function Get-Action1 {
                     Write-Output $Page
                     
                 }
+                'Versions' {
+                    Write-Output $page.versions
+                }
                 default { Write-Output $Page }
             }
         }                
@@ -724,11 +909,14 @@ function New-Action1 {
             'Automation',
             'Remediation',
             'DeferredRemediation',
-            'DeploySoftware'
+            'DeploySoftware',
+            'Package',
+            'Version'
         )]
         [string]$Item,
         [Parameter(Mandatory)]
-        [object]$Data                    
+        [object]$Data,
+        [string]$Object_ID                 
     )
     Debug-Host "Creating new $Item."
     if (CheckToken) {
@@ -736,9 +924,20 @@ function New-Action1 {
             if (!$URILookUp["N_$Item"].ToString().Contains("`$Org_ID")) {
                 $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"])
             }
-            else {
+            elseif(!$URILookUp["N_$Item"].ToString().Contains("`$Object_ID")) {
                 $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"] -Org_ID $(CheckOrg))
+            }
+            else {
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"] -Org_ID $(CheckOrg) -Object_ID $Object_ID)
             } 
+            switch ($Item) {
+                'Version' {
+                    $Data.PSObject.Members | ForEach-Object { if (@('id','type','self','binary_id','scoped_approvals') -contains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                }
+                'Package' {
+                    $Data.PSObject.Members | ForEach-Object { if (@('id','type','self','builtin','organization_id','platform','update_type','scope') -contains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                }
+            }
             return PushData -Method POST -Path $Path -Label $Item -Body $Data
         }
         catch {
@@ -762,11 +961,14 @@ function Update-Action1 {
             'EndpointGroup',
             'Endpoint',
             'Automation',
-            'CustomAttribute'
+            'CustomAttribute',
+            'Package',
+            'Version'
         )]
         [string]$Type,
         [object]$Data,
         [string]$Id,
+        [string]$Id2,  #Used for version updates where package ID is also required. TODO: change to hashtable?
         [string]$AttributeName,
         [string]$AttributeValue,
         [switch]$Force
@@ -804,6 +1006,16 @@ function Update-Action1 {
                         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupModify"] -Org_ID $(CheckOrg) -Object_Id $Id)
                         return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type"
                     }
+                    'Package' {
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Package"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                        $Data.PSObject.Members | ForEach-Object { if (@('id','type','self','builtin','organization_id','platform','update_type','scope') -contains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                        return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                    }
+                    'Version' {
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Version"] -Org_ID $(CheckOrg) -Object_Id $Id -Package_ID $Id2) 
+                        $Data.PSObject.Members | ForEach-Object { if (@('id','type','self','binary_id','scoped_approvals') -contains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                        return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                    }
                     default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
                 }   
             }
@@ -825,6 +1037,18 @@ function Update-Action1 {
                     'Automation' {
                         if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
                             $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                            return PushData -Method DELETE -Path $Path -Label "$Action=>$Type"
+                        }
+                    }
+                    'Package' {
+                        if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
+                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Package"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                            return PushData -Method DELETE -Path $Path -Label "$Action=>$Type"
+                        }
+                    }
+                    'Version' {
+                        if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
+                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Version"] -Org_ID $(CheckOrg) -Object_Id $Id -Package_ID $Id2) 
                             return PushData -Method DELETE -Path $Path -Label "$Action=>$Type"
                         }
                     }
@@ -868,4 +1092,5 @@ function Start-Action1Requery {
         return PushData -Method POST -Path $Path.TrimEnd('/') -Label "Requery=>$Type"
     }
 }
+
 
