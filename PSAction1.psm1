@@ -577,7 +577,7 @@ function Get-Action1 {
             'Automations',
             'AdvancedSettings',
             'Apps',
-            'CutomAttribute',
+            'CustomAttribute',
             'EndpointGroupMembers',
             'EndpointGroups',
             'Me',
