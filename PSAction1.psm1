@@ -50,7 +50,7 @@ $URILookUp = @{
     G_ReportData           = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/data" }
     G_ReportExport         = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
     G_Reports              = { "/reports/all" } 
-    G_Scripts              = { param($Org_ID) "/scripts/$Org_ID" } 
+    G_Scripts              = { "/scripts/all" } 
     G_Vulnerabilities      = { param($Org_ID) "/Vulnerabilities/$Org_ID`?limit=9999" }
     N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
@@ -231,10 +231,10 @@ function DoGet {
         if ($AddArgs) { $Path += "?{0}" -f $AddArgs }
         Debug-Host "GET request to $Path : Raw flag is $Raw"
         if ($Raw) {
-            return (Invoke-WebRequest -Uri $Path -Method GET -UseBasicParsing -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content
+            return (Invoke-WebRequest -Uri $Path -Method GET -UseBasicParsing -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json; charset=utf-8' }).Content
         }
         else { 
-            return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method GET -UseBasicParsing -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content ) 
+            return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method GET -UseBasicParsing -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json; charset=utf-8' }).Content ) 
         } 
     }
     catch [System.Net.WebException] {
@@ -323,7 +323,7 @@ function PushData {
     try {
         Debug-Host "$Method request to $Path."
         if ($data) { Debug-Host "Data to be sent:`n $(ConvertTo-Json -InputObject $Body -Depth 10)" }
-        return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method $Method -UseBasicParsing -Body (ConvertTo-Json -InputObject $Body -Depth 10) -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json' }).Content)
+        return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method $Method -UseBasicParsing -Body (ConvertTo-Json -InputObject $Body -Depth 10) -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json; charset=utf-8' }).Content)
     }
     catch [System.Net.WebException] {
         Write-Error "Error processing $($Label): $($_)"
@@ -447,7 +447,7 @@ function Get-Action1 {
         [string]$Clone
     )
     #Short out processing path if URI literal is specified.
-    if ($Query -eq 'RawURI') { if (!$URI) { Write-Error "Error -URI value required when Query is type URI.`n"; return $null }else { if (CheckToken) { return DoGet -Path $URI -Label $Query } } }
+    if ($Query -eq 'RawURI') { if (!$URI) { Write-Error "Error -URI value required when Query is type RawURI.`n"; return $null }else { if (CheckToken) { return DoGet -Path $URI -Label $Query } } }
     # Retrieve settings objects for post/patch actions.
     if ($Query -eq 'Settings') {
         if (!$For) { 
@@ -724,13 +724,17 @@ function New-Action1 {
             'Automation',
             'Remediation',
             'DeferredRemediation',
-            'DeploySoftware'
+            'DeploySoftware',
+            'RawURI'
         )]
         [string]$Item,
+        [string]$URI,
         [Parameter(Mandatory)]
         [object]$Data                    
     )
-    Debug-Host "Creating new $Item."
+        Debug-Host "Creating new $Item."
+    #Short out processing path if URI literal is specified.
+    if ($Item -eq 'RawURI') { if (!$URI) { Write-Error "Error -URI value required when Action is type RawURI.`n"; return $null }else { if (CheckToken) { return PushData -Path $URI -Method POST -Body $Data -Label 'RawRequest'} } }
     if (CheckToken) {
         try {
             if (!$URILookUp["N_$Item"].ToString().Contains("`$Org_ID")) {
@@ -762,16 +766,20 @@ function Update-Action1 {
             'EndpointGroup',
             'Endpoint',
             'Automation',
-            'CustomAttribute'
+            'CustomAttribute',
+            'RawURI'
         )]
         [string]$Type,
         [object]$Data,
         [string]$Id,
         [string]$AttributeName,
         [string]$AttributeValue,
+        [string]$URI,
         [switch]$Force
     )
     Debug-Host "Trying update for $Action => $Type."
+    #Short out processing path if URI literal is specified.
+    if ($Type -eq 'RawURI') { if (!$URI) { Write-Error "Error -URI value required when Action is type RawURI.`n"; return $null }else { if (CheckToken) { return PushData -Path $URI -Method PATCH -Body $Data -Label 'RawRequest'} } }
     if (CheckToken) {
         switch ($Action) {
             'ModifyMembers' {
@@ -792,7 +800,7 @@ function Update-Action1 {
                     }
                     'CustomAttribute' {
                         $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                        $Data = New-Object psobject -Property @{"custom:$AttributeName" = $AttributeValue; }
+                        $Data = New-Object psobject -Property @{"custom:$AttributeName" = $AttributeValue }
                         return PushData -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
                     }
                     'Endpoint' { 
