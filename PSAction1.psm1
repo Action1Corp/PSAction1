@@ -34,7 +34,7 @@ $URILookUp = @{
     G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?limit=9999&from=0&endpoint_id=$Object_ID" }
     G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
     G_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }
+    G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID`?limit=9999" }
     G_EndpointApps         = { param($Org_ID, $Object_ID) "/apps/$Org_ID/data/$Object_ID" }
     G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
     G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
