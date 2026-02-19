@@ -31,18 +31,18 @@ $URILookUp = @{
     G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
     G_AgentDepoyment       = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
     G_Apps                 = { param($Org_ID) "/apps/$Org_ID/data" }
-    G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?limit=9999&from=0&endpoint_id=$Object_ID" }
+    G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?endpoint_id=$Object_ID" }
     G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
     G_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID`?limit=9999" }
+    G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }
     G_EndpointApps         = { param($Org_ID, $Object_ID) "/apps/$Org_ID/data/$Object_ID" }
     G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
     G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
     G_Logs                 = { param($Org_ID) "/logs/$Org_ID" }
     G_Me                   = { "/Me" }
-    G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID`?limit=9999" }
+    G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID" }
     G_Organizations        = { "/organizations" }
-    G_Packages             = { "/packages/all?limit=9999" }
+    G_Packages             = { "/packages/all" }
     G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
     G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
@@ -51,7 +51,7 @@ $URILookUp = @{
     G_ReportExport         = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
     G_Reports              = { "/reports/all" } 
     G_Scripts              = { "/scripts/all" } 
-    G_Vulnerabilities      = { param($Org_ID) "/Vulnerabilities/$Org_ID`?limit=9999" }
+    G_Vulnerabilities      = { param($Org_ID) "/Vulnerabilities/$Org_ID" }
     N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
     N_Organization         = { "/organizations" }
@@ -428,7 +428,7 @@ function Get-Action1 {
         )]
         [String]$Query,
         [string]$Id,
-        #[int]$Limit,
+        [int]$Limit,
         #[int]$From,
         [string]$URI,
         [ValidateSet(
@@ -641,8 +641,9 @@ function Get-Action1 {
         }
         $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object { $_.name -eq $name }).value }
 
-        if ($Limit -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "limit=$Limit" }
-        if ($From -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "from=$From" }
+        if ($null -eq $Limit){$Limit=200}
+        if ($Limit -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "limit=$Limit"}else{$AddArgs = BuildArgs -In $AddArgs -Add "limit=200"}
+        #if ($From -gt 0) { $AddArgs = BuildArgs -In $AddArgs -Add "from=$From" }
         #Add more URI arguments here?..
         if (!$URILookUp["G_$Query"].ToString().Contains("`$Org_ID")) {
             if (!$URILookUp["G_$Query"].ToString().Contains("`$Object_ID")) {
