@@ -7,26 +7,92 @@
 
 :stop_sign: **IMPORTANT, READ CAREFULLY!** _The module provided and outlined here along with examples are for an convenience. Though care has been taken to provide proper function and no adverse effects, each environment can be different. Carefully read, understand, and test before using in production, executing it on a test environment first. It is the responsibility of you, the user, to ensure all use function behaves as expected and creates no adverse conditions. Your use implies you have read and accept these conditions._
 
-## Install from PowerShell Gallery
-Once installed from the PowerShell gallery, this module will remain resident and does not have to be explicitly imported on each execution.
+## Installation from PowerShell Gallery
+
+ - Run PowerShell console as the local machine **administrator**
+
+![Run PowerShell as administrator](docs/pictures/Run_PS_as_administartor.jpg)
+
+ - Click **Yes** on User Access Control window. Microsoft is the trusted verified publisher
+
+![UAC](docs/pictures/UAC_trust_verified_publisher.jpg)
+
+ - Check and update if needed PowerShell script execution policy to allow running PowerShell scripts on your machine
+
+```PowerShell
+
+PS C:\> Get-ExecutionPolicy
+
+```
+
+![Get-ExecutionPolicy](docs/pictures/get-executionpolicy.jpg)
+
+```PowerShell
+
+PS C:\> Set-ExecutionPolicy RemoteSigned
+
+```
+
+![Set-ExecutionPolicy](docs/pictures/set-executionpolicy.jpg)
+
+ - Install the module **PSAction1**
+
 ```PowerShell
 
 PS C:\> Install-Module PSAction1
 
 ```
 
-## Install manually
+- Agree to install or update NuGet provider version required to install any packages from the PS Gallery
+- Add [PSGallery](https://www.PowerShellgallery.com) as a trusted PowerShell repository
 
-If you would prefer to review the code prior to use you can download the module and put it manually in your `$PSModulePath`.  
-Download it from here for the latest builds, or the [PowerShell Gallery](https://www.PowerShellgallery.com/packages/PSAction1) for the lastest stable release.
-Then import it into your script's session, this will need to be done on each execution of your script, so it is advised to make this the first line of the script before any other code.  
-  
-:stop_sign: **Important:**  _Code downloaded here will be in active development, for maximum stability you should use the module from the PowerShell gallery. You should only use the latest build from Git if you are instructed to do so by support, curious, troubleshooting a specific issue, or just the curious sort of person._
+![Install Module](docs/pictures/install-module.jpg)
+
+  - Verify if the module is installed successfully
+
+```PowerShell
+
+PS C:\> Get-command -module PSAction1
+
+```
+ 
+![Check module commands](docs/pictures/check_module_commands.jpg)
+
+ - Import the module PSAction1. The import happens automatically on running any PowerShell command from installed module.
+
 ```PowerShell
 
 PS C:\> Import-Module PSAction1
 
 ```
+
+![Import Module](docs/pictures/import-module.jpg)
+
+Once installed from the PowerShell gallery, this module will remain resident and does not have to be explicitly installed on each PowerShell console execution or machine reboot.
+
+## Manual Installation
+
+If you would prefer to review the code prior to use you can download the module and put it manually in your `$PSModulePath`.  
+Download it from here for the latest builds, or the [PowerShell Gallery](https://www.PowerShellgallery.com/packages/PSAction1) for the latest stable release.
+Then import it into your script's session:
+
+```PowerShell
+
+try {
+    Import-Module PSAction1 -ErrorAction Stop
+}
+catch {
+    Write-Error "Module PSAction1 is required"
+    exit
+}
+
+Get-Action1
+
+```
+
+ This will need to be done on each execution of your script, so it is advised to make this the first line of the script before any other code.  
+  
+:stop_sign: **Important:**  _Code downloaded here will be in active development, for maximum stability you should use the module from the PowerShell gallery. You should only use the latest build from Git if you are instructed to do so by support, curious, troubleshooting a specific issue, or just the curious sort of person._
 
 ## Getting started
 
