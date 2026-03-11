@@ -367,13 +367,12 @@ function Set-Action1DefaultOrg {
 }
 
 function Set-Action1Locale {
-    [Obsolete("This function is deprecated. Use Set-Action1Region instead.")]
+    [Obsolete("Please use Set-Action1Region instead.")]
     param (
         [Parameter(Mandatory)]
         [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
         [String]$Region
     )
-    Write-Warning "Locale set, Note:Set-Action1Locale is being depreciated, please modify all scripts to use Set-Action1Region instead."
     Set-Action1Region -Region $Region
 }
 
