@@ -20,7 +20,11 @@
 $Script:Action1_APIKey
 $Script:Action1_Secret
 $Script:Action1_Token
-$script:Action1_Hosts = [ordered]@{'North America' = 'https://app.action1.com/api/3.0'; Europe = 'https://app.eu.action1.com/api/3.0'; Australia = 'https://app.au.action1.com/api/3.0' }
+$script:Action1_Hosts = [ordered]@{
+    NorthAmerica = 'https://app.action1.com/api/3.0'; 
+    Europe = 'https://app.eu.action1.com/api/3.0'; 
+    Australia = 'https://app.au.action1.com/api/3.0'
+}
 $Script:Action1_BaseURI = ''
 $Script:Action1_Default_Org
 $Script:Action1_DebugEnabled = $false
@@ -379,11 +383,7 @@ function Set-Action1Region {
         [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
         [String]$Region
     )
-    switch ($Region) {
-        NorthAmerica { $Script:Action1_BaseURI = "https://app.action1.com/api/3.0" }
-        Europe { $Script:Action1_BaseURI = "https://app.eu.action1.com/api/3.0" }
-        Australia { $Script:Action1_BaseURI = 'https://app.au.action1.com/api/3.0' }
-    }
+    $Script:Action1_BaseURI = $Script:Action1_Hosts[$Region]
 }
 
 function Set-Action1Interactive {
