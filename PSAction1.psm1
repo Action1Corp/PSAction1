@@ -29,7 +29,7 @@ $Script:Action1_CVE_Lookup = @{}
 
 $URILookUp = @{
     G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
-    G_AgentDepoyment       = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
+    G_AgentDeployment      = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
     G_Apps                 = { param($Org_ID) "/apps/$Org_ID/data" }
     G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?endpoint_id=$Object_ID" }
     G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
@@ -402,7 +402,7 @@ function Get-Action1 {
             'Automations',
             'AdvancedSettings',
             'Apps',
-            'CutomAttribute',
+            'CustomAttribute',
             'EndpointGroupMembers',
             'EndpointGroups',
             'Me',
@@ -421,7 +421,7 @@ function Get-Action1 {
             'ReportExport',
             'Reports',
             'Scripts',
-            'AgentDepoyment',
+            'AgentDeployment',
             'Vulnerabilities',
             'RawURI',
             'Settings'
