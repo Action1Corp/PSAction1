@@ -11,29 +11,15 @@
     </command:details>
     <maml:description>
       <maml:para>`Get-Action1` retrieves Action1 objects and data from the API, as well as helper templates used for creating or modifying resources.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Depending on the `-Query` value, the command can:</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>- Retrieve Action1 objects such as endpoints, policies, reports, packages, and automations.</maml:para>
       <maml:para>- Retrieve raw API responses.</maml:para>
       <maml:para>- Generate configuration templates used with other module commands such as `New-Action1` or `Update-Action1`.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>When `-Query Settings` is used, the function returns template objects for different Action1 resource types (for example, EndpointGroup, Automation, Remediation, DeploySoftware). These templates may include helper script methods that simplify modifying the object before sending it back to the API.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Pagination is handled automatically for long list queries.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Some returned Action1 objects include helper methods for convenience:</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>- PolicyResults objects include a `GetDetails()` method.</maml:para>
       <maml:para>- Endpoint -related objects include a `GetCustomAttribute()` method.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>The default Action1 organization is expected to be set in advance by `Set-Action1DefaultOrg`</maml:para>
     </maml:description>
     <command:syntax>
@@ -43,11 +29,7 @@
           <maml:name>Query</maml:name>
           <maml:description>
             <maml:para>Specifies the type of Action1 object or dataset to retrieve.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Accepted values:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - AutomationInstances</maml:para>
             <maml:para> - Automations</maml:para>
             <maml:para> - AdvancedSettings</maml:para>
@@ -116,8 +98,6 @@
           <maml:name>Id</maml:name>
           <maml:description>
             <maml:para>Specifies the identifier of the Action1 object to retrieve.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Used for queries that return a specific Action1 resource instance.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -131,8 +111,6 @@
           <maml:name>Limit</maml:name>
           <maml:description>
             <maml:para>Specifies the maximum number of records requested per API call.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>This parameter maps to the API limit query argument and can be used to control page size when retrieving large datasets.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
@@ -146,8 +124,6 @@
           <maml:name>URI</maml:name>
           <maml:description>
             <maml:para>Specifies a literal API path.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Required when `-Query RawURI` is used.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -161,11 +137,7 @@
           <maml:name>For</maml:name>
           <maml:description>
             <maml:para>Specifies the Action1 resource type when retrieving Action1 template objects using `-Query Settings`.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Accepted values:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Automation</maml:para>
             <maml:para> - Endpoint</maml:para>
             <maml:para> - EndpointGroup</maml:para>
@@ -200,8 +172,6 @@
           <maml:name>Clone</maml:name>
           <maml:description>
             <maml:para>Specifies the ID of an existing Action1 object to clone when generating templates.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>This parameter is only valid when `-Query Settings` is used.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -218,11 +188,7 @@
         <maml:name>Query</maml:name>
         <maml:description>
           <maml:para>Specifies the type of Action1 object or dataset to retrieve.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Accepted values:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - AutomationInstances</maml:para>
           <maml:para> - Automations</maml:para>
           <maml:para> - AdvancedSettings</maml:para>
@@ -262,8 +228,6 @@
         <maml:name>Id</maml:name>
         <maml:description>
           <maml:para>Specifies the identifier of the Action1 object to retrieve.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Used for queries that return a specific Action1 resource instance.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -277,8 +241,6 @@
         <maml:name>URI</maml:name>
         <maml:description>
           <maml:para>Specifies a literal API path.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Required when `-Query RawURI` is used.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -292,11 +254,7 @@
         <maml:name>For</maml:name>
         <maml:description>
           <maml:para>Specifies the Action1 resource type when retrieving Action1 template objects using `-Query Settings`.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Accepted values:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Automation</maml:para>
           <maml:para> - Endpoint</maml:para>
           <maml:para> - EndpointGroup</maml:para>
@@ -319,8 +277,6 @@
         <maml:name>Clone</maml:name>
         <maml:description>
           <maml:para>Specifies the ID of an existing Action1 object to clone when generating templates.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>This parameter is only valid when `-Query Settings` is used.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -334,8 +290,6 @@
         <maml:name>Limit</maml:name>
         <maml:description>
           <maml:para>Specifies the maximum number of records requested per API call.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>This parameter maps to the API limit query argument and can be used to control page size when retrieving large datasets.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
@@ -369,14 +323,8 @@
     <maml:alertSet>
       <maml:alert>
         <maml:para>Requires valid API credentials set with `Set-Action1Credentials`</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>The default Action1 organization is expected to be set in advance via `Set-Action1DefaultOrg`</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Pagination is automatically processed for long list queries.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Some queries return raw API responses while others return processed objects with helper methods.</maml:para>
       </maml:alert>
     </maml:alertSet>
@@ -461,15 +409,9 @@
     </command:details>
     <maml:description>
       <maml:para>`New-Action1` creates a new object in the remote API using a POST request.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>The type of object being created is specified by the Item parameter.</maml:para>
       <maml:para>Depending on the selected item type, the function automatically determines the correct API endpoint using the module's internal URI lookup table.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>If `Item` is set to RawURI , the request is sent directly to the URI specified by the URI parameter, bypassing the internal lookup logic.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>The command requires valid authentication credentials and a valid access token. Use `Set-Action1Credentials` and any required authentication commands before calling this function.</maml:para>
     </maml:description>
     <command:syntax>
@@ -479,29 +421,13 @@
           <maml:name>Item</maml:name>
           <maml:description>
             <maml:para>Specifies the type of object to create.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Valid values are:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - EndpointGroup</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Organization</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Automation</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Remediation</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - DeferredRemediation</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - DeploySoftware</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - RawURI</maml:para>
           </maml:description>
           <command:parameterValueGroup>
@@ -524,8 +450,6 @@
           <maml:name>URI</maml:name>
           <maml:description>
             <maml:para>Specifies the API endpoint path when Item is set to `RawURI`.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>This parameter is ignored for other item types because the function determines the URI automatically.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -555,29 +479,13 @@
         <maml:name>Item</maml:name>
         <maml:description>
           <maml:para>Specifies the type of object to create.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Valid values are:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - EndpointGroup</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Organization</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Automation</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Remediation</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - DeferredRemediation</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - DeploySoftware</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - RawURI</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -591,8 +499,6 @@
         <maml:name>URI</maml:name>
         <maml:description>
           <maml:para>Specifies the API endpoint path when Item is set to `RawURI`.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>This parameter is ignored for other item types because the function determines the URI automatically.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -639,17 +545,9 @@
     <maml:alertSet>
       <maml:alert>
         <maml:para>This function:</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Uses the module's internal URI lookup table to determine API endpoints.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Requires a valid Action1 authentication token previously specified by `Set-Action1Credentials`.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Sends data using an HTTP POST request.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>If the `RawURI` item type is used, the valid `URI` value must be supplied.</maml:para>
       </maml:alert>
     </maml:alertSet>
@@ -884,8 +782,6 @@
     </command:details>
     <maml:description>
       <maml:para>Stores the specified Action1 organization ID in a script scope variable used by other commands in the module. Once set, the value can be reused by commands that require an organization identifier, so it does not need to be specified repeatedly.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>The value is stored only for the duration of the current PowerShell session.</maml:para>
     </maml:description>
     <command:syntax>
@@ -967,14 +863,8 @@
     </command:details>
     <maml:description>
       <maml:para>Enables or disables interactive mode for the current PowerShell session.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>When interactive mode is enabled, the PSAction1 module will prompt for the required variable values that have not been set. This helps guide users through configuration when running commands that depend on module-level variables.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>When interactive mode is disabled, commands will not prompt for missing values and may fail if required variables are not set.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Action1 interactive setting is stored in a script-scoped variable and applies only to the current PowerShell session.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1062,12 +952,8 @@
     </command:details>
     <maml:description>
       <maml:para>This function is deprecated. `Set-Locale` previously configured the locale(region) used by the PSAction1 module for API requests and regional formatting.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>This command is retained for backward compatibility but will be removed in a</maml:para>
       <maml:para>future version of the PSAction1 module.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Please use the `Set-Action1Region` command instead.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1128,8 +1014,6 @@
     <maml:alertSet>
       <maml:alert>
         <maml:para>This command is deprecated and will be removed in a future version.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Use Set-Action1Region instead.</maml:para>
       </maml:alert>
     </maml:alertSet>
@@ -1167,12 +1051,8 @@
     </command:details>
     <maml:description>
       <maml:para>`Set-Action1Region` configures the base API endpoint used by the module for all subsequent requests.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Different Action1 regions correspond to different service API endpoints.</maml:para>
       <maml:para>This command updates the internal script scope variable so that all module commands send requests to the correct regional API endpoint.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Run this command before executing other commands in the module to ensure a specific regional environment is targeted.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1182,17 +1062,9 @@
           <maml:name>Region</maml:name>
           <maml:description>
             <maml:para>Specifies the API region to use.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Supported values are:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - NorthAmerica</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Europe</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Australia</maml:para>
           </maml:description>
           <command:parameterValueGroup>
@@ -1214,17 +1086,9 @@
         <maml:name>Region</maml:name>
         <maml:description>
           <maml:para>Specifies the API region to use.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Supported values are:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - NorthAmerica</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Europe</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Australia</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1258,8 +1122,6 @@
     <maml:alertSet>
       <maml:alert>
         <maml:para>This command must typically be executed before making API requests so that PSAction1 module communicates with the correct regional service endpoint.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>The selected region affects all subsequent commands in the current PowerShell session.</maml:para>
       </maml:alert>
     </maml:alertSet>
@@ -1301,7 +1163,6 @@
       <maml:para>`Start-Action1PackageUpload` uploads an Action1 package file to the remote software repository for a specific package version.</maml:para>
       <maml:para>The upload `Platform` must be specified as `Windows_32` or `Windows_64`.</maml:para>
       <maml:para>The upload is performed using a resumable chunked upload process . Chunked uploads allow large files to be transferred reliably and provide progress feedback during the upload process. The chunk size can be controlled using the `BufferSize` parameter (default is 24MB).</maml:para>
-      <maml:para></maml:para>
       <maml:para>This command requires a valid Action1 API authentication token (set earlier in the session). See `Set-Action1Credentials`.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1347,11 +1208,7 @@
           <maml:name>Platform</maml:name>
           <maml:description>
             <maml:para>Target platform for the package upload.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Valid values:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Windows_32</maml:para>
             <maml:para> - Windows_64</maml:para>
           </maml:description>
@@ -1370,11 +1227,7 @@
           <maml:name>BufferSize</maml:name>
           <maml:description>
             <maml:para>Size of the upload chunk buffer in bytes.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Larger buffers reduce the number of HTTP requests but increase memory usage.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Default value: 24 MB .</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
@@ -1427,11 +1280,7 @@
         <maml:name>Platform</maml:name>
         <maml:description>
           <maml:para>Target platform for the package upload.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Valid values:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Windows_32</maml:para>
           <maml:para> - Windows_64</maml:para>
         </maml:description>
@@ -1446,11 +1295,7 @@
         <maml:name>BufferSize</maml:name>
         <maml:description>
           <maml:para>Size of the upload chunk buffer in bytes.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Larger buffers reduce the number of HTTP requests but increase memory usage.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Default value: 24 MB .</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
@@ -1484,11 +1329,7 @@
     <maml:alertSet>
       <maml:alert>
         <maml:para>Requires a valid authentication token in the current session.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>The upload is performed using a resumable chunked transfer mechanism.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Progress information is displayed through Debug-Host messages.</maml:para>
       </maml:alert>
     </maml:alertSet>
@@ -1527,26 +1368,14 @@
     <maml:description>
       <maml:para>`Start-Action1Requery` triggers a requery request to the API to refresh specific datasets.</maml:para>
       <maml:para>Depending on the selected Type , the command may operate either organization-wide or for a specific endpoint.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>The default organization must be set in advance via `Set-Action1DefaultOrg`.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>This command sends a POST request to the appropriate API endpoint and instructs the service to regenerate or refresh the requested data.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Supported requery types include:</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>- ReportData - Regenerates report-related data.</maml:para>
       <maml:para>- InstalledSoftware - Refreshes installed software inventory for endpoints.</maml:para>
       <maml:para>- InstalledUpdates - Refreshes installed update information.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>If the selected requery type supports endpoint targeting, an Endpoint_Id may be supplied.</maml:para>
       <maml:para>If not supplied, the requery will run at the organization level.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Authentication must be configured before using this command.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1556,17 +1385,9 @@
           <maml:name>Type</maml:name>
           <maml:description>
             <maml:para>Specifies the type of requery operation to perform.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Accepted values:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - ReportData</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - InstalledSoftware</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - InstalledUpdates</maml:para>
           </maml:description>
           <command:parameterValueGroup>
@@ -1585,8 +1406,6 @@
           <maml:name>Endpoint_Id</maml:name>
           <maml:description>
             <maml:para>Specifies the endpoint identifier for endpoint-specific data refresh.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>If omitted, the operation is executed at the organization level.</maml:para>
             <maml:para>If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.</maml:para>
           </maml:description>
@@ -1604,17 +1423,9 @@
         <maml:name>Type</maml:name>
         <maml:description>
           <maml:para>Specifies the type of requery operation to perform.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Accepted values:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - ReportData</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - InstalledSoftware</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - InstalledUpdates</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1628,8 +1439,6 @@
         <maml:name>Endpoint_Id</maml:name>
         <maml:description>
           <maml:para>Specifies the endpoint identifier for endpoint-specific data refresh.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>If omitted, the operation is executed at the organization level.</maml:para>
           <maml:para>If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.</maml:para>
         </maml:description>
@@ -1664,11 +1473,7 @@
     <maml:alertSet>
       <maml:alert>
         <maml:para>This command requires a valid authentication token to be set prior to execution.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Use the credentials configuration command before invoking API actions.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>The default organization might be set in advance via `Set-Action1DefaultOrg`.</maml:para>
       </maml:alert>
     </maml:alertSet>
@@ -1717,20 +1522,12 @@
     </command:details>
     <maml:description>
       <maml:para>`Update-Action1` performs update operations against Action1 objects exposed through the API.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>Depending on the `-Action` and `-Type` parameters, the command can:</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>- Modify object properties.</maml:para>
       <maml:para>- Modify endpoint group membership &lt;s&gt;of an&lt;/s&gt;.</maml:para>
       <maml:para>- Delete existing objects.</maml:para>
       <maml:para>- Send a raw PATCH request to a specified URI.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>The function builds the appropriate API endpoint path internally and sends the request using the module's internal API helper functions. Authentication must be configured in advance using `Set-Action1Credentials`.</maml:para>
-      <maml:para></maml:para>
-      <maml:para></maml:para>
       <maml:para>For destructive actions such as `Delete`, the command prompts for confirmation unless the `-Force` switch is specified.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1740,17 +1537,9 @@
           <maml:name>Action</maml:name>
           <maml:description>
             <maml:para>Specifies the type of operation to perform.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Allowed values:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Modify</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - ModifyMembers</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Delete</maml:para>
           </maml:description>
           <command:parameterValueGroup>
@@ -1769,23 +1558,11 @@
           <maml:name>Type</maml:name>
           <maml:description>
             <maml:para>Specifies the target object type for the operation.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Allowed values:</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - EndpointGroup</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Endpoint</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - Automation</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - CustomAttribute</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para> - RawURI</maml:para>
           </maml:description>
           <command:parameterValueGroup>
@@ -1806,8 +1583,6 @@
           <maml:name>Data</maml:name>
           <maml:description>
             <maml:para>Object containing data to send in the API request body.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>For `Modify` and `ModifyMembers`, this usually contains the updated properties or membership list.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
@@ -1821,8 +1596,6 @@
           <maml:name>Id</maml:name>
           <maml:description>
             <maml:para>Identifier of the object being modified or deleted.</maml:para>
-            <maml:para></maml:para>
-            <maml:para></maml:para>
             <maml:para>Required for most `Modify` and `Delete` operations.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1886,17 +1659,9 @@
         <maml:name>Action</maml:name>
         <maml:description>
           <maml:para>Specifies the type of operation to perform.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Allowed values:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Modify</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - ModifyMembers</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Delete</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1910,23 +1675,11 @@
         <maml:name>Type</maml:name>
         <maml:description>
           <maml:para>Specifies the target object type for the operation.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Allowed values:</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - EndpointGroup</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Endpoint</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - Automation</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - CustomAttribute</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para> - RawURI</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1940,8 +1693,6 @@
         <maml:name>Data</maml:name>
         <maml:description>
           <maml:para>Object containing data to send in the API request body.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>For `Modify` and `ModifyMembers`, this usually contains the updated properties or membership list.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
@@ -1955,8 +1706,6 @@
         <maml:name>Id</maml:name>
         <maml:description>
           <maml:para>Identifier of the object being modified or deleted.</maml:para>
-          <maml:para></maml:para>
-          <maml:para></maml:para>
           <maml:para>Required for most `Modify` and `Delete` operations.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -2038,8 +1787,6 @@
     <maml:alertSet>
       <maml:alert>
         <maml:para>The command requires a valid authentication token. Use Set-Action1Credentials cmdlet before executing API operations.</maml:para>
-        <maml:para></maml:para>
-        <maml:para></maml:para>
         <maml:para>Some operations (such as endpoint updates) automatically filter allowed fields before sending the request to the API.</maml:para>
       </maml:alert>
     </maml:alertSet>
@@ -2051,8 +1798,6 @@
     name = "NewEndpointName"
 
 }
-
-
 
 Update-Action1 -Action Modify -Type Endpoint -Id "endpoint-123" -Data $data</dev:code>
         <dev:remarks>
@@ -2067,8 +1812,6 @@ Update-Action1 -Action Modify -Type Endpoint -Id "endpoint-123" -Data $data</dev
 
 }
 
-
-
 Update-Action1 -Action Modify -Type EndpointGroup -Id "group-42" -Data $data</dev:code>
         <dev:remarks>
           <maml:para>Updates properties of the Action1 endpoint group with the ID "group-42".</maml:para>
@@ -2081,8 +1824,6 @@ Update-Action1 -Action Modify -Type EndpointGroup -Id "group-42" -Data $data</de
     endpointIds = @("endpoint-1","endpoint-2")
 
 }
-
-
 
 Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id "group-42" -Data $data</dev:code>
         <dev:remarks>
