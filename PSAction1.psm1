@@ -1,5 +1,5 @@
 ﻿# Name: PSAction1
-# Description: Powershell module for working with the Aciton1 API.
+# Description: Powershell module for working with the Action1 API.
 # Copyright (C) 2024 Action1 Corporation
 # Documentation: https://github.com/Action1Corp/PSAction1/
 # Use Action1 Roadmap system (https://roadmap.action1.com/) to submit feedback or enhancement requests.
@@ -20,7 +20,11 @@
 $Script:Action1_APIKey
 $Script:Action1_Secret
 $Script:Action1_Token
-$script:Action1_Hosts = [ordered]@{'North America' = 'https://app.action1.com/api/3.0'; Europe = 'https://app.eu.action1.com/api/3.0'; Australia = 'https://app.au.action1.com/api/3.0' }
+$script:Action1_Hosts = [ordered]@{
+    NorthAmerica = 'https://app.action1.com/api/3.0'; 
+    Europe = 'https://app.eu.action1.com/api/3.0'; 
+    Australia = 'https://app.au.action1.com/api/3.0'
+}
 $Script:Action1_BaseURI = ''
 $Script:Action1_Default_Org
 $Script:Action1_DebugEnabled = $false
@@ -29,7 +33,7 @@ $Script:Action1_CVE_Lookup = @{}
 
 $URILookUp = @{
     G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
-    G_AgentDepoyment       = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
+    G_AgentDeployment      = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
     G_Apps                 = { param($Org_ID) "/apps/$Org_ID/data" }
     G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?endpoint_id=$Object_ID" }
     G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
@@ -363,12 +367,12 @@ function Set-Action1DefaultOrg {
 }
 
 function Set-Action1Locale {
+    [Obsolete("Please use Set-Action1Region instead.")]
     param (
         [Parameter(Mandatory)]
-        [ValidateSet('NorthAmerica', 'Europe')]
+        [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
         [String]$Region
     )
-    Write-Host "Locale set, Note:Set-Action1Locale is being depreciated, please modify all scripts to use Set-Action1Region instead." -ForegroundColor Red
     Set-Action1Region -Region $Region
 }
 
@@ -378,11 +382,7 @@ function Set-Action1Region {
         [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
         [String]$Region
     )
-    switch ($Region) {
-        NorthAmerica { $Script:Action1_BaseURI = "https://app.action1.com/api/3.0" }
-        Europe { $Script:Action1_BaseURI = "https://app.eu.action1.com/api/3.0" }
-        Australia { $Script:Action1_BaseURI = 'https://app.au.action1.com/api/3.0' }
-    }
+    $Script:Action1_BaseURI = $Script:Action1_Hosts[$Region]
 }
 
 function Set-Action1Interactive {
@@ -402,7 +402,7 @@ function Get-Action1 {
             'Automations',
             'AdvancedSettings',
             'Apps',
-            'CutomAttribute',
+            'CustomAttribute',
             'EndpointGroupMembers',
             'EndpointGroups',
             'Me',
@@ -421,7 +421,7 @@ function Get-Action1 {
             'ReportExport',
             'Reports',
             'Scripts',
-            'AgentDepoyment',
+            'AgentDeployment',
             'Vulnerabilities',
             'RawURI',
             'Settings'
