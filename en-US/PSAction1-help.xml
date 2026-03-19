@@ -1,0 +1,1879 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<helpItems schema="maml" xmlns="http://msh">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1</command:noun>
+      <maml:description>
+        <maml:para>Retrieves Action1 objects, reports, and templates.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1` retrieves Action1 objects and data from the API, as well as helper templates used for creating or modifying resources.</maml:para>
+      <maml:para>Depending on the `-Query` value, the command can:</maml:para>
+      <maml:para>- Retrieve Action1 objects such as endpoints, policies, reports, packages, and automations.</maml:para>
+      <maml:para>- Retrieve raw API responses.</maml:para>
+      <maml:para>- Generate configuration templates used with other module commands such as `New-Action1` or `Update-Action1`.</maml:para>
+      <maml:para>When `-Query Settings` is used, the function returns template objects for different Action1 resource types (for example, EndpointGroup, Automation, Remediation, DeploySoftware). These templates may include helper script methods that simplify modifying the object before sending it back to the API.</maml:para>
+      <maml:para>Pagination is handled automatically for long list queries.</maml:para>
+      <maml:para>Some returned Action1 objects include helper methods for convenience:</maml:para>
+      <maml:para>- PolicyResults objects include a `GetDetails()` method.</maml:para>
+      <maml:para>- Endpoint -related objects include a `GetCustomAttribute()` method.</maml:para>
+      <maml:para>The default Action1 organization is expected to be set in advance by `Set-Action1DefaultOrg`</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Query</maml:name>
+          <maml:description>
+            <maml:para>Specifies the type of Action1 object or dataset to retrieve.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para> - AutomationInstances</maml:para>
+            <maml:para> - Automations</maml:para>
+            <maml:para> - AdvancedSettings</maml:para>
+            <maml:para> - Apps</maml:para>
+            <maml:para> - CutomAttribute</maml:para>
+            <maml:para> - EndpointGroupMembers</maml:para>
+            <maml:para> - EndpointGroups</maml:para>
+            <maml:para> - Me</maml:para>
+            <maml:para> - Endpoint</maml:para>
+            <maml:para> - EndpointApps</maml:para>
+            <maml:para> - Endpoints</maml:para>
+            <maml:para> - Logs</maml:para>
+            <maml:para> - MissingUpdates</maml:para>
+            <maml:para> - Organizations</maml:para>
+            <maml:para> - Packages</maml:para>
+            <maml:para> - PackageVersions</maml:para>
+            <maml:para> - Policy</maml:para>
+            <maml:para> - Policies</maml:para>
+            <maml:para> - PolicyResults</maml:para>
+            <maml:para> - ReportData</maml:para>
+            <maml:para> - ReportExport</maml:para>
+            <maml:para> - Reports</maml:para>
+            <maml:para> - Scripts</maml:para>
+            <maml:para> - AgentDepoyment</maml:para>
+            <maml:para> - Vulnerabilities</maml:para>
+            <maml:para> - RawURI</maml:para>
+            <maml:para> - Settings</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">AutomationInstances</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Automations</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">AdvancedSettings</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Apps</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">CutomAttribute</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">EndpointGroupMembers</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">EndpointGroups</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Me</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Endpoint</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">EndpointApps</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Endpoints</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Logs</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MissingUpdates</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Organizations</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Packages</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PackageVersions</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Policy</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Policies</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">PolicyResults</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ReportData</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ReportExport</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Reports</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Scripts</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">AgentDepoyment</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Vulnerabilities</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RawURI</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Settings</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Id</maml:name>
+          <maml:description>
+            <maml:para>Specifies the identifier of the Action1 object to retrieve.</maml:para>
+            <maml:para>Used for queries that return a specific Action1 resource instance.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>Limit</maml:name>
+          <maml:description>
+            <maml:para>Specifies the maximum number of records requested per API call.</maml:para>
+            <maml:para>This parameter maps to the API limit query argument and can be used to control page size when retrieving large datasets.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>URI</maml:name>
+          <maml:description>
+            <maml:para>Specifies a literal API path.</maml:para>
+            <maml:para>Required when `-Query RawURI` is used.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+          <maml:name>For</maml:name>
+          <maml:description>
+            <maml:para>Specifies the Action1 resource type when retrieving Action1 template objects using `-Query Settings`.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para> - Automation</maml:para>
+            <maml:para> - Endpoint</maml:para>
+            <maml:para> - EndpointGroup</maml:para>
+            <maml:para> - Organization</maml:para>
+            <maml:para> - GroupAddEndpoint</maml:para>
+            <maml:para> - GroupDeleteEndpoint</maml:para>
+            <maml:para> - GroupFilter</maml:para>
+            <maml:para> - Remediation</maml:para>
+            <maml:para> - DeferredRemediation</maml:para>
+            <maml:para> - DeploySoftware</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Automation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Endpoint</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">EndpointGroup</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Organization</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">GroupAddEndpoint</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">GroupDeleteEndpoint</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">GroupFilter</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Remediation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">DeferredRemediation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">DeploySoftware</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+          <maml:name>Clone</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of an existing Action1 object to clone when generating templates.</maml:para>
+            <maml:para>This parameter is only valid when `-Query Settings` is used.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Query</maml:name>
+        <maml:description>
+          <maml:para>Specifies the type of Action1 object or dataset to retrieve.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para> - AutomationInstances</maml:para>
+          <maml:para> - Automations</maml:para>
+          <maml:para> - AdvancedSettings</maml:para>
+          <maml:para> - Apps</maml:para>
+          <maml:para> - CutomAttribute</maml:para>
+          <maml:para> - EndpointGroupMembers</maml:para>
+          <maml:para> - EndpointGroups</maml:para>
+          <maml:para> - Me</maml:para>
+          <maml:para> - Endpoint</maml:para>
+          <maml:para> - EndpointApps</maml:para>
+          <maml:para> - Endpoints</maml:para>
+          <maml:para> - Logs</maml:para>
+          <maml:para> - MissingUpdates</maml:para>
+          <maml:para> - Organizations</maml:para>
+          <maml:para> - Packages</maml:para>
+          <maml:para> - PackageVersions</maml:para>
+          <maml:para> - Policy</maml:para>
+          <maml:para> - Policies</maml:para>
+          <maml:para> - PolicyResults</maml:para>
+          <maml:para> - ReportData</maml:para>
+          <maml:para> - ReportExport</maml:para>
+          <maml:para> - Reports</maml:para>
+          <maml:para> - Scripts</maml:para>
+          <maml:para> - AgentDepoyment</maml:para>
+          <maml:para> - Vulnerabilities</maml:para>
+          <maml:para> - RawURI</maml:para>
+          <maml:para> - Settings</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Id</maml:name>
+        <maml:description>
+          <maml:para>Specifies the identifier of the Action1 object to retrieve.</maml:para>
+          <maml:para>Used for queries that return a specific Action1 resource instance.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>URI</maml:name>
+        <maml:description>
+          <maml:para>Specifies a literal API path.</maml:para>
+          <maml:para>Required when `-Query RawURI` is used.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>For</maml:name>
+        <maml:description>
+          <maml:para>Specifies the Action1 resource type when retrieving Action1 template objects using `-Query Settings`.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para> - Automation</maml:para>
+          <maml:para> - Endpoint</maml:para>
+          <maml:para> - EndpointGroup</maml:para>
+          <maml:para> - Organization</maml:para>
+          <maml:para> - GroupAddEndpoint</maml:para>
+          <maml:para> - GroupDeleteEndpoint</maml:para>
+          <maml:para> - GroupFilter</maml:para>
+          <maml:para> - Remediation</maml:para>
+          <maml:para> - DeferredRemediation</maml:para>
+          <maml:para> - DeploySoftware</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <maml:name>Clone</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of an existing Action1 object to clone when generating templates.</maml:para>
+          <maml:para>This parameter is only valid when `-Query Settings` is used.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Limit</maml:name>
+        <maml:description>
+          <maml:para>Specifies the maximum number of records requested per API call.</maml:para>
+          <maml:para>This parameter maps to the API limit query argument and can be used to control page size when retrieving large datasets.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object. Returns objects retrieved from the API.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>The returned type depends on the value of `-Query` parameter. Some objects may include helper script methods for additional operations.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires valid API credentials set with `Set-Action1Credentials`</maml:para>
+        <maml:para>The default Action1 organization is expected to be set in advance via `Set-Action1DefaultOrg`</maml:para>
+        <maml:para>Pagination is automatically processed for long list queries.</maml:para>
+        <maml:para>Some queries return raw API responses while others return processed objects with helper methods.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1 -Query Endpoints</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all endpoints belonging to the current Action1 organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1 -Query Endpoint -Id "12345"</dev:code>
+        <dev:remarks>
+          <maml:para>Retrieves a specific Action1 endpoint by ID.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1 -Query RawURI -URI "/v1/packages"</dev:code>
+        <dev:remarks>
+          <maml:para>Executes a direct Action1 API GET call using the specified URI.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1  -Query Settings -For EndpointGroup</dev:code>
+        <dev:remarks>
+          <maml:para>Returns a new Action1 Endpoint Group template object that can be customized and used with `New-Action1` command.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1  -Query Settings -For EndpointGroup -Clone "group-id"</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a new Action1 Endpoint Group template cloned from an existing group with Id "group-id"</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1 -Query PolicyResults | ForEach-Object { $_.GetDetails() }</dev:code>
+        <dev:remarks>
+          <maml:para>Retrieves Action1 policy results and then fetches the detailed records for each result.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 7 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1 -Query Endpoints -Limit 50</dev:code>
+        <dev:remarks>
+          <maml:para>Retrieves Action1 endpoints with an API page size of 50 objects.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>New-Action1</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>Action1</command:noun>
+      <maml:description>
+        <maml:para>Creates a new Action1 object.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`New-Action1` creates a new object in the remote API using a POST request.</maml:para>
+      <maml:para>The type of object being created is specified by the Item parameter.</maml:para>
+      <maml:para>Depending on the selected item type, the function automatically determines the correct API endpoint using the module's internal URI lookup table.</maml:para>
+      <maml:para>If `Item` is set to RawURI , the request is sent directly to the URI specified by the URI parameter, bypassing the internal lookup logic.</maml:para>
+      <maml:para>The command requires valid authentication credentials and a valid access token. Use `Set-Action1Credentials` and any required authentication commands before calling this function.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-Action1</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Item</maml:name>
+          <maml:description>
+            <maml:para>Specifies the type of object to create.</maml:para>
+            <maml:para>Valid values are:</maml:para>
+            <maml:para> - EndpointGroup</maml:para>
+            <maml:para> - Organization</maml:para>
+            <maml:para> - Automation</maml:para>
+            <maml:para> - Remediation</maml:para>
+            <maml:para> - DeferredRemediation</maml:para>
+            <maml:para> - DeploySoftware</maml:para>
+            <maml:para> - RawURI</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">EndpointGroup</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Organization</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Automation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Remediation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">DeferredRemediation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">DeploySoftware</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RawURI</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>URI</maml:name>
+          <maml:description>
+            <maml:para>Specifies the API endpoint path when Item is set to `RawURI`.</maml:para>
+            <maml:para>This parameter is ignored for other item types because the function determines the URI automatically.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>Data</maml:name>
+          <maml:description>
+            <maml:para>Specifies the request payload that will be sent to the API.</maml:para>
+            <maml:para>The structure depends on the type of item being created.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Item</maml:name>
+        <maml:description>
+          <maml:para>Specifies the type of object to create.</maml:para>
+          <maml:para>Valid values are:</maml:para>
+          <maml:para> - EndpointGroup</maml:para>
+          <maml:para> - Organization</maml:para>
+          <maml:para> - Automation</maml:para>
+          <maml:para> - Remediation</maml:para>
+          <maml:para> - DeferredRemediation</maml:para>
+          <maml:para> - DeploySoftware</maml:para>
+          <maml:para> - RawURI</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>URI</maml:name>
+        <maml:description>
+          <maml:para>Specifies the API endpoint path when Item is set to `RawURI`.</maml:para>
+          <maml:para>This parameter is ignored for other item types because the function determines the URI automatically.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Data</maml:name>
+        <maml:description>
+          <maml:para>Specifies the request payload that will be sent to the API.</maml:para>
+          <maml:para>The structure depends on the type of item being created.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object. Returns the API response object returned by the PushData request.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>This function:</maml:para>
+        <maml:para>Uses the module's internal URI lookup table to determine API endpoints.</maml:para>
+        <maml:para>Requires a valid Action1 authentication token previously specified by `Set-Action1Credentials`.</maml:para>
+        <maml:para>Sends data using an HTTP POST request.</maml:para>
+        <maml:para>If the `RawURI` item type is used, the valid `URI` value must be supplied.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; New-Action1 -Item Organization -Data $OrgData</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a new Action1 organization using the data provided in $OrgData</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; New-Action1 -Item EndpointGroup -Data $GroupData</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a new Action1 endpoint group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; New-Action1 -Item RawURI -URI "/v1/custom/resource" -Data $Payload</dev:code>
+        <dev:remarks>
+          <maml:para>Sends a POST request directly to a custom Action1 API endpoint using the provided payload.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1Credentials</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Credentials</command:noun>
+      <maml:description>
+        <maml:para>Sets Action1 API credentials for the current PowerShell session.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Stores Action1 APIKey and Secret in script scope variables used by other commands in the module to authenticate API calls.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Credentials</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>APIKey</maml:name>
+          <maml:description>
+            <maml:para>Action1 API key provided by the service.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Secret</maml:name>
+          <maml:description>
+            <maml:para>Action1 API secret associated with the Action1 API key.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>APIKey</maml:name>
+        <maml:description>
+          <maml:para>Action1 API key provided by the service.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Secret</maml:name>
+        <maml:description>
+          <maml:para>Action1 API secret associated with the Action1 API key.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command only sets module and session variables.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Action1 credentials are stored only for the lifetime of the PowerShell session.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Credentials -APIKey "abc123" -Secret "secret"</dev:code>
+        <dev:remarks>
+          <maml:para>Stores Action1 credentials for use by other PSAction1 module commands.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1Debug</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Debug</command:noun>
+      <maml:description>
+        <maml:para>Enables or disables debug mode for PSAction1 module.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Sets the internal debug flag for the PSAction1 module in script scope.</maml:para>
+      <maml:para>When debug mode is enabled, additional diagnostic messages will be displayed by module functions that support debugging output.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Debug</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Enabled</maml:name>
+          <maml:description>
+            <maml:para>Specifies whether the debug mode should be enabled or disabled.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Enabled</maml:name>
+        <maml:description>
+          <maml:para>Specifies whether the debug mode should be enabled or disabled.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command does not return objects. It only updates an internal module variable controlling debug behavior.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The debug mode affects only the current PowerShell session and is stored in a script-scope variable.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Debug -Enabled $true</dev:code>
+        <dev:remarks>
+          <maml:para>Enables the debug mode for PSAction1 module.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Debug -Enabled $false</dev:code>
+        <dev:remarks>
+          <maml:para>Disables the debug mode for PSAction1 module.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1DefaultOrg</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1DefaultOrg</command:noun>
+      <maml:description>
+        <maml:para>Sets the default Action1 organization ID for the current PowerShell session.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Stores the specified Action1 organization ID in a script scope variable used by other commands in the module. Once set, the value can be reused by commands that require an organization identifier, so it does not need to be specified repeatedly.</maml:para>
+      <maml:para>The value is stored only for the duration of the current PowerShell session.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1DefaultOrg</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Org_ID</maml:name>
+          <maml:description>
+            <maml:para>The identifier of the Action1 organization to use as the default for subsequent module commands.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Org_ID</maml:name>
+        <maml:description>
+          <maml:para>The identifier of the Action1 organization to use as the default for subsequent module commands.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command does not produce output. It only sets a module-level variable.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The default organization value is stored in a script scope variable and is</maml:para>
+        <maml:para>available only for the lifetime of the PowerShell session.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_ID "org-12345"</dev:code>
+        <dev:remarks>
+          <maml:para>Sets the default organization ID to org-12345 for use by other module commands.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1Interactive</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Interactive</command:noun>
+      <maml:description>
+        <maml:para>Enables or disables interactive mode for PSAction1 module.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Enables or disables interactive mode for the current PowerShell session.</maml:para>
+      <maml:para>When interactive mode is enabled, the PSAction1 module will prompt for the required variable values that have not been set. This helps guide users through configuration when running commands that depend on module-level variables.</maml:para>
+      <maml:para>When interactive mode is disabled, commands will not prompt for missing values and may fail if required variables are not set.</maml:para>
+      <maml:para>Action1 interactive setting is stored in a script-scoped variable and applies only to the current PowerShell session.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Interactive</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Enabled</maml:name>
+          <maml:description>
+            <maml:para>Specifies whether PSAction1 interactive mode should be enabled or disabled.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Enabled</maml:name>
+        <maml:description>
+          <maml:para>Specifies whether PSAction1 interactive mode should be enabled or disabled.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command only modifies a module-level setting.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The interactive mode is stored in a script-scoped variable and remains active only for the lifetime of the PowerShell session.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Interactive -Enabled $true</dev:code>
+        <dev:remarks>
+          <maml:para>Enables interactive mode. The module will prompt for required variables that are missing.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Interactive -Enabled $false</dev:code>
+        <dev:remarks>
+          <maml:para>Disables interactive mode so commands will not prompt for missing variables.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1Locale</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Locale</command:noun>
+      <maml:description>
+        <maml:para>(DEPRECATED!) Sets the Action1 locale used by the PSAction1 module for the current PowerShell session. Please use Set-Action1Region instead.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This function is deprecated. `Set-Locale` previously configured the locale(region) used by the PSAction1 module for API requests and regional formatting.</maml:para>
+      <maml:para>This command is retained for backward compatibility but will be removed in a</maml:para>
+      <maml:para>future version of the PSAction1 module.</maml:para>
+      <maml:para>Please use the `Set-Action1Region` command instead.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Locale</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Region</maml:name>
+          <maml:description>
+            <maml:para>Specifies the locale/region identifier to use.</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Region</maml:name>
+        <maml:description>
+          <maml:para>Specifies the locale/region identifier to use.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None: This command only sets a module variable for the current session.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>This command is deprecated and will be removed in a future version.</maml:para>
+        <maml:para>Use Set-Action1Region instead.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Locale -Region NorthAmerica</dev:code>
+        <dev:remarks>
+          <maml:para>Sets the module locale, actually region, to "NorthAmerica" for the current session.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Locale -Region Europe</dev:code>
+        <dev:remarks>
+          <maml:para>Sets the module locale, actually region, to "Europe" for the current session.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Region</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1Region</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Region</command:noun>
+      <maml:description>
+        <maml:para>Sets the Action1 API region endpoint used by the PSAction1 module.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Set-Action1Region` configures the base API endpoint used by the module for all subsequent requests.</maml:para>
+      <maml:para>Different Action1 regions correspond to different service API endpoints.</maml:para>
+      <maml:para>This command updates the internal script scope variable so that all module commands send requests to the correct regional API endpoint.</maml:para>
+      <maml:para>Run this command before executing other commands in the module to ensure a specific regional environment is targeted.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Region</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Region</maml:name>
+          <maml:description>
+            <maml:para>Specifies the API region to use.</maml:para>
+            <maml:para>Supported values are:</maml:para>
+            <maml:para> - NorthAmerica</maml:para>
+            <maml:para> - Europe</maml:para>
+            <maml:para> - Australia</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Region</maml:name>
+        <maml:description>
+          <maml:para>Specifies the API region to use.</maml:para>
+          <maml:para>Supported values are:</maml:para>
+          <maml:para> - NorthAmerica</maml:para>
+          <maml:para> - Europe</maml:para>
+          <maml:para> - Australia</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command only sets an internal module variable used to determine the API base URI.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>This command must typically be executed before making API requests so that PSAction1 module communicates with the correct regional service endpoint.</maml:para>
+        <maml:para>The selected region affects all subsequent commands in the current PowerShell session.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region Europe</dev:code>
+        <dev:remarks>
+          <maml:para>Configures PSAction1 module to use the Europe API endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region NorthAmerica</dev:code>
+        <dev:remarks>
+          <maml:para>Configures PSAction1 module to use the NorthAmerica API endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region Australia</dev:code>
+        <dev:remarks>
+          <maml:para>Configures PSAction1 module to use the Australia API endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Start-Action1PackageUpload</command:name>
+      <command:verb>Start</command:verb>
+      <command:noun>Action1PackageUpload</command:noun>
+      <maml:description>
+        <maml:para>Uploads an Action1 package file to the software repository in chunks.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Start-Action1PackageUpload` uploads an Action1 package file to the remote software repository for a specific package version.</maml:para>
+      <maml:para>The upload `Platform` must be specified as `Windows_32` or `Windows_64`.</maml:para>
+      <maml:para>The upload is performed using a resumable chunked upload process . Chunked uploads allow large files to be transferred reliably and provide progress feedback during the upload process. The chunk size can be controlled using the `BufferSize` parameter (default is 24MB).</maml:para>
+      <maml:para>This command requires a valid Action1 API authentication token (set earlier in the session). See `Set-Action1Credentials`.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Start-Action1PackageUpload</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Package_ID</maml:name>
+          <maml:description>
+            <maml:para>Identifier of the package in the software repository.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Version_ID</maml:name>
+          <maml:description>
+            <maml:para>Identifier of the version of the package that the file will be uploaded to.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>Filename</maml:name>
+          <maml:description>
+            <maml:para>Path to the file that will be uploaded.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>Platform</maml:name>
+          <maml:description>
+            <maml:para>Target platform for the package upload.</maml:para>
+            <maml:para>Valid values:</maml:para>
+            <maml:para> - Windows_32</maml:para>
+            <maml:para> - Windows_64</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Windows_32</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows_64</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+          <maml:name>BufferSize</maml:name>
+          <maml:description>
+            <maml:para>Size of the upload chunk buffer in bytes.</maml:para>
+            <maml:para>Larger buffers reduce the number of HTTP requests but increase memory usage.</maml:para>
+            <maml:para>Default value: 24 MB .</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Package_ID</maml:name>
+        <maml:description>
+          <maml:para>Identifier of the package in the software repository.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Version_ID</maml:name>
+        <maml:description>
+          <maml:para>Identifier of the version of the package that the file will be uploaded to.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Filename</maml:name>
+        <maml:description>
+          <maml:para>Path to the file that will be uploaded.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>Platform</maml:name>
+        <maml:description>
+          <maml:para>Target platform for the package upload.</maml:para>
+          <maml:para>Valid values:</maml:para>
+          <maml:para> - Windows_32</maml:para>
+          <maml:para> - Windows_64</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>BufferSize</maml:name>
+        <maml:description>
+          <maml:para>Size of the upload chunk buffer in bytes.</maml:para>
+          <maml:para>Larger buffers reduce the number of HTTP requests but increase memory usage.</maml:para>
+          <maml:para>Default value: 24 MB .</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command performs the upload operation and reports progress using debug output.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires a valid authentication token in the current session.</maml:para>
+        <maml:para>The upload is performed using a resumable chunked transfer mechanism.</maml:para>
+        <maml:para>Progress information is displayed through Debug-Host messages.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Start-Action1PackageUpload -Package_ID "12345" -Version_ID "1.0.0" -Filename "C:\Packages\App.msi" -Platform Windows_64</dev:code>
+        <dev:remarks>
+          <maml:para>Uploads the file App.msi as version 1.0.0 of package 12345 for the Windows 64-bit platform.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Start-Action1PackageUpload -Package_ID "12345" -Version_ID "2.0.0" -Filename ".\installer.exe" -Platform Windows_32 -BufferSize 48MB</dev:code>
+        <dev:remarks>
+          <maml:para>Uploads the installer using a larger 48 MB upload buffer to reduce the number of upload chunks.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Start-Action1Requery</command:name>
+      <command:verb>Start</command:verb>
+      <command:noun>Action1Requery</command:noun>
+      <maml:description>
+        <maml:para>Triggers a requery operation to refresh specific data from Action1 endpoints or the organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Start-Action1Requery` triggers a requery request to the API to refresh specific datasets.</maml:para>
+      <maml:para>Depending on the selected Type , the command may operate either organization-wide or for a specific endpoint.</maml:para>
+      <maml:para>The default organization must be set in advance via `Set-Action1DefaultOrg`.</maml:para>
+      <maml:para>This command sends a POST request to the appropriate API endpoint and instructs the service to regenerate or refresh the requested data.</maml:para>
+      <maml:para>Supported requery types include:</maml:para>
+      <maml:para>- ReportData - Regenerates report-related data.</maml:para>
+      <maml:para>- InstalledSoftware - Refreshes installed software inventory for endpoints.</maml:para>
+      <maml:para>- InstalledUpdates - Refreshes installed update information.</maml:para>
+      <maml:para>If the selected requery type supports endpoint targeting, an Endpoint_Id may be supplied.</maml:para>
+      <maml:para>If not supplied, the requery will run at the organization level.</maml:para>
+      <maml:para>Authentication must be configured before using this command.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Start-Action1Requery</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Type</maml:name>
+          <maml:description>
+            <maml:para>Specifies the type of requery operation to perform.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para> - ReportData</maml:para>
+            <maml:para> - InstalledSoftware</maml:para>
+            <maml:para> - InstalledUpdates</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">ReportData</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">InstalledSoftware</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">InstalledUpdates</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Endpoint_Id</maml:name>
+          <maml:description>
+            <maml:para>Specifies the endpoint identifier for endpoint-specific data refresh.</maml:para>
+            <maml:para>If omitted, the operation is executed at the organization level.</maml:para>
+            <maml:para>If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Type</maml:name>
+        <maml:description>
+          <maml:para>Specifies the type of requery operation to perform.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para> - ReportData</maml:para>
+          <maml:para> - InstalledSoftware</maml:para>
+          <maml:para> - InstalledUpdates</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Endpoint_Id</maml:name>
+        <maml:description>
+          <maml:para>Specifies the endpoint identifier for endpoint-specific data refresh.</maml:para>
+          <maml:para>If omitted, the operation is executed at the organization level.</maml:para>
+          <maml:para>If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object. Returns the API response from the requery request.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>This command requires a valid authentication token to be set prior to execution.</maml:para>
+        <maml:para>Use the credentials configuration command before invoking API actions.</maml:para>
+        <maml:para>The default organization might be set in advance via `Set-Action1DefaultOrg`.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Start-Action1Requery -Type ReportData</dev:code>
+        <dev:remarks>
+          <maml:para>Triggers default Action1 organization-wide refresh of the report data.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Start-Action1Requery -Type InstalledSoftware -Endpoint_Id "12345"</dev:code>
+        <dev:remarks>
+          <maml:para>Triggers a refresh of installed software information for the specified Action1 endpoint with Id "12345"</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; PS C:\&gt; Start-Action1Requery -Type InstalledUpdates</dev:code>
+        <dev:remarks>
+          <maml:para>Triggers a refresh of installed update information for all applicable endpoints in the Action1 default organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Update-Action1</command:name>
+      <command:verb>Update</command:verb>
+      <command:noun>Action1</command:noun>
+      <maml:description>
+        <maml:para>Updates, modifies membership, or deletes Action1 objects.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Update-Action1` performs update operations against Action1 objects exposed through the API.</maml:para>
+      <maml:para>Depending on the `-Action` and `-Type` parameters, the command can:</maml:para>
+      <maml:para>- Modify object properties.</maml:para>
+      <maml:para>- Modify endpoint group membership &lt;s&gt;of an&lt;/s&gt;.</maml:para>
+      <maml:para>- Delete existing objects.</maml:para>
+      <maml:para>- Send a raw PATCH request to a specified URI.</maml:para>
+      <maml:para>The function builds the appropriate API endpoint path internally and sends the request using the module's internal API helper functions. Authentication must be configured in advance using `Set-Action1Credentials`.</maml:para>
+      <maml:para>For destructive actions such as `Delete`, the command prompts for confirmation unless the `-Force` switch is specified.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-Action1</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Action</maml:name>
+          <maml:description>
+            <maml:para>Specifies the type of operation to perform.</maml:para>
+            <maml:para>Allowed values:</maml:para>
+            <maml:para> - Modify</maml:para>
+            <maml:para> - ModifyMembers</maml:para>
+            <maml:para> - Delete</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Modify</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ModifyMembers</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Delete</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Type</maml:name>
+          <maml:description>
+            <maml:para>Specifies the target object type for the operation.</maml:para>
+            <maml:para>Allowed values:</maml:para>
+            <maml:para> - EndpointGroup</maml:para>
+            <maml:para> - Endpoint</maml:para>
+            <maml:para> - Automation</maml:para>
+            <maml:para> - CustomAttribute</maml:para>
+            <maml:para> - RawURI</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">EndpointGroup</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Endpoint</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Automation</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">CustomAttribute</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">RawURI</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>Data</maml:name>
+          <maml:description>
+            <maml:para>Object containing data to send in the API request body.</maml:para>
+            <maml:para>For `Modify` and `ModifyMembers`, this usually contains the updated properties or membership list.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>Id</maml:name>
+          <maml:description>
+            <maml:para>Identifier of the object being modified or deleted.</maml:para>
+            <maml:para>Required for most `Modify` and `Delete` operations.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+          <maml:name>AttributeName</maml:name>
+          <maml:description>
+            <maml:para>Name of the custom attribute when updating an endpoint custom attribute.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+          <maml:name>AttributeValue</maml:name>
+          <maml:description>
+            <maml:para>Value to assign to the specified custom attribute.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+          <maml:name>URI</maml:name>
+          <maml:description>
+            <maml:para>Raw API URI used when `-Type RawURI` is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses the confirmation prompt when performing `Delete` action.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Action</maml:name>
+        <maml:description>
+          <maml:para>Specifies the type of operation to perform.</maml:para>
+          <maml:para>Allowed values:</maml:para>
+          <maml:para> - Modify</maml:para>
+          <maml:para> - ModifyMembers</maml:para>
+          <maml:para> - Delete</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Type</maml:name>
+        <maml:description>
+          <maml:para>Specifies the target object type for the operation.</maml:para>
+          <maml:para>Allowed values:</maml:para>
+          <maml:para> - EndpointGroup</maml:para>
+          <maml:para> - Endpoint</maml:para>
+          <maml:para> - Automation</maml:para>
+          <maml:para> - CustomAttribute</maml:para>
+          <maml:para> - RawURI</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Data</maml:name>
+        <maml:description>
+          <maml:para>Object containing data to send in the API request body.</maml:para>
+          <maml:para>For `Modify` and `ModifyMembers`, this usually contains the updated properties or membership list.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>Id</maml:name>
+        <maml:description>
+          <maml:para>Identifier of the object being modified or deleted.</maml:para>
+          <maml:para>Required for most `Modify` and `Delete` operations.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>AttributeName</maml:name>
+        <maml:description>
+          <maml:para>Name of the custom attribute when updating an endpoint custom attribute.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <maml:name>AttributeValue</maml:name>
+        <maml:description>
+          <maml:para>Value to assign to the specified custom attribute.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+        <maml:name>URI</maml:name>
+        <maml:description>
+          <maml:para>Raw API URI used when `-Type RawURI` is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Suppresses the confirmation prompt when performing `Delete` action.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object Returns the response object from the API request.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The command requires a valid authentication token. Use Set-Action1Credentials cmdlet before executing API operations.</maml:para>
+        <maml:para>Some operations (such as endpoint updates) automatically filter allowed fields before sending the request to the API.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>$data = [PSCustomObject]@{
+
+    name = "NewEndpointName"
+
+}
+
+Update-Action1 -Action Modify -Type Endpoint -Id "endpoint-123" -Data $data</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the name of the Action1 endpoint with the ID "endpoint-123".</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>$data = [PSCustomObject]@{
+
+    name = "Production Servers"
+
+}
+
+Update-Action1 -Action Modify -Type EndpointGroup -Id "group-42" -Data $data</dev:code>
+        <dev:remarks>
+          <maml:para>Updates properties of the Action1 endpoint group with the ID "group-42".</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>$data = @{
+
+    endpointIds = @("endpoint-1","endpoint-2")
+
+}
+
+Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id "group-42" -Data $data</dev:code>
+        <dev:remarks>
+          <maml:para>Adds or modifies members of the Action1 endpoint group with the ID "group-42".</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>Update-Action1 `
+
+    -Action Modify `
+
+    -Type CustomAttribute `
+
+    -Id "endpoint-123" `
+
+    -AttributeName "Owner" `
+
+    -AttributeValue "IT"</dev:code>
+        <dev:remarks>
+          <maml:para>Updates a custom attribute "Owner" for the specified Action1 endpoint with the ID "endpoint-123".</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>Update-Action1 -Action Delete -Type Automation -Id "auto-88"</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation and deletes the specified Action1 automation object with the ID "auto-88".</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>Update-Action1 -Action Delete -Type Endpoint -Id "endpoint-123" -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Deletes Action1 endpoint with the ID "endpoint-123" without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 7 --------------------------</maml:title>
+        <dev:code>Update-Action1 -Action Modify -Type RawURI -URI "/v1/custom/path" -Data $data</dev:code>
+        <dev:remarks>
+          <maml:para>Sends a PATCH request directly to the specified Action1 API URI "/v1/custom/path".</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+</helpItems>

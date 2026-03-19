@@ -133,8 +133,7 @@ This allows you to provide authentication details step by step.
 :stop_sign: **Important:**  _The values below are examples and DO NOT belong to a live instance. Replace them with your actual credentials._
 
 ```PowerShell
-
-PS C:\> Set-Action1Region NorthAmerica # Choices are currently NorthAmerica and Europe, more coming soon.
+PS C:\> Set-Action1Region NorthAmerica # Choices are currently NorthAmerica, Europe and Australia. More regions coming soon.
 
 PS C:\> Set-Action1Credentials -APIKey api-key-example_e0983b7c-45e8-4c82-9f98-b63bdc4dcb33@action1.com -Secret 652b47a18e212e695e9fbfaa
 
