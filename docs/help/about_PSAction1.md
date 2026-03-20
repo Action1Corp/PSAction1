@@ -1,11 +1,16 @@
 ---
+
 external help file: PSAction1-help.xml
+
 Module Name: PSAction1
+
 online version:
+
 schema: 2.0.0
+
 ---
 
-# about_Action1
+# about_PSAction1
 
 ![_Company_Logo](https://www.action1.com/wp-content/uploads/2022/02/action1-logo.svg)
 
