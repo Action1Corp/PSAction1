@@ -69,20 +69,21 @@ jobs:
           script: |
             az login --service-principal -u $(ARM_CLIENT_ID) --tenant $(ARM_TENANT_ID) --allow-no-subscriptions --federated-token $(ARM_ID_TOKEN)
 
-      - task: TrustedSigning@0
+      - task: ArtifactSigning@1
         displayName: "Azure Trusted Signing PS files"
         condition: eq(variables['PrepareAndCheckPS.PSExists'], 'true')
         inputs:
-          ExcludeSharedTokenCacheCredential: true
-          ExcludeVisualStudioCredential: true
-          ExcludeVisualStudioCodeCredential: true
-          Endpoint: "$(AZURE_TS_ENDPOINT)"
-          CertificateProfileName: "$(AZURE_TS_CERTIFICATE_PROFILE_NAME)"
-          FilesFolder: "$(Build.ArtifactStagingDirectory)"
-          FilesFolderFilter: "ps1,psm1,psd1"
-          FilesFolderRecurse: true
-          FileDigest: "SHA256"
-          TrustedSigningAccountName: "$(AZURE_TS_ACCOUNT_NAME)"
+          azureTrustedSigningEndpoint: "$(AZURE_TS_ENDPOINT)"
+          azureTrustedSigningAccountName: "$(AZURE_TS_ACCOUNT_NAME)"
+          certificateProfileName: "$(AZURE_TS_CERTIFICATE_PROFILE_NAME)"
+          filesFolder: "$(Build.ArtifactStagingDirectory)"
+          filesFolderFilter: "*.ps1;*.psm1;*.psd1"
+          filesFolderRecurse: true
+          fileDigest: "SHA256"
+          excludeCredentials: |
+            SharedTokenCacheCredential
+            VisualStudioCredential
+            VisualStudioCodeCredential
 
       - task: PowerShell@2
         displayName: "Validate PS module files Authenticode signatures"
