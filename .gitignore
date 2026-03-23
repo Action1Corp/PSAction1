@@ -1,8 +1,8 @@
 #NO PS1
-*.ps1
+#*.ps1
 
 #NO TXT
-*.txt
+#*.txt
 
 #NO ZIP
 *.zip
