@@ -1,3 +1,5 @@
+
+===============
 ABOUT_PSACTION1
 ===============
 
@@ -66,6 +68,8 @@ All API operations require authentication.
 Use Set-Action1Credentials cmdlet to provide API key and secret.
 
 Credentials are stored in memory and must be re-entered for each new PowerShell session. Session authentication settings are applied to all commands within the session.
+
+---
 
 COMMANDS
 
@@ -150,6 +154,8 @@ Uploads and deploys software packages.
   Start-Action1PackageUpload -Package_ID "12345" -Version_ID "1.0.0" -Filename "C:\Packages\App.msi" -Platform Windows_64
 
 Handles package upload and deployment workflows.
+ 
+---
 
 EXAMPLES
 
@@ -189,11 +195,15 @@ EXAMPLES
 
     New-Action1 -Item Automation -Data $clonedAutomation
 
+---
+
 NOTES
 
 API permissions may limit available operations
 
 Credentials are stored only for the duration of the session
+
+---
 
 RELATED TOPICS
 
