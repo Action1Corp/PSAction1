@@ -80,7 +80,7 @@ jobs:
           ArtifactSigningAccountName: "$(AZURE_TS_ACCOUNT_NAME)"
           CertificateProfileName: "$(AZURE_TS_CERTIFICATE_PROFILE_NAME)"
           FilesFolder: "$(Build.ArtifactStagingDirectory)"
-          FilesFolderFilter: "*.ps1, *.psm1, *.psd1"
+          FilesFolderFilter: "ps1,psm1,psd1"
           FilesFolderRecurse: true
           FileDigest: "SHA256"
           ExcludeSharedTokenCacheCredential: true
