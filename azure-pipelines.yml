@@ -76,10 +76,10 @@ jobs:
           Endpoint: "$(AZURE_TS_ENDPOINT)"
           ArtifactSigningAccountName: "$(AZURE_TS_ACCOUNT_NAME)"
           CertificateProfileName: "$(AZURE_TS_CERTIFICATE_PROFILE_NAME)"
-          filesFolder: "$(Build.ArtifactStagingDirectory)"
-          filesFolderFilter: "*.ps1;*.psm1;*.psd1"
-          filesFolderRecurse: true
-          fileDigest: "SHA256"
+          FilesFolder: "$(Build.ArtifactStagingDirectory)"
+          FilesFolderFilter: "ps1, psm1, psd1"
+          FilesFolderRecurse: true
+          FileDigest: "SHA256"
           ExcludeSharedTokenCacheCredential: true
           ExcludeVisualStudioCredential: true
           ExcludeVisualStudioCodeCredential: true
