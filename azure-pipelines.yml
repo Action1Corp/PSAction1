@@ -46,10 +46,8 @@ jobs:
                   $fileExtension = $file.Extension
                   $signedFilePath = Join-Path -Path $stagingDir -ChildPath "$fileBaseName$fileExtension"
                   Copy-Item -Path $file.FullName -Destination $signedFilePath -Force
-                  Write-Host "Found $signedFilePath PowerShell file."
+                  Write-Host "Staged $signedFilePath PowerShell file."
                 }
-              $preparedfiles = Get-ChildItem -Path $stagingDir -Recurse -Include *.ps1, *.psm1, *.psd1 -File
-              Write-Host "Prepared Staged files: $preparedfiles"
               Write-Host "##vso[task.setvariable variable=PSExists;isOutput=true]true"
             }
 
