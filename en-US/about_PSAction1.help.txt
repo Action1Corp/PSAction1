@@ -1,4 +1,3 @@
-
 ABOUT_PSACTION1
 ===============
 
@@ -12,7 +11,7 @@ Provides PowerShell access to the Action1 API for managing endpoints, automation
 
 LONG DESCRIPTION
 
-The Action1 module allows administrators to interact with the Action1 platform using PowerShell.
+The PSAction1 module allows IT administrators to interact with the Action1 platform using PowerShell.
 
 It provides capabilities to:
 
@@ -22,7 +21,7 @@ It provides capabilities to:
   * Trigger data re-queries
   * Upload and deploy software packages
 
-The module is suitable for both interactive usage and automation scenarios.
+The module  can be used for both automated scenarios and interactive sessions:
 
     Set-Action1Interactive -Enabled $true
 
@@ -30,27 +29,27 @@ The module is suitable for both interactive usage and automation scenarios.
 
 GETTING STARTED
 
-Before using the module, configure authentication.
+Before using the module, configure authentication and access settings.
 
-  Step 1: Set credentials
+  Step 1: Set credentials, providing the Client ID (API key) and Client Secret you got at Users & API Credentials in Action1 console. 
 
     Set-Action1Credentials -APIKey "your-api-key" -Secret "your-secret"
 
-  Step 2:  Set region
+  Step 2:  Specify your Action1 region.
 
     Set-Action1Region -Region "NorthAmerica"
 
-  Step 3: Specify organization to work with
+  Step 3: Specify Action1 organization to work with.
 
     Set-Action1DefaultOrg -Org_ID "org-12345"
 
-  Step 4: Verify access
+  Step 4: Verify access.
 
     Get-Action1 -Query Me
 
 BASIC WORKFLOW
 
-Typical usage flow:
+Typical PSAction1 usage scenarios are supported by the following commands:
 
   * Authenticate → Set-Action1Credentials
   * Configure → Set-Action1Region, Set-Action1DefaultOrg
@@ -60,6 +59,14 @@ Typical usage flow:
   * Refresh data → Start-Action1Requery
   * Deploy software → Start-Action1PackageUpload
 
+AUTHENTICATION
+
+All API operations require authentication.
+
+Use Set-Action1Credentials cmdlet to provide API key and secret.
+
+Credentials are stored in memory and must be re-entered for each new PowerShell session. Session authentication settings are applied to all commands within the session.
+
 COMMANDS
 
   Set-Action1Credentials
@@ -68,19 +75,19 @@ Sets API credentials for the current session.
 
     Set-Action1Credentials -APIKey <String> -Secret <String>
 
-Stores credentials used by all module commands.
+Stores credentials used by all module commands within the current session.
 
   Set-Action1DefaultOrg
 
-Sets the Action1 organization.
+Sets the ID of default Action1 organization.
 
     Set-Action1DefaultOrg -Org_ID "org-12345"
 
-Configures Action1 organization to interact with.
+Configures default Action1 organization to interact with.
 
   Set-Action1Region
 
-Sets the Action1 API region.
+Specifies the Action1 API region.
 
     Set-Action1Region -Region <String>
 
@@ -132,15 +139,15 @@ Triggers data refresh on endpoints.
 
 Refreshes:
 
-  Installed software
-
-  Installed updates
-
-  Report data
+  * Installed software
+  * Installed updates
+  * Report data
 
   Start-Action1PackageUpload
 
 Uploads and deploys software packages.
+
+  Start-Action1PackageUpload -Package_ID "12345" -Version_ID "1.0.0" -Filename "C:\Packages\App.msi" -Platform Windows_64
 
 Handles package upload and deployment workflows.
 
@@ -154,10 +161,9 @@ EXAMPLES
 
   Example 2: Create automation
 
-    $data = @{
-        name = "My Automation"
-        description = "Example automation"
-    }
+    $automationId = Get-Action1 Automations| Select-Object -First 1 -ExpandProperty Id
+
+    $data = Get-Action1 -Query Settings -For Automation -Clone $automationId
     
     New-Action1 -Item Automation -Data $data
 
@@ -173,27 +179,17 @@ EXAMPLES
 
     Set-Action1Credentials -APIKey "xxx" -Secret "yyy"
     
-    Set-Action1Region -Region "eu"
+    Set-Action1Region -Region "NorthAmerica"
     
-    $endpoints = Get-Action1 -Item Endpoints
-    
-    $data = @{
-        name = "Automation from PowerShell"
-    }
-    
-    New-Action1 -Item Automation -Data $data
+    $tempAutomationId = Get-Action1 Automations | Where-Object {$_.id -like "*Temp*"} | Select-Object -First 1 -ExpandProperty Id
 
-AUTHENTICATION
+    $clonedAutomation = Get-Action1 -Query Settings -For Automation -Clone $tempAutomationId
 
-All API operations require authentication.
+    $clonedAutomation.name = "Powershell Automation"
 
-Use Set-Action1Credentials to provide API key and secret.
-
-Credentials are stored in memory and must be re-entered for each new PowerShell session.
+    New-Action1 -Item Automation -Data $clonedAutomation
 
 NOTES
-
-Internet access is required
 
 API permissions may limit available operations
 
