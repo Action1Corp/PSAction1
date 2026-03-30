@@ -46,6 +46,7 @@ jobs:
                   $fileExtension = $file.Extension
                   $signedFilePath = Join-Path -Path $stagingDir -ChildPath "$fileBaseName$fileExtension"
                   Copy-Item -Path $file.FullName -Destination $signedFilePath -Force
+                  Write-Host "Staged $signedFilePath PowerShell file."
                 }
               Write-Host "##vso[task.setvariable variable=PSExists;isOutput=true]true"
             }
@@ -69,20 +70,20 @@ jobs:
           script: |
             az login --service-principal -u $(ARM_CLIENT_ID) --tenant $(ARM_TENANT_ID) --allow-no-subscriptions --federated-token $(ARM_ID_TOKEN)
 
-      - task: TrustedSigning@0
-        displayName: "Azure Trusted Signing PS files"
+      - task: ArtifactSigning@1
+        displayName: "Azure Artifact Signing PS files"
         condition: eq(variables['PrepareAndCheckPS.PSExists'], 'true')
         inputs:
-          ExcludeSharedTokenCacheCredential: true
-          ExcludeVisualStudioCredential: true
-          ExcludeVisualStudioCodeCredential: true
           Endpoint: "$(AZURE_TS_ENDPOINT)"
+          ArtifactSigningAccountName: "$(AZURE_TS_ACCOUNT_NAME)"
           CertificateProfileName: "$(AZURE_TS_CERTIFICATE_PROFILE_NAME)"
           FilesFolder: "$(Build.ArtifactStagingDirectory)"
           FilesFolderFilter: "ps1,psm1,psd1"
           FilesFolderRecurse: true
           FileDigest: "SHA256"
-          TrustedSigningAccountName: "$(AZURE_TS_ACCOUNT_NAME)"
+          ExcludeSharedTokenCacheCredential: true
+          ExcludeVisualStudioCredential: true
+          ExcludeVisualStudioCodeCredential: true
 
       - task: PowerShell@2
         displayName: "Validate PS module files Authenticode signatures"
