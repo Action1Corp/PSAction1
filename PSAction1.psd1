@@ -1,6 +1,6 @@
 # Name: PSAction1
 # Description: Powershell module for working with the Aciton1 API.
-# Copyright (C) 2024 Action1 Corporation
+# Copyright (C) 2026 Action1 Corporation
 # Documentation: https://github.com/Action1Corp/PSAction1/
 # Use Action1 Roadmap system (https://roadmap.action1.com/) to submit feedback or enhancement requests.
 
@@ -23,7 +23,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.4.7'
+    ModuleVersion     = '1.5.8'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -38,7 +38,7 @@
     CompanyName       = 'Action1 Corporation'
 
     # Copyright statement for this module
-    Copyright         = '(c) 2025 Action1 Corporation. All rights reserved.'
+    Copyright         = '(c) 2026 Action1 Corporation. All rights reserved.'
 
     # Description of the functionality provided by this module
     Description       = 'API Interface for Action1'
