@@ -1,6 +1,6 @@
 ﻿# Name: PSAction1
 # Description: Powershell module for working with the Action1 API.
-# Copyright (C) 2024 Action1 Corporation
+# Copyright (C) 2026 Action1 Corporation
 # Documentation: https://github.com/Action1Corp/PSAction1/
 # Use Action1 Roadmap system (https://roadmap.action1.com/) to submit feedback or enhancement requests.
 
