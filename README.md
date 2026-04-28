@@ -11,6 +11,22 @@
 :stop_sign: **IMPORTANT — READ CAREFULLY!** _The module with examples provided here are for convenience only.  While they have been prepared with care and tested for proper functionality, environments may vary. Before using in production, ensure you fully review, understand, and test the module in a non-production environment. You are responsible for verifying that it behaves as expected and does not cause any adverse effects.
 By using this module, you acknowledge that you have read and accepted these conditions._
 
+## Important Legal Notice
+
+Use of all scripts, source code, binaries, installers, templates, dashboards, reports, integrations, connectors, containers, packages, documentation, and other materials in this repository is subject to [TERMS_OF_USE](./TERMS_OF_USE.md).
+
+These materials may modify systems, install dependencies, connect to third-party services, transmit data, store credentials, create local databases, expose web interfaces, or otherwise impact production or non-production environments.
+
+**Use at your own risk. Review the code. Test before production deployment.**
+
+### Additional Notices
+
+- [DISCLAIMER](./DISCLAIMER.md)
+- [THIRD_PARTY_INTEGRATIONS](./THIRD_PARTY_INTEGRATIONS.md)
+- [SECURITY_NOTICE](./SECURITY_NOTICE.md)
+- [NOTICE](./NOTICE.md)
+- [TERMS_OF_USE](./TERMS_OF_USE.md)
+
 ## Installation from PowerShell Gallery
 
  1. Run PowerShell console as the local machine **administrator**
@@ -708,4 +724,3 @@ PS C:\> Set-Action1Debug $false
 
 ## WARNING: Carefully study the provided scripts and components before using them. Test in your non-production lab first.
 
-LIMITATION OF LIABILITY. IN NO EVENT SHALL ACTION1 OR ITS SUPPLIERS, OR THEIR RESPECTIVE OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE WITH RESPECT TO THE WEBSITE OR THE COMPONENTS OR THE SERVICES UNDER ANY CONTRACT, NEGLIGENCE, TORT, STRICT LIABILITY OR OTHER LEGAL OR EQUITABLE THEORY (I)FOR ANY AMOUNT IN THE AGGREGATE IN EXCESS OF THE GREATER OF FEES PAID BY YOU THEREFOR OR $100; (II) FOR ANY INDIRECT, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES OF ANY KIND WHATSOEVER; (III) FOR DATA LOSS OR COST OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; OR (IV) FOR ANY MATTER BEYOND ’S REASONABLE CONTROL. SOME STATES DO NOT ALLOW THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATIONS AND EXCLUSIONS MAY NOT APPLY TO YOU.
