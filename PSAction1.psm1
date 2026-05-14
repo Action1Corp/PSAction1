@@ -25,6 +25,9 @@ $Script:Action1_DebugEnabled = $false
 $Script:Action1_Interactive = $false
 $Script:Action1_CVE_Lookup = @{}
 
+$Script:Action1_429RetryTimeoutLevel1 = 1100
+$Script:Action1_429RetryTimeOutLevel2 = 60100
+
 $URILookUp = @{
     G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
     G_AgentDeployment      = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
@@ -134,6 +137,103 @@ $PackageDeployTemplate = @"
 "@
 #----------------------------------JSON object templates---------------------------------------
 
+function Debug-Host {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Message
+    )
+
+    if (-not $Script:Action1_DebugEnabled) {
+        return
+    }
+
+    Write-Host "[Action1][DEBUG] $Message" -ForegroundColor Blue
+}
+
+function Set-Action1Credentials {
+    param (
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$APIKey,
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Secret
+    )
+    $Script:Action1_APIKey = $APIKey
+    $Script:Action1_Secret = $Secret
+}
+
+function Set-Action1Debug {
+    param(
+        [Parameter(Mandatory)]
+        [boolean]$Enabled
+    )
+    $Script:Action1_DebugEnabled = $Enabled
+    if ($Enabled) { Debug-Host "Debugging enabled." }
+}
+
+function Set-Action1DefaultOrg {
+    param (
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Org_ID
+    )
+    $Script:Action1_Default_Org = $Org_ID
+}
+
+function Set-Action1Region {
+    param (
+        [Parameter(Mandatory)]
+        [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
+        [String]$Region
+    )
+    $Script:Action1_BaseURI = $Script:Action1_Hosts[$Region]
+}
+
+function Set-Action1Locale {
+    [Obsolete("Please use Set-Action1Region instead.")]
+    param (
+        [Parameter(Mandatory)]
+        [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
+        [String]$Region
+    )
+    Set-Action1Region -Region $Region
+}
+
+function Set-Action1Interactive {
+    param(
+        [Parameter(Mandatory)]
+        [boolean]$Enabled
+    )
+    if ($Enabled) { Debug-Host "Interactive mode enabled, you will be prompted for variables that are required but not set." }
+    $Script:Action1_Interactive = $Enabled
+}
+
+function FetchToken {
+    if (CheckRoot) {
+        if ([string]::IsNullOrEmpty($Script:Action1_APIKey) -or [string]::IsNullOrEmpty($Script:Action1_Secret)) {
+            if ($Script:Action1_Interactive) {
+                Set-Action1Credentials 
+            }
+            else { 
+                Write-Error "Authentication details are not set, call Set-Action1Credentials prior to making any calls to the API."
+                exit
+            } 
+        }
+        try {
+            $Token = (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri "$Script:Action1_BaseURI/oauth2/token" -Method POST -UseBasicParsing -Body @{client_id = $Script:Action1_APIKey; client_secret = $Script:Action1_Secret }).Content )  
+            $Token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$Token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
+            $Script:Action1_Token = $Token
+            return $Token
+        }
+        catch [System.Net.WebException] {
+            Write-Error "Error fetching auth token: $($_)."
+            Write-Error $Token
+            return $null
+        }     
+    }
+}
+
 function CheckToken() {
     if (($null -ne $Script:Action1_Token) -and ($Script:Action1_Token.expires_at -ge $(Get-Date))) {
         Debug-Host "Current token is valid."
@@ -171,6 +271,7 @@ function CheckRoot {
     }
     return $true
 }
+
 function CheckOrg {
     if ($null -eq $Script:Action1_Default_Org) {
         if ($Script:Action1_Interactive) {
@@ -183,30 +284,6 @@ function CheckOrg {
     }
     return $Script:Action1_Default_Org 
 }
-function FetchToken {
-    if (CheckRoot) {
-        if ([string]::IsNullOrEmpty($Script:Action1_APIKey) -or [string]::IsNullOrEmpty($Script:Action1_Secret)) {
-            if ($Script:Action1_Interactive) {
-                Set-Action1Credentials 
-            }
-            else { 
-                Write-Error "Authentication details are not set, call Set-Action1Credentials prior to making any calls to the API."
-                exit
-            } 
-        }
-        try {
-            $Token = (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri "$Script:Action1_BaseURI/oauth2/token" -Method POST -UseBasicParsing -Body @{client_id = $Script:Action1_APIKey; client_secret = $Script:Action1_Secret }).Content )  
-            $Token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$Token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
-            $Script:Action1_Token = $Token
-            return $Token
-        }
-        catch [System.Net.WebException] {
-            Write-Error "Error fetching auth token: $($_)."
-            Write-Error $Token
-            return $null
-        }     
-    }
-}
 
 function BuildArgs {
     param (
@@ -217,6 +294,7 @@ function BuildArgs {
 }
 
 function DoGet {
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
         [String]$Path,
@@ -225,20 +303,147 @@ function DoGet {
         [String]$AddArgs,
         [switch]$Raw
     )
-    try {
-        if ($AddArgs) { $Path += "?{0}" -f $AddArgs }
-        Debug-Host "GET request to $Path : Raw flag is $Raw"
-        if ($Raw) {
-            return (Invoke-WebRequest -Uri $Path -Method GET -UseBasicParsing -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json; charset=utf-8' }).Content
-        }
-        else { 
-            return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method GET -UseBasicParsing -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json; charset=utf-8' }).Content ) 
-        } 
+
+    if ($AddArgs) {
+        $Path += "?{0}" -f $AddArgs
     }
-    catch [System.Net.WebException] {
-        Write-Error "Error fetching $($Label): $($_)."
-        return $null
-    } 
+
+    Debug-Host "GET request to $Path : Raw flag is $Raw"
+
+    $headers = @{
+        Authorization  = "Bearer $(($Script:Action1_Token).access_token)"
+        'Content-Type' = 'application/json; charset=utf-8'
+    }
+
+    $retry429Count = 0
+
+    while ($true) {
+        try {
+            $response = Invoke-WebRequest `
+                -Uri $Path `
+                -Method GET `
+                -UseBasicParsing `
+                -Headers $headers
+
+            if ($response.StatusCode -eq 200) {
+                if ($Raw) {
+                    return $response.Content
+                }
+
+                return ConvertFrom-Json -InputObject $response.Content
+            }
+
+            Write-Error "Error fetching $($Label): HTTP status code $($response.StatusCode)."
+            return $null
+        }
+        catch [System.Net.WebException] {
+            $httpResponse = $_.Exception.Response
+
+            if ($httpResponse -and $httpResponse.StatusCode -eq 429) {
+                $retry429Count++
+
+                if ($retry429Count % 2 -eq 1) {
+                    Debug-Host "HTTP 429 received for $Label. Waiting $Script:Action1_429RetryTimeoutLevel1 ms before retry."
+                    Start-Sleep -Milliseconds $Script:Action1_429RetryTimeoutLevel1
+                }
+                else {
+                    Debug-Host "HTTP 429 received for $Label. Waiting $Script:Action1_429RetryTimeOutLevel2 ms before retry."
+                    Start-Sleep -Milliseconds $Script:Action1_429RetryTimeOutLevel2
+                }
+
+                continue
+            }
+
+            Write-Error "Error fetching $($Label): $($_)."
+            return $null
+        }
+    }
+}
+
+function PushData {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidateSet(
+            'PATCH',
+            'POST',
+            'DELETE'
+        )]
+        [string]$Method,
+        [Parameter(Mandatory)]
+        [String]$Path,
+        [Parameter(Mandatory)]
+        [String]$Label,
+        [object]$Body
+    )
+
+    $headers = @{
+        Authorization  = "Bearer $(($Script:Action1_Token).access_token)"
+        'Content-Type' = 'application/json; charset=utf-8'
+    }
+
+    $jsonBody = $null
+
+    if ($Body) {
+        $jsonBody = ConvertTo-Json -InputObject $Body -Depth 10
+    }
+
+    Debug-Host "$Method request to $Path."
+
+    $invokeWebRequestParams = @{
+        Uri             = $Path
+        Method          = $Method
+        UseBasicParsing = $true
+        Headers         = $headers
+    }
+
+    if ($jsonBody) {
+        $invokeWebRequestParams.Body = $jsonBody
+        Debug-Host "Data to be sent:`n$jsonBody"
+    }
+
+    $retry429Count = 0
+
+    while ($true) {
+
+        try {
+
+            $response = Invoke-WebRequest @invokeWebRequestParams
+
+            if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 300) {
+                if ([string]::IsNullOrWhiteSpace($response.Content)) {
+                    return $null
+                }
+
+                return ConvertFrom-Json -InputObject $response.Content
+            }
+
+            Write-Error "Error processing $($Label): HTTP status code $($response.StatusCode)."
+            return $null
+        }
+        catch [System.Net.WebException] {
+
+            $httpResponse = $_.Exception.Response
+
+            if ($httpResponse -and ([int]$httpResponse.StatusCode -eq 429)) {
+
+                $retry429Count++
+
+                if ($retry429Count % 2 -eq 1) {
+                    Debug-Host "HTTP 429 received for $Label. Waiting $Script:Action1_429RetryTimeoutLevel1 ms before retry."
+                    Start-Sleep -Milliseconds $Script:Action1_429RetryTimeoutLevel1
+                }
+                else {
+                    Debug-Host "HTTP 429 received for $Label. Waiting $Script:Action1_429RetryTimeOutLevel2 ms before retry."
+                    Start-Sleep -Milliseconds $Script:Action1_429RetryTimeOutLevel2
+                }
+                continue
+            }
+
+            Write-Error "Error processing $($Label): $($_)"
+            return $null
+        }
+    }
 }
 
 function Start-Action1PackageUpload {
@@ -292,100 +497,6 @@ function Start-Action1PackageUpload {
         if ($Buffer.Length -eq 0) { Debug-Host "Final Status:$($response.StatusCode)" }else { Debug-Host "Bytes Written: $($Buffer.Length)" }
     }
     $FileData.Close()
-}
-
-
-function Debug-Host {
-    param(
-        [Parameter(Mandatory)]
-        [string]$Message
-    )
-    if ($Script:Action1_DebugEnabled) { Write-Host "Action1 Debug: $Message" -ForegroundColor Blue }
-}
-
-function PushData {
-    param (
-        [Parameter(Mandatory)]
-        [ValidateSet(
-            'PATCH',
-            'POST',
-            'DELETE'
-        )]
-        [string]$Method,
-        [Parameter(Mandatory)]
-        [String]$Path,
-        [Parameter(Mandatory)]
-        [String]$Label,
-        [object]$Body
-    )
-    try {
-        Debug-Host "$Method request to $Path."
-        if ($data) { Debug-Host "Data to be sent:`n $(ConvertTo-Json -InputObject $Body -Depth 10)" }
-        return (ConvertFrom-Json -InputObject (Invoke-WebRequest -Uri $Path -Method $Method -UseBasicParsing -Body (ConvertTo-Json -InputObject $Body -Depth 10) -Headers @{Authorization = "Bearer $(($Script:Action1_Token).access_token)"; 'Content-Type' = 'application/json; charset=utf-8' }).Content)
-    }
-    catch [System.Net.WebException] {
-        Write-Error "Error processing $($Label): $($_)"
-        return $null
-    } 
-}
-
-function Set-Action1Credentials {
-    param (
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string]$APIKey,
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string]$Secret
-    )
-    $Script:Action1_APIKey = $APIKey
-    $Script:Action1_Secret = $Secret
-}
-
-function Set-Action1Debug {
-    param(
-        [Parameter(Mandatory)]
-        [boolean]$Enabled
-    )
-    $Script:Action1_DebugEnabled = $Enabled
-    if ($Enabled) { Debug-Host "Debugging enabled." }
-}
-
-function Set-Action1DefaultOrg {
-    param (
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string]$Org_ID
-    )
-    $Script:Action1_Default_Org = $Org_ID
-}
-
-function Set-Action1Locale {
-    [Obsolete("Please use Set-Action1Region instead.")]
-    param (
-        [Parameter(Mandatory)]
-        [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
-        [String]$Region
-    )
-    Set-Action1Region -Region $Region
-}
-
-function Set-Action1Region {
-    param (
-        [Parameter(Mandatory)]
-        [ValidateSet('NorthAmerica', 'Europe', 'Australia')]
-        [String]$Region
-    )
-    $Script:Action1_BaseURI = $Script:Action1_Hosts[$Region]
-}
-
-function Set-Action1Interactive {
-    param(
-        [Parameter(Mandatory)]
-        [boolean]$Enabled
-    )
-    if ($Enabled) { Debug-Host "Interactive mode enabled, you will be prompted for variables that are required but not set." }
-    $Script:Action1_Interactive = $Enabled
 }
 
 function Get-Action1 {
