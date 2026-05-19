@@ -284,7 +284,7 @@ function Invoke-Action1ApiRequest {
         }
     }
 
-    Debug-Host "$Method request to $Path. Raw flag is $RawResponse"
+    Debug-Host "$Method request to $Path. RawResponse flag is $RawResponse"
 
     $invokeWebRequestParams = @{
         Uri             = $Path
