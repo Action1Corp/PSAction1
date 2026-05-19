@@ -143,17 +143,17 @@ function Initialize-Action1Token {
         ($null -ne $Script:Action1_Token.access_token) -and
         ($Script:Action1_Token.expires_at -ge (Get-Date))
     ) {
-        Write-Debug "Current token is valid."
+        Debug-Host "Current token is valid."
         return $true
     }
 
-    Write-Debug "Token not set or expired, fetching new token."
+    Debug-Host "Token not set or expired, fetching new token."
 
     $token = Request-Action1Token
 
     if ($null -ne $token) {
         $Script:Action1_Token = $token
-        Write-Debug "Token refresh successful."
+        Debug-Host "Token refresh successful."
         return $true
     }
 
@@ -284,7 +284,7 @@ function Invoke-Action1ApiRequest {
         }
     }
 
-    Write-Debug "$Method request to $Path. Raw flag is $Raw"
+    Debug-Host "$Method request to $Path. Raw flag is $Raw"
 
     $invokeWebRequestParams = @{
         Uri             = $Path
@@ -316,7 +316,7 @@ function Invoke-Action1ApiRequest {
                 return ConvertFrom-Json -InputObject $response.Content
             }
 
-            Write-Error "Error processing $($Label): HTTP status code $($response.StatusCode)."
+            Debug-Host "Error processing $($Label): HTTP status code $($response.StatusCode)."
             return $null
         }
         catch {
@@ -336,12 +336,12 @@ function Invoke-Action1ApiRequest {
                     $retryTimeout = $Script:Action1_429RetryTimeOutLevel2
                 }
 
-                Write-Debug ("429 received for '{0}'. Retry #{1}. Sleeping {2} ms." -f $Label, $retry429Count, $retryTimeout)
+                Debug-Host ("429 received for '{0}'. Retry #{1}. Sleeping {2} ms." -f $Label, $retry429Count, $retryTimeout)
                 Start-Sleep -Milliseconds $retryTimeout
                 continue
             }
 
-            Write-Error "Error processing $($Label): $($_.Exception.Message)"
+            Debug-Host "Error processing $($Label): $($_.Exception.Message)"
             return $null
         }
     }
