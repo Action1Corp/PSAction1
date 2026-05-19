@@ -137,22 +137,28 @@ $PackageDeployTemplate = @"
 "@
 #----------------------------------JSON object templates---------------------------------------
 
-function CheckToken() {
-    if (($null -ne $Script:Action1_Token) -and ($null -ne $Script:Action1_Token.access_token) -and ($Script:Action1_Token.expires_at -ge $(Get-Date))) {
+function Initialize-Action1Token {
+    if (
+        ($null -ne $Script:Action1_Token) -and
+        ($null -ne $Script:Action1_Token.access_token) -and
+        ($Script:Action1_Token.expires_at -ge (Get-Date))
+    ) {
         Write-Debug "Current token is valid."
         return $true
     }
-    else {
-        Write-Debug "Token not set or expired, fetching new token."
-        if (FetchToken -ne $null ) {
-            Write-Debug "Token refresh successful."
-            return $true
-        }
-        else {
-            Write-Error "Token could not be refreshed, check for errors in output."
-            return $false
-        }
+
+    Write-Debug "Token not set or expired, fetching new token."
+
+    $token = Request-Action1Token
+
+    if ($null -ne $token) {
+        $Script:Action1_Token = $token
+        Write-Debug "Token refresh successful."
+        return $true
     }
+
+    Write-Error "Token could not be refreshed, check for errors in output."
+    return $false
 }
 
 function CheckRoot {
@@ -174,6 +180,7 @@ function CheckRoot {
     }
     return $true
 }
+
 function CheckOrg {
     if ($null -eq $Script:Action1_Default_Org) {
         if ($Script:Action1_Interactive) {
@@ -186,7 +193,8 @@ function CheckOrg {
     }
     return $Script:Action1_Default_Org 
 }
-function FetchToken {
+
+function Request-Action1Token {
     if (CheckRoot) {
         if ([string]::IsNullOrEmpty($Script:Action1_APIKey) -or [string]::IsNullOrEmpty($Script:Action1_Secret)) {
             if ($Script:Action1_Interactive) {
@@ -208,7 +216,6 @@ function FetchToken {
                 } `
                 -SkipAuthenticationCheck
             $Token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$Token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
-            $Script:Action1_Token = $Token
             return $Token
         }
         catch [System.Net.WebException] {
@@ -251,7 +258,7 @@ function Invoke-Action1ApiRequest {
     $headers = @{}
 
     if (-not $SkipAuthenticationCheck) {
-        if (CheckToken) {
+        if (Initialize-Action1Token) {
             $headers.Authorization = "Bearer $($Script:Action1_Token.access_token)"
         }
     }
@@ -373,11 +380,7 @@ function Start-Action1PackageUpload {
     try {
         $Headers = $HeaderBase.Clone()
         $Headers.Add('X-Upload-Content-Length', $($FileData.Length))
-        $Headers.Add('Content-Type', 'application/json')
-        if (CheckToken) { 
-            $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)")
-            Invoke-Action1ApiRequest -Method POST -Path $uri -Label 'Opening upload stream' -Headers $Headers -ErrorAction SilentlyContinue  
-        }
+        Invoke-Action1ApiRequest -Method POST -Path $uri -Label 'Opening upload stream' -Headers $Headers -ErrorAction SilentlyContinue  
     }
     catch { 
         $UploadTarget = $_.Exception.Response.Headers['X-Upload-Location'] 
@@ -392,17 +395,14 @@ function Start-Action1PackageUpload {
         $Headers.Add('Content-Type', 'application/octet-stream')
         $Place += $Read
         try { 
-            if (CheckToken) { 
-                $Headers.Add('Authorization', "Bearer $(($Script:Action1_Token).access_token)")
-                $response = Invoke-Action1ApiRequest `
-                    -Method PUT `
-                    -Path $UploadTarget `
-                    -Label "Uploading Package $($Package_ID)" `
-                    -Body $Buffer `
-                    -RawBody `
-                    -Headers $Headers `
-                    -ErrorAction SilentlyContinue
-            } 
+            $response = Invoke-Action1ApiRequest `
+                -Method PUT `
+                -Path $UploadTarget `
+                -Label "Uploading Package $($Package_ID)" `
+                -Body $Buffer `
+                -RawBody `
+                -Headers $Headers `
+                -ErrorAction SilentlyContinue         
         }
         catch {
             Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" 
@@ -542,7 +542,15 @@ function Get-Action1 {
         [string]$Clone
     )
     #Short out processing path if URI literal is specified.
-    if ($Query -eq 'RawURI') { if (!$URI) { Write-Error "Error -URI value required when Query is type RawURI.`n"; return $null }else { return Invoke-Action1ApiRequest -Method GET -Path $URI -Label $Query } }
+    if ($Query -eq 'RawURI') {
+         if (!$URI) {
+             Write-Error "Error -URI value required when Query is type RawURI.`n"; 
+             return $null 
+        }
+        else {
+             return Invoke-Action1ApiRequest -Method GET -Path $URI -Label $Query 
+        } 
+    }
     # Retrieve settings objects for post/patch actions.
     if ($Query -eq 'Settings') {
         if (!$For) { 
@@ -760,7 +768,12 @@ function Get-Action1 {
             $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(CheckOrg))
         }
     } 
-    if ($Rawlist.Contains($Query)) { $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs -Raw } else { $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs }
+    if ($Rawlist.Contains($Query)) {
+         $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs -Raw 
+    } 
+    else {
+         $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs 
+    }
     if ($Page.items) {
         switch -Wildcard ($Query) {
             'PolicyResults' {
@@ -829,22 +842,29 @@ function New-Action1 {
     )
         Debug-Host "Creating new $Item."
     #Short out processing path if URI literal is specified.
-    if ($Item -eq 'RawURI') { if (!$URI) { Write-Error "Error -URI value required when Action is type RawURI.`n"; return $null }else { if (CheckToken) { return Invoke-Action1ApiRequest -Method POST -Path $URI -Body $Data -Label 'RawRequest'} } }
-    if (CheckToken) {
-        try {
-            if (!$URILookUp["N_$Item"].ToString().Contains("`$Org_ID")) {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"])
-            }
-            else {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"] -Org_ID $(CheckOrg))
-            } 
-            return Invoke-Action1ApiRequest -Method POST -Path $Path -Label $Item -Body $Data
+    if ($Item -eq 'RawURI') {
+         if (!$URI) {
+             Write-Error "Error -URI value required when Action is type RawURI.`n"; 
+             return $null 
         }
-        catch {
-            Write-Error "Error adding $Item`: $($_)."
-            return $null
-        }
+        else { 
+            return Invoke-Action1ApiRequest -Method POST -Path $URI -Body $Data -Label 'RawRequest'
+        } 
     }
+    try {
+        if (!$URILookUp["N_$Item"].ToString().Contains("`$Org_ID")) {
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"])
+        }
+        else {
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"] -Org_ID $(CheckOrg))
+        } 
+        return Invoke-Action1ApiRequest -Method POST -Path $Path -Label $Item -Body $Data
+    }
+    catch {
+        Write-Error "Error adding $Item`: $($_)."
+        return $null
+    }
+    
 }
 
 function Update-Action1 {
@@ -874,68 +894,74 @@ function Update-Action1 {
     )
     Debug-Host "Trying update for $Action => $Type."
     #Short out processing path if URI literal is specified.
-    if ($Type -eq 'RawURI') { if (!$URI) { Write-Error "Error -URI value required when Action is type RawURI.`n"; return $null }else { if (CheckToken) { return Invoke-Action1ApiRequest -Method PATCH -Path $URI -Body $Data -Label 'RawRequest'} } }
-    if (CheckToken) {
-        switch ($Action) {
-            'ModifyMembers' {
-                switch ($Type) {
-                    'EndpointGroup' { 
-                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupMembers"] -Org_ID $(CheckOrg) -Object_ID $id)
-                        return Invoke-Action1ApiRequest -Method POST -Path $Path -Body $Data -Label "$Action=>$Type"
-                    }
-                    default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
-                }
-            }
-            'Modify' {              
-                if (!$Id) { Write-Error "When perfoming $Action=>$Type, the value for -Id must be specified to know what object to act on."; return $null } 
-                switch ($Type) {
-                    'Automation' {
-                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                        return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
-                    }
-                    'CustomAttribute' {
-                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                        $Data = New-Object psobject -Property @{"custom:$AttributeName" = $AttributeValue }
-                        return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
-                    }
-                    'Endpoint' { 
-                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                        $Data.PSObject.Members | ForEach-Object { if (@('name', 'comment') -notcontains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
-                        return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
-                    }
-                    'EndpointGroup' { 
-                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupModify"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                        return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type"
-                    }
-                    default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
-                }   
-            }
-            'Delete' {
-                Debug-Host "Force delete enabled:$Force."
-                switch ($Type) {
-                    'EndpointGroup' { 
-                        if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
-                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupModify"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                            return Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "$Action=>$Type"
-                        }
-                    }
-                    'Endpoint' { 
-                        if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
-                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                            return Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "$Action=>$Type"
-                        }
-                    }
-                    'Automation' {
-                        if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
-                            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
-                            return Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "$Action=>$Type"
-                        }
-                    }
-                    default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
-                }
-            }
-            default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
+    if ($Type -eq 'RawURI') {
+        if (!$URI) {
+             Write-Error "Error -URI value required when Action is type RawURI.`n"; 
+             return $null 
         }
+        else {
+            return Invoke-Action1ApiRequest -Method PATCH -Path $URI -Body $Data -Label 'RawRequest' 
+        } 
+    }
+    switch ($Action) {
+        'ModifyMembers' {
+            switch ($Type) {
+                'EndpointGroup' { 
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupMembers"] -Org_ID $(CheckOrg) -Object_ID $id)
+                    return Invoke-Action1ApiRequest -Method POST -Path $Path -Body $Data -Label "$Action=>$Type"
+                }
+                default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
+            }
+        }
+        'Modify' {              
+            if (!$Id) { Write-Error "When perfoming $Action=>$Type, the value for -Id must be specified to know what object to act on."; return $null } 
+            switch ($Type) {
+                'Automation' {
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                    return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                }
+                'CustomAttribute' {
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                    $Data = New-Object psobject -Property @{"custom:$AttributeName" = $AttributeValue }
+                    return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                }
+                'Endpoint' { 
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                    $Data.PSObject.Members | ForEach-Object { if (@('name', 'comment') -notcontains $_.Name) { $Data.PSObject.Members.Remove($_.Name) } }
+                    return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
+                }
+                'EndpointGroup' { 
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupModify"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                    return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type"
+                }
+                default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
+            }   
+        }
+        'Delete' {
+            Debug-Host "Force delete enabled:$Force."
+            switch ($Type) {
+                'EndpointGroup' { 
+                    if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_GroupModify"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                        return Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "$Action=>$Type"
+                    }
+                }
+                'Endpoint' { 
+                    if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Endpoint"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                        return Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "$Action=>$Type"
+                    }
+                }
+                'Automation' {
+                    if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["U_Automation"] -Org_ID $(CheckOrg) -Object_Id $Id)
+                        return Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "$Action=>$Type"
+                    }
+                }
+                default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
+            }
+        }
+        default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
     }
 }
 
@@ -950,25 +976,24 @@ function Start-Action1Requery {
         [string]$Type,
         [string]$Endpoint_Id                    
     )
-    if (CheckToken) {
-        if (!$URILookUp["R_$Type"].ToString().Contains("`$Org_ID")) {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"])
-        }
-        else {
-            if ($Endpoint_Id) {
-                if ($URILookUp["R_$Type"].ToString().Contains("`$Object_ID")) {
-                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"] -Org_ID $(CheckOrg) -Object_ID $Endpoint_Id)
-                }
-                else {
-                    Write-Error "Endpoint_Id was specified but this action is not endpoint specific, can continue, defaulting to system wide."
-                    $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"] -Org_ID $(CheckOrg))
-                } 
+    if (!$URILookUp["R_$Type"].ToString().Contains("`$Org_ID")) {
+        $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"])
+    }
+    else {
+        if ($Endpoint_Id) {
+            if ($URILookUp["R_$Type"].ToString().Contains("`$Object_ID")) {
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"] -Org_ID $(CheckOrg) -Object_ID $Endpoint_Id)
             }
             else {
+                Write-Error "Endpoint_Id was specified but this action is not endpoint specific, can continue, defaulting to system wide."
                 $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"] -Org_ID $(CheckOrg))
-            }
-        } 
-        return Invoke-Action1ApiRequest -Method POST -Path $Path.TrimEnd('/') -Label "Requery=>$Type"
-    }
+            } 
+        }
+        else {
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["R_$Type"] -Org_ID $(CheckOrg))
+        }
+    } 
+
+    return Invoke-Action1ApiRequest -Method POST -Path $Path.TrimEnd('/') -Label "Requery=>$Type"  
 }
 
