@@ -248,7 +248,7 @@ function Invoke-Action1ApiRequest {
         [object]$Body,
         [switch]$RawBody,
         [string]$AddArgs,
-        [switch]$Raw,
+        [switch]$RawResponse,
         [switch]$SkipAuthenticationCheck
     )
     if ($AddArgs) {
@@ -284,7 +284,7 @@ function Invoke-Action1ApiRequest {
         }
     }
 
-    Debug-Host "$Method request to $Path. Raw flag is $Raw"
+    Debug-Host "$Method request to $Path. Raw flag is $RawResponse"
 
     $invokeWebRequestParams = @{
         Uri             = $Path
@@ -305,7 +305,7 @@ function Invoke-Action1ApiRequest {
             $response = Invoke-WebRequest @invokeWebRequestParams
 
             if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 300) {
-                if ($Raw) {
+                if ($RawResponse) {
                     return $response.Content
                 }
 
@@ -769,7 +769,7 @@ function Get-Action1 {
         }
     } 
     if ($Rawlist.Contains($Query)) {
-         $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs -Raw 
+         $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs -RawResponse 
     } 
     else {
          $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs 
@@ -792,7 +792,12 @@ function Get-Action1 {
         }
         While (![string]::IsNullOrEmpty($Page.next_page)) {
             Debug-Host "[$Query] Next page..."
-            if ($Rawlist.Contains($Query)) { $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Query -Raw } else { $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Query }
+            if ($Rawlist.Contains($Query)) {
+                 $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Query -RawResponse 
+            } 
+            else {
+                 $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Query 
+            }
             switch -Wildcard ($Query) {
                 'PolicyResults' {
                     $page.Items | ForEach-Object {
