@@ -275,16 +275,14 @@ function Invoke-Action1ApiRequest {
 
     if ($PSBoundParameters.ContainsKey('Body') -and $null -ne $Body) {
         if ($RawBody) {
-            Debug-Host "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
             $requestBody = $Body
+            Debug-Host "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
         }
         else {
-            Debug-Host "JSON Data to be sent:`n$requestBody"
             $requestBody = ConvertTo-Json -InputObject $Body -Depth 10
+            Debug-Host "JSON Data to be sent:`n$requestBody"  
         }
     }
-
-    Debug-Host "$Method request to $Path. RawResponse flag is $RawResponse"
 
     $invokeWebRequestParams = @{
         Uri             = $Path
@@ -301,10 +299,16 @@ function Invoke-Action1ApiRequest {
     $retry429Count = 0
 
     while ($true) {
+        Debug-Host "$Method request to $Path. RawResponse flag is $RawResponse"
         try {
+            $webRequestSW = [System.Diagnostics.Stopwatch]::StartNew()
             $response = Invoke-WebRequest @invokeWebRequestParams
+            $webRequestSW.Stop()
+
+            Debug-Host ("{2} request to {0} took {1}ms" -f $Path, $($webRequestSW.ElapsedMilliseconds), $Method)
 
             if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 300) {
+                Debug-Host ("Success response code {0} for {1} to {2}" -f $($response.StatusCode), $Method, $Path)
                 if ($RawResponse) {
                     return $response.Content
                 }
@@ -326,10 +330,12 @@ function Invoke-Action1ApiRequest {
                 $statusCode = [int]$_.Exception.Response.StatusCode
             }
 
+            Debug-Host ("Failed response code {0} for {1} to {2}" -f $statusCode, $Method, $Path)
+
             if ($statusCode -eq 429) {
                 $retry429Count++
 
-                if ($retry429Count % 2 -eq 1) {
+                if ($retry429Count -eq 1) {
                     $retryTimeout = $Script:Action1_429RetryTimeoutLevel1
                 }
                 else {
