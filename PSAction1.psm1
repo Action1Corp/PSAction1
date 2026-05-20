@@ -25,8 +25,7 @@ $Script:Action1_DebugEnabled = $false
 $Script:Action1_Interactive = $false
 $Script:Action1_CVE_Lookup = @{}
 
-$Script:Action1_429RetryTimeoutLevel1 = 1100
-$Script:Action1_429RetryTimeOutLevel2 = 60100
+$Script:Action1_429RetryBaseTimeout = 2000
 
 $URILookUp = @{
     G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
@@ -333,14 +332,9 @@ function Invoke-Action1ApiRequest {
             Debug-Host ("Failed response code {0} for {1} to {2}" -f $statusCode, $Method, $Path)
 
             if ($statusCode -eq 429) {
+                
+                $retryTimeout = [Math]::Pow(2,$retry429Count) * $Script:Action1_429RetryBaseTimeout
                 $retry429Count++
-
-                if ($retry429Count -eq 1) {
-                    $retryTimeout = $Script:Action1_429RetryTimeoutLevel1
-                }
-                else {
-                    $retryTimeout = $Script:Action1_429RetryTimeOutLevel2
-                }
 
                 Debug-Host ("429 received for '{0}'. Retry #{1}. Sleeping {2} ms." -f $Label, $retry429Count, $retryTimeout)
                 Start-Sleep -Milliseconds $retryTimeout
