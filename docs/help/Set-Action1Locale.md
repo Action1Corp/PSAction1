@@ -72,7 +72,7 @@ Parameter Sets: (All)
 
 Aliases:
 
-Accepted values: NorthAmerica, Europe
+Accepted values: NorthAmerica, Europe, Australia
 
 Required: True
 
