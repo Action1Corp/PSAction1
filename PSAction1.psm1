@@ -145,17 +145,17 @@ function Initialize-Action1Token {
         ($null -ne $Script:Action1_Token.access_token) -and
         ($Script:Action1_Token.expires_at -ge (Get-Date))
     ) {
-        Debug-Host "Current token is valid."
+        Write-Action1Debug "Current token is valid."
         return $true
     }
 
-    Debug-Host "Token not set or expired, fetching new token."
+    Write-Action1Debug "Token not set or expired, fetching new token."
 
     $token = Request-Action1Token
 
     if ($null -ne $token) {
         $Script:Action1_Token = $token
-        Debug-Host "Token refresh successful."
+        Write-Action1Debug "Token refresh successful."
         return $true
     }
 
@@ -311,11 +311,11 @@ function Invoke-Action1ApiRequest {
     if ($PSBoundParameters.ContainsKey('Body') -and $null -ne $Body) {
         if ($RawBody) {
             $requestBody = $Body
-            Debug-Host "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
+            Write-Action1Debug "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
         }
         else {
             $requestBody = ConvertTo-Json -InputObject $Body -Depth 10
-            Debug-Host "JSON Data to be sent:`n$requestBody"  
+            Write-Action1Debug "JSON Data to be sent:`n$requestBody"  
         }
     }
 
@@ -334,7 +334,7 @@ function Invoke-Action1ApiRequest {
     $retry429Count = 0
 
     while ($true) {
-        Debug-Host "$Method request to $Path. RawResponse flag is $RawResponse"
+        Write-Action1Debug "$Method request to $Path. RawResponse flag is $RawResponse"
         try {
             if($Script:Action1_DebugEnabled){$webRequestSW = [System.Diagnostics.Stopwatch]::StartNew()}
 
@@ -342,11 +342,11 @@ function Invoke-Action1ApiRequest {
 
             if($Script:Action1_DebugEnabled){
                 $webRequestSW.Stop()
-                Debug-Host ("{2} request to {0} took {1}ms" -f $Path, $($webRequestSW.ElapsedMilliseconds), $Method)
+                Write-Action1Debug ("{2} request to {0} took {1}ms" -f $Path, $($webRequestSW.ElapsedMilliseconds), $Method)
             }
 
             if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 300) {
-                Debug-Host ("Success response code {0} for {1} to {2}" -f $($response.StatusCode), $Method, $Path)
+                Write-Action1Debug ("Success response code {0} for {1} to {2}" -f $($response.StatusCode), $Method, $Path)
                 if ($RawResponse) {
                     return $response.Content
                 }
@@ -358,7 +358,7 @@ function Invoke-Action1ApiRequest {
                 return ConvertFrom-Json -InputObject $response.Content
             }
 
-            Debug-Host "Error processing $($Label): HTTP status code $($response.StatusCode)."
+            Write-Action1Debug "Error processing $($Label): HTTP status code $($response.StatusCode)."
             return $null
         }
         catch {
@@ -368,19 +368,19 @@ function Invoke-Action1ApiRequest {
                 $statusCode = [int]$_.Exception.Response.StatusCode
             }
 
-            Debug-Host ("Failed response code {0} for {1} to {2}" -f $statusCode, $Method, $Path)
+            Write-Action1Debug ("Failed response code {0} for {1} to {2}" -f $statusCode, $Method, $Path)
 
             if ($statusCode -eq 429) {
                 
                 $retryTimeout = [Math]::Pow(2,$retry429Count) * $Script:Action1_429RetryBaseTimeout
                 $retry429Count++
 
-                Debug-Host ("429 received for '{0}'. Retry #{1}. Sleeping {2} ms." -f $Label, $retry429Count, $retryTimeout)
+                Write-Action1Debug ("429 received for '{0}'. Retry #{1}. Sleeping {2} ms." -f $Label, $retry429Count, $retryTimeout)
                 Start-Sleep -Milliseconds $retryTimeout
                 continue
             }
 
-            Debug-Host "Error processing $($Label): $($_.Exception.Message)"
+            Write-Action1Debug "Error processing $($Label): $($_.Exception.Message)"
             return $null
         }
     }
@@ -419,12 +419,12 @@ function Invoke-Action1PagedGetRequest {
     $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs
 
     if ($null -eq $Page) {
-        Debug-Host "[$Label] Page 1 returned null. Stopping pagination."
+        Write-Action1Debug "[$Label] Page 1 returned null. Stopping pagination."
         return $null
     }
 
     if ($Page.PSObject.Properties.Name -notcontains 'items') {
-        Debug-Host "[$Label] Response is not a paged result. Returning response as-is."
+        Write-Action1Debug "[$Label] Response is not a paged result. Returning response as-is."
 
         if ($ItemAction) {
             & $ItemAction $Page
@@ -475,22 +475,22 @@ function Invoke-Action1PagedGetRequest {
     $PageNumber = 1
     $ItemCount = & $GetPageItemCount $Page
 
-    Debug-Host "[$Label] Processing page $PageNumber. Items: $ItemCount"
+    Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
 
     & $WritePageItems $Page
 
     while (-not [string]::IsNullOrEmpty($Page.next_page)) {
         $PageNumber++
-        Debug-Host "[$Label] Requesting page $PageNumber..."
+        Write-Action1Debug "[$Label] Requesting page $PageNumber..."
         $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Label
 
         if ($null -eq $Page) {
-            Debug-Host "[$Label] Page $PageNumber returned null. Stopping pagination."
+            Write-Action1Debug "[$Label] Page $PageNumber returned null. Stopping pagination."
             break
         }
 
         $ItemCount = & $GetPageItemCount $Page
-        Debug-Host "[$Label] Processing page $PageNumber. Items: $ItemCount"
+        Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
         & $WritePageItems $Page
     }
 }
@@ -512,14 +512,14 @@ function Start-Action1PackageUpload {
         [int32]$BufferSize = 24Mb
     )
     $uri = "$Script:Action1_BaseURI/software-repository/all/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
-    Debug-Host "Base URI is $uri"
+    Write-Action1Debug "Base URI is $uri"
     $UploadTarget = ""
-    Debug-Host "Uploading file: '$Filename'"
-    Debug-Host "Writing in chunks of $BufferSize bytes."
+    Write-Action1Debug "Uploading file: '$Filename'"
+    Write-Action1Debug "Writing in chunks of $BufferSize bytes."
     $FileData = [System.IO.File]::Open($Filename, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
     if ($FileData.Length -lt $BufferSize) {
          $BufferSize = $FileData.Length; 
-         Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)" 
+         Write-Action1Debug "File is smaller than BufferSize, adjusting to $($FileData.Length)" 
     }
     $Buffer = New-Object byte[] $BufferSize
     $Place = 0
@@ -538,7 +538,7 @@ function Start-Action1PackageUpload {
         $UploadTarget = $_.Exception.Response.Headers['X-Upload-Location'] 
     } 
 
-    Debug-Host "Upload URI is $UploadTarget"
+    Write-Action1Debug "Upload URI is $UploadTarget"
 
     while (($Read = $FileData.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
         $Headers = $HeaderBase.Clone()
@@ -557,31 +557,37 @@ function Start-Action1PackageUpload {
                 -ErrorAction SilentlyContinue         
         }
         catch {
-            Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" 
+            Write-Action1Debug "Last Status: $($_.Exception.Response.StatusCode)" 
         }
 
         if (($FileData.Length - $Place) -lt $BufferSize) { 
             $buffer = New-Object byte[] ($FileData.Length - $place) 
         }
-        Debug-Host "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
+        Write-Action1Debug "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
 
         if ($Buffer.Length -eq 0) { 
-            Debug-Host "Final Status:$($response.StatusCode)" 
+            Write-Action1Debug "Final Status:$($response.StatusCode)" 
         }
         else {
-            Debug-Host "Bytes Written: $($Buffer.Length)" 
+            Write-Action1Debug "Bytes Written: $($Buffer.Length)" 
         }
     }
     $FileData.Close()
 }
 
-
-function Debug-Host {
+function Write-Action1Debug {
+    [CmdletBinding()]
     param(
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 0)]
+        [AllowEmptyString()]
         [string]$Message
     )
-    if ($Script:Action1_DebugEnabled) { Write-Host "Action1 Debug: $Message" -ForegroundColor Blue }
+
+    if (-not $Script:Action1_DebugEnabled) {
+        return
+    }
+
+    Write-Host ("Action1 Debug: {0}" -f $Message) -ForegroundColor Blue
 }
 
 function Set-Action1Credentials {
@@ -598,12 +604,17 @@ function Set-Action1Credentials {
 }
 
 function Set-Action1Debug {
+    [CmdletBinding()]
     param(
-        [Parameter(Mandatory)]
-        [boolean]$Enabled
+        [Parameter(Mandatory, Position = 0)]
+        [bool]$Enabled
     )
+
     $Script:Action1_DebugEnabled = $Enabled
-    if ($Enabled) { Debug-Host "Debugging enabled." }
+
+    if ($Enabled) {
+        Write-Action1Debug "Debugging enabled."
+    }
 }
 
 function Set-Action1DefaultOrg {
@@ -639,7 +650,7 @@ function Set-Action1Interactive {
         [Parameter(Mandatory)]
         [boolean]$Enabled
     )
-    if ($Enabled) { Debug-Host "Interactive mode enabled, you will be prompted for variables that are required but not set." }
+    if ($Enabled) { Write-Action1Debug "Interactive mode enabled, you will be prompted for variables that are required but not set." }
     $Script:Action1_Interactive = $Enabled
 }
 
@@ -798,7 +809,7 @@ function Get-Action1 {
                         $deploy.actions[0].params.display_summary = "$For via external API call."
                         $sbRefreshCVEList = {
                             $Script:Action1_CVE_Lookup = @{}
-                            Debug-Host "Refreshing CVE list at $(Get-Date)"
+                            Write-Action1Debug "Refreshing CVE list at $(Get-Date)"
                             Get-Action1 Vulnerabilities | ForEach-Object{$Script:Action1_CVE_Lookup[$_.cve_id]=$_}
                         }
                         $sbAddCVE = {
@@ -813,10 +824,10 @@ function Get-Action1 {
                                     $ver = $item.version
                                     $name = $item.name
                                     if (!($null -eq $this.actions.params.packages[0].$upd)) {
-                                        Debug-Host "$upd has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
+                                        Write-Action1Debug "$upd has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
                                     }
                                     else {
-                                        Debug-Host "Adding $upd to the package list for $CVE_ID."
+                                        Write-Action1Debug "Adding $upd to the package list for $CVE_ID."
                                         if ($null -eq $this.actions.params.packages[0].'default') {
                                             $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd = $ver }
                                         }
@@ -856,11 +867,11 @@ function Get-Action1 {
                             }
                             else { 
                                 if (!($null -eq $this.actions.params.packages[0].$pack)) {
-                                    Debug-Host "$name has already been added to this template."
+                                    Write-Action1Debug "$name has already been added to this template."
                                 }
                                 else {
                                     $version = $(Get-Action1 RawURI -URI "$Script:Action1_BaseURI/packages/all/$Package_ID/versions").version
-                                    Debug-Host "Adding $name version $Version to the package list."
+                                    Write-Action1Debug "Adding $name version $Version to the package list."
                                     if ($null -eq $this.actions.params.packages[0].'default') {
                                         $this.actions.params.packages += New-Object PSCustomObject -Property @{$Package_ID = $version }
                                     }
@@ -965,7 +976,7 @@ function New-Action1 {
         [Parameter(Mandatory)]
         [object]$Data                    
     )
-        Debug-Host "Creating new $Item."
+        Write-Action1Debug "Creating new $Item."
     #Short out processing path if URI literal is specified.
     if ($Item -eq 'RawURI') {
          if (!$URI) {
@@ -1017,7 +1028,7 @@ function Update-Action1 {
         [string]$URI,
         [switch]$Force
     )
-    Debug-Host "Trying update for $Action => $Type."
+    Write-Action1Debug "Trying update for $Action => $Type."
     #Short out processing path if URI literal is specified.
     if ($Type -eq 'RawURI') {
         if (!$URI) {
@@ -1063,7 +1074,7 @@ function Update-Action1 {
             }   
         }
         'Delete' {
-            Debug-Host "Force delete enabled:$Force."
+            Write-Action1Debug "Force delete enabled:$Force."
             switch ($Type) {
                 'EndpointGroup' { 
                     if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
