@@ -849,7 +849,7 @@ function Get-Action1 {
             switch -Wildcard ($Query) {
                 'PolicyResults' {
                     $page.Items | ForEach-Object {
-                        $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value sbPolicyResultsDetail
+                        $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPolicyResultsDetail
                         Write-Output $_
                     }
                 }
