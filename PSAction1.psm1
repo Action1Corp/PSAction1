@@ -386,6 +386,115 @@ function Invoke-Action1ApiRequest {
     }
 }
 
+function Invoke-Action1PagedGetRequest {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$Path,
+        [Parameter(Mandatory)]
+        [string]$Label,
+        [string]$AddArgs,
+        [int]$Limit = 200,
+        [int]$From = 0,
+        [switch]$RawResponse,
+        [scriptblock]$ItemAction
+    )
+
+    if ($Limit -le 0) {
+        $Limit = 200
+    }
+
+    if ($From -lt 0) {
+        $From = 0
+    }
+
+    $RequestArgs = $AddArgs
+    $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "from=$From"
+    $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "limit=$Limit"
+
+    if ($RawResponse) {
+        return Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs -RawResponse
+    }
+
+    $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs
+
+    if ($null -eq $Page) {
+        Debug-Host "[$Label] Page 1 returned null. Stopping pagination."
+        return $null
+    }
+
+    if ($Page.PSObject.Properties.Name -notcontains 'items') {
+        Debug-Host "[$Label] Response is not a paged result. Returning response as-is."
+
+        if ($ItemAction) {
+            & $ItemAction $Page
+        }
+        else {
+            $Page
+        }
+
+        return
+    }
+
+    $WritePageItems = {
+        param (
+            [Parameter(Mandatory)]
+            [object]$CurrentPage
+        )
+
+        foreach ($Item in @($CurrentPage.items)) {
+            if ($ItemAction) {
+                & $ItemAction $Item
+            }
+            else {
+                $Item
+            }
+        }
+    }
+
+    $GetPageItemCount = {
+        param (
+            [object]$CurrentPage
+        )
+
+        if ($null -eq $CurrentPage) {
+            return 0
+        }
+
+        if ($CurrentPage.PSObject.Properties.Name -notcontains 'items') {
+            return 0
+        }
+
+        if ($null -eq $CurrentPage.items) {
+            return 0
+        }
+
+        return @($CurrentPage.items).Count
+    }
+
+    $PageNumber = 1
+    $ItemCount = & $GetPageItemCount $Page
+
+    Debug-Host "[$Label] Processing page $PageNumber. Items: $ItemCount"
+
+    & $WritePageItems $Page
+
+    while (-not [string]::IsNullOrEmpty($Page.next_page)) {
+        $PageNumber++
+        Debug-Host "[$Label] Requesting page $PageNumber..."
+        $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Label
+
+        if ($null -eq $Page) {
+            Debug-Host "[$Label] Page $PageNumber returned null. Stopping pagination."
+            break
+        }
+
+        $ItemCount = & $GetPageItemCount $Page
+        Debug-Host "[$Label] Processing page $PageNumber. Items: $ItemCount"
+        & $WritePageItems $Page
+    }
+}
+
 function Start-Action1PackageUpload {
     param(
         [Parameter(Mandatory)]
@@ -603,7 +712,7 @@ function Get-Action1 {
         }
         else { 
             if ($Clone) {
-                if ($Query -ne 'Settings') { Write-Error "Clone flag only allowed for query type 'Setings.'`n"; return $null }
+                if ($Query -ne 'Settings') { Write-Error "Clone flag only allowed for query type 'Settings.'`n"; return $null }
                 switch ($For) {
                     'EndpointGroup' {  
                         $Pull = Get-Action1 EndpointGroups | Where-Object { $_.id -eq ($Clone) }
@@ -654,7 +763,7 @@ function Get-Action1 {
                             return $Pull
                         }
                     }
-                    default { Write-Error "Invalild request to clone type $For." ; return $null }
+                    default { Write-Error "Invalid request to clone type $For." ; return $null }
                 }
             }
             else {
@@ -779,22 +888,34 @@ function Get-Action1 {
 
     $AddArgs = ""
     $sbPolicyResultsDetail = {
-        $Page = Invoke-Action1ApiRequest -Method GET -Path $this.details -Label 'PolicyResultsDetails'
-        $Page.items | Write-Output
-        While (![string]::IsNullOrEmpty($Page.next_page)) {
-            $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label 'PolicyResultsDetails'
-            $Page.items | Write-Output
-        }
+        Invoke-Action1PagedGetRequest `
+            -Path $this.details `
+            -Label 'PolicyResultsDetails'
     }
     $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object { $_.name -eq $name }).value }
 
-    if ($null -eq $Limit){$Limit=200}
-    if ($Limit -gt 0) { 
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument "limit=$Limit"
+    $ItemAction = $null
+
+    switch -Wildcard ($Query) {
+        'PolicyResults' {
+            $ItemAction = {
+                param($Item)
+
+                $Item | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPolicyResultsDetail -Force
+                $Item
+            }
+        }
+
+        'Endpoint*' {
+            $ItemAction = {
+                param($Item)
+
+                $Item | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet -Force
+                $Item
+            }
+        }
     }
-    else {
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument "limit=200"
-    }
+
     if (!$URILookUp["G_$Query"].ToString().Contains("`$Org_ID")) {
         if (!$URILookUp["G_$Query"].ToString().Contains("`$Object_ID")) {
             $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"])
@@ -815,64 +936,15 @@ function Get-Action1 {
         else {
             $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(Initialize-Action1DefaultOrg))
         }
-    } 
+    }
+
     if ($Rawlist.Contains($Query)) {
-         $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs -RawResponse 
-    } 
-    else {
-         $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs 
+        Invoke-Action1PagedGetRequest -Path $Path -Label $Query -AddArgs $AddArgs -Limit $Limit -RawResponse
+        return
     }
-    if ($Page.items) {
-        switch -Wildcard ($Query) {
-            'PolicyResults' {
-                $page.Items | ForEach-Object {
-                    $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPolicyResultsDetail
-                    Write-Output $_
-                }
-            }
-            'Endpoint*' {
-                $page.Items | ForEach-Object {
-                    $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
-                    Write-Output $_
-                }  
-            }
-            default { $Page.Items | Write-Output }
-        }
-        While (![string]::IsNullOrEmpty($Page.next_page)) {
-            Debug-Host "[$Query] Next page..."
-            if ($Rawlist.Contains($Query)) {
-                 $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Query -RawResponse 
-            } 
-            else {
-                 $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Query 
-            }
-            switch -Wildcard ($Query) {
-                'PolicyResults' {
-                    $page.Items | ForEach-Object {
-                        $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPolicyResultsDetail
-                        Write-Output $_
-                    }
-                }
-                'Endpoint*' {
-                    $page.Items | ForEach-Object {
-                        $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
-                        Write-Output $_
-                    }  
-                }
-                default { $Page.Items | Write-Output }
-            }
-        }
-    }
-    else {
-        switch -Wildcard ($Query) {
-            'Endpoint*' {
-                $Page | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
-                Write-Output $Page
-                
-            }
-            default { Write-Output $Page }
-        }
-    }                
+
+    Invoke-Action1PagedGetRequest -Path $Path -Label $Query -AddArgs $AddArgs -Limit $Limit -ItemAction $ItemAction
+    return                
     
 }
 
