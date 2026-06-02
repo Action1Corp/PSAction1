@@ -617,13 +617,68 @@ function Set-Action1Debug {
     }
 }
 
-function Set-Action1DefaultOrg {
-    param (
-        [Parameter(Mandatory)]
+function Resolve-Action1OrganizationByName {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string]$Org_ID
+        [string]$Org_Name
     )
-    $Script:Action1_Default_Org = $Org_ID
+
+    $organizations = @(Get-Action1 -Query Organizations -ErrorAction Stop)
+
+    $matches = @(
+        $organizations | Where-Object {
+            $_.name -eq $Org_Name
+        }
+    )
+
+    if ($matches.Count -eq 0) {
+        Write-Error "Organization with name '$Org_Name' was not found." -ErrorAction Stop
+    }
+
+    if ($matches.Count -gt 1) {
+        $matchDetails = ($matches | ForEach-Object {
+            "$($_.name) [$($_.id)]"
+        }) -join ', '
+
+        Write-Error "Organization name '$Org_Name' is not unique. Matching organizations: $matchDetails. Use -Org_ID with the exact organization ID." -ErrorAction Stop
+    }
+
+    return $matches[0]
+}
+
+function Set-Action1DefaultOrg {
+    [CmdletBinding(DefaultParameterSetName = 'ById')]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ParameterSetName = 'ById'
+        )]
+        [ValidateNotNullOrEmpty()]
+        [Alias('OrgId')]
+        [string]$Org_ID,
+
+        [Parameter(
+            Mandatory = $true,
+            ParameterSetName = 'ByName'
+        )]
+        [ValidateNotNullOrEmpty()]
+        [Alias('OrgName')]
+        [string]$Org_Name
+    )
+
+    switch ($PSCmdlet.ParameterSetName) {
+        'ById' {
+            $Script:Action1_Default_Org = $Org_ID
+        }
+
+        'ByName' {
+            $organization = Resolve-Action1OrganizationByName -Org_Name $Org_Name
+            $Script:Action1_Default_Org = $organization.id
+        }
+    }
 }
 
 function Set-Action1Locale {
