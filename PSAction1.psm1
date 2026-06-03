@@ -397,8 +397,7 @@ function Invoke-Action1PagedGetRequest {
         [ValidateRange(0, [int]::MaxValue)]
         [int]$Offset = 0,
         [ValidateRange(1, [int]::MaxValue)]
-        [int]$Limit = 200,
-        [scriptblock]$ItemAction
+        [int]$Limit = 200
     )
 
     $RequestArgs = $AddArgs
@@ -414,37 +413,12 @@ function Invoke-Action1PagedGetRequest {
 
     if ($Page.PSObject.Properties.Name -notcontains 'items') {
         Write-Action1Debug "[$Label] Response is not a paged result. Returning response as-is."
-
-        if ($ItemAction) {
-            & $ItemAction $Page
-        }
-        else {
-            $Page
-        }
-
+        $Page
         return
     }
 
-    $WritePageItems = {
-        param (
-            [Parameter(Mandatory)]
-            [object]$CurrentPage
-        )
-
-        foreach ($Item in @($CurrentPage.items)) {
-            if ($ItemAction) {
-                & $ItemAction $Item
-            }
-            else {
-                $Item
-            }
-        }
-    }
-
     $GetPageItemCount = {
-        param (
-            [object]$CurrentPage
-        )
+        param([object]$CurrentPage)
 
         if ($null -eq $CurrentPage) {
             return 0
@@ -466,11 +440,14 @@ function Invoke-Action1PagedGetRequest {
 
     Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
 
-    & $WritePageItems $Page
+    foreach ($Item in @($Page.items)) {
+        $Item
+    }
 
     while (-not [string]::IsNullOrEmpty($Page.next_page)) {
         $PageNumber++
         Write-Action1Debug "[$Label] Requesting page $PageNumber..."
+
         $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Label
 
         if ($null -eq $Page) {
@@ -480,7 +457,50 @@ function Invoke-Action1PagedGetRequest {
 
         $ItemCount = & $GetPageItemCount $Page
         Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
-        & $WritePageItems $Page
+
+        foreach ($Item in @($Page.items)) {
+            $Item
+        }
+    }
+}
+
+function Add-Action1PolicyResultDetailsMethod {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+
+    begin {
+        $GetDetailsScriptBlock = {
+            Invoke-Action1PagedGetRequest -Path $this.details -Label 'PolicyResultsDetails'
+        }
+    }
+    process {
+        $InputObject | Add-Member -MemberType ScriptMethod -Name 'GetDetails' -Value $GetDetailsScriptBlock -Force
+        $InputObject
+    }
+}
+
+function Add-Action1EndpointCustomAttributeMethod {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+
+    begin {
+        $GetCustomAttributeScriptBlock = {
+            param(
+                [Parameter(Mandatory)]
+                [string]$Name
+            )
+            ($this.custom | Where-Object { $_.name -eq $Name }).value
+        }
+    }
+    process {
+        $InputObject | Add-Member -MemberType ScriptMethod -Name 'GetCustomAttribute' -Value $GetCustomAttributeScriptBlock -Force
+        $InputObject
     }
 }
 
@@ -996,11 +1016,30 @@ function Get-Action1 {
         return
     }
 
-    $effectiveLimit = if ($Limit -gt 0) { $Limit } else { 200 }
+    $PagedRequestArgs = @{
+        Path    = $Path
+        Label   = $Query
+        AddArgs = $AddArgs
+        Limit   = if ($Limit -gt 0) { $Limit } else { 200 }
+    }
 
-    Invoke-Action1PagedGetRequest -Path $Path -Label $Query -AddArgs $AddArgs -Limit $effectiveLimit -ItemAction $ItemAction
-    return                
-    
+    switch -Wildcard ($Query) {
+        'PolicyResults' {
+            Invoke-Action1PagedGetRequest @PagedRequestArgs | Add-Action1PolicyResultDetailsMethod
+            return
+        }
+
+        'Endpoint*' {
+            Invoke-Action1PagedGetRequest @PagedRequestArgs | Add-Action1EndpointCustomAttributeMethod
+            return
+        }
+
+        default {
+            Invoke-Action1PagedGetRequest @PagedRequestArgs
+            return
+        }
+    }             
+      
 }
 
 function New-Action1 {
