@@ -394,21 +394,15 @@ function Invoke-Action1PagedGetRequest {
         [Parameter(Mandatory)]
         [string]$Label,
         [string]$AddArgs,
+        [ValidateRange(0, [int]::MaxValue)]
+        [int]$Offset = 0,
+        [ValidateRange(1, [int]::MaxValue)]
         [int]$Limit = 200,
-        [int]$From = 0,
         [scriptblock]$ItemAction
     )
 
-    if ($Limit -le 0) {
-        $Limit = 200
-    }
-
-    if ($From -lt 0) {
-        $From = 0
-    }
-
     $RequestArgs = $AddArgs
-    $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "from=$From"
+    $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "from=$Offset"
     $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "limit=$Limit"
 
     $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs
@@ -738,8 +732,8 @@ function Get-Action1 {
         )]
         [String]$Query,
         [string]$Id,
-        [int]$Limit,
-        #[int]$From,
+        [ValidateRange(0, [int]::MaxValue)]
+        [int]$Limit = 0,
         [string]$URI,
         [ValidateSet(
             'Automation',
@@ -949,9 +943,7 @@ function Get-Action1 {
 
     $AddArgs = ""
     $sbPolicyResultsDetail = {
-        Invoke-Action1PagedGetRequest `
-            -Path $this.details `
-            -Label 'PolicyResultsDetails'
+        Invoke-Action1PagedGetRequest -Path $this.details -Label 'PolicyResultsDetails'
     }
     $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object { $_.name -eq $name }).value }
 
@@ -1004,7 +996,9 @@ function Get-Action1 {
         return
     }
 
-    Invoke-Action1PagedGetRequest -Path $Path -Label $Query -AddArgs $AddArgs -Limit $Limit -ItemAction $ItemAction
+    $effectiveLimit = if ($Limit -gt 0) { $Limit } else { 200 }
+
+    Invoke-Action1PagedGetRequest -Path $Path -Label $Query -AddArgs $AddArgs -Limit $effectiveLimit -ItemAction $ItemAction
     return                
     
 }
