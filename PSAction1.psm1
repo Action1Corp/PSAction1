@@ -396,7 +396,6 @@ function Invoke-Action1PagedGetRequest {
         [string]$AddArgs,
         [int]$Limit = 200,
         [int]$From = 0,
-        [switch]$RawResponse,
         [scriptblock]$ItemAction
     )
 
@@ -411,10 +410,6 @@ function Invoke-Action1PagedGetRequest {
     $RequestArgs = $AddArgs
     $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "from=$From"
     $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "limit=$Limit"
-
-    if ($RawResponse) {
-        return Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs -RawResponse
-    }
 
     $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs
 
@@ -1005,7 +1000,7 @@ function Get-Action1 {
     }
 
     if ($Rawlist.Contains($Query)) {
-        Invoke-Action1PagedGetRequest -Path $Path -Label $Query -AddArgs $AddArgs -Limit $Limit -RawResponse
+        Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs -RawResponse
         return
     }
 
