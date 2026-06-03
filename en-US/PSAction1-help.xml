@@ -902,9 +902,9 @@
       </command:example>
       <command:example>
         <maml:title>------- Example 2: Set the default organization by name -------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_Name "Contoso"</dev:code>
+        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_Name "MyOrgName"</dev:code>
         <dev:remarks>
-          <maml:para>Finds an organization named `Contoso` and stores its organization ID as the default organization context.</maml:para>
+          <maml:para>Finds an organization named `MyOrgName` and stores its organization ID as the default organization context.</maml:para>
           <maml:para>The organization name must be unique. If more than one organization has the specified name, the command returns a terminating error and the organization ID must be used instead.</maml:para>
         </dev:remarks>
       </command:example>
@@ -917,7 +917,7 @@
       </command:example>
       <command:example>
         <maml:title>--------------- Example 4: Use the OrgName alias ---------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -OrgName "Contoso"</dev:code>
+        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -OrgName "MyOrgName"</dev:code>
         <dev:remarks>
           <maml:para>Uses the `OrgName` alias for `-Org_Name`.</maml:para>
         </dev:remarks>

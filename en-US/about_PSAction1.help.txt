@@ -47,7 +47,7 @@ Before using the module, configure authentication and access settings.
 
     or
 
-    Set-Action1DefaultOrg -Org_Name "Contoso"
+    Set-Action1DefaultOrg -Org_Name "MyOrgName"
 
   Step 4: Verify access.
 
@@ -90,7 +90,7 @@ Stores credentials used by all module commands within the current session.
 Sets the ID of default Action1 organization.
 
     Set-Action1DefaultOrg -Org_ID "org-12345"
-    Set-Action1DefaultOrg -Org_Name "Contoso"
+    Set-Action1DefaultOrg -Org_Name "MyOrgName"
 
 Configures default Action1 organization to interact with.
 

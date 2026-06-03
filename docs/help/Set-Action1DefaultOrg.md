@@ -56,10 +56,10 @@ This is the recommended option for automation scripts because organization IDs a
 ### Example 2: Set the default organization by name
 
 ```powershell
-PS C:\> Set-Action1DefaultOrg -Org_Name "Contoso"
+PS C:\> Set-Action1DefaultOrg -Org_Name "MyOrgName"
 ```
 
-Finds an organization named `Contoso` and stores its organization ID as the default organization context.
+Finds an organization named `MyOrgName` and stores its organization ID as the default organization context.
 
 The organization name must be unique. If more than one organization has the specified name, the command returns a terminating error and the organization ID must be used instead.
 
@@ -74,7 +74,7 @@ Uses the `OrgId` alias for `-Org_ID`.
 ### Example 4: Use the OrgName alias
 
 ```powershell
-PS C:\> Set-Action1DefaultOrg -OrgName "Contoso"
+PS C:\> Set-Action1DefaultOrg -OrgName "MyOrgName"
 ```
 
 Uses the `OrgName` alias for `-Org_Name`.
