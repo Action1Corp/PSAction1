@@ -638,7 +638,7 @@ function Resolve-Action1OrganizationByName {
 
     $matches = @(
         $organizations | Where-Object {
-            $_.name -eq $Org_Name
+            $_.name -ieq $Org_Name
         }
     )
 
