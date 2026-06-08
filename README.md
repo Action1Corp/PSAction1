@@ -165,11 +165,17 @@ https[]()://app.action1.com/console/dashboard?org=**88c8b425-871e-4ff6-9afc-00df
 
 Like the APIKey and Secret, the organization ID is stored for the duration of the session. If not specified, you will be prompted when it is needed.
 
-To switch to another organization, you should set a new context before performing additional actions. For that, run this command with the required Org_ID:
+To switch to another organization, you should set a new context before performing additional actions. For that, run this command with the required Org_ID or Org_Name:
 
 ```PowerShell
 
 PS C:\> Set-Action1DefaultOrg -Org_ID 88c8b425-871e-4ff6-9afc-00df8592c6db
+
+```
+
+```Powershell
+
+PS C:\> Set-Action1DefaultOrg -Org_Name "Contoso"
 
 ```
 

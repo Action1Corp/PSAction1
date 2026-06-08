@@ -145,17 +145,17 @@ function Initialize-Action1Token {
         ($null -ne $Script:Action1_Token.access_token) -and
         ($Script:Action1_Token.expires_at -ge (Get-Date))
     ) {
-        Debug-Host "Current token is valid."
+        Write-Action1Debug "Current token is valid."
         return $true
     }
 
-    Debug-Host "Token not set or expired, fetching new token."
+    Write-Action1Debug "Token not set or expired, fetching new token."
 
     $token = Request-Action1Token
 
     if ($null -ne $token) {
         $Script:Action1_Token = $token
-        Debug-Host "Token refresh successful."
+        Write-Action1Debug "Token refresh successful."
         return $true
     }
 
@@ -311,11 +311,11 @@ function Invoke-Action1ApiRequest {
     if ($PSBoundParameters.ContainsKey('Body') -and $null -ne $Body) {
         if ($RawBody) {
             $requestBody = $Body
-            Debug-Host "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
+            Write-Action1Debug "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
         }
         else {
             $requestBody = ConvertTo-Json -InputObject $Body -Depth 10
-            Debug-Host "JSON Data to be sent:`n$requestBody"  
+            Write-Action1Debug "JSON Data to be sent:`n$requestBody"  
         }
     }
 
@@ -334,7 +334,7 @@ function Invoke-Action1ApiRequest {
     $retry429Count = 0
 
     while ($true) {
-        Debug-Host "$Method request to $Path. RawResponse flag is $RawResponse"
+        Write-Action1Debug "$Method request to $Path. RawResponse flag is $RawResponse"
         try {
             if($Script:Action1_DebugEnabled){$webRequestSW = [System.Diagnostics.Stopwatch]::StartNew()}
 
@@ -342,11 +342,11 @@ function Invoke-Action1ApiRequest {
 
             if($Script:Action1_DebugEnabled){
                 $webRequestSW.Stop()
-                Debug-Host ("{2} request to {0} took {1}ms" -f $Path, $($webRequestSW.ElapsedMilliseconds), $Method)
+                Write-Action1Debug ("{2} request to {0} took {1}ms" -f $Path, $($webRequestSW.ElapsedMilliseconds), $Method)
             }
 
             if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 300) {
-                Debug-Host ("Success response code {0} for {1} to {2}" -f $($response.StatusCode), $Method, $Path)
+                Write-Action1Debug ("Success response code {0} for {1} to {2}" -f $($response.StatusCode), $Method, $Path)
                 if ($RawResponse) {
                     return $response.Content
                 }
@@ -358,7 +358,7 @@ function Invoke-Action1ApiRequest {
                 return ConvertFrom-Json -InputObject $response.Content
             }
 
-            Debug-Host "Error processing $($Label): HTTP status code $($response.StatusCode)."
+            Write-Action1Debug "Error processing $($Label): HTTP status code $($response.StatusCode)."
             return $null
         }
         catch {
@@ -368,21 +368,139 @@ function Invoke-Action1ApiRequest {
                 $statusCode = [int]$_.Exception.Response.StatusCode
             }
 
-            Debug-Host ("Failed response code {0} for {1} to {2}" -f $statusCode, $Method, $Path)
+            Write-Action1Debug ("Failed response code {0} for {1} to {2}" -f $statusCode, $Method, $Path)
 
             if ($statusCode -eq 429) {
                 
                 $retryTimeout = [Math]::Pow(2,$retry429Count) * $Script:Action1_429RetryBaseTimeout
                 $retry429Count++
 
-                Debug-Host ("429 received for '{0}'. Retry #{1}. Sleeping {2} ms." -f $Label, $retry429Count, $retryTimeout)
+                Write-Action1Debug ("429 received for '{0}'. Retry #{1}. Sleeping {2} ms." -f $Label, $retry429Count, $retryTimeout)
                 Start-Sleep -Milliseconds $retryTimeout
                 continue
             }
 
-            Debug-Host "Error processing $($Label): $($_.Exception.Message)"
+            Write-Action1Debug "Error processing $($Label): $($_.Exception.Message)"
             return $null
         }
+    }
+}
+
+function Invoke-Action1PagedGetRequest {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$Path,
+        [Parameter(Mandatory)]
+        [string]$Label,
+        [string]$AddArgs,
+        [ValidateRange(0, [int]::MaxValue)]
+        [int]$Offset = 0,
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$Limit = 200
+    )
+
+    $RequestArgs = $AddArgs
+    $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "from=$Offset"
+    $RequestArgs = Join-QueryString -QueryString $RequestArgs -Argument "limit=$Limit"
+
+    $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs
+
+    if ($null -eq $Page) {
+        Write-Action1Debug "[$Label] Page 1 returned null. Stopping pagination."
+        return $null
+    }
+
+    if ($Page.PSObject.Properties.Name -notcontains 'items') {
+        Write-Action1Debug "[$Label] Response is not a paged result. Returning response as-is."
+        $Page
+        return
+    }
+
+    $GetPageItemCount = {
+        param([object]$CurrentPage)
+
+        if ($null -eq $CurrentPage) {
+            return 0
+        }
+
+        if ($CurrentPage.PSObject.Properties.Name -notcontains 'items') {
+            return 0
+        }
+
+        if ($null -eq $CurrentPage.items) {
+            return 0
+        }
+
+        return @($CurrentPage.items).Count
+    }
+
+    $PageNumber = 1
+    $ItemCount = & $GetPageItemCount $Page
+
+    Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
+
+    foreach ($Item in @($Page.items)) {
+        $Item
+    }
+
+    while (-not [string]::IsNullOrEmpty($Page.next_page)) {
+        $PageNumber++
+        Write-Action1Debug "[$Label] Requesting page $PageNumber..."
+
+        $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Label
+
+        if ($null -eq $Page) {
+            Write-Action1Debug "[$Label] Page $PageNumber returned null. Stopping pagination."
+            break
+        }
+
+        $ItemCount = & $GetPageItemCount $Page
+        Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
+
+        foreach ($Item in @($Page.items)) {
+            $Item
+        }
+    }
+}
+
+function Add-Action1PolicyResultDetailsMethod {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+
+    begin {
+        $GetDetailsScriptBlock = {
+            Invoke-Action1PagedGetRequest -Path $this.details -Label 'PolicyResultsDetails'
+        }
+    }
+    process {
+        $InputObject | Add-Member -MemberType ScriptMethod -Name 'GetDetails' -Value $GetDetailsScriptBlock -Force
+        $InputObject
+    }
+}
+
+function Add-Action1EndpointCustomAttributeMethod {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object]$InputObject
+    )
+
+    begin {
+        $GetCustomAttributeScriptBlock = {
+            param(
+                [Parameter(Mandatory)]
+                [string]$Name
+            )
+            ($this.custom | Where-Object { $_.name -eq $Name }).value
+        }
+    }
+    process {
+        $InputObject | Add-Member -MemberType ScriptMethod -Name 'GetCustomAttribute' -Value $GetCustomAttributeScriptBlock -Force
+        $InputObject
     }
 }
 
@@ -403,14 +521,14 @@ function Start-Action1PackageUpload {
         [int32]$BufferSize = 24Mb
     )
     $uri = "$Script:Action1_BaseURI/software-repository/all/$Package_ID/versions/$Version_ID/upload?platform=$Platform" 
-    Debug-Host "Base URI is $uri"
+    Write-Action1Debug "Base URI is $uri"
     $UploadTarget = ""
-    Debug-Host "Uploading file: '$Filename'"
-    Debug-Host "Writing in chunks of $BufferSize bytes."
+    Write-Action1Debug "Uploading file: '$Filename'"
+    Write-Action1Debug "Writing in chunks of $BufferSize bytes."
     $FileData = [System.IO.File]::Open($Filename, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
     if ($FileData.Length -lt $BufferSize) {
          $BufferSize = $FileData.Length; 
-         Debug-Host "File is smaller than BufferSize, adjusting to $($FileData.Length)" 
+         Write-Action1Debug "File is smaller than BufferSize, adjusting to $($FileData.Length)" 
     }
     $Buffer = New-Object byte[] $BufferSize
     $Place = 0
@@ -429,7 +547,7 @@ function Start-Action1PackageUpload {
         $UploadTarget = $_.Exception.Response.Headers['X-Upload-Location'] 
     } 
 
-    Debug-Host "Upload URI is $UploadTarget"
+    Write-Action1Debug "Upload URI is $UploadTarget"
 
     while (($Read = $FileData.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
         $Headers = $HeaderBase.Clone()
@@ -448,31 +566,37 @@ function Start-Action1PackageUpload {
                 -ErrorAction SilentlyContinue         
         }
         catch {
-            Debug-Host "Last Status: $($_.Exception.Response.StatusCode)" 
+            Write-Action1Debug "Last Status: $($_.Exception.Response.StatusCode)" 
         }
 
         if (($FileData.Length - $Place) -lt $BufferSize) { 
             $buffer = New-Object byte[] ($FileData.Length - $place) 
         }
-        Debug-Host "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
+        Write-Action1Debug "Upload $([math]::Round((($Place / $FileData.Length)*100),1))% Complete."
 
         if ($Buffer.Length -eq 0) { 
-            Debug-Host "Final Status:$($response.StatusCode)" 
+            Write-Action1Debug "Final Status:$($response.StatusCode)" 
         }
         else {
-            Debug-Host "Bytes Written: $($Buffer.Length)" 
+            Write-Action1Debug "Bytes Written: $($Buffer.Length)" 
         }
     }
     $FileData.Close()
 }
 
-
-function Debug-Host {
+function Write-Action1Debug {
+    [CmdletBinding()]
     param(
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 0)]
+        [AllowEmptyString()]
         [string]$Message
     )
-    if ($Script:Action1_DebugEnabled) { Write-Host "Action1 Debug: $Message" -ForegroundColor Blue }
+
+    if (-not $Script:Action1_DebugEnabled) {
+        return
+    }
+
+    Write-Host ("Action1 Debug: {0}" -f $Message) -ForegroundColor Blue
 }
 
 function Set-Action1Credentials {
@@ -489,21 +613,81 @@ function Set-Action1Credentials {
 }
 
 function Set-Action1Debug {
+    [CmdletBinding()]
     param(
-        [Parameter(Mandatory)]
-        [boolean]$Enabled
+        [Parameter(Mandatory, Position = 0)]
+        [bool]$Enabled
     )
+
     $Script:Action1_DebugEnabled = $Enabled
-    if ($Enabled) { Debug-Host "Debugging enabled." }
+
+    if ($Enabled) {
+        Write-Action1Debug "Debugging enabled."
+    }
+}
+
+function Resolve-Action1OrganizationByName {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Org_Name
+    )
+
+    $organizations = @(Get-Action1 -Query Organizations -ErrorAction Stop)
+
+    $matches = @(
+        $organizations | Where-Object {
+            $_.name -ieq $Org_Name
+        }
+    )
+
+    if ($matches.Count -eq 0) {
+        Write-Error "Organization with name '$Org_Name' was not found." -ErrorAction Stop
+    }
+
+    if ($matches.Count -gt 1) {
+        $matchDetails = ($matches | ForEach-Object {
+            "$($_.name) [$($_.id)]"
+        }) -join ', '
+
+        Write-Error "Organization name '$Org_Name' is not unique. Matching organizations: $matchDetails. Use -Org_ID with the exact organization ID." -ErrorAction Stop
+    }
+
+    return $matches[0]
 }
 
 function Set-Action1DefaultOrg {
+    [CmdletBinding(DefaultParameterSetName = 'ById')]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ParameterSetName = 'ById'
+        )]
         [ValidateNotNullOrEmpty()]
-        [string]$Org_ID
+        [Alias('OrgId')]
+        [string]$Org_ID,
+
+        [Parameter(
+            Mandatory = $true,
+            ParameterSetName = 'ByName'
+        )]
+        [ValidateNotNullOrEmpty()]
+        [Alias('OrgName')]
+        [string]$Org_Name
     )
-    $Script:Action1_Default_Org = $Org_ID
+
+    switch ($PSCmdlet.ParameterSetName) {
+        'ById' {
+            $Script:Action1_Default_Org = $Org_ID
+        }
+
+        'ByName' {
+            $organization = Resolve-Action1OrganizationByName -Org_Name $Org_Name
+            $Script:Action1_Default_Org = $organization.id
+        }
+    }
 }
 
 function Set-Action1Locale {
@@ -530,7 +714,7 @@ function Set-Action1Interactive {
         [Parameter(Mandatory)]
         [boolean]$Enabled
     )
-    if ($Enabled) { Debug-Host "Interactive mode enabled, you will be prompted for variables that are required but not set." }
+    if ($Enabled) { Write-Action1Debug "Interactive mode enabled, you will be prompted for variables that are required but not set." }
     $Script:Action1_Interactive = $Enabled
 }
 
@@ -568,8 +752,8 @@ function Get-Action1 {
         )]
         [String]$Query,
         [string]$Id,
-        [int]$Limit,
-        #[int]$From,
+        [ValidateRange(0, [int]::MaxValue)]
+        [int]$Limit = 0,
         [string]$URI,
         [ValidateSet(
             'Automation',
@@ -603,7 +787,7 @@ function Get-Action1 {
         }
         else { 
             if ($Clone) {
-                if ($Query -ne 'Settings') { Write-Error "Clone flag only allowed for query type 'Setings.'`n"; return $null }
+                if ($Query -ne 'Settings') { Write-Error "Clone flag only allowed for query type 'Settings.'`n"; return $null }
                 switch ($For) {
                     'EndpointGroup' {  
                         $Pull = Get-Action1 EndpointGroups | Where-Object { $_.id -eq ($Clone) }
@@ -654,7 +838,7 @@ function Get-Action1 {
                             return $Pull
                         }
                     }
-                    default { Write-Error "Invalild request to clone type $For." ; return $null }
+                    default { Write-Error "Invalid request to clone type $For." ; return $null }
                 }
             }
             else {
@@ -689,7 +873,7 @@ function Get-Action1 {
                         $deploy.actions[0].params.display_summary = "$For via external API call."
                         $sbRefreshCVEList = {
                             $Script:Action1_CVE_Lookup = @{}
-                            Debug-Host "Refreshing CVE list at $(Get-Date)"
+                            Write-Action1Debug "Refreshing CVE list at $(Get-Date)"
                             Get-Action1 Vulnerabilities | ForEach-Object{$Script:Action1_CVE_Lookup[$_.cve_id]=$_}
                         }
                         $sbAddCVE = {
@@ -704,10 +888,10 @@ function Get-Action1 {
                                     $ver = $item.version
                                     $name = $item.name
                                     if (!($null -eq $this.actions.params.packages[0].$upd)) {
-                                        Debug-Host "$upd has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
+                                        Write-Action1Debug "$upd has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
                                     }
                                     else {
-                                        Debug-Host "Adding $upd to the package list for $CVE_ID."
+                                        Write-Action1Debug "Adding $upd to the package list for $CVE_ID."
                                         if ($null -eq $this.actions.params.packages[0].'default') {
                                             $this.actions.params.packages += New-Object PSCustomObject -Property @{$upd = $ver }
                                         }
@@ -747,11 +931,11 @@ function Get-Action1 {
                             }
                             else { 
                                 if (!($null -eq $this.actions.params.packages[0].$pack)) {
-                                    Debug-Host "$name has already been added to this template."
+                                    Write-Action1Debug "$name has already been added to this template."
                                 }
                                 else {
                                     $version = $(Get-Action1 RawURI -URI "$Script:Action1_BaseURI/packages/all/$Package_ID/versions").version
-                                    Debug-Host "Adding $name version $Version to the package list."
+                                    Write-Action1Debug "Adding $name version $Version to the package list."
                                     if ($null -eq $this.actions.params.packages[0].'default') {
                                         $this.actions.params.packages += New-Object PSCustomObject -Property @{$Package_ID = $version }
                                     }
@@ -779,22 +963,32 @@ function Get-Action1 {
 
     $AddArgs = ""
     $sbPolicyResultsDetail = {
-        $Page = Invoke-Action1ApiRequest -Method GET -Path $this.details -Label 'PolicyResultsDetails'
-        $Page.items | Write-Output
-        While (![string]::IsNullOrEmpty($Page.next_page)) {
-            $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label 'PolicyResultsDetails'
-            $Page.items | Write-Output
-        }
+        Invoke-Action1PagedGetRequest -Path $this.details -Label 'PolicyResultsDetails'
     }
     $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object { $_.name -eq $name }).value }
 
-    if ($null -eq $Limit){$Limit=200}
-    if ($Limit -gt 0) { 
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument "limit=$Limit"
+    $ItemAction = $null
+
+    switch -Wildcard ($Query) {
+        'PolicyResults' {
+            $ItemAction = {
+                param($Item)
+
+                $Item | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPolicyResultsDetail -Force
+                $Item
+            }
+        }
+
+        'Endpoint*' {
+            $ItemAction = {
+                param($Item)
+
+                $Item | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet -Force
+                $Item
+            }
+        }
     }
-    else {
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument "limit=200"
-    }
+
     if (!$URILookUp["G_$Query"].ToString().Contains("`$Org_ID")) {
         if (!$URILookUp["G_$Query"].ToString().Contains("`$Object_ID")) {
             $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"])
@@ -815,65 +1009,37 @@ function Get-Action1 {
         else {
             $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(Initialize-Action1DefaultOrg))
         }
-    } 
+    }
+
     if ($Rawlist.Contains($Query)) {
-         $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs -RawResponse 
-    } 
-    else {
-         $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Query -AddArgs $AddArgs 
+        Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs -RawResponse
+        return
     }
-    if ($Page.items) {
-        switch -Wildcard ($Query) {
-            'PolicyResults' {
-                $page.Items | ForEach-Object {
-                    $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPolicyResultsDetail
-                    Write-Output $_
-                }
-            }
-            'Endpoint*' {
-                $page.Items | ForEach-Object {
-                    $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
-                    Write-Output $_
-                }  
-            }
-            default { $Page.Items | Write-Output }
-        }
-        While (![string]::IsNullOrEmpty($Page.next_page)) {
-            Debug-Host "[$Query] Next page..."
-            if ($Rawlist.Contains($Query)) {
-                 $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Query -RawResponse 
-            } 
-            else {
-                 $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Query 
-            }
-            switch -Wildcard ($Query) {
-                'PolicyResults' {
-                    $page.Items | ForEach-Object {
-                        $_ | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value sbPolicyResultsDetail
-                        Write-Output $_
-                    }
-                }
-                'Endpoint*' {
-                    $page.Items | ForEach-Object {
-                        $_ | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
-                        Write-Output $_
-                    }  
-                }
-                default { $Page.Items | Write-Output }
-            }
-        }
+
+    $PagedRequestArgs = @{
+        Path    = $Path
+        Label   = $Query
+        AddArgs = $AddArgs
+        Limit   = if ($Limit -gt 0) { $Limit } else { 200 }
     }
-    else {
-        switch -Wildcard ($Query) {
-            'Endpoint*' {
-                $Page | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet
-                Write-Output $Page
-                
-            }
-            default { Write-Output $Page }
+
+    switch -Wildcard ($Query) {
+        'PolicyResults' {
+            Invoke-Action1PagedGetRequest @PagedRequestArgs | Add-Action1PolicyResultDetailsMethod
+            return
         }
-    }                
-    
+
+        'Endpoint*' {
+            Invoke-Action1PagedGetRequest @PagedRequestArgs | Add-Action1EndpointCustomAttributeMethod
+            return
+        }
+
+        default {
+            Invoke-Action1PagedGetRequest @PagedRequestArgs
+            return
+        }
+    }             
+      
 }
 
 function New-Action1 {
@@ -893,7 +1059,7 @@ function New-Action1 {
         [Parameter(Mandatory)]
         [object]$Data                    
     )
-        Debug-Host "Creating new $Item."
+        Write-Action1Debug "Creating new $Item."
     #Short out processing path if URI literal is specified.
     if ($Item -eq 'RawURI') {
          if (!$URI) {
@@ -945,7 +1111,7 @@ function Update-Action1 {
         [string]$URI,
         [switch]$Force
     )
-    Debug-Host "Trying update for $Action => $Type."
+    Write-Action1Debug "Trying update for $Action => $Type."
     #Short out processing path if URI literal is specified.
     if ($Type -eq 'RawURI') {
         if (!$URI) {
@@ -991,7 +1157,7 @@ function Update-Action1 {
             }   
         }
         'Delete' {
-            Debug-Host "Force delete enabled:$Force."
+            Write-Action1Debug "Force delete enabled:$Force."
             switch ($Type) {
                 'EndpointGroup' { 
                     if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
