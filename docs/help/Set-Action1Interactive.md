@@ -1,13 +1,8 @@
-﻿---
-
+---
 external help file: PSAction1-help.xml
-
 Module Name: PSAction1
-
 online version:
-
 schema: 2.0.0
-
 ---
 
 # Set-Action1Interactive
@@ -18,10 +13,8 @@ Enables or disables interactive mode for PSAction1 module.
 
 ## SYNTAX
 
-```powershell
-
+```
 Set-Action1Interactive [-Enabled] <Boolean> [<CommonParameters>]
-
 ```
 
 ## DESCRIPTION
@@ -39,9 +32,7 @@ Action1 interactive setting is stored in a script-scoped variable and applies on
 ### Example 1
 
 ```powershell
-
 PS C:\> Set-Action1Interactive -Enabled $true
-
 ```
 
 Enables interactive mode. The module will prompt for required variables that are missing.
@@ -49,9 +40,7 @@ Enables interactive mode. The module will prompt for required variables that are
 ### Example 2
 
 ```powershell
-
 PS C:\> Set-Action1Interactive -Enabled $false
-
 ```
 
 Disables interactive mode so commands will not prompt for missing variables.
@@ -63,27 +52,18 @@ Disables interactive mode so commands will not prompt for missing variables.
 Specifies whether PSAction1 interactive mode should be enabled or disabled.
 
 ```yaml
-
 Type: Boolean
-
 Parameter Sets: (All)
-
 Aliases:
 
 Required: True
-
 Position: 0
-
 Default value: None
-
 Accept pipeline input: False
-
 Accept wildcard characters: False
-
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
