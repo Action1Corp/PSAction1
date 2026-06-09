@@ -11,130 +11,38 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
-$Script:Action1_APIKey
-$Script:Action1_Secret
-$Script:Action1_Token
-$script:Action1_Hosts = [ordered]@{
-    NorthAmerica = 'https://app.action1.com/api/3.0'; 
-    Europe = 'https://app.eu.action1.com/api/3.0'; 
-    Australia = 'https://app.au.action1.com/api/3.0'
-}
-$Script:Action1_BaseURI = ''
-$Script:Action1_Default_Org
-$Script:Action1_DebugEnabled = $false
-$Script:Action1_Interactive = $false
-$Script:Action1_CVE_Lookup = @{}
+$Script:ModuleRoot = $PSScriptRoot
 
-$Script:Action1_429RetryBaseTimeout = 2000
+$ConfigurationFiles = @(
+    'Private\Configuration\Action1.Defaults.ps1'
+    'Private\Configuration\Action1.Hosts.ps1'
+    'Private\Configuration\Action1.UriMap.ps1'
+    'Private\Initialization\Initialize-Action1ModuleState.ps1'
+    'Private\Templates\RemediationTemplate.ps1'
+    'Private\Templates\PackageDeployTemplate.ps1'
+)
 
-$URILookUp = @{
-    G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
-    G_AgentDeployment      = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
-    G_Apps                 = { param($Org_ID) "/apps/$Org_ID/data" }
-    G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?endpoint_id=$Object_ID" }
-    G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
-    G_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }
-    G_EndpointApps         = { param($Org_ID, $Object_ID) "/apps/$Org_ID/data/$Object_ID" }
-    G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    G_Logs                 = { param($Org_ID) "/logs/$Org_ID" }
-    G_Me                   = { "/Me" }
-    G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID" }
-    G_Organizations        = { "/organizations" }
-    G_Packages             = { "/packages/all" }
-    G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
-    G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
-    G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
-    G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
-    G_ReportData           = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/data" }
-    G_ReportExport         = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
-    G_Reports              = { "/reports/all" } 
-    G_Scripts              = { "/scripts/all" } 
-    G_Vulnerabilities      = { param($Org_ID) "/Vulnerabilities/$Org_ID" }
-    N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
-    N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    N_Organization         = { "/organizations" }
-    N_Remediation          = { param($Org_ID)  "/policies/instances/$Org_ID" }
-    N_DeferredRemediation  = { param($Org_ID)  "/policies/schedules/$Org_ID" }
-    N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
-    R_ReportData           = { param($Org_ID, $Object_ID) "/reportdata/$Org_ID/$Object_ID/requery" }
-    R_InstalledSoftware    = { param($Org_ID, $Object_ID) "/apps/$Org_ID/requery/$Object_ID" }
-    R_InstalledUpdates     = { param($Org_ID) "/updates/installed/$Org_ID/requery" }
-    U_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    U_GroupModify          = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
-    U_GroupMembers         = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
+foreach ($RelativePath in $ConfigurationFiles) {
+    . (Join-Path $Script:ModuleRoot $RelativePath)
 }
 
-#----------------------------------JSON object templates---------------------------------------
+Get-ChildItem -Path (Join-Path $Script:ModuleRoot 'Private') -Filter '*.ps1' -Recurse |
+    Where-Object {
+        $_.FullName -notmatch '\\Private\\Configuration\\' -and
+        $_.FullName -notmatch '\\Private\\Initialization\\' -and
+        $_.FullName -notmatch '\\Private\\Templates\\'
+    } |
+    Sort-Object FullName |
+    ForEach-Object {
+        . $_.FullName
+    }
 
-$RemediationTemplate = @"
-{
-  "name": "",
-  "retry_minutes": "1440",
-  "endpoints": [
-    {
-      "id": "ALL",
-      "type": "EndpointGroup"
+Get-ChildItem -Path (Join-Path $Script:ModuleRoot 'Public') -Filter '*.ps1' -Recurse |
+    Sort-Object FullName |
+    ForEach-Object {
+        . $_.FullName
     }
-  ],
-  "actions": [
-    {
-      "name": "Deploy Update",
-      "template_id": "deploy_update",
-      "params": {
-        "display_summary": "",
-        "packages": [
-          {
-            "default": "default"
-          }
-        ],
-        "update_approval": "manual",
-        "automatic_approval_delay_days": 7,
-        "scope": "Specified",
-        "reboot_options": {
-          "auto_reboot": "yes",
-          "show_message": "yes",
-          "message_text": "Your computer requires maintenance and will be rebooted. Please save all work and reboot now to avoid losing any data.",
-          "timeout": 240
-        }
-      }
-    }
-  ]
-}
-"@
 
-$PackageDeployTemplate = @"
-{
-  "name": "",
-  "retry_minutes": "1440",
-  "endpoints": [
-    {
-      "id": "ALL",
-      "type": "EndpointGroup"
-    }
-  ],
- "actions": [
-    {
-      "name": "Deploy Software",
-      "template_id": "deploy_package",
-      "params": {
-        "display_summary": "",
-        "packages": [
-          {
-            "default": "default"
-          }
-        ],
-        "reboot_options": {
-          "auto_reboot": "no"
-        }
-      }
-    }
-  ]
-}
-"@
-#----------------------------------JSON object templates---------------------------------------
 
 function Initialize-Action1Token {
     [CmdletBinding()]

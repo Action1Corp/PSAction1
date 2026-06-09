@@ -27,11 +27,11 @@ function New-Action1 {
         } 
     }
     try {
-        if (!$URILookUp["N_$Item"].ToString().Contains("`$Org_ID")) {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"])
+        if (!$Script:Action1_UriMap["N_$Item"].ToString().Contains("`$Org_ID")) {
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["N_$Item"])
         }
         else {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["N_$Item"] -Org_ID $(Initialize-Action1DefaultOrg))
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["N_$Item"] -Org_ID $(Initialize-Action1DefaultOrg))
         } 
         return Invoke-Action1ApiRequest -Method POST -Path $Path -Label $Item -Body $Data
     }

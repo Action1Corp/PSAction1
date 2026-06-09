@@ -148,7 +148,7 @@ function Get-Action1 {
                     }
                     { $_ -in @('Remediation', 'DeferredRemediation') } { 
                         
-                        $deploy = ConvertFrom-Json $RemediationTemplate
+                        $deploy = ConvertFrom-Json $Script:Action1_RemediationTemplate
                         $deploy.name = "E$tempxternal $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
                         $deploy.actions[0].params.display_summary = "$For via external API call."
                         $sbRefreshCVEList = {
@@ -193,7 +193,7 @@ function Get-Action1 {
                         return $deploy
                     }
                     'DeploySoftware' {
-                        $deploy = ConvertFrom-Json $PackageDeployTemplate
+                        $deploy = ConvertFrom-Json $Script:Action1_PackageDeployTemplate
                         $deploy.name = "External $For template $((Get-Date).ToString('yyyyMMddhhmmss'))"
                         $deploy.actions[0].params.display_summary = "$For via external API call."
 
@@ -269,13 +269,13 @@ function Get-Action1 {
         }
     }
 
-    if (!$URILookUp["G_$Query"].ToString().Contains("`$Org_ID")) {
-        if (!$URILookUp["G_$Query"].ToString().Contains("`$Object_ID")) {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"])
+    if (!$Script:Action1_UriMap["G_$Query"].ToString().Contains("`$Org_ID")) {
+        if (!$Script:Action1_UriMap["G_$Query"].ToString().Contains("`$Object_ID")) {
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"])
         }
         else {
             if ($Id) {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Object_ID $Id)
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"] -Object_ID $Id)
             }
             else {
                 Write-Error 'This options requires that you specify an Object_ID.'
@@ -284,10 +284,10 @@ function Get-Action1 {
     }
     else {
         if ($Id) {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(Initialize-Action1DefaultOrg) -Object_ID $Id)
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"] -Org_ID $(Initialize-Action1DefaultOrg) -Object_ID $Id)
         }
         else {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $URILookUp["G_$Query"] -Org_ID $(Initialize-Action1DefaultOrg))
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"] -Org_ID $(Initialize-Action1DefaultOrg))
         }
     }
 
