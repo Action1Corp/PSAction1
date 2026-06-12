@@ -6,7 +6,8 @@
 # © Action1 Corporation
 
 $script:Action1_Hosts = [ordered]@{
-    NorthAmerica = 'https://app.action1.com/api/3.0'; 
-    Europe = 'https://app.eu.action1.com/api/3.0'; 
-    Australia = 'https://app.au.action1.com/api/3.0'
+    'NorthAmerica' = 'https://app.action1.com/api/3.0';
+    'NA-2' = 'https://app.na-2.action1.com/api/3.0';
+    'Europe' = 'https://app.eu.action1.com/api/3.0'; 
+    'Australia' = 'https://app.au.action1.com/api/3.0'
 }

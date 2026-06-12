@@ -1,13 +1,8 @@
-﻿---
-
+---
 external help file: PSAction1-help.xml
-
 Module Name: PSAction1
-
 online version:
-
 schema: 2.0.0
-
 ---
 
 # New-Action1
@@ -18,10 +13,8 @@ Creates a new Action1 object.
 
 ## SYNTAX
 
-```powershell
-
+```
 New-Action1 [-Item] <String> [[-URI] <String>] [-Data] <Object> [<CommonParameters>]
-
 ```
 
 ## DESCRIPTION
@@ -41,9 +34,7 @@ The command requires valid authentication credentials and a valid access token. 
 ### Example 1
 
 ```powershell
-
 PS C:\> New-Action1 -Item Organization -Data $OrgData
-
 ```
 
 Creates a new Action1 organization using the data provided in $OrgData
@@ -51,9 +42,7 @@ Creates a new Action1 organization using the data provided in $OrgData
 ### Example 2
 
 ```powershell
-
 PS C:\> New-Action1 -Item EndpointGroup -Data $GroupData
-
 ```
 
 Creates a new Action1 endpoint group.
@@ -61,14 +50,30 @@ Creates a new Action1 endpoint group.
 ### Example 3
 
 ```powershell
-
 PS C:\> New-Action1 -Item RawURI -URI "/v1/custom/resource" -Data $Payload
-
 ```
 
 Sends a POST request directly to a custom Action1 API endpoint using the provided payload.
 
 ## PARAMETERS
+
+### -Data
+
+Specifies the request payload that will be sent to the API.
+
+The structure depends on the type of item being created.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Item
 
@@ -76,40 +81,31 @@ Specifies the type of object to create.
 
 Valid values are:
 
- - EndpointGroup
+ - EndpointGroup
 
- - Organization
+ - Organization
 
- - Automation
+ - Automation
 
- - Remediation
+ - Remediation
 
- - DeferredRemediation
+ - DeferredRemediation
 
- - DeploySoftware
+ - DeploySoftware
 
- - RawURI
+ - RawURI
 
 ```yaml
-
 Type: String
-
 Parameter Sets: (All)
-
 Aliases:
-
 Accepted values: EndpointGroup, Organization, Automation, Remediation, DeferredRemediation, DeploySoftware, RawURI
 
 Required: True
-
 Position: 0
-
 Default value: None
-
 Accept pipeline input: False
-
 Accept wildcard characters: False
-
 ```
 
 ### -URI
@@ -119,53 +115,18 @@ Specifies the API endpoint path when Item is set to `RawURI`.
 This parameter is ignored for other item types because the function determines the URI automatically.
 
 ```yaml
-
 Type: String
-
 Parameter Sets: (All)
-
 Aliases:
 
 Required: False
-
 Position: 1
-
 Default value: None
-
 Accept pipeline input: False
-
 Accept wildcard characters: False
-
-```
-
-### -Data
-
-Specifies the request payload that will be sent to the API.
-
-The structure depends on the type of item being created.
-
-```yaml
-
-Type: Object
-
-Parameter Sets: (All)
-
-Aliases:
-
-Required: True
-
-Position: 2
-
-Default value: None
-
-Accept pipeline input: False
-
-Accept wildcard characters: False
-
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
