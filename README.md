@@ -175,7 +175,7 @@ PS C:\> Set-Action1DefaultOrg -Org_ID 88c8b425-871e-4ff6-9afc-00df8592c6db
 
 ```Powershell
 
-PS C:\> Set-Action1DefaultOrg -Org_Name "Contoso"
+PS C:\> Set-Action1DefaultOrg -Org_Name "MyOrgName"
 
 ```
 
