@@ -19,7 +19,7 @@ function Get-Action1Vulnerabilities {
         throw "Action1 URI map key 'G_Vulnerabilities' is not defined."
     }
 
-    $Path = & $Script:Action1_UriMap['G_Vulnerabilities'] $Org_ID
+    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['G_Vulnerabilities'] $Org_ID)
     $AddArgs = $null
 
     if ($PSBoundParameters.ContainsKey('RemediationStatus') -and -not [string]::IsNullOrWhiteSpace($RemediationStatus)) {
