@@ -400,6 +400,338 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-Action1Vulnerabilities</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Vulnerabilities</command:noun>
+      <maml:description>
+        <maml:para>Gets vulnerabilities for the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets vulnerable software records from the current Action1 organization by using the Action1 vulnerabilities API.</maml:para>
+      <maml:para>When RemediationStatus is specified, the request is filtered by the specified remediation status. The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Vulnerabilities</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>RemediationStatus</maml:name>
+          <maml:description>
+            <maml:para>Filters vulnerabilities by remediation status.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>- `Due soon`</maml:para>
+            <maml:para>- `Overdue`</maml:para>
+            <maml:para>- `Due later`</maml:para>
+            <maml:para>- `Control_applied`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Due soon</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Overdue</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Due later</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Control_applied</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>RemediationStatus</maml:name>
+        <maml:description>
+          <maml:para>Filters vulnerabilities by remediation status.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>- `Due soon`</maml:para>
+          <maml:para>- `Overdue`</maml:para>
+          <maml:para>- `Due later`</maml:para>
+          <maml:para>- `Control_applied`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns vulnerability objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------- Example 1: Get all vulnerabilities --------------</maml:title>
+        <dev:code>Get-Action1Vulnerabilities</dev:code>
+        <dev:remarks>
+          <maml:para>Gets all vulnerabilities visible to the authenticated Action1 account in the current organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 2: Get vulnerabilities with compensating controls applied</maml:title>
+        <dev:code>Get-Action1Vulnerabilities -RemediationStatus 'Control_applied'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets vulnerabilities where the remediation status is `Control_applied`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 3: Review overdue vulnerabilities ----------</maml:title>
+        <dev:code>Get-Action1Vulnerabilities -RemediationStatus 'Overdue' |
+    Select-Object cve_id, name, remediation_status</dev:code>
+        <dev:remarks>
+          <maml:para>Gets overdue vulnerabilities and selects key fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Vulnerability</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Vulnerability</command:noun>
+      <maml:description>
+        <maml:para>Gets one Action1 vulnerability by CVE ID.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets detailed information about a specific vulnerability in the current Action1 organization.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Vulnerability</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID of the vulnerability to retrieve.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID of the vulnerability to retrieve.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the vulnerability object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----------- Example 1: Get a vulnerability by CVE ID -----------</maml:title>
+        <dev:code>Get-Action1Vulnerability -CVEId 'CVE-2024-12345'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets details for `CVE-2024-12345` in the current Action1 organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 2: Display vulnerability details -----------</maml:title>
+        <dev:code>Get-Action1Vulnerability -CVEId 'CVE-2024-12345' | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the vulnerability and displays all returned fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerabilities</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1VulnerabilityRemediations</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1VulnerabilityRemediations</command:noun>
+      <maml:description>
+        <maml:para>Gets remediation records for an Action1 vulnerability.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets previously applied remediation records, including compensating control records, for a specific vulnerability in the current Action1 organization.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1VulnerabilityRemediations</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID whose remediation records should be retrieved.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID whose remediation records should be retrieved.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns remediation objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---- Example 1: Get remediation records for a vulnerability ----</maml:title>
+        <dev:code>Get-Action1VulnerabilityRemediations -CVEId 'CVE-2024-12345'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets remediation records for `CVE-2024-12345`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 2: Display remediation records before deleting ----</maml:title>
+        <dev:code>Get-Action1VulnerabilityRemediations -CVEId 'CVE-2024-12345' | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the remediation records and displays all returned fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1VulnerabilityRemediation</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>New-Action1</command:name>
       <command:verb>New</command:verb>
       <command:noun>Action1</command:noun>
@@ -577,6 +909,414 @@
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1VulnerabilityRemediation</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1VulnerabilityRemediation</command:noun>
+      <maml:description>
+        <maml:para>Deletes one remediation record for an Action1 vulnerability.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Deletes a specific remediation record for a specific vulnerability in the current Action1 organization.</maml:para>
+      <maml:para>The Action1 API requires both the CVE ID and the remediation ID to delete a remediation record.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1VulnerabilityRemediation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>RemediationId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the remediation record ID to delete.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>RemediationId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the remediation record ID to delete.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns a status object with CVEId, RemediationId, Status, and Response.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage vulnerabilities in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----------- Example 1: Delete one remediation record -----------</maml:title>
+        <dev:code>Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123'</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation, then deletes the specified remediation record.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------------- Example 2: Preview deletion -----------------</maml:title>
+        <dev:code>Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be deleted without sending the DELETE request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 3: Delete without prompting -------------</maml:title>
+        <dev:code>Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Deletes the remediation record without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1VulnerabilityRemediations</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1VulnerabilityRemediations</command:noun>
+      <maml:description>
+        <maml:para>Deletes remediation records for vulnerabilities matching a remediation status.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Finds vulnerabilities in the current Action1 organization by remediation status, gets the remediation records for each vulnerability, displays the remediation records that are candidates for deletion, and deletes each remediation record after confirmation.</maml:para>
+      <maml:para>By default, RemediationStatus is `Control_applied`. This preserves the behavior of the original standalone remove-remediations.ps1 script, which targeted compensating control records.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview delete operations. Use -Force to bypass confirmation prompts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1VulnerabilityRemediations</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>RemediationStatus</maml:name>
+          <maml:description>
+            <maml:para>Specifies the vulnerability remediation status to process.</maml:para>
+            <maml:para>The default value is `Control_applied`.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>- `Due soon`</maml:para>
+            <maml:para>- `Overdue`</maml:para>
+            <maml:para>- `Due later`</maml:para>
+            <maml:para>- `Control_applied`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Due soon</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Overdue</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Due later</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Control_applied</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Control_applied</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts for individual remediation deletions. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>RemediationStatus</maml:name>
+        <maml:description>
+          <maml:para>Specifies the vulnerability remediation status to process.</maml:para>
+          <maml:para>The default value is `Control_applied`.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>- `Due soon`</maml:para>
+          <maml:para>- `Overdue`</maml:para>
+          <maml:para>- `Due later`</maml:para>
+          <maml:para>- `Control_applied`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>Control_applied</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts for individual remediation deletions. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns a summary object with counts for processed vulnerabilities and remediation deletion results.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Deleting remediation records is irreversible. Test with -WhatIf before using -Force .</maml:para>
+        <maml:para>Requires permission to view and manage vulnerabilities in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-- Example 1: Remove compensating control remediation records --</maml:title>
+        <dev:code>Remove-Action1VulnerabilityRemediations</dev:code>
+        <dev:remarks>
+          <maml:para>Gets vulnerabilities with remediation status `Control_applied`, displays remediation records to delete, prompts for confirmation, and deletes selected records.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 2: Preview compensating control cleanup -------</maml:title>
+        <dev:code>Remove-Action1VulnerabilityRemediations -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows delete operations that would be performed without deleting remediation records.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 3: Remove without prompting -------------</maml:title>
+        <dev:code>Remove-Action1VulnerabilityRemediations -RemediationStatus 'Control_applied' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Deletes remediation records for vulnerabilities with remediation status `Control_applied` without prompting.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 4: Process another remediation status --------</maml:title>
+        <dev:code>Remove-Action1VulnerabilityRemediations -RemediationStatus 'Overdue'</dev:code>
+        <dev:remarks>
+          <maml:para>Processes vulnerabilities with remediation status `Overdue`.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerabilities</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1VulnerabilityRemediation</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
