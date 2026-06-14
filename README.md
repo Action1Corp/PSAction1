@@ -575,6 +575,37 @@ PS C:\> Update-Action1 Delete -Type Group -Id MyNewGroup_1702147189271 -Force
 
 ```
 
+### Managing vulnerability remediation records
+
+The module includes dedicated vulnerability commands for reading vulnerability data and removing remediation records, including compensating control records.
+
+```powershell
+# List vulnerabilities with compensating controls applied
+Get-Action1Vulnerabilities -RemediationStatus 'Control_applied'
+
+# Review one vulnerability
+Get-Action1Vulnerability -CVEId 'CVE-2024-12345'
+
+# Review remediation records for a vulnerability
+Get-Action1VulnerabilityRemediations -CVEId 'CVE-2024-12345' | Format-List
+
+# Preview deletion of compensating control remediation records
+Remove-Action1VulnerabilityRemediations -RemediationStatus 'Control_applied' -WhatIf
+
+# Delete compensating control remediation records without prompting
+Remove-Action1VulnerabilityRemediations -RemediationStatus 'Control_applied' -Force
+```
+
+:stop_sign: **Important:** Deleting remediation records is irreversible. Always test with `-WhatIf` before using `-Force` in production.
+
+Dedicated help files:
+
+- [Get-Action1Vulnerabilities](docs/help/Get-Action1Vulnerabilities.md)
+- [Get-Action1Vulnerability](docs/help/Get-Action1Vulnerability.md)
+- [Get-Action1VulnerabilityRemediations](docs/help/Get-Action1VulnerabilityRemediations.md)
+- [Remove-Action1VulnerabilityRemediation](docs/help/Remove-Action1VulnerabilityRemediation.md)
+- [Remove-Action1VulnerabilityRemediations](docs/help/Remove-Action1VulnerabilityRemediations.md)
+
 ### Deploying patches and software packages
 
 You can deploy both patches and software packages through PSAction1. Like other actions, this process starts by getting a settings template for the operation, adding relevant information about what you would like to deploy, and then creating a new object in Action1 to execute the task. In this case, the type of object created is a <i>policy instance</i>. This is a special type of automation that runs once on demand and does not leave a template in the Automations section inside Action1, but  can still be found in the automation history of any assigned endpoint.

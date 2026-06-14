@@ -84,7 +84,12 @@
                         'Update-Action1',
                         'Set-Action1Interactive',
                         'Start-Action1Requery',
-                        'Start-Action1PackageUpload'
+                        'Start-Action1PackageUpload',
+                        'Get-Action1Vulnerabilities',
+                        'Get-Action1Vulnerability',
+                        'Get-Action1VulnerabilityRemediations',
+                        'Remove-Action1VulnerabilityRemediation',
+                        'Remove-Action1VulnerabilityRemediations'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = '*'
