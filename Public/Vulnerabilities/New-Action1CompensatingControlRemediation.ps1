@@ -21,7 +21,7 @@ function New-Action1CompensatingControlRemediation {
 
             $true
         })]
-        [string[]]$Comment,
+        [string]$Comment,
 
         [Parameter(Mandatory = $true, Position = 2)]
         [ValidateNotNullOrEmpty()]
@@ -32,7 +32,7 @@ function New-Action1CompensatingControlRemediation {
 
             $true
         })]
-        [string[]]$ProductName
+        [string]$ProductName
     )
 
     $Org_ID = Initialize-Action1DefaultOrg

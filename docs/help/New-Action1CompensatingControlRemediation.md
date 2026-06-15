@@ -15,7 +15,7 @@ Creates a compensating control remediation record for an Action1 vulnerability.
 ## SYNTAX
 
 ```powershell
-New-Action1CompensatingControlRemediation [-CVEId] <String> [-Comment] <String[]> [-ProductName] <String[]> [<CommonParameters>]
+New-Action1CompensatingControlRemediation [-CVEId] <String> [-Comment] <String> [-ProductName] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -48,29 +48,8 @@ New-Action1CompensatingControlRemediation `
 
 Creates a compensating control remediation record for `CVE-2024-12345`.
 
-### Example 2: Create a remediation record with multiple comment values
 
-```powershell
-New-Action1CompensatingControlRemediation `
-    -CVEId 'CVE-2024-12345' `
-    -Comment 'Application access is restricted.', 'Compensating firewall rule is applied.' `
-    -ProductName 'Example Product'
-```
-
-Creates a remediation record and passes multiple comment values in the request body.
-
-### Example 3: Create a remediation record with multiple product names
-
-```powershell
-New-Action1CompensatingControlRemediation `
-    -CVEId 'CVE-2024-12345' `
-    -Comment 'Compensating control is documented.' `
-    -ProductName 'Example Product 1', 'Example Product 2'
-```
-
-Creates a remediation record and passes multiple product name values in the request body.
-
-### Example 4: Create a remediation record and review the returned object
+### Example 2: Create a remediation record and review the returned object
 
 ```powershell
 New-Action1CompensatingControlRemediation `
@@ -118,7 +97,7 @@ Specifies the remediation comment text to send to Action1.
 The value is sent in the request body as `comment`.
 
 ```yaml
-Type: String[]
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -136,7 +115,7 @@ Specifies the product name associated with the compensating control remediation.
 The value is sent in the request body as `product_name`.
 
 ```yaml
-Type: String[]
+Type: String
 Parameter Sets: (All)
 Aliases:
 
