@@ -9,7 +9,7 @@ function Set-Action1Locale {
     [Obsolete("Please use Set-Action1Region instead.")]
     param (
         [Parameter(Mandatory)]
-        [ValidateSet('NorthAmerica', 'NA-2', 'Europe', 'Australia')]
+        [ValidateSet('NorthAmerica', 'NorthAmerica-2', 'NA-2', 'Europe', 'Australia')]
         [String]$Region
     )
     Set-Action1Region -Region $Region

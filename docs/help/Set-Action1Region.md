@@ -56,10 +56,10 @@ Configures PSAction1 module to use the Australia API endpoint.
 ### Example 4
 
 ```powershell
-PS C:\> Set-Action1Region -Region 'NA-2'
+PS C:\> Set-Action1Region -Region 'NorthAmerica-2'
 ```
 
-Configures PSAction1 module to use the NA-2 API endpoint.
+Configures PSAction1 module to use the NorthAmerica-2 API endpoint.
 
 ## PARAMETERS
 
@@ -71,7 +71,7 @@ Supported values are:
 
  - NorthAmerica
   
- - NA-2
+ - NorthAmerica-2
 
  - Europe
 
@@ -81,7 +81,7 @@ Supported values are:
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: NorthAmerica, Europe, Australia
+Accepted values: NorthAmerica, NorthAmerica-2, Europe, Australia
 
 Required: True
 Position: 0
