@@ -5,7 +5,7 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
-function Remove-Action1VulnerabilityRemediation {
+function Remove-Action1CompensatingControlRemediation {
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     param(
         [Parameter(Mandatory = $true)]
@@ -46,7 +46,7 @@ function Remove-Action1VulnerabilityRemediation {
 
     Write-Action1Debug "Deleting remediation '$RemediationId' for vulnerability '$CVEId'."
 
-    $Response = Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "Delete vulnerability remediation '$RemediationId'"
+    $Response = Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "Delete compensating control remediation '$RemediationId'"
 
     if ($null -eq $Response) {
         Write-Error ("Failed to delete remediation '{0}' for vulnerability '{1}'." -f $RemediationId, $CVEId)

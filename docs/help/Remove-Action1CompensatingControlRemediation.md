@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Remove-Action1VulnerabilityRemediation
+# Remove-Action1CompensatingControlRemediation
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Deletes one remediation record for an Action1 vulnerability.
 ## SYNTAX
 
 ```powershell
-Remove-Action1VulnerabilityRemediation [-CVEId] <String> [-RemediationId] <String> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-Action1CompensatingControlRemediation [-CVEId] <String> [-RemediationId] <String> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,7 +30,7 @@ This command supports PowerShell confirmation. Use **-WhatIf** to preview the de
 ### Example 1: Delete one remediation record
 
 ```powershell
-Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123'
+Remove-Action1CompensatingControlRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123'
 ```
 
 Prompts for confirmation, then deletes the specified remediation record.
@@ -38,7 +38,7 @@ Prompts for confirmation, then deletes the specified remediation record.
 ### Example 2: Preview deletion
 
 ```powershell
-Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -WhatIf
+Remove-Action1CompensatingControlRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -WhatIf
 ```
 
 Shows what would be deleted without sending the DELETE request.
@@ -46,7 +46,7 @@ Shows what would be deleted without sending the DELETE request.
 ### Example 3: Delete without prompting
 
 ```powershell
-Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -Force
+Remove-Action1CompensatingControlRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -Force
 ```
 
 Deletes the remediation record without prompting for confirmation.
@@ -159,5 +159,5 @@ Requires permission to manage vulnerabilities in Action1.
 ## RELATED LINKS
 
 [Get-Action1VulnerabilityRemediations](Get-Action1VulnerabilityRemediations.md)
-[Remove-Action1VulnerabilityRemediations](Remove-Action1VulnerabilityRemediations.md)
+[Remove-Action1CompensatingControlRemediations](Remove-Action1CompensatingControlRemediations.md)
 [Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)

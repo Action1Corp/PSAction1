@@ -5,15 +5,14 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
-function Remove-Action1VulnerabilityRemediations {
+function Remove-Action1CompensatingControlRemediations {
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     param(
-        [Parameter(Mandatory = $false)]
-        [ValidateSet('Due soon', 'Overdue', 'Due later', 'Control_applied')]
-        [string]$RemediationStatus = 'Control_applied',
-
         [switch]$Force
     )
+
+    $remediationStatus = 'Control_applied'
+    $score = 'All'
 
     $GetFirstPropertyValue = {
         param(
@@ -37,16 +36,16 @@ function Remove-Action1VulnerabilityRemediations {
         return $null
     }
 
-    Write-Action1Debug "Starting bulk remediation cleanup. RemediationStatus: '$RemediationStatus'. Force: $Force."
+    Write-Action1Debug "Starting bulk remediation cleanup. RemediationStatus: '$remediationStatus'. Force switch: $Force."
 
     $Vulnerabilities = @(
-        Get-Action1Vulnerabilities -RemediationStatus $RemediationStatus |
-            Where-Object { $null -ne $_ }
+        Get-Action1Vulnerabilities -RemediationStatus $remediationStatus -Score $score | Where-Object { $null -ne $_ }
+        #Get-Action1Vulnerabilities | Where-Object { $null -ne $_ }
     )
 
     $TotalVulnerabilities = $Vulnerabilities.Count
 
-    Write-Host ("Found {0} vulnerabilities with remediation status '{1}'." -f $TotalVulnerabilities, $RemediationStatus)
+    Write-Host ("Found {0} vulnerabilities with remediation status '$remediationStatus'." -f $TotalVulnerabilities)
 
     $ProcessedVulnerabilities = 0
     $RemediationsFound = 0
@@ -55,7 +54,7 @@ function Remove-Action1VulnerabilityRemediations {
     $RemediationsFailed = 0
 
     if ($TotalVulnerabilities -eq 0) {
-        Write-Host ("No vulnerabilities with remediation status '{0}' were found." -f $RemediationStatus)
+        Write-Host ("No vulnerabilities with remediation status '$remediationStatus' were found.")
 
         [pscustomobject]@{
             VulnerabilitiesProcessed = $ProcessedVulnerabilities
@@ -63,7 +62,8 @@ function Remove-Action1VulnerabilityRemediations {
             RemediationsRemoved      = $RemediationsRemoved
             RemediationsSkipped      = $RemediationsSkipped
             RemediationsFailed       = $RemediationsFailed
-            RemediationStatus        = $RemediationStatus
+            RemediationStatus        = $remediationStatus
+            Score                    = $score
         }
         return
     }
@@ -116,7 +116,7 @@ function Remove-Action1VulnerabilityRemediations {
                 continue
             }
 
-            $Result = Remove-Action1VulnerabilityRemediation -CVEId $CVEId -RemediationId $RemediationId -Force:$Force
+            $Result = Remove-Action1CompensatingControlRemediation -CVEId $CVEId -RemediationId $RemediationId -Force:$Force
 
             if ($null -eq $Result) {
                 $RemediationsFailed++
@@ -134,7 +134,7 @@ function Remove-Action1VulnerabilityRemediations {
 
     Write-Progress -Activity 'Removing Action1 vulnerability remediations' -Completed
 
-    Write-Host ("{0} vulnerabilities processed, {1} remediations with status '{2}' removed successfully." -f $ProcessedVulnerabilities, $RemediationsRemoved, $RemediationStatus)
+    Write-Host ("{0} vulnerabilities processed, {1} remediations with status '{2}' removed successfully." -f $ProcessedVulnerabilities, $RemediationsRemoved, $remediationStatus)
 
     [pscustomobject]@{
         VulnerabilitiesProcessed = $ProcessedVulnerabilities
@@ -142,6 +142,7 @@ function Remove-Action1VulnerabilityRemediations {
         RemediationsRemoved      = $RemediationsRemoved
         RemediationsSkipped      = $RemediationsSkipped
         RemediationsFailed       = $RemediationsFailed
-        RemediationStatus        = $RemediationStatus
+        RemediationStatus        = $remediationStatus
+        Score                    = $score
     }
 }
