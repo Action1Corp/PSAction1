@@ -89,6 +89,7 @@
                         'Get-Action1Vulnerability',
                         'Get-Action1VulnerabilityRemediations',
                         'New-Action1CompensatingControlRemediation',
+                        'Update-Action1CompensatingControlRemediation',
                         'Remove-Action1CompensatingControlRemediation',
                         'Remove-Action1CompensatingControlRemediations'
 
