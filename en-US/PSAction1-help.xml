@@ -1015,7 +1015,9 @@
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica-2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1113,12 +1115,13 @@
             <maml:para>Specifies the API region to use.</maml:para>
             <maml:para>Supported values are:</maml:para>
             <maml:para> - NorthAmerica
-- NA-2</maml:para>
+- NorthAmerica-2</maml:para>
             <maml:para> - Europe</maml:para>
             <maml:para> - Australia</maml:para>
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica-2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
           </command:parameterValueGroup>
@@ -1138,7 +1141,7 @@
           <maml:para>Specifies the API region to use.</maml:para>
           <maml:para>Supported values are:</maml:para>
           <maml:para> - NorthAmerica
-- NA-2</maml:para>
+- NorthAmerica-2</maml:para>
           <maml:para> - Europe</maml:para>
           <maml:para> - Australia</maml:para>
         </maml:description>
@@ -1200,9 +1203,9 @@
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 4 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Region -Region 'NA-2'</dev:code>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region 'NorthAmerica-2'</dev:code>
         <dev:remarks>
-          <maml:para>Configures PSAction1 module to use the NA-2 API endpoint.</maml:para>
+          <maml:para>Configures PSAction1 module to use the NorthAmerica-2 API endpoint.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
