@@ -577,11 +577,14 @@ PS C:\> Update-Action1 Delete -Type Group -Id MyNewGroup_1702147189271 -Force
 
 ### Managing vulnerability remediation records
 
-The module includes dedicated vulnerability commands for reading vulnerability data and removing remediation records, including compensating control records.
+The module includes dedicated vulnerability commands for reading vulnerability data and managing compensating control remediation records.
 
 ```powershell
-# List vulnerabilities with compensating controls applied
-Get-Action1Vulnerabilities -RemediationStatus 'Control_applied'
+# List critical vulnerabilities with compensating controls applied
+Get-Action1Vulnerabilities
+
+# List all vulnerabilities with compensating controls applied
+Get-Action1Vulnerabilities -RemediationStatus 'Control_applied' -Score All
 
 # Review one vulnerability
 Get-Action1Vulnerability -CVEId 'CVE-2024-12345'
@@ -589,22 +592,43 @@ Get-Action1Vulnerability -CVEId 'CVE-2024-12345'
 # Review remediation records for a vulnerability
 Get-Action1VulnerabilityRemediations -CVEId 'CVE-2024-12345' | Format-List
 
-# Preview deletion of compensating control remediation records
-Remove-Action1VulnerabilityRemediations -RemediationStatus 'Control_applied' -WhatIf
+# Create a compensating control remediation record
+New-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -ProductName 'Example Product' `
+    -Comment 'Compensating control applied.'
+
+# Update a compensating control remediation record comment
+Update-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -RemediationId 'remediation-123' `
+    -Comment 'Updated compensating control comment.'
+
+# Preview deletion of one compensating control remediation record
+Remove-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -RemediationId 'remediation-123' `
+    -WhatIf
+
+# Preview deletion of compensating control remediation records for matching vulnerabilities
+Remove-Action1CompensatingControlRemediations -RemediationStatus 'Control_applied' -WhatIf
 
 # Delete compensating control remediation records without prompting
-Remove-Action1VulnerabilityRemediations -RemediationStatus 'Control_applied' -Force
+Remove-Action1CompensatingControlRemediations -RemediationStatus 'Control_applied' -Force
 ```
 
 :stop_sign: **Important:** Deleting remediation records is irreversible. Always test with `-WhatIf` before using `-Force` in production.
 
 Dedicated help files:
 
-- [Get-Action1Vulnerabilities](docs/help/Get-Action1Vulnerabilities.md)
-- [Get-Action1Vulnerability](docs/help/Get-Action1Vulnerability.md)
-- [Get-Action1VulnerabilityRemediations](docs/help/Get-Action1VulnerabilityRemediations.md)
-- [Remove-Action1VulnerabilityRemediation](docs/help/Remove-Action1VulnerabilityRemediation.md)
-- [Remove-Action1VulnerabilityRemediations](docs/help/Remove-Action1VulnerabilityRemediations.md)
+* [Get-Action1Vulnerabilities](docs/help/vulnerabilities/Get-Action1Vulnerabilities.md)
+* [Get-Action1Vulnerability](docs/help/vulnerabilities/Get-Action1Vulnerability.md)
+* [Get-Action1VulnerabilityRemediations](docs/help/vulnerabilities/Get-Action1VulnerabilityRemediations.md)
+* [New-Action1CompensatingControlRemediation](docs/help/vulnerabilities/New-Action1CompensatingControlRemediation.md)
+* [Update-Action1CompensatingControlRemediation](docs/help/vulnerabilities/Update-Action1CompensatingControlRemediation.md)
+* [Remove-Action1CompensatingControlRemediation](docs/help/vulnerabilities/Remove-Action1CompensatingControlRemediation.md)
+* [Remove-Action1CompensatingControlRemediations](docs/help/vulnerabilities/Remove-Action1CompensatingControlRemediations.md)
+
 
 ### Deploying patches and software packages
 
