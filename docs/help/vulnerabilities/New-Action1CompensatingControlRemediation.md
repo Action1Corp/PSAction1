@@ -23,14 +23,10 @@ Creates a new remediation record for a specific vulnerability in the current Act
 
 The command sends a POST request to the Action1 vulnerabilities remediation API endpoint for the specified CVE ID.
 
-The request body includes the remediation comment and product name values:
+The request body includes the following values:
 
-```json
-{
-  "comment": "<Comment>",
-  "product_name": "<ProductName>"
-}
-```
+* `comment` - The value of the **Comment** parameter.
+* `product_name` - The value of the **ProductName** parameter.
 
 The command uses the module default organization configured by **Set-Action1DefaultOrg**.
 
@@ -46,7 +42,6 @@ New-Action1CompensatingControlRemediation `
 ```
 
 Creates a compensating control remediation record for `CVE-2024-12345`.
-
 
 ### Example 2: Create a remediation record and review the returned object
 
@@ -68,8 +63,8 @@ Specifies the CVE ID of the vulnerability for which the remediation record shoul
 
 The value must match the CVE format `CVE-YYYY-NNN`, where:
 
-* `YYYY` is a 4-digit year
-* `NNN` is a 3- to 6-digit CVE number
+* `YYYY` is a 4-digit year.
+* `NNN` is a 3- to 6-digit CVE number.
 
 Examples:
 
@@ -162,4 +157,4 @@ The command uses **Write-Action1Debug** for debug logging.
 
 [Remove-Action1CompensatingControlRemediations](Remove-Action1CompensatingControlRemediations.md)
 
-[Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
+[Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
