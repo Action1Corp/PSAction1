@@ -32,6 +32,7 @@ $Script:Action1_UriMap = @{
     G_Vulnerabilities              = { param($Org_ID) "/vulnerabilities/$Org_ID" }
     G_Vulnerability                = { param($Org_ID, $CVEId) "/vulnerabilities/$Org_ID/$CVEId" }
     G_VulnerabilityRemediations    = { param($Org_ID, $CVEId) "/vulnerabilities/$Org_ID/$CVEId/remediations" }
+    N_VulnerabilityRemediation     = { param($Org_ID, $CVEId) "/vulnerabilities/$Org_ID/$CVEId/remediations" }
     D_VulnerabilityRemediation     = { param($Org_ID, $CVEId, $RemediationId) "/vulnerabilities/$Org_ID/$CVEId/remediations/$RemediationId" }
     N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }

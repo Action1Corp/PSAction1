@@ -39,8 +39,8 @@ function Remove-Action1CompensatingControlRemediations {
     Write-Action1Debug "Starting bulk remediation cleanup. RemediationStatus: '$remediationStatus'. Force switch: $Force."
 
     $Vulnerabilities = @(
-        Get-Action1Vulnerabilities -RemediationStatus $remediationStatus -Score $score | Where-Object { $null -ne $_ }
-        #Get-Action1Vulnerabilities | Where-Object { $null -ne $_ }
+        #Get-Action1Vulnerabilities -RemediationStatus $remediationStatus -Score $score | Where-Object { $null -ne $_ }
+        Get-Action1Vulnerabilities -RemediationStatus 'All' -Score 'All' | Where-Object { $null -ne $_ }
     )
 
     $TotalVulnerabilities = $Vulnerabilities.Count
