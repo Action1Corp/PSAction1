@@ -1,13 +1,8 @@
-﻿---
-
+---
 external help file: PSAction1-help.xml
-
 Module Name: PSAction1
-
 online version:
-
 schema: 2.0.0
-
 ---
 
 # Set-Action1DefaultOrg
@@ -18,11 +13,13 @@ Sets the default Action1 organization for the current PowerShell session.
 
 ## SYNTAX
 
-```powershell
+### ById (Default)
+```
 Set-Action1DefaultOrg [-Org_ID] <String> [<CommonParameters>]
 ```
 
-```powershell
+### ByName
+```
 Set-Action1DefaultOrg -Org_Name <String> [<CommonParameters>]
 ```
 
@@ -91,6 +88,7 @@ This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The v
 Type: String
 Parameter Sets: ById
 Aliases: OrgId
+
 Required: True
 Position: 0
 Default value: None
@@ -114,6 +112,7 @@ Using this parameter requires valid Action1 authentication and access to list or
 Type: String
 Parameter Sets: ByName
 Aliases: OrgName
+
 Required: True
 Position: Named
 Default value: None
@@ -122,10 +121,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
-This cmdlet supports the common parameters: `-Debug`, `-ErrorAction`, `-ErrorVariable`, `-InformationAction`, `-InformationVariable`, `-OutVariable`, `-OutBuffer`, `-PipelineVariable`, `-Verbose`, `-WarningAction`, and `-WarningVariable`.
-
-For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

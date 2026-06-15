@@ -1,13 +1,8 @@
-﻿---
-
+---
 external help file: PSAction1-help.xml
-
 Module Name: PSAction1
-
 online version:
-
 schema: 2.0.0
-
 ---
 
 # Set-Action1Region
@@ -18,10 +13,8 @@ Sets the Action1 API region endpoint used by the PSAction1 module.
 
 ## SYNTAX
 
-```powershell
-
+```
 Set-Action1Region [-Region] <String> [<CommonParameters>]
-
 ```
 
 ## DESCRIPTION
@@ -39,9 +32,7 @@ Run this command before executing other commands in the module to ensure a speci
 ### Example 1
 
 ```powershell
-
 PS C:\> Set-Action1Region -Region Europe
-
 ```
 
 Configures PSAction1 module to use the Europe API endpoint.
@@ -49,9 +40,7 @@ Configures PSAction1 module to use the Europe API endpoint.
 ### Example 2
 
 ```powershell
-
 PS C:\> Set-Action1Region -Region NorthAmerica
-
 ```
 
 Configures PSAction1 module to use the NorthAmerica API endpoint.
@@ -59,9 +48,7 @@ Configures PSAction1 module to use the NorthAmerica API endpoint.
 ### Example 3
 
 ```powershell
-
 PS C:\> Set-Action1Region -Region Australia
-
 ```
 
 Configures PSAction1 module to use the Australia API endpoint.
@@ -74,36 +61,26 @@ Specifies the API region to use.
 
 Supported values are:
 
- - NorthAmerica
+ - NorthAmerica
 
- - Europe
+ - Europe
 
- - Australia
+ - Australia
 
 ```yaml
-
 Type: String
-
 Parameter Sets: (All)
-
 Aliases:
-
 Accepted values: NorthAmerica, Europe, Australia
 
 Required: True
-
 Position: 0
-
 Default value: None
-
 Accept pipeline input: False
-
 Accept wildcard characters: False
-
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

@@ -1,13 +1,8 @@
-﻿---
-
+---
 external help file: PSAction1-help.xml
-
 Module Name: PSAction1
-
 online version:
-
 schema: 2.0.0
-
 ---
 
 # Set-Action1Locale
@@ -18,10 +13,8 @@ schema: 2.0.0
 
 ## SYNTAX
 
-```powershell
-
+```
 Set-Action1Locale [-Region] <String> [<CommonParameters>]
-
 ```
 
 ## DESCRIPTION
@@ -41,9 +34,7 @@ Please use the `Set-Action1Region` command instead.
 ### Example 1
 
 ```powershell
-
 PS C:\> Set-Action1Locale -Region NorthAmerica
-
 ```
 
 Sets the module locale, actually region, to "NorthAmerica" for the current session.
@@ -51,9 +42,7 @@ Sets the module locale, actually region, to "NorthAmerica" for the current sessi
 ### Example 2
 
 ```powershell
-
 PS C:\> Set-Action1Locale -Region Europe
-
 ```
 
 Sets the module locale, actually region, to "Europe" for the current session.
@@ -65,29 +54,19 @@ Sets the module locale, actually region, to "Europe" for the current session.
 Specifies the locale/region identifier to use.
 
 ```yaml
-
 Type: String
-
 Parameter Sets: (All)
-
 Aliases:
-
 Accepted values: NorthAmerica, Europe, Australia
 
 Required: True
-
 Position: 0
-
 Default value: None
-
 Accept pipeline input: False
-
 Accept wildcard characters: False
-
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

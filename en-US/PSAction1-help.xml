@@ -2,6 +2,560 @@
 <helpItems schema="maml" xmlns="http://msh">
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Set-Action1Credentials</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Credentials</command:noun>
+      <maml:description>
+        <maml:para>Sets Action1 API credentials for the current PowerShell session.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Stores Action1 APIKey and Secret in script scope variables used by other commands in the module to authenticate API calls.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Credentials</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>APIKey</maml:name>
+          <maml:description>
+            <maml:para>Action1 API key provided by the service.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Secret</maml:name>
+          <maml:description>
+            <maml:para>Action1 API secret associated with the Action1 API key.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>APIKey</maml:name>
+        <maml:description>
+          <maml:para>Action1 API key provided by the service.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Secret</maml:name>
+        <maml:description>
+          <maml:para>Action1 API secret associated with the Action1 API key.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command only sets module and session variables.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Action1 credentials are stored only for the lifetime of the PowerShell session.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Credentials -APIKey "abc123" -Secret "secret"</dev:code>
+        <dev:remarks>
+          <maml:para>Stores Action1 credentials for use by other PSAction1 module commands.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1Debug</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Debug</command:noun>
+      <maml:description>
+        <maml:para>Enables or disables debug mode for PSAction1 module.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Sets the internal debug flag for the PSAction1 module in script scope.</maml:para>
+      <maml:para>When debug mode is enabled, additional diagnostic messages will be displayed by module functions that support debugging output.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Debug</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Enabled</maml:name>
+          <maml:description>
+            <maml:para>Specifies whether the debug mode should be enabled or disabled.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Enabled</maml:name>
+        <maml:description>
+          <maml:para>Specifies whether the debug mode should be enabled or disabled.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command does not return objects. It only updates an internal module variable controlling debug behavior.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The debug mode affects only the current PowerShell session and is stored in a script-scope variable.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Debug -Enabled $true</dev:code>
+        <dev:remarks>
+          <maml:para>Enables the debug mode for PSAction1 module.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Debug -Enabled $false</dev:code>
+        <dev:remarks>
+          <maml:para>Disables the debug mode for PSAction1 module.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1DefaultOrg</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1DefaultOrg</command:noun>
+      <maml:description>
+        <maml:para>Sets the default Action1 organization for the current PowerShell session.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Set-Action1DefaultOrg` configures the default Action1 organization context used by other commands in the module.</maml:para>
+      <maml:para>The command supports two ways to set the default organization:</maml:para>
+      <maml:para>* By organization ID using `-Org_ID`.</maml:para>
+      <maml:para>* By unique organization name using `-Org_Name`.</maml:para>
+      <maml:para></maml:para>
+      <maml:para>When `-Org_ID` is used, the value is stored directly as the default organization ID. This preserves backward compatibility with existing scripts that already call `Set-Action1DefaultOrg -Org_ID &lt;id&gt;`.</maml:para>
+      <maml:para>When `-Org_Name` is used, the command retrieves the available organizations, searches for an organization with the specified name, and stores the matching organization's ID as the default organization context.</maml:para>
+      <maml:para>The default organization value is stored only for the duration of the current PowerShell session.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1DefaultOrg</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="OrgId">
+          <maml:name>Org_ID</maml:name>
+          <maml:description>
+            <maml:para>Specifies the Action1 organization ID to use as the default organization for subsequent module commands.</maml:para>
+            <maml:para>This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The value is stored directly and is not resolved through the API.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-Action1DefaultOrg</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="OrgName">
+          <maml:name>Org_Name</maml:name>
+          <maml:description>
+            <maml:para>Specifies the Action1 organization name to resolve and use as the default organization.</maml:para>
+            <maml:para>The command searches the available organizations for an exact name match. The name must match exactly and must identify a single organization.</maml:para>
+            <maml:para>If no organization is found, the command returns a terminating error.</maml:para>
+            <maml:para>If multiple organizations have the same name, the command returns a terminating error and instructs the user to specify the organization ID with `-Org_ID`.</maml:para>
+            <maml:para>Using this parameter requires valid Action1 authentication and access to list organizations.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="OrgId">
+        <maml:name>Org_ID</maml:name>
+        <maml:description>
+          <maml:para>Specifies the Action1 organization ID to use as the default organization for subsequent module commands.</maml:para>
+          <maml:para>This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The value is stored directly and is not resolved through the API.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="OrgName">
+        <maml:name>Org_Name</maml:name>
+        <maml:description>
+          <maml:para>Specifies the Action1 organization name to resolve and use as the default organization.</maml:para>
+          <maml:para>The command searches the available organizations for an exact name match. The name must match exactly and must identify a single organization.</maml:para>
+          <maml:para>If no organization is found, the command returns a terminating error.</maml:para>
+          <maml:para>If multiple organizations have the same name, the command returns a terminating error and instructs the user to specify the organization ID with `-Org_ID`.</maml:para>
+          <maml:para>Using this parameter requires valid Action1 authentication and access to list organizations.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe objects to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not produce output. It sets a module-level default organization value for the current PowerShell session.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The default organization value is stored in a script scope variable and is available only for the lifetime of the current PowerShell session.</maml:para>
+        <maml:para>`-Org_ID` is the most deterministic option and should be preferred in automation scripts.</maml:para>
+        <maml:para>`-Org_Name` is provided for convenience in interactive scenarios and scripts where organization names are known to be unique.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------- Example 1: Set the default organization by ID --------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_ID "88c8b425-871e-4ff6-9afc-00df8592c6db"</dev:code>
+        <dev:remarks>
+          <maml:para>Sets the default organization ID directly.</maml:para>
+          <maml:para>This is the recommended option for automation scripts because organization IDs are unique and unambiguous.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 2: Set the default organization by name -------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_Name "MyOrgName"</dev:code>
+        <dev:remarks>
+          <maml:para>Finds an organization named `MyOrgName` and stores its organization ID as the default organization context.</maml:para>
+          <maml:para>The organization name must be unique. If more than one organization has the specified name, the command returns a terminating error and the organization ID must be used instead.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 3: Use the OrgId alias ----------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -OrgId "88c8b425-871e-4ff6-9afc-00df8592c6db"</dev:code>
+        <dev:remarks>
+          <maml:para>Uses the `OrgId` alias for `-Org_ID`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------------- Example 4: Use the OrgName alias ---------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -OrgName "MyOrgName"</dev:code>
+        <dev:remarks>
+          <maml:para>Uses the `OrgName` alias for `-Org_Name`.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Region</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>about_PSAction1</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1Interactive</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Interactive</command:noun>
+      <maml:description>
+        <maml:para>Enables or disables interactive mode for PSAction1 module.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Enables or disables interactive mode for the current PowerShell session.</maml:para>
+      <maml:para>When interactive mode is enabled, the PSAction1 module will prompt for the required variable values that have not been set. This helps guide users through configuration when running commands that depend on module-level variables.</maml:para>
+      <maml:para>When interactive mode is disabled, commands will not prompt for missing values and may fail if required variables are not set.</maml:para>
+      <maml:para>Action1 interactive setting is stored in a script-scoped variable and applies only to the current PowerShell session.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Interactive</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Enabled</maml:name>
+          <maml:description>
+            <maml:para>Specifies whether PSAction1 interactive mode should be enabled or disabled.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Enabled</maml:name>
+        <maml:description>
+          <maml:para>Specifies whether PSAction1 interactive mode should be enabled or disabled.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command only modifies a module-level setting.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The interactive mode is stored in a script-scoped variable and remains active only for the lifetime of the PowerShell session.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Interactive -Enabled $true</dev:code>
+        <dev:remarks>
+          <maml:para>Enables interactive mode. The module will prompt for required variables that are missing.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Interactive -Enabled $false</dev:code>
+        <dev:remarks>
+          <maml:para>Disables interactive mode so commands will not prompt for missing variables.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-Action1Region</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>Action1Region</command:noun>
+      <maml:description>
+        <maml:para>Sets the Action1 API region endpoint used by the PSAction1 module.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Set-Action1Region` configures the base API endpoint used by the module for all subsequent requests.</maml:para>
+      <maml:para>Different Action1 regions correspond to different service API endpoints.</maml:para>
+      <maml:para>This command updates the internal script scope variable so that all module commands send requests to the correct regional API endpoint.</maml:para>
+      <maml:para>Run this command before executing other commands in the module to ensure a specific regional environment is targeted.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-Action1Region</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Region</maml:name>
+          <maml:description>
+            <maml:para>Specifies the API region to use.</maml:para>
+            <maml:para>Supported values are:</maml:para>
+            <maml:para> - NorthAmerica</maml:para>
+            <maml:para> - Europe</maml:para>
+            <maml:para> - Australia</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Region</maml:name>
+        <maml:description>
+          <maml:para>Specifies the API region to use.</maml:para>
+          <maml:para>Supported values are:</maml:para>
+          <maml:para> - NorthAmerica</maml:para>
+          <maml:para> - Europe</maml:para>
+          <maml:para> - Australia</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None. You cannot pipe objects to this command.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None. This command only sets an internal module variable used to determine the API base URI.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>This command must typically be executed before making API requests so that PSAction1 module communicates with the correct regional service endpoint.</maml:para>
+        <maml:para>The selected region affects all subsequent commands in the current PowerShell session.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region Europe</dev:code>
+        <dev:remarks>
+          <maml:para>Configures PSAction1 module to use the Europe API endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region NorthAmerica</dev:code>
+        <dev:remarks>
+          <maml:para>Configures PSAction1 module to use the NorthAmerica API endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region Australia</dev:code>
+        <dev:remarks>
+          <maml:para>Configures PSAction1 module to use the Australia API endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-Action1</command:name>
       <command:verb>Get</command:verb>
       <command:noun>Action1</command:noun>
@@ -400,338 +954,6 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Get-Action1Vulnerabilities</command:name>
-      <command:verb>Get</command:verb>
-      <command:noun>Action1Vulnerabilities</command:noun>
-      <maml:description>
-        <maml:para>Gets vulnerabilities for the current Action1 organization.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>Gets vulnerable software records from the current Action1 organization by using the Action1 vulnerabilities API.</maml:para>
-      <maml:para>When RemediationStatus is specified, the request is filtered by the specified remediation status. The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Get-Action1Vulnerabilities</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>RemediationStatus</maml:name>
-          <maml:description>
-            <maml:para>Filters vulnerabilities by remediation status.</maml:para>
-            <maml:para>Accepted values:</maml:para>
-            <maml:para>- `Due soon`</maml:para>
-            <maml:para>- `Overdue`</maml:para>
-            <maml:para>- `Due later`</maml:para>
-            <maml:para>- `Control_applied`</maml:para>
-          </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">Due soon</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Overdue</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Due later</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Control_applied</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>RemediationStatus</maml:name>
-        <maml:description>
-          <maml:para>Filters vulnerabilities by remediation status.</maml:para>
-          <maml:para>Accepted values:</maml:para>
-          <maml:para>- `Due soon`</maml:para>
-          <maml:para>- `Overdue`</maml:para>
-          <maml:para>- `Due later`</maml:para>
-          <maml:para>- `Control_applied`</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>Returns vulnerability objects from Action1.</maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>-------------- Example 1: Get all vulnerabilities --------------</maml:title>
-        <dev:code>Get-Action1Vulnerabilities</dev:code>
-        <dev:remarks>
-          <maml:para>Gets all vulnerabilities visible to the authenticated Action1 account in the current organization.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>Example 2: Get vulnerabilities with compensating controls applied</maml:title>
-        <dev:code>Get-Action1Vulnerabilities -RemediationStatus 'Control_applied'</dev:code>
-        <dev:remarks>
-          <maml:para>Gets vulnerabilities where the remediation status is `Control_applied`.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>---------- Example 3: Review overdue vulnerabilities ----------</maml:title>
-        <dev:code>Get-Action1Vulnerabilities -RemediationStatus 'Overdue' |
-    Select-Object cve_id, name, remediation_status</dev:code>
-        <dev:remarks>
-          <maml:para>Gets overdue vulnerabilities and selects key fields.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Remove-Action1VulnerabilityRemediations</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
-      <command:name>Get-Action1Vulnerability</command:name>
-      <command:verb>Get</command:verb>
-      <command:noun>Action1Vulnerability</command:noun>
-      <maml:description>
-        <maml:para>Gets one Action1 vulnerability by CVE ID.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>Gets detailed information about a specific vulnerability in the current Action1 organization.</maml:para>
-      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Get-Action1Vulnerability</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>CVEId</maml:name>
-          <maml:description>
-            <maml:para>Specifies the CVE ID of the vulnerability to retrieve.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>CVEId</maml:name>
-        <maml:description>
-          <maml:para>Specifies the CVE ID of the vulnerability to retrieve.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>Returns the vulnerability object returned by Action1.</maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>----------- Example 1: Get a vulnerability by CVE ID -----------</maml:title>
-        <dev:code>Get-Action1Vulnerability -CVEId 'CVE-2024-12345'</dev:code>
-        <dev:remarks>
-          <maml:para>Gets details for `CVE-2024-12345` in the current Action1 organization.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>----------- Example 2: Display vulnerability details -----------</maml:title>
-        <dev:code>Get-Action1Vulnerability -CVEId 'CVE-2024-12345' | Format-List</dev:code>
-        <dev:remarks>
-          <maml:para>Gets the vulnerability and displays all returned fields.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1Vulnerabilities</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
-      <command:name>Get-Action1VulnerabilityRemediations</command:name>
-      <command:verb>Get</command:verb>
-      <command:noun>Action1VulnerabilityRemediations</command:noun>
-      <maml:description>
-        <maml:para>Gets remediation records for an Action1 vulnerability.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>Gets previously applied remediation records, including compensating control records, for a specific vulnerability in the current Action1 organization.</maml:para>
-      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Get-Action1VulnerabilityRemediations</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>CVEId</maml:name>
-          <maml:description>
-            <maml:para>Specifies the CVE ID whose remediation records should be retrieved.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>CVEId</maml:name>
-        <maml:description>
-          <maml:para>Specifies the CVE ID whose remediation records should be retrieved.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>Returns remediation objects from Action1.</maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>---- Example 1: Get remediation records for a vulnerability ----</maml:title>
-        <dev:code>Get-Action1VulnerabilityRemediations -CVEId 'CVE-2024-12345'</dev:code>
-        <dev:remarks>
-          <maml:para>Gets remediation records for `CVE-2024-12345`.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>---- Example 2: Display remediation records before deleting ----</maml:title>
-        <dev:code>Get-Action1VulnerabilityRemediations -CVEId 'CVE-2024-12345' | Format-List</dev:code>
-        <dev:remarks>
-          <maml:para>Gets the remediation records and displays all returned fields.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Remove-Action1VulnerabilityRemediation</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Remove-Action1VulnerabilityRemediations</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
       <command:name>New-Action1</command:name>
       <command:verb>New</command:verb>
       <command:noun>Action1</command:noun>
@@ -915,864 +1137,6 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Remove-Action1VulnerabilityRemediation</command:name>
-      <command:verb>Remove</command:verb>
-      <command:noun>Action1VulnerabilityRemediation</command:noun>
-      <maml:description>
-        <maml:para>Deletes one remediation record for an Action1 vulnerability.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>Deletes a specific remediation record for a specific vulnerability in the current Action1 organization.</maml:para>
-      <maml:para>The Action1 API requires both the CVE ID and the remediation ID to delete a remediation record.</maml:para>
-      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Remove-Action1VulnerabilityRemediation</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>CVEId</maml:name>
-          <maml:description>
-            <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>RemediationId</maml:name>
-          <maml:description>
-            <maml:para>Specifies the remediation record ID to delete.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Force</maml:name>
-          <maml:description>
-            <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
-          <maml:name>WhatIf</maml:name>
-          <maml:description>
-            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-          <maml:name>Confirm</maml:name>
-          <maml:description>
-            <maml:para>Prompts you for confirmation before running the command.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>CVEId</maml:name>
-        <maml:description>
-          <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>RemediationId</maml:name>
-        <maml:description>
-          <maml:para>Specifies the remediation record ID to delete.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Force</maml:name>
-        <maml:description>
-          <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
-        <maml:name>WhatIf</maml:name>
-        <maml:description>
-          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-        <maml:name>Confirm</maml:name>
-        <maml:description>
-          <maml:para>Prompts you for confirmation before running the command.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>PSCustomObject</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>Returns a status object with CVEId, RemediationId, Status, and Response.</maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>Requires permission to manage vulnerabilities in Action1.</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>----------- Example 1: Delete one remediation record -----------</maml:title>
-        <dev:code>Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123'</dev:code>
-        <dev:remarks>
-          <maml:para>Prompts for confirmation, then deletes the specified remediation record.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>----------------- Example 2: Preview deletion -----------------</maml:title>
-        <dev:code>Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -WhatIf</dev:code>
-        <dev:remarks>
-          <maml:para>Shows what would be deleted without sending the DELETE request.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>------------- Example 3: Delete without prompting -------------</maml:title>
-        <dev:code>Remove-Action1VulnerabilityRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Deletes the remediation record without prompting for confirmation.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Remove-Action1VulnerabilityRemediations</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
-      <command:name>Remove-Action1VulnerabilityRemediations</command:name>
-      <command:verb>Remove</command:verb>
-      <command:noun>Action1VulnerabilityRemediations</command:noun>
-      <maml:description>
-        <maml:para>Deletes remediation records for vulnerabilities matching a remediation status.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>Finds vulnerabilities in the current Action1 organization by remediation status, gets the remediation records for each vulnerability, displays the remediation records that are candidates for deletion, and deletes each remediation record after confirmation.</maml:para>
-      <maml:para>By default, RemediationStatus is `Control_applied`. This preserves the behavior of the original standalone remove-remediations.ps1 script, which targeted compensating control records.</maml:para>
-      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview delete operations. Use -Force to bypass confirmation prompts.</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Remove-Action1VulnerabilityRemediations</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>RemediationStatus</maml:name>
-          <maml:description>
-            <maml:para>Specifies the vulnerability remediation status to process.</maml:para>
-            <maml:para>The default value is `Control_applied`.</maml:para>
-            <maml:para>Accepted values:</maml:para>
-            <maml:para>- `Due soon`</maml:para>
-            <maml:para>- `Overdue`</maml:para>
-            <maml:para>- `Due later`</maml:para>
-            <maml:para>- `Control_applied`</maml:para>
-          </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">Due soon</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Overdue</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Due later</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Control_applied</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>Control_applied</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Force</maml:name>
-          <maml:description>
-            <maml:para>Bypasses confirmation prompts for individual remediation deletions. -WhatIf is still honored when it is specified.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
-          <maml:name>WhatIf</maml:name>
-          <maml:description>
-            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-          <maml:name>Confirm</maml:name>
-          <maml:description>
-            <maml:para>Prompts you for confirmation before running the command.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>RemediationStatus</maml:name>
-        <maml:description>
-          <maml:para>Specifies the vulnerability remediation status to process.</maml:para>
-          <maml:para>The default value is `Control_applied`.</maml:para>
-          <maml:para>Accepted values:</maml:para>
-          <maml:para>- `Due soon`</maml:para>
-          <maml:para>- `Overdue`</maml:para>
-          <maml:para>- `Due later`</maml:para>
-          <maml:para>- `Control_applied`</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>Control_applied</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Force</maml:name>
-        <maml:description>
-          <maml:para>Bypasses confirmation prompts for individual remediation deletions. -WhatIf is still honored when it is specified.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
-        <maml:name>WhatIf</maml:name>
-        <maml:description>
-          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-        <maml:name>Confirm</maml:name>
-        <maml:description>
-          <maml:para>Prompts you for confirmation before running the command.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>PSCustomObject</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>Returns a summary object with counts for processed vulnerabilities and remediation deletion results.</maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>Deleting remediation records is irreversible. Test with -WhatIf before using -Force .</maml:para>
-        <maml:para>Requires permission to view and manage vulnerabilities in Action1.</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>-- Example 1: Remove compensating control remediation records --</maml:title>
-        <dev:code>Remove-Action1VulnerabilityRemediations</dev:code>
-        <dev:remarks>
-          <maml:para>Gets vulnerabilities with remediation status `Control_applied`, displays remediation records to delete, prompts for confirmation, and deletes selected records.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>------- Example 2: Preview compensating control cleanup -------</maml:title>
-        <dev:code>Remove-Action1VulnerabilityRemediations -WhatIf</dev:code>
-        <dev:remarks>
-          <maml:para>Shows delete operations that would be performed without deleting remediation records.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>------------- Example 3: Remove without prompting -------------</maml:title>
-        <dev:code>Remove-Action1VulnerabilityRemediations -RemediationStatus 'Control_applied' -Force</dev:code>
-        <dev:remarks>
-          <maml:para>Deletes remediation records for vulnerabilities with remediation status `Control_applied` without prompting.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------- Example 4: Process another remediation status --------</maml:title>
-        <dev:code>Remove-Action1VulnerabilityRemediations -RemediationStatus 'Overdue'</dev:code>
-        <dev:remarks>
-          <maml:para>Processes vulnerabilities with remediation status `Overdue`.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1Vulnerabilities</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Remove-Action1VulnerabilityRemediation</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
-      <command:name>Set-Action1Credentials</command:name>
-      <command:verb>Set</command:verb>
-      <command:noun>Action1Credentials</command:noun>
-      <maml:description>
-        <maml:para>Sets Action1 API credentials for the current PowerShell session.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>Stores Action1 APIKey and Secret in script scope variables used by other commands in the module to authenticate API calls.</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Set-Action1Credentials</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>APIKey</maml:name>
-          <maml:description>
-            <maml:para>Action1 API key provided by the service.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>Secret</maml:name>
-          <maml:description>
-            <maml:para>Action1 API secret associated with the Action1 API key.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>APIKey</maml:name>
-        <maml:description>
-          <maml:para>Action1 API key provided by the service.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>Secret</maml:name>
-        <maml:description>
-          <maml:para>Action1 API secret associated with the Action1 API key.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None. You cannot pipe objects to this command.</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>None. This command only sets module and session variables.</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>Action1 credentials are stored only for the lifetime of the PowerShell session.</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Credentials -APIKey "abc123" -Secret "secret"</dev:code>
-        <dev:remarks>
-          <maml:para>Stores Action1 credentials for use by other PSAction1 module commands.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks />
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
-      <command:name>Set-Action1Debug</command:name>
-      <command:verb>Set</command:verb>
-      <command:noun>Action1Debug</command:noun>
-      <maml:description>
-        <maml:para>Enables or disables debug mode for PSAction1 module.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>Sets the internal debug flag for the PSAction1 module in script scope.</maml:para>
-      <maml:para>When debug mode is enabled, additional diagnostic messages will be displayed by module functions that support debugging output.</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Set-Action1Debug</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>Enabled</maml:name>
-          <maml:description>
-            <maml:para>Specifies whether the debug mode should be enabled or disabled.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
-          <dev:type>
-            <maml:name>Boolean</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>Enabled</maml:name>
-        <maml:description>
-          <maml:para>Specifies whether the debug mode should be enabled or disabled.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
-        <dev:type>
-          <maml:name>Boolean</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None. You cannot pipe objects to this command.</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>None. This command does not return objects. It only updates an internal module variable controlling debug behavior.</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>The debug mode affects only the current PowerShell session and is stored in a script-scope variable.</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Debug -Enabled $true</dev:code>
-        <dev:remarks>
-          <maml:para>Enables the debug mode for PSAction1 module.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Debug -Enabled $false</dev:code>
-        <dev:remarks>
-          <maml:para>Disables the debug mode for PSAction1 module.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks />
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
-      <command:name>Set-Action1DefaultOrg</command:name>
-      <command:verb>Set</command:verb>
-      <command:noun>Action1DefaultOrg</command:noun>
-      <maml:description>
-        <maml:para>Sets the default Action1 organization for the current PowerShell session.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>`Set-Action1DefaultOrg` configures the default Action1 organization context used by other commands in the module.</maml:para>
-      <maml:para>The command supports two ways to set the default organization:</maml:para>
-      <maml:para>* By organization ID using `-Org_ID`.</maml:para>
-      <maml:para>* By unique organization name using `-Org_Name`.</maml:para>
-      <maml:para></maml:para>
-      <maml:para>When `-Org_ID` is used, the value is stored directly as the default organization ID. This preserves backward compatibility with existing scripts that already call `Set-Action1DefaultOrg -Org_ID &lt;id&gt;`.</maml:para>
-      <maml:para>When `-Org_Name` is used, the command retrieves the available organizations, searches for an organization with the specified name, and stores the matching organization's ID as the default organization context.</maml:para>
-      <maml:para>The default organization value is stored only for the duration of the current PowerShell session.</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Set-Action1DefaultOrg</maml:name>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Set-Action1DefaultOrg</maml:name>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Set-Action1DefaultOrg</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="OrgId">
-          <maml:name>Org_ID</maml:name>
-          <maml:description>
-            <maml:para>Specifies the Action1 organization ID to use as the default organization for subsequent module commands.</maml:para>
-            <maml:para>This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The value is stored directly and is not resolved through the API.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Set-Action1DefaultOrg</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="OrgName">
-          <maml:name>Org_Name</maml:name>
-          <maml:description>
-            <maml:para>Specifies the Action1 organization name to resolve and use as the default organization.</maml:para>
-            <maml:para>The command searches the available organizations for an exact name match. The name must match exactly and must identify a single organization.</maml:para>
-            <maml:para>If no organization is found, the command returns a terminating error.</maml:para>
-            <maml:para>If multiple organizations have the same name, the command returns a terminating error and instructs the user to specify the organization ID with `-Org_ID`.</maml:para>
-            <maml:para>Using this parameter requires valid Action1 authentication and access to list organizations.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="OrgId">
-        <maml:name>Org_ID</maml:name>
-        <maml:description>
-          <maml:para>Specifies the Action1 organization ID to use as the default organization for subsequent module commands.</maml:para>
-          <maml:para>This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The value is stored directly and is not resolved through the API.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="OrgName">
-        <maml:name>Org_Name</maml:name>
-        <maml:description>
-          <maml:para>Specifies the Action1 organization name to resolve and use as the default organization.</maml:para>
-          <maml:para>The command searches the available organizations for an exact name match. The name must match exactly and must identify a single organization.</maml:para>
-          <maml:para>If no organization is found, the command returns a terminating error.</maml:para>
-          <maml:para>If multiple organizations have the same name, the command returns a terminating error and instructs the user to specify the organization ID with `-Org_ID`.</maml:para>
-          <maml:para>Using this parameter requires valid Action1 authentication and access to list organizations.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>You cannot pipe objects to this command.</maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>None</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>This command does not produce output. It sets a module-level default organization value for the current PowerShell session.</maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>The default organization value is stored in a script scope variable and is available only for the lifetime of the current PowerShell session.</maml:para>
-        <maml:para>`-Org_ID` is the most deterministic option and should be preferred in automation scripts.</maml:para>
-        <maml:para>`-Org_Name` is provided for convenience in interactive scenarios and scripts where organization names are known to be unique.</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>-------- Example 1: Set the default organization by ID --------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_ID "88c8b425-871e-4ff6-9afc-00df8592c6db"</dev:code>
-        <dev:remarks>
-          <maml:para>Sets the default organization ID directly.</maml:para>
-          <maml:para>This is the recommended option for automation scripts because organization IDs are unique and unambiguous.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>------- Example 2: Set the default organization by name -------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_Name "MyOrgName"</dev:code>
-        <dev:remarks>
-          <maml:para>Finds an organization named `MyOrgName` and stores its organization ID as the default organization context.</maml:para>
-          <maml:para>The organization name must be unique. If more than one organization has the specified name, the command returns a terminating error and the organization ID must be used instead.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>---------------- Example 3: Use the OrgId alias ----------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -OrgId "88c8b425-871e-4ff6-9afc-00df8592c6db"</dev:code>
-        <dev:remarks>
-          <maml:para>Uses the `OrgId` alias for `-Org_ID`.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>--------------- Example 4: Use the OrgName alias ---------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1DefaultOrg -OrgName "MyOrgName"</dev:code>
-        <dev:remarks>
-          <maml:para>Uses the `OrgName` alias for `-Org_Name`.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Set-Action1Credentials</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Set-Action1Region</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>about_PSAction1</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
-      <command:name>Set-Action1Interactive</command:name>
-      <command:verb>Set</command:verb>
-      <command:noun>Action1Interactive</command:noun>
-      <maml:description>
-        <maml:para>Enables or disables interactive mode for PSAction1 module.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>Enables or disables interactive mode for the current PowerShell session.</maml:para>
-      <maml:para>When interactive mode is enabled, the PSAction1 module will prompt for the required variable values that have not been set. This helps guide users through configuration when running commands that depend on module-level variables.</maml:para>
-      <maml:para>When interactive mode is disabled, commands will not prompt for missing values and may fail if required variables are not set.</maml:para>
-      <maml:para>Action1 interactive setting is stored in a script-scoped variable and applies only to the current PowerShell session.</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Set-Action1Interactive</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>Enabled</maml:name>
-          <maml:description>
-            <maml:para>Specifies whether PSAction1 interactive mode should be enabled or disabled.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
-          <dev:type>
-            <maml:name>Boolean</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>Enabled</maml:name>
-        <maml:description>
-          <maml:para>Specifies whether PSAction1 interactive mode should be enabled or disabled.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
-        <dev:type>
-          <maml:name>Boolean</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None. You cannot pipe objects to this command.</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>None. This command only modifies a module-level setting.</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>The interactive mode is stored in a script-scoped variable and remains active only for the lifetime of the PowerShell session.</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Interactive -Enabled $true</dev:code>
-        <dev:remarks>
-          <maml:para>Enables interactive mode. The module will prompt for required variables that are missing.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Interactive -Enabled $false</dev:code>
-        <dev:remarks>
-          <maml:para>Disables interactive mode so commands will not prompt for missing variables.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks />
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
       <command:name>Set-Action1Locale</command:name>
       <command:verb>Set</command:verb>
       <command:noun>Action1Locale</command:noun>
@@ -1870,116 +1234,6 @@
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
-      <command:name>Set-Action1Region</command:name>
-      <command:verb>Set</command:verb>
-      <command:noun>Action1Region</command:noun>
-      <maml:description>
-        <maml:para>Sets the Action1 API region endpoint used by the PSAction1 module.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>`Set-Action1Region` configures the base API endpoint used by the module for all subsequent requests.</maml:para>
-      <maml:para>Different Action1 regions correspond to different service API endpoints.</maml:para>
-      <maml:para>This command updates the internal script scope variable so that all module commands send requests to the correct regional API endpoint.</maml:para>
-      <maml:para>Run this command before executing other commands in the module to ensure a specific regional environment is targeted.</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Set-Action1Region</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>Region</maml:name>
-          <maml:description>
-            <maml:para>Specifies the API region to use.</maml:para>
-            <maml:para>Supported values are:</maml:para>
-            <maml:para> - NorthAmerica</maml:para>
-            <maml:para> - Europe</maml:para>
-            <maml:para> - Australia</maml:para>
-          </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>Region</maml:name>
-        <maml:description>
-          <maml:para>Specifies the API region to use.</maml:para>
-          <maml:para>Supported values are:</maml:para>
-          <maml:para> - NorthAmerica</maml:para>
-          <maml:para> - Europe</maml:para>
-          <maml:para> - Australia</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-    </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None. You cannot pipe objects to this command.</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>None. This command only sets an internal module variable used to determine the API base URI.</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para>This command must typically be executed before making API requests so that PSAction1 module communicates with the correct regional service endpoint.</maml:para>
-        <maml:para>The selected region affects all subsequent commands in the current PowerShell session.</maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Region -Region Europe</dev:code>
-        <dev:remarks>
-          <maml:para>Configures PSAction1 module to use the Europe API endpoint.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Region -Region NorthAmerica</dev:code>
-        <dev:remarks>
-          <maml:para>Configures PSAction1 module to use the NorthAmerica API endpoint.</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Set-Action1Region -Region Australia</dev:code>
-        <dev:remarks>
-          <maml:para>Configures PSAction1 module to use the Australia API endpoint.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks />
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -2703,6 +1957,1188 @@ Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id "group-42" -Data $d
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Vulnerabilities</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Vulnerabilities</command:noun>
+      <maml:description>
+        <maml:para>Gets vulnerabilities for the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets vulnerable software records from the current Action1 organization by using the Action1 vulnerabilities API.</maml:para>
+      <maml:para>By default, the command returns vulnerabilities with the remediation status `Control_applied` and severity score `Critical`.</maml:para>
+      <maml:para>Use RemediationStatus to filter vulnerabilities by remediation status.</maml:para>
+      <maml:para>Use Score to filter vulnerabilities by severity score.</maml:para>
+      <maml:para>To disable one of these filters, specify `All` for the corresponding parameter.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Vulnerabilities</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>RemediationStatus</maml:name>
+          <maml:description>
+            <maml:para>Filters vulnerabilities by remediation status.</maml:para>
+            <maml:para>Specify `All` to disable remediation status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Overdue`</maml:para>
+            <maml:para>* `Due_soon`</maml:para>
+            <maml:para>* `Overdue_due_soon`</maml:para>
+            <maml:para>* `Due_later`</maml:para>
+            <maml:para>* `Control_applied`</maml:para>
+            <maml:para>* `All_except_control_applied`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Due soon</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Overdue</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Due later</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Control_applied</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Control_applied</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Score</maml:name>
+          <maml:description>
+            <maml:para>Filters vulnerabilities by severity score.</maml:para>
+            <maml:para>Specify `All` to disable score filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Critical`</maml:para>
+            <maml:para>* `High`</maml:para>
+            <maml:para>* `Medium`</maml:para>
+            <maml:para>* `Low`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Critical</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>RemediationStatus</maml:name>
+        <maml:description>
+          <maml:para>Filters vulnerabilities by remediation status.</maml:para>
+          <maml:para>Specify `All` to disable remediation status filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Overdue`</maml:para>
+          <maml:para>* `Due_soon`</maml:para>
+          <maml:para>* `Overdue_due_soon`</maml:para>
+          <maml:para>* `Due_later`</maml:para>
+          <maml:para>* `Control_applied`</maml:para>
+          <maml:para>* `All_except_control_applied`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>Control_applied</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Score</maml:name>
+        <maml:description>
+          <maml:para>Filters vulnerabilities by severity score.</maml:para>
+          <maml:para>Specify `All` to disable score filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Critical`</maml:para>
+          <maml:para>* `High`</maml:para>
+          <maml:para>* `Medium`</maml:para>
+          <maml:para>* `Low`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>Critical</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns vulnerability objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command retrieves paged results from the Action1 API and returns vulnerability objects to the pipeline.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>Example 1: Get critical vulnerabilities with compensating controls applied</maml:title>
+        <dev:code>Get-Action1Vulnerabilities</dev:code>
+        <dev:remarks>
+          <maml:para>Gets vulnerabilities in the current organization where the remediation status is `Control_applied` and the score is `Critical`.</maml:para>
+          <maml:para>This is the default behavior.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------- Example 2: Get all vulnerabilities --------------</maml:title>
+        <dev:code>Get-Action1Vulnerabilities -RemediationStatus All -Score All</dev:code>
+        <dev:remarks>
+          <maml:para>Gets all vulnerabilities visible to the authenticated Action1 account in the current organization without filtering by remediation status or score.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 3: Get all vulnerabilities with compensating controls applied</maml:title>
+        <dev:code>Get-Action1Vulnerabilities -RemediationStatus Control_applied -Score All</dev:code>
+        <dev:remarks>
+          <maml:para>Gets vulnerabilities where the remediation status is `Control_applied`, regardless of severity score.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 4: Get critical overdue vulnerabilities -------</maml:title>
+        <dev:code>Get-Action1Vulnerabilities -RemediationStatus Overdue</dev:code>
+        <dev:remarks>
+          <maml:para>Gets overdue vulnerabilities with the default score filter `Critical`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 5: Get all overdue vulnerabilities regardless of score</maml:title>
+        <dev:code>Get-Action1Vulnerabilities -RemediationStatus Overdue -Score All</dev:code>
+        <dev:remarks>
+          <maml:para>Gets overdue vulnerabilities regardless of severity score.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 6: Get high severity vulnerabilities due soon ----</maml:title>
+        <dev:code>Get-Action1Vulnerabilities -RemediationStatus Due_soon -Score High</dev:code>
+        <dev:remarks>
+          <maml:para>Gets vulnerabilities where the remediation status is `Due_soon` and the score is `High`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 7: Review overdue vulnerabilities ----------</maml:title>
+        <dev:code>Get-Action1Vulnerabilities -RemediationStatus Overdue -Score All |
+    Select-Object cve_id, name, remediation_status, score</dev:code>
+        <dev:remarks>
+          <maml:para>Gets overdue vulnerabilities and selects key fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Vulnerability</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Vulnerability</command:noun>
+      <maml:description>
+        <maml:para>Gets one Action1 vulnerability by CVE ID.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets detailed information about a specific vulnerability in the current Action1 organization.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Vulnerability</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID of the vulnerability to retrieve.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID of the vulnerability to retrieve.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the vulnerability object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----------- Example 1: Get a vulnerability by CVE ID -----------</maml:title>
+        <dev:code>Get-Action1Vulnerability -CVEId 'CVE-2024-12345'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets details for `CVE-2024-12345` in the current Action1 organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 2: Display vulnerability details -----------</maml:title>
+        <dev:code>Get-Action1Vulnerability -CVEId 'CVE-2024-12345' | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the vulnerability and displays all returned fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerabilities</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1VulnerabilityRemediations</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1VulnerabilityRemediations</command:noun>
+      <maml:description>
+        <maml:para>Gets remediation records for an Action1 vulnerability.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets previously applied remediation records, including compensating control records, for a specific vulnerability in the current Action1 organization.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1VulnerabilityRemediations</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID whose remediation records should be retrieved.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID whose remediation records should be retrieved.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns remediation objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---- Example 1: Get remediation records for a vulnerability ----</maml:title>
+        <dev:code>Get-Action1VulnerabilityRemediations -CVEId 'CVE-2024-12345'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets remediation records for `CVE-2024-12345`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 2: Display remediation records before deleting ----</maml:title>
+        <dev:code>Get-Action1VulnerabilityRemediations -CVEId 'CVE-2024-12345' | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the remediation records and displays all returned fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1VulnerabilityRemediation</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>New-Action1CompensatingControlRemediation</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>Action1CompensatingControlRemediation</command:noun>
+      <maml:description>
+        <maml:para>Creates a compensating control remediation record for an Action1 vulnerability.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Creates a new remediation record for a specific vulnerability in the current Action1 organization.</maml:para>
+      <maml:para>The command sends a POST request to the Action1 vulnerabilities remediation API endpoint for the specified CVE ID.</maml:para>
+      <maml:para>The request body includes the following values: `comment` - The value of the Comment * parameter. `product_name` - The value of the ProductName * parameter.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-Action1CompensatingControlRemediation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID of the vulnerability for which the remediation record should be created.</maml:para>
+            <maml:para>The value must match the CVE format `CVE-YYYY-NNN`, where:</maml:para>
+            <maml:para>* `YYYY` is a 4-digit year.</maml:para>
+            <maml:para>* `NNN` is a 3- to 6-digit CVE number.</maml:para>
+            <maml:para></maml:para>
+            <maml:para>Examples:</maml:para>
+            <maml:para>* `CVE-2024-123`</maml:para>
+            <maml:para>* `CVE-2024-12345`</maml:para>
+            <maml:para>* `CVE-2024-123456`</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Comment</maml:name>
+          <maml:description>
+            <maml:para>Specifies the remediation comment text to send to Action1.</maml:para>
+            <maml:para>The value is sent in the request body as `comment`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>ProductName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the product name associated with the compensating control remediation.</maml:para>
+            <maml:para>The value is sent in the request body as `product_name`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID of the vulnerability for which the remediation record should be created.</maml:para>
+          <maml:para>The value must match the CVE format `CVE-YYYY-NNN`, where:</maml:para>
+          <maml:para>* `YYYY` is a 4-digit year.</maml:para>
+          <maml:para>* `NNN` is a 3- to 6-digit CVE number.</maml:para>
+          <maml:para></maml:para>
+          <maml:para>Examples:</maml:para>
+          <maml:para>* `CVE-2024-123`</maml:para>
+          <maml:para>* `CVE-2024-12345`</maml:para>
+          <maml:para>* `CVE-2024-123456`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Comment</maml:name>
+        <maml:description>
+          <maml:para>Specifies the remediation comment text to send to Action1.</maml:para>
+          <maml:para>The value is sent in the request body as `comment`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>ProductName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the product name associated with the compensating control remediation.</maml:para>
+          <maml:para>The value is sent in the request body as `product_name`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the remediation object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>Requires permission to manage vulnerabilities in Action1.</maml:para>
+        <maml:para>The command uses Write-Action1Debug for debug logging.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>- Example 1: Create a compensating control remediation record -</maml:title>
+        <dev:code>New-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -Comment 'The vulnerable product is isolated and blocked from internet access.' `
+    -ProductName 'Example Product'</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a compensating control remediation record for `CVE-2024-12345`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 2: Create a remediation record and review the returned object</maml:title>
+        <dev:code>New-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -Comment 'The vulnerable component is not reachable from untrusted networks.' `
+    -ProductName 'Example Product' |
+    Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Creates the remediation record and displays all fields returned by Action1.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1CompensatingControlRemediation</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1CompensatingControlRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1CompensatingControlRemediation</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1CompensatingControlRemediation</command:noun>
+      <maml:description>
+        <maml:para>Deletes one remediation record for an Action1 vulnerability.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Deletes a specific remediation record for a specific vulnerability in the current Action1 organization.</maml:para>
+      <maml:para>The Action1 API requires both the CVE ID and the remediation ID to delete a remediation record.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1CompensatingControlRemediation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>RemediationId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the remediation record ID to delete.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>RemediationId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the remediation record ID to delete.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns a status object with CVEId, RemediationId, Status, and Response.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage vulnerabilities in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----------- Example 1: Delete one remediation record -----------</maml:title>
+        <dev:code>Remove-Action1CompensatingControlRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123'</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation, then deletes the specified remediation record.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------------- Example 2: Preview deletion -----------------</maml:title>
+        <dev:code>Remove-Action1CompensatingControlRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be deleted without sending the DELETE request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 3: Delete without prompting -------------</maml:title>
+        <dev:code>Remove-Action1CompensatingControlRemediation -CVEId 'CVE-2024-12345' -RemediationId 'remediation-123' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Deletes the remediation record without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1CompensatingControlRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1CompensatingControlRemediations</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1CompensatingControlRemediations</command:noun>
+      <maml:description>
+        <maml:para>Deletes compensating control remediation records for vulnerabilities with remediation status `Control_applied`.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Finds vulnerabilities in the current Action1 organization where the remediation status is `Control_applied`.</maml:para>
+      <maml:para>The command processes vulnerabilities across all severity scores. Internally, it queries vulnerabilities with remediation status `Control_applied` and score `All`.</maml:para>
+      <maml:para>For each matching vulnerability, the command gets remediation records, displays the remediation records that are candidates for deletion, and deletes each remediation record after confirmation.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview delete operations. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1CompensatingControlRemediations</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts for individual remediation deletions. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts for individual remediation deletions. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns a summary object with counts for processed vulnerabilities and remediation deletion results.</maml:para>
+          <maml:para>The summary object includes the following properties:</maml:para>
+          <maml:para>* `VulnerabilitiesProcessed`</maml:para>
+          <maml:para>* `RemediationsFound`</maml:para>
+          <maml:para>* `RemediationsRemoved`</maml:para>
+          <maml:para>* `RemediationsSkipped`</maml:para>
+          <maml:para>* `RemediationsFailed`</maml:para>
+          <maml:para>* `RemediationStatus`</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Deleting remediation records is irreversible. Test with -WhatIf before using -Force .</maml:para>
+        <maml:para>This command is intentionally scoped to vulnerabilities with remediation status `Control_applied`.</maml:para>
+        <maml:para>This command processes all severity scores.</maml:para>
+        <maml:para>Requires permission to view and manage vulnerabilities in Action1.</maml:para>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-- Example 1: Remove compensating control remediation records --</maml:title>
+        <dev:code>Remove-Action1CompensatingControlRemediations</dev:code>
+        <dev:remarks>
+          <maml:para>Gets vulnerabilities with remediation status `Control_applied` across all severity scores, displays remediation records to delete, prompts for confirmation, and deletes selected records.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 2: Preview compensating control cleanup -------</maml:title>
+        <dev:code>Remove-Action1CompensatingControlRemediations -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows delete operations that would be performed without deleting remediation records.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 3: Remove without prompting -------------</maml:title>
+        <dev:code>Remove-Action1CompensatingControlRemediations -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Deletes remediation records for vulnerabilities with remediation status `Control_applied` across all severity scores without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 4: Store the cleanup summary -------------</maml:title>
+        <dev:code>$Summary = Remove-Action1CompensatingControlRemediations -Force
+
+$Summary | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Deletes matching remediation records without prompting and stores the returned summary object in `$Summary`.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerabilities</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1CompensatingControlRemediation</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Update-Action1CompensatingControlRemediation</command:name>
+      <command:verb>Update</command:verb>
+      <command:noun>Action1CompensatingControlRemediation</command:noun>
+      <maml:description>
+        <maml:para>Updates the comment of one compensating control remediation record for an Action1 vulnerability.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Updates an existing compensating control remediation record for a specific vulnerability in the current Action1 organization.</maml:para>
+      <maml:para>The Action1 API allows updating only the remediation record comment. The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-Action1CompensatingControlRemediation</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
+            <maml:para>The value must match the format `CVE-YYYY-NNN` through `CVE-YYYY-NNNNNN`, for example `CVE-2024-12345`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>RemediationId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the remediation record ID to update.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>Comment</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new remediation comment.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
+          <maml:para>The value must match the format `CVE-YYYY-NNN` through `CVE-YYYY-NNNNNN`, for example `CVE-2024-12345`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Comment</maml:name>
+        <maml:description>
+          <maml:para>Specifies the new remediation comment.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>RemediationId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the remediation record ID to update.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the updated remediation object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage vulnerabilities in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----------- Example 1: Update a remediation comment -----------</maml:title>
+        <dev:code>Update-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -RemediationId '03445606-d55d-41c5-b877-b9a21618ae79' `
+    -Comment 'The application has been blocked from accessing the internet.'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the comment for the specified compensating control remediation record.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 2: Preview the update ----------------</maml:title>
+        <dev:code>Update-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -RemediationId '03445606-d55d-41c5-b877-b9a21618ae79' `
+    -Comment 'Updated compensating control details.' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be updated without sending the PATCH request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1CompensatingControlRemediation</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>

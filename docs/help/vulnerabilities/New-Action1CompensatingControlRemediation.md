@@ -13,8 +13,9 @@ Creates a compensating control remediation record for an Action1 vulnerability.
 
 ## SYNTAX
 
-```powershell
-New-Action1CompensatingControlRemediation [-CVEId] <String> [-Comment] <String> [-ProductName] <String> [<CommonParameters>]
+```
+New-Action1CompensatingControlRemediation [-CVEId] <String> [-Comment] <String> [-ProductName] <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -121,11 +122,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
-This cmdlet supports the common parameters: Verbose, Debug,
-ErrorAction, ErrorVariable, WarningAction, WarningVariable,
-OutBuffer, PipelineVariable, and OutVariable. For more information, see
-[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

@@ -1,10 +1,9 @@
 ---
-
 external help file: PSAction1-help.xml
 Module Name: PSAction1
 online version:
 schema: 2.0.0
--------------
+---
 
 # Get-Action1Vulnerabilities
 
@@ -14,8 +13,8 @@ Gets vulnerabilities for the current Action1 organization.
 
 ## SYNTAX
 
-```powershell
-Get-Action1Vulnerabilities [[-RemediationStatus] <String>] [[-Score] <String>] [<CommonParameters>]
+```
+Get-Action1Vulnerabilities [[-RemediationStatus] <String>] [-Score <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -115,7 +114,7 @@ Accepted values:
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Overdue, Due_soon, Overdue_due_soon, Due_later, Control_applied, All_except_control_applied, All
+Accepted values: Due soon, Overdue, Due later, Control_applied
 
 Required: False
 Position: 0
@@ -142,21 +141,16 @@ Accepted values:
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Critical, High, Medium, Low, All
 
 Required: False
-Position: 1
+Position: Named
 Default value: Critical
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
-This cmdlet supports the common parameters: Verbose, Debug,
-ErrorAction, ErrorVariable, WarningAction, WarningVariable,
-OutBuffer, PipelineVariable, and OutVariable. For more information, see
-[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
