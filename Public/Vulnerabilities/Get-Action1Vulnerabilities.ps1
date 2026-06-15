@@ -9,8 +9,11 @@ function Get-Action1Vulnerabilities {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [ValidateSet('Due soon', 'Overdue', 'Due later', 'Control_applied')]
-        [string]$RemediationStatus
+        [ValidateSet('Overdue', 'Due_soon', 'Overdue_due_soon', 'Due_later', 'Control_applied', 'All_except_control_applied', 'All')]
+        [string]$RemediationStatus = 'Control_applied',
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('Critical', 'High', 'Medium', 'Low', 'All')]
+        [string]$Score = 'Critical'
     )
 
     $Org_ID = Initialize-Action1DefaultOrg
@@ -22,14 +25,16 @@ function Get-Action1Vulnerabilities {
     $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['G_Vulnerabilities'] $Org_ID)
     $AddArgs = $null
 
-    if ($PSBoundParameters.ContainsKey('RemediationStatus') -and -not [string]::IsNullOrWhiteSpace($RemediationStatus)) {
+    if ($RemediationStatus -ne 'All'){
         $EncodedStatus = [System.Uri]::EscapeDataString($RemediationStatus)
         $AddArgs = Join-QueryString -QueryString $AddArgs -Argument "remediation_status=$EncodedStatus"
-        Write-Action1Debug "Listing vulnerabilities with remediation_status '$RemediationStatus'."
     }
-    else {
-        Write-Action1Debug 'Listing vulnerabilities without remediation status filter.'
+
+    if ($Score -ne 'All'){
+        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument "score=$Score"
     }
+
+    Write-Action1Debug "Listing vulnerabilities with remediation status '$RemediationStatus' and score '$Score'."
 
     Invoke-Action1PagedGetRequest -Path $Path -Label 'Vulnerabilities' -AddArgs $AddArgs
 }
