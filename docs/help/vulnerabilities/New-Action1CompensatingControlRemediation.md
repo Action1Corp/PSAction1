@@ -1,10 +1,9 @@
 ---
-
 external help file: PSAction1-help.xml
 Module Name: PSAction1
 online version:
 schema: 2.0.0
--------------
+---
 
 # New-Action1CompensatingControlRemediation
 
