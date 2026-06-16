@@ -149,71 +149,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Type
-
-Specifies the target object type for the operation.
-
-Accepted values are:
-
-- EndpointGroup
-- Endpoint
-- Automation
-- CustomAttribute
-- RawURI
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: EndpointGroup, Endpoint, Automation, CustomAttribute, RawURI
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Data
-
-Specifies the request body sent to the API.
-
-For `Modify` operations, this parameter contains the properties to update.
-When modifying endpoints, only the `name` and `comment` properties are sent to the API.
-For `ModifyMembers` operations, this parameter contains endpoint group membership data.
-For `RawURI` requests, this parameter contains the raw PATCH request body.
-
-```yaml
-Type: Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Id
-
-Specifies the identifier of the Action1 object being modified or deleted.
-
-This parameter is required by the function logic for most `Modify` operations and is also needed for `ModifyMembers` and `Delete` operations that target a specific object.
-For `CustomAttribute` updates, this parameter specifies the endpoint ID.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -AttributeName
 
 Specifies the name of the custom attribute to update.
@@ -250,20 +185,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -URI
+### -Data
 
-Specifies the raw API URI to send the request to.
+Specifies the request body sent to the API.
 
-This parameter is required when **Type** is `RawURI`.
-When **Type** is `RawURI`, the function sends a PATCH request directly to this URI and bypasses the internal URI lookup table.
+For `Modify` operations, this parameter contains the properties to update.
+When modifying endpoints, only the `name` and `comment` properties are sent to the API.
+For `ModifyMembers` operations, this parameter contains endpoint group membership data.
+For `RawURI` requests, this parameter contains the raw PATCH request body.
 
 ```yaml
-Type: String
+Type: Object
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -285,8 +222,70 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
+### -Id
 
+Specifies the identifier of the Action1 object being modified or deleted.
+
+This parameter is required by the function logic for most `Modify` operations and is also needed for `ModifyMembers` and `Delete` operations that target a specific object.
+For `CustomAttribute` updates, this parameter specifies the endpoint ID.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Type
+
+Specifies the target object type for the operation.
+
+Accepted values are:
+
+- EndpointGroup
+- Endpoint
+- Automation
+- CustomAttribute
+- RawURI
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: EndpointGroup, Endpoint, Automation, CustomAttribute, RawURI
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -URI
+
+Specifies the raw API URI to send the request to.
+
+This parameter is required when **Type** is `RawURI`.
+When **Type** is `RawURI`, the function sends a PATCH request directly to this URI and bypasses the internal URI lookup table.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

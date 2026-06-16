@@ -61,6 +61,26 @@ Triggers a refresh of installed update data for the default Action1 organization
 
 ## PARAMETERS
 
+### -Endpoint_Id
+
+Specifies the endpoint identifier for an endpoint-specific requery operation.
+
+When this parameter is omitted, the command runs the requery at the organization level.
+
+If the selected requery type does not support endpoint targeting, this parameter is ignored after an error is written, and the command continues by using the organization-wide requery endpoint.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Type
 
 Specifies the type of requery operation to perform.
@@ -84,28 +104,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Endpoint_Id
-
-Specifies the endpoint identifier for an endpoint-specific requery operation.
-
-When this parameter is omitted, the command runs the requery at the organization level.
-
-If the selected requery type does not support endpoint targeting, this parameter is ignored after an error is written, and the command continues by using the organization-wide requery endpoint.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
