@@ -2772,7 +2772,7 @@ Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id "group-42" -Data $d
     </command:details>
     <maml:description>
       <maml:para>Finds vulnerabilities in the current Action1 organization where the remediation status is `Control_applied`.</maml:para>
-      <maml:para>The command processes vulnerabilities across all severity scores. Internally, it queries vulnerabilities with remediation status `Control_applied` and score `All`.</maml:para>
+      <maml:para>The command processes vulnerabilities across all severity scores. Internally, it queries vulnerabilities with remediation status `Control_applied` and score `All` by default.</maml:para>
       <maml:para>For each matching vulnerability, the command gets remediation records, displays the remediation records that are candidates for deletion, and deletes each remediation record after confirmation.</maml:para>
       <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview delete operations. Use -Force to bypass confirmation prompts.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
@@ -2813,6 +2813,25 @@ Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id "group-42" -Data $d
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Score</maml:name>
+          <maml:description>
+            <maml:para>Filters vulnerabilities by severity score.</maml:para>
+            <maml:para>Specify `All` to disable score filtering and remove all severity score remediation records.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Critical`</maml:para>
+            <maml:para>* `High`</maml:para>
+            <maml:para>* `Medium`</maml:para>
+            <maml:para>* `Low`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -2851,6 +2870,25 @@ Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id "group-42" -Data $d
           <maml:uri />
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Score</maml:name>
+        <maml:description>
+          <maml:para>Filters vulnerabilities by severity score.</maml:para>
+          <maml:para>Specify `All` to disable score filtering and remove all severity score remediation records.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Critical`</maml:para>
+          <maml:para>* `High`</maml:para>
+          <maml:para>* `Medium`</maml:para>
+          <maml:para>* `Low`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -2898,21 +2936,35 @@ Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id "group-42" -Data $d
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>------- Example 2: Preview compensating control cleanup -------</maml:title>
+        <maml:title>Example 2: Remove compensating control remediation records with all severity scores explicitly</maml:title>
+        <dev:code>Remove-Action1CompensatingControlRemediations -Score 'All'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets vulnerabilities with remediation status `Control_applied` across all severity scores, displays remediation records to delete, prompts for confirmation, and deletes selected records.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 3: Remove critical compensating control remediation records</maml:title>
+        <dev:code>Remove-Action1CompensatingControlRemediations -Score 'Critical'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets vulnerabilities with remediation status `Control_applied` and `Critical` severity scores, displays remediation records to delete, prompts for confirmation, and deletes selected records.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 4: Preview compensating control cleanup -------</maml:title>
         <dev:code>Remove-Action1CompensatingControlRemediations -WhatIf</dev:code>
         <dev:remarks>
           <maml:para>Shows delete operations that would be performed without deleting remediation records.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>------------- Example 3: Remove without prompting -------------</maml:title>
+        <maml:title>------------- Example 5: Remove without prompting -------------</maml:title>
         <dev:code>Remove-Action1CompensatingControlRemediations -Force</dev:code>
         <dev:remarks>
           <maml:para>Deletes remediation records for vulnerabilities with remediation status `Control_applied` across all severity scores without prompting for confirmation.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>------------- Example 4: Store the cleanup summary -------------</maml:title>
+        <maml:title>------------- Example 6: Store the cleanup summary -------------</maml:title>
         <dev:code>$Summary = Remove-Action1CompensatingControlRemediations -Force
 
 $Summary | Format-List</dev:code>
