@@ -14,14 +14,14 @@ Deletes compensating control remediation records for vulnerabilities with remedi
 ## SYNTAX
 
 ```
-Remove-Action1CompensatingControlRemediations [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-Action1CompensatingControlRemediations [-Score <String>] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Finds vulnerabilities in the current Action1 organization where the remediation status is `Control_applied`.
 
-The command processes vulnerabilities across all severity scores. Internally, it queries vulnerabilities with remediation status `Control_applied` and score `All`.
+The command processes vulnerabilities across all severity scores. Internally, it queries vulnerabilities with remediation status `Control_applied` and score `All` by default.
 
 For each matching vulnerability, the command gets remediation records, displays the remediation records that are candidates for deletion, and deletes each remediation record after confirmation.
 
@@ -39,7 +39,23 @@ Remove-Action1CompensatingControlRemediations
 
 Gets vulnerabilities with remediation status `Control_applied` across all severity scores, displays remediation records to delete, prompts for confirmation, and deletes selected records.
 
-### Example 2: Preview compensating control cleanup
+### Example 2: Remove compensating control remediation records with all severity scores explicitly
+
+```powershell
+Remove-Action1CompensatingControlRemediations -Score 'All'
+```
+
+Gets vulnerabilities with remediation status `Control_applied` across all severity scores, displays remediation records to delete, prompts for confirmation, and deletes selected records.
+
+### Example 3: Remove critical compensating control remediation records
+
+```powershell
+Remove-Action1CompensatingControlRemediations -Score 'Critical'
+```
+
+Gets vulnerabilities with remediation status `Control_applied` and `Critical` severity scores, displays remediation records to delete, prompts for confirmation, and deletes selected records.
+
+### Example 4: Preview compensating control cleanup
 
 ```powershell
 Remove-Action1CompensatingControlRemediations -WhatIf
@@ -47,7 +63,7 @@ Remove-Action1CompensatingControlRemediations -WhatIf
 
 Shows delete operations that would be performed without deleting remediation records.
 
-### Example 3: Remove without prompting
+### Example 5: Remove without prompting
 
 ```powershell
 Remove-Action1CompensatingControlRemediations -Force
@@ -55,7 +71,7 @@ Remove-Action1CompensatingControlRemediations -Force
 
 Deletes remediation records for vulnerabilities with remediation status `Control_applied` across all severity scores without prompting for confirmation.
 
-### Example 4: Store the cleanup summary
+### Example 6: Store the cleanup summary
 
 ```powershell
 $Summary = Remove-Action1CompensatingControlRemediations -Force
@@ -66,6 +82,32 @@ $Summary | Format-List
 Deletes matching remediation records without prompting and stores the returned summary object in `$Summary`.
 
 ## PARAMETERS
+
+### -Score
+
+Filters vulnerabilities by severity score.
+
+Specify `All` to disable score filtering and remove all severity score remediation records.
+
+Accepted values:
+
+* `Critical`
+* `High`
+* `Medium`
+* `Low`
+* `All`
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: All
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Confirm
 
