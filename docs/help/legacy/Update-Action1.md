@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Updates, modifies membership, or deletes Action1 objects.
+Updates, modifies endpoint group membership, or deletes Action1 objects.
 
 ## SYNTAX
 
@@ -20,107 +20,109 @@ Update-Action1 [-Action] <String> [-Type] <String> [[-Data] <Object>] [[-Id] <St
 
 ## DESCRIPTION
 
-`Update-Action1` performs update operations against Action1 objects exposed through the API.
+`Update-Action1` performs update operations against Action1 objects exposed through the Action1 API.
 
-Depending on the `-Action` and `-Type` parameters, the command can:
+Depending on the values of the **Action** and **Type** parameters, the command can:
 
-- Modify object properties.
+- Modify properties of endpoints, endpoint groups, and automations.
+- Modify endpoint group membership.
+- Update an endpoint custom attribute.
+- Delete endpoints, endpoint groups, and automations.
+- Send a raw PATCH request to a specified API URI.
 
-- Modify endpoint group membership <s>of an</s>.
+The function builds the appropriate API endpoint path internally and sends the request by using the module's internal API helper functions.
+Authentication must be configured in advance by using `Set-Action1Credentials`.
+For operations that target organization resources, the default organization must be configured in advance by using `Set-Action1DefaultOrg`.
 
-- Delete existing objects.
+For destructive actions such as `Delete`, the command prompts for confirmation unless the **Force** switch is specified.
 
-- Send a raw PATCH request to a specified URI.
-
-The function builds the appropriate API endpoint path internally and sends the request using the module's internal API helper functions. Authentication must be configured in advance using `Set-Action1Credentials`.
-
-For destructive actions such as `Delete`, the command prompts for confirmation unless the `-Force` switch is specified.
+When **Type** is `RawURI`, the command sends a PATCH request directly to the URI specified by the **URI** parameter.
 
 ## EXAMPLES
 
-### Example 1
+### Example 1: Rename an endpoint
 
 ```powershell
 $data = [PSCustomObject]@{
-
-    name = "NewEndpointName"
-
+    name = 'NewEndpointName'
 }
 
-Update-Action1 -Action Modify -Type Endpoint -Id "endpoint-123" -Data $data
+Update-Action1 -Action Modify -Type Endpoint -Id 'endpoint-123' -Data $data
 ```
 
-Updates the name of the Action1 endpoint with the ID "endpoint-123".
+Updates the name of the Action1 endpoint with the ID `endpoint-123`.
 
-### Example 2
+### Example 2: Update an endpoint comment
 
 ```powershell
 $data = [PSCustomObject]@{
-
-    name = "Production Servers"
-
+    comment = 'Managed by the infrastructure team'
 }
 
-Update-Action1 -Action Modify -Type EndpointGroup -Id "group-42" -Data $data
+Update-Action1 -Action Modify -Type Endpoint -Id 'endpoint-123' -Data $data
 ```
 
-Updates properties of the Action1 endpoint group with the ID "group-42".
+Updates the comment for the Action1 endpoint with the ID `endpoint-123`.
 
-### Example 3
+### Example 3: Update an endpoint group
+
+```powershell
+$data = [PSCustomObject]@{
+    name = 'Production Servers'
+}
+
+Update-Action1 -Action Modify -Type EndpointGroup -Id 'group-42' -Data $data
+```
+
+Updates properties of the Action1 endpoint group with the ID `group-42`.
+
+### Example 4: Modify endpoint group membership
 
 ```powershell
 $data = @{
-
-    endpointIds = @("endpoint-1","endpoint-2")
-
+    endpointIds = @('endpoint-1', 'endpoint-2')
 }
 
-Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id "group-42" -Data $data
+Update-Action1 -Action ModifyMembers -Type EndpointGroup -Id 'group-42' -Data $data
 ```
 
-Adds or modifies members of the Action1 endpoint group with the ID "group-42".
+Sends endpoint membership data for the Action1 endpoint group with the ID `group-42`.
 
-### Example 4
+### Example 5: Update an endpoint custom attribute
 
 ```powershell
-Update-Action1 `
-
-    -Action Modify `
-
-    -Type CustomAttribute `
-
-    -Id "endpoint-123" `
-
-    -AttributeName "Owner" `
-
-    -AttributeValue "IT"
+Update-Action1 -Action Modify -Type CustomAttribute -Id 'endpoint-123' -AttributeName 'Owner' -AttributeValue 'IT'
 ```
 
-Updates a custom attribute "Owner" for the specified Action1 endpoint with the ID "endpoint-123".
+Sets the custom attribute named `Owner` to `IT` on the Action1 endpoint with the ID `endpoint-123`.
 
-### Example 5
+### Example 6: Delete an automation after confirmation
 
 ```powershell
-Update-Action1 -Action Delete -Type Automation -Id "auto-88"
+Update-Action1 -Action Delete -Type Automation -Id 'auto-88'
 ```
 
-Prompts for confirmation and deletes the specified Action1 automation object with the ID "auto-88".
+Prompts for confirmation and deletes the Action1 automation with the ID `auto-88` if the operation is confirmed.
 
-### Example 6
+### Example 7: Delete an endpoint without prompting
 
 ```powershell
-Update-Action1 -Action Delete -Type Endpoint -Id "endpoint-123" -Force
+Update-Action1 -Action Delete -Type Endpoint -Id 'endpoint-123' -Force
 ```
 
-Deletes Action1 endpoint with the ID "endpoint-123" without prompting for confirmation.
+Deletes the Action1 endpoint with the ID `endpoint-123` without prompting for confirmation.
 
-### Example 7
+### Example 8: Send a raw PATCH request
 
 ```powershell
-Update-Action1 -Action Modify -Type RawURI -URI "/v1/custom/path" -Data $data
+$data = [PSCustomObject]@{
+    name = 'Updated object name'
+}
+
+Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data
 ```
 
-Sends a PATCH request directly to the specified Action1 API URI "/v1/custom/path".
+Sends a PATCH request directly to the Action1 API URI `/v1/custom/path`.
 
 ## PARAMETERS
 
@@ -128,13 +130,11 @@ Sends a PATCH request directly to the specified Action1 API URI "/v1/custom/path
 
 Specifies the type of operation to perform.
 
-Allowed values:
+Accepted values are:
 
- - Modify
-
- - ModifyMembers
-
- - Delete
+- Modify
+- ModifyMembers
+- Delete
 
 ```yaml
 Type: String
@@ -153,17 +153,13 @@ Accept wildcard characters: False
 
 Specifies the target object type for the operation.
 
-Allowed values:
+Accepted values are:
 
- - EndpointGroup
-
- - Endpoint
-
- - Automation
-
- - CustomAttribute
-
- - RawURI
+- EndpointGroup
+- Endpoint
+- Automation
+- CustomAttribute
+- RawURI
 
 ```yaml
 Type: String
@@ -180,9 +176,12 @@ Accept wildcard characters: False
 
 ### -Data
 
-Object containing data to send in the API request body.
+Specifies the request body sent to the API.
 
-For `Modify` and `ModifyMembers`, this usually contains the updated properties or membership list.
+For `Modify` operations, this parameter contains the properties to update.
+When modifying endpoints, only the `name` and `comment` properties are sent to the API.
+For `ModifyMembers` operations, this parameter contains endpoint group membership data.
+For `RawURI` requests, this parameter contains the raw PATCH request body.
 
 ```yaml
 Type: Object
@@ -198,9 +197,10 @@ Accept wildcard characters: False
 
 ### -Id
 
-Identifier of the object being modified or deleted.
+Specifies the identifier of the Action1 object being modified or deleted.
 
-Required for most `Modify` and `Delete` operations.
+This parameter is required by the function logic for most `Modify` operations and is also needed for `ModifyMembers` and `Delete` operations that target a specific object.
+For `CustomAttribute` updates, this parameter specifies the endpoint ID.
 
 ```yaml
 Type: String
@@ -216,7 +216,9 @@ Accept wildcard characters: False
 
 ### -AttributeName
 
-Name of the custom attribute when updating an endpoint custom attribute.
+Specifies the name of the custom attribute to update.
+
+This parameter is used when **Action** is `Modify` and **Type** is `CustomAttribute`.
 
 ```yaml
 Type: String
@@ -232,7 +234,9 @@ Accept wildcard characters: False
 
 ### -AttributeValue
 
-Value to assign to the specified custom attribute.
+Specifies the value to assign to the custom attribute.
+
+This parameter is used when **Action** is `Modify` and **Type** is `CustomAttribute`.
 
 ```yaml
 Type: String
@@ -248,7 +252,10 @@ Accept wildcard characters: False
 
 ### -URI
 
-Raw API URI used when `-Type RawURI` is specified.
+Specifies the raw API URI to send the request to.
+
+This parameter is required when **Type** is `RawURI`.
+When **Type** is `RawURI`, the function sends a PATCH request directly to this URI and bypasses the internal URI lookup table.
 
 ```yaml
 Type: String
@@ -264,7 +271,7 @@ Accept wildcard characters: False
 
 ### -Force
 
-Suppresses the confirmation prompt when performing `Delete` action.
+Suppresses the confirmation prompt when performing a `Delete` action.
 
 ```yaml
 Type: SwitchParameter
@@ -279,22 +286,37 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to this command.
+### None
+
+You cannot pipe objects to this command.
 
 ## OUTPUTS
 
-### System.Object Returns the response object from the API request.
+### System.Object
+
+Returns the response object from the Action1 API request.
 
 ## NOTES
 
-The command requires a valid authentication token. Use **Set-Action1Credentials** cmdlet before executing API operations.
+The command requires a valid authentication token. Use `Set-Action1Credentials` before running API operations.
 
-Some operations (such as endpoint updates) automatically filter allowed fields before sending the request to the API.
+For operations that target organization resources, configure the default organization by using `Set-Action1DefaultOrg`.
+
+Endpoint modifications automatically remove properties other than `name` and `comment` from the request body before sending the request to the API.
+
+`Delete` operations prompt for confirmation unless the **Force** switch is specified.
 
 ## RELATED LINKS
 
+[Get-Action1](Get-Action1.md)
+
+[New-Action1](New-Action1.md)
+
 [Set-Action1Credentials](Set-Action1Credentials.md)
+
+[Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)

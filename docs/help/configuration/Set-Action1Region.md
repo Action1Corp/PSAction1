@@ -19,13 +19,11 @@ Set-Action1Region [-Region] <String> [<CommonParameters>]
 
 ## DESCRIPTION
 
-`Set-Action1Region` configures the base API endpoint used by the module for all subsequent requests.
+`Set-Action1Region` configures the base Action1 API endpoint used by the PSAction1 module for subsequent requests in the current PowerShell session.
 
-Different Action1 regions correspond to different service API endpoints.
+The command updates the module's internal region setting by selecting one of the supported regional API endpoints from the module's internal host lookup table.
 
-This command updates the internal script scope variable so that all module commands send requests to the correct regional API endpoint.
-
-Run this command before executing other commands in the module to ensure a specific regional environment is targeted.
+Run this command before calling Action1 API commands when you need to target a specific Action1 regional environment.
 
 ## EXAMPLES
 
@@ -35,7 +33,7 @@ Run this command before executing other commands in the module to ensure a speci
 PS C:\> Set-Action1Region -Region Europe
 ```
 
-Configures PSAction1 module to use the Europe API endpoint.
+Configures the PSAction1 module to use the Europe API endpoint.
 
 ### Example 2
 
@@ -43,7 +41,7 @@ Configures PSAction1 module to use the Europe API endpoint.
 PS C:\> Set-Action1Region -Region NorthAmerica
 ```
 
-Configures PSAction1 module to use the NorthAmerica API endpoint.
+Configures the PSAction1 module to use the North America API endpoint.
 
 ### Example 3
 
@@ -51,7 +49,7 @@ Configures PSAction1 module to use the NorthAmerica API endpoint.
 PS C:\> Set-Action1Region -Region Australia
 ```
 
-Configures PSAction1 module to use the Australia API endpoint.
+Configures the PSAction1 module to use the Australia API endpoint.
 
 ### Example 4
 
@@ -59,29 +57,35 @@ Configures PSAction1 module to use the Australia API endpoint.
 PS C:\> Set-Action1Region -Region 'NorthAmerica-2'
 ```
 
-Configures PSAction1 module to use the NorthAmerica-2 API endpoint.
+Configures the PSAction1 module to use the NorthAmerica-2 API endpoint.
+
+### Example 5
+
+```powershell
+PS C:\> Set-Action1Region -Region 'NA-2'
+```
+
+Configures the PSAction1 module to use the NA-2 API endpoint value.
 
 ## PARAMETERS
 
 ### -Region
 
-Specifies the API region to use.
+Specifies the Action1 API region to use.
 
-Supported values are:
+Accepted values are:
 
- - NorthAmerica
-  
- - NorthAmerica-2
-
- - Europe
-
- - Australia
+- NorthAmerica
+- NorthAmerica-2
+- NA-2
+- Europe
+- Australia
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: NorthAmerica, NorthAmerica-2, Europe, Australia
+Accepted values: NorthAmerica, NorthAmerica-2, NA-2, Europe, Australia
 
 Required: True
 Position: 0
@@ -91,20 +95,29 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to this command.
+### None
+
+You cannot pipe objects to this command.
 
 ## OUTPUTS
 
-### None. This command only sets an internal module variable used to determine the API base URI.
+### None
+
+This command does not return output. It sets an internal module variable used to determine the Action1 API base URI for the current PowerShell session.
 
 ## NOTES
 
-This command must typically be executed before making API requests so that PSAction1 module communicates with the correct regional service endpoint.
+This command affects all subsequent PSAction1 commands in the current PowerShell session that use the module's configured Action1 API base URI.
 
-The selected region affects all subsequent commands in the current PowerShell session.
+Use this command before making API requests if the default regional endpoint is not the one you want to target.
 
 ## RELATED LINKS
+
+[about_PSAction1](about_PSAction1.md)
+
+[Set-Action1Locale](Set-Action1Locale.md)

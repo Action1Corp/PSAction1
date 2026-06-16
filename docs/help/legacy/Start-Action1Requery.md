@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Triggers a requery operation to refresh specific data from Action1 endpoints or the organization.
+Triggers an Action1 requery operation to refresh report, software inventory, or update data.
 
 ## SYNTAX
 
@@ -19,27 +19,19 @@ Start-Action1Requery [-Type] <String> [[-Endpoint_Id] <String>] [<CommonParamete
 
 ## DESCRIPTION
 
-`Start-Action1Requery` triggers a requery request to the API to refresh specific datasets.
+`Start-Action1Requery` sends a POST request to the Action1 API to refresh a supported dataset.
 
-Depending on the selected **Type**, the command may operate either organization-wide or for a specific endpoint.
+The command uses the module's internal URI map to build the correct requery endpoint for the selected **Type** value. Some requery operations run at the default organization level. Other operations can target a specific endpoint when **Endpoint_Id** is supplied.
 
-The default organization must be set in advance via `Set-Action1DefaultOrg`.
+If **Endpoint_Id** is specified for a requery type that does not support endpoint targeting, the command writes an error and continues by using the organization-wide requery endpoint.
 
-This command sends a **POST** request to the appropriate API endpoint and instructs the service to regenerate or refresh the requested data.
+Supported requery types are:
 
-Supported requery types include:
+- **ReportData** - Refreshes report data.
+- **InstalledSoftware** - Refreshes installed software inventory data.
+- **InstalledUpdates** - Refreshes installed update data.
 
-- **ReportData** - Regenerates report-related data.
-
-- **InstalledSoftware** - Refreshes installed software inventory for endpoints.
-
-- **InstalledUpdates** - Refreshes installed update information.
-
-If the selected requery type supports endpoint targeting, an **Endpoint_Id** may be supplied.
-
-If not supplied, the requery will run at the organization level.
-
-Authentication must be configured before using this command.
+Authentication must be configured before using this command. For organization-scoped requery operations, the default Action1 organization must also be set.
 
 ## EXAMPLES
 
@@ -49,7 +41,7 @@ Authentication must be configured before using this command.
 PS C:\> Start-Action1Requery -Type ReportData
 ```
 
-Triggers default Action1 organization-wide refresh of the report data.
+Triggers a refresh of report data for the default Action1 organization.
 
 ### Example 2
 
@@ -57,37 +49,17 @@ Triggers default Action1 organization-wide refresh of the report data.
 PS C:\> Start-Action1Requery -Type InstalledSoftware -Endpoint_Id "12345"
 ```
 
-Triggers a refresh of installed software information for the specified Action1 endpoint with Id "12345"
+Triggers a refresh of installed software inventory data for the specified Action1 endpoint.
 
 ### Example 3
 
 ```powershell
-PS C:\> PS C:\> Start-Action1Requery -Type InstalledUpdates
+PS C:\> Start-Action1Requery -Type InstalledUpdates
 ```
 
-Triggers a refresh of installed update information for all applicable endpoints in the Action1 default organization.
+Triggers a refresh of installed update data for the default Action1 organization.
 
 ## PARAMETERS
-
-### -Endpoint_Id
-
-Specifies the endpoint identifier for endpoint-specific data refresh.
-
-If omitted, the operation is executed at the organization level.
-
-If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Type
 
@@ -95,11 +67,9 @@ Specifies the type of requery operation to perform.
 
 Accepted values:
 
- - ReportData
-
- - InstalledSoftware
-
- - InstalledUpdates
+- ReportData
+- InstalledSoftware
+- InstalledUpdates
 
 ```yaml
 Type: String
@@ -116,11 +86,11 @@ Accept wildcard characters: False
 
 ### -Endpoint_Id
 
-Specifies the endpoint identifier for endpoint-specific data refresh.
+Specifies the endpoint identifier for an endpoint-specific requery operation.
 
-If omitted, the operation is executed at the organization level.
+When this parameter is omitted, the command runs the requery at the organization level.
 
-If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.
+If the selected requery type does not support endpoint targeting, this parameter is ignored after an error is written, and the command continues by using the organization-wide requery endpoint.
 
 ```yaml
 Type: String
@@ -135,26 +105,33 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to this command.
+### None
+
+You cannot pipe objects to this command.
 
 ## OUTPUTS
 
-### System.Object. Returns the API response from the requery request.
+### System.Object
+
+Returns the API response from the requery request.
 
 ## NOTES
 
-This command requires a valid authentication token to be set prior to execution.
+This command requires a valid Action1 authentication token in the current session.
 
-Use the credentials configuration command before invoking API actions.
+Use `Set-Action1Credentials` before invoking API actions.
 
-The default organization might be set in advance via `Set-Action1DefaultOrg`.
+For organization-scoped requests, set the default organization by using `Set-Action1DefaultOrg` before running this command.
 
 ## RELATED LINKS
 
 [Set-Action1Credentials](Set-Action1Credentials.md)
 
 [Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
+
+[Get-Action1](Get-Action1.md)

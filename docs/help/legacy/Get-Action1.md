@@ -14,8 +14,7 @@ Retrieves Action1 objects, reports, raw API responses, and configuration templat
 ## SYNTAX
 
 ```
-Get-Action1 [-Query] <String> [[-Id] <String>] [[-Limit] <Int32>] [[-URI] <String>] [[-For] <String>]
- [[-Clone] <String>] [<CommonParameters>]
+Get-Action1 [-Query] <String> [[-Id] <String>] [[-Limit] <Int32>] [[-URI] <String>] [[-For] <String>] [[-Clone] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -108,52 +107,51 @@ Returns a deployment template object used to prepare a software deployment reque
 
 ## PARAMETERS
 
-### -Clone
+### -Query
 
-Specifies the ID of an existing Action1 object to clone when generating a template.
-
-This parameter is only used when `Query` is set to `Settings`.
-The function supports cloning for selected template types, including endpoint groups and automations.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -For
-
-Specifies the Action1 resource type when retrieving template objects.
-
-This parameter is used when `Query` is set to `Settings`.
+Specifies the type of Action1 object, data set, raw API request, or template to retrieve.
 
 Accepted values:
 
-- Automation
+- AutomationInstances
+- Automations
+- AdvancedSettings
+- Apps
+- CustomAttribute
+- EndpointGroupMembers
+- EndpointGroups
+- Me
 - Endpoint
-- EndpointGroup
-- Organization
-- GroupAddEndpoint
-- GroupDeleteEndpoint
-- GroupFilter
-- Remediation
-- DeferredRemediation
-- DeploySoftware
+- EndpointApps
+- Endpoints
+- Logs
+- MissingUpdates
+- Organizations
+- Packages
+- PackageVersions
+- Policy
+- Policies
+- PolicyResults
+- ReportData
+- ReportExport
+- Reports
+- Scripts
+- AgentDeployment
+- Vulnerabilities
+- RawURI
+- Settings
+
+When this parameter is set to `RawURI`, the `URI` parameter must also be specified.
+When this parameter is set to `Settings`, the `For` parameter must also be specified.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Automation, Endpoint, EndpointGroup, Organization, GroupAddEndpoint, GroupDeleteEndpoint, GroupFilter, Remediation, DeferredRemediation, DeploySoftware
+Accepted values: AutomationInstances, Automations, AdvancedSettings, Apps, CustomAttribute, EndpointGroupMembers, EndpointGroups, Me, Endpoint, EndpointApps, Endpoints, Logs, MissingUpdates, Organizations, Packages, PackageVersions, Policy, Policies, PolicyResults, ReportData, ReportExport, Reports, Scripts, AgentDeployment, Vulnerabilities, RawURI, Settings
 
-Required: False
-Position: 4
+Required: True
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -197,56 +195,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Query
-
-Specifies the type of Action1 object, data set, raw API request, or template to retrieve.
-
-Accepted values:
-
-- AutomationInstances
-- Automations
-- AdvancedSettings
-- Apps
-- CustomAttribute
-- EndpointGroupMembers
-- EndpointGroups
-- Me
-- Endpoint
-- EndpointApps
-- Endpoints
-- Logs
-- MissingUpdates
-- Organizations
-- Packages
-- PackageVersions
-- Policy
-- Policies
-- PolicyResults
-- ReportData
-- ReportExport
-- Reports
-- Scripts
-- AgentDeployment
-- Vulnerabilities
-- RawURI
-- Settings
-
-When this parameter is set to `RawURI`, the `URI` parameter must also be specified.
-When this parameter is set to `Settings`, the `For` parameter must also be specified.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: AutomationInstances, Automations, AdvancedSettings, Apps, CutomAttribute, EndpointGroupMembers, EndpointGroups, Me, Endpoint, EndpointApps, Endpoints, Logs, MissingUpdates, Organizations, Packages, PackageVersions, Policy, Policies, PolicyResults, ReportData, ReportExport, Reports, Scripts, AgentDepoyment, Vulnerabilities, RawURI, Settings
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -URI
 
 Specifies a literal API path for a direct GET request.
@@ -265,7 +213,59 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -For
+
+Specifies the Action1 resource type when retrieving template objects.
+
+This parameter is used when `Query` is set to `Settings`.
+
+Accepted values:
+
+- Automation
+- Endpoint
+- EndpointGroup
+- Organization
+- GroupAddEndpoint
+- GroupDeleteEndpoint
+- GroupFilter
+- Remediation
+- DeferredRemediation
+- DeploySoftware
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: Automation, Endpoint, EndpointGroup, Organization, GroupAddEndpoint, GroupDeleteEndpoint, GroupFilter, Remediation, DeferredRemediation, DeploySoftware
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Clone
+
+Specifies the ID of an existing Action1 object to clone when generating a template.
+
+This parameter is only used when `Query` is set to `Settings`.
+The function supports cloning for selected template types, including endpoint groups and automations.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
