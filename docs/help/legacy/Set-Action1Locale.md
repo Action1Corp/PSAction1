@@ -57,7 +57,7 @@ Specifies the locale/region identifier to use.
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: NorthAmerica, Europe, Australia
+Accepted values: NorthAmerica, NorthAmerica-2, Europe, Australia
 
 Required: True
 Position: 0

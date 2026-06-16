@@ -48,25 +48,29 @@ Uploads the installer using a larger 48 MB upload buffer to reduce the number of
 
 ## PARAMETERS
 
-### -Package_ID
+### -BufferSize
 
-Identifier of the package in the software repository.
+Size of the upload chunk buffer in bytes.
+
+Larger buffers reduce the number of HTTP requests but increase memory usage.
+
+Default value: **24 MB**.
 
 ```yaml
-Type: String
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
 Required: True
 Position: 0
-Default value: None
+Default value: 24MB
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Version_ID
+### -Filename
 
-Identifier of the version of the package that the file will be uploaded to.
+Path to the file that will be uploaded.
 
 ```yaml
 Type: String
@@ -80,9 +84,9 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Filename
+### -Package_ID
 
-Path to the file that will be uploaded.
+Identifier of the package in the software repository.
 
 ```yaml
 Type: String
@@ -119,16 +123,12 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -BufferSize
+### -Version_ID
 
-Size of the upload chunk buffer in bytes.
-
-Larger buffers reduce the number of HTTP requests but increase memory usage.
-
-Default value: **24 MB**.
+Identifier of the version of the package that the file will be uploaded to.
 
 ```yaml
-Type: Int32
+Type: String
 Parameter Sets: (All)
 Aliases:
 

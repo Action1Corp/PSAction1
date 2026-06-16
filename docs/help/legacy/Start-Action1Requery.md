@@ -69,6 +69,26 @@ Triggers a refresh of installed update information for all applicable endpoints 
 
 ## PARAMETERS
 
+### -Endpoint_Id
+
+Specifies the endpoint identifier for endpoint-specific data refresh.
+
+If omitted, the operation is executed at the organization level.
+
+If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Type
 
 Specifies the type of requery operation to perform.

@@ -57,6 +57,24 @@ Sends a POST request directly to a custom Action1 API endpoint using the provide
 
 ## PARAMETERS
 
+### -Data
+
+Specifies the request payload that will be sent to the API.
+
+The structure depends on the type of item being created.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Item
 
 Specifies the type of object to create.

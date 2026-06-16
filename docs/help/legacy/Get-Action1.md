@@ -14,7 +14,9 @@ Retrieves Action1 objects, reports, and templates.
 ## SYNTAX
 
 ```
+```
 Get-Action1 [-Query] <String> [[-Id] <String>] [[-Limit] <Int32>] [[-URI] <String>] [[-For] <String>]
+ [[-Clone] <String>] [<CommonParameters>]
  [[-Clone] <String>] [<CommonParameters>]
 ```
 
@@ -101,6 +103,99 @@ PS C:\> Get-Action1 -Query Endpoints -Limit 50
 Retrieves Action1 endpoints with an API page size of 50 objects.
 
 ## PARAMETERS
+
+### -Clone
+
+Specifies the ID of an existing Action1 object to clone when generating templates.
+
+This parameter is only valid when `-Query Settings` is used.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -For
+
+Specifies the Action1 resource type when retrieving Action1 template objects using `-Query Settings`.
+
+Accepted values:
+
+ - Automation
+
+ - Endpoint
+
+ - EndpointGroup
+
+ - Organization
+
+ - GroupAddEndpoint
+
+ - GroupDeleteEndpoint
+
+ - GroupFilter
+
+ - Remediation
+
+ - DeferredRemediation
+
+ - DeploySoftware
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: Automation, Endpoint, EndpointGroup, Organization, GroupAddEndpoint, GroupDeleteEndpoint, GroupFilter, Remediation, DeferredRemediation, DeploySoftware
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Id
+
+Specifies the identifier of the Action1 object to retrieve.
+
+Used for queries that return a specific Action1 resource instance.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Limit
+
+Specifies the maximum number of records requested per API call.
+
+This parameter maps to the API limit query argument and can be used to control page size when retrieving large datasets.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Query
 
