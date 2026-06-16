@@ -184,6 +184,68 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <maml:name>Clone</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of an existing Action1 object to clone when generating templates.</maml:para>
+          <maml:para>This parameter is only valid when `-Query Settings` is used.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>For</maml:name>
+        <maml:description>
+          <maml:para>Specifies the Action1 resource type when retrieving Action1 template objects using `-Query Settings`.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para> - Automation</maml:para>
+          <maml:para> - Endpoint</maml:para>
+          <maml:para> - EndpointGroup</maml:para>
+          <maml:para> - Organization</maml:para>
+          <maml:para> - GroupAddEndpoint</maml:para>
+          <maml:para> - GroupDeleteEndpoint</maml:para>
+          <maml:para> - GroupFilter</maml:para>
+          <maml:para> - Remediation</maml:para>
+          <maml:para> - DeferredRemediation</maml:para>
+          <maml:para> - DeploySoftware</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Id</maml:name>
+        <maml:description>
+          <maml:para>Specifies the identifier of the Action1 object to retrieve.</maml:para>
+          <maml:para>Used for queries that return a specific Action1 resource instance.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Limit</maml:name>
+        <maml:description>
+          <maml:para>Specifies the maximum number of records requested per API call.</maml:para>
+          <maml:para>This parameter maps to the API limit query argument and can be used to control page size when retrieving large datasets.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Query</maml:name>
         <maml:description>
@@ -224,19 +286,6 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>Id</maml:name>
-        <maml:description>
-          <maml:para>Specifies the identifier of the Action1 object to retrieve.</maml:para>
-          <maml:para>Used for queries that return a specific Action1 resource instance.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>URI</maml:name>
         <maml:description>
@@ -246,55 +295,6 @@
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-        <maml:name>For</maml:name>
-        <maml:description>
-          <maml:para>Specifies the Action1 resource type when retrieving Action1 template objects using `-Query Settings`.</maml:para>
-          <maml:para>Accepted values:</maml:para>
-          <maml:para> - Automation</maml:para>
-          <maml:para> - Endpoint</maml:para>
-          <maml:para> - EndpointGroup</maml:para>
-          <maml:para> - Organization</maml:para>
-          <maml:para> - GroupAddEndpoint</maml:para>
-          <maml:para> - GroupDeleteEndpoint</maml:para>
-          <maml:para> - GroupFilter</maml:para>
-          <maml:para> - Remediation</maml:para>
-          <maml:para> - DeferredRemediation</maml:para>
-          <maml:para> - DeploySoftware</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-        <maml:name>Clone</maml:name>
-        <maml:description>
-          <maml:para>Specifies the ID of an existing Action1 object to clone when generating templates.</maml:para>
-          <maml:para>This parameter is only valid when `-Query Settings` is used.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>Limit</maml:name>
-        <maml:description>
-          <maml:para>Specifies the maximum number of records requested per API call.</maml:para>
-          <maml:para>This parameter maps to the API limit query argument and can be used to control page size when retrieving large datasets.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
-        <dev:type>
-          <maml:name>Int32</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -475,6 +475,19 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Data</maml:name>
+        <maml:description>
+          <maml:para>Specifies the request payload that will be sent to the API.</maml:para>
+          <maml:para>The structure depends on the type of item being created.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Item</maml:name>
         <maml:description>
@@ -504,19 +517,6 @@
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>Data</maml:name>
-        <maml:description>
-          <maml:para>Specifies the request payload that will be sent to the API.</maml:para>
-          <maml:para>The structure depends on the type of item being created.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
-        <dev:type>
-          <maml:name>Object</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -793,13 +793,7 @@
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Set-Action1DefaultOrg</maml:name>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Set-Action1DefaultOrg</maml:name>
-      </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Set-Action1DefaultOrg</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="OrgId">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>Org_ID</maml:name>
           <maml:description>
             <maml:para>Specifies the Action1 organization ID to use as the default organization for subsequent module commands.</maml:para>
@@ -813,48 +807,13 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Set-Action1DefaultOrg</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="OrgName">
-          <maml:name>Org_Name</maml:name>
-          <maml:description>
-            <maml:para>Specifies the Action1 organization name to resolve and use as the default organization.</maml:para>
-            <maml:para>The command searches the available organizations for an exact name match. The name must match exactly and must identify a single organization.</maml:para>
-            <maml:para>If no organization is found, the command returns a terminating error.</maml:para>
-            <maml:para>If multiple organizations have the same name, the command returns a terminating error and instructs the user to specify the organization ID with `-Org_ID`.</maml:para>
-            <maml:para>Using this parameter requires valid Action1 authentication and access to list organizations.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="OrgId">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Org_ID</maml:name>
         <maml:description>
           <maml:para>Specifies the Action1 organization ID to use as the default organization for subsequent module commands.</maml:para>
           <maml:para>This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The value is stored directly and is not resolved through the API.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="OrgName">
-        <maml:name>Org_Name</maml:name>
-        <maml:description>
-          <maml:para>Specifies the Action1 organization name to resolve and use as the default organization.</maml:para>
-          <maml:para>The command searches the available organizations for an exact name match. The name must match exactly and must identify a single organization.</maml:para>
-          <maml:para>If no organization is found, the command returns a terminating error.</maml:para>
-          <maml:para>If multiple organizations have the same name, the command returns a terminating error and instructs the user to specify the organization ID with `-Org_ID`.</maml:para>
-          <maml:para>Using this parameter requires valid Action1 authentication and access to list organizations.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1056,6 +1015,7 @@
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica-2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
           </command:parameterValueGroup>
@@ -1154,12 +1114,14 @@
           <maml:description>
             <maml:para>Specifies the API region to use.</maml:para>
             <maml:para>Supported values are:</maml:para>
-            <maml:para> - NorthAmerica</maml:para>
+            <maml:para> - NorthAmerica
+- NorthAmerica-2</maml:para>
             <maml:para> - Europe</maml:para>
             <maml:para> - Australia</maml:para>
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica-2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
           </command:parameterValueGroup>
@@ -1178,7 +1140,8 @@
         <maml:description>
           <maml:para>Specifies the API region to use.</maml:para>
           <maml:para>Supported values are:</maml:para>
-          <maml:para> - NorthAmerica</maml:para>
+          <maml:para> - NorthAmerica
+- NorthAmerica-2</maml:para>
           <maml:para> - Europe</maml:para>
           <maml:para> - Australia</maml:para>
         </maml:description>
@@ -1236,6 +1199,13 @@
         <dev:code>PS C:\&gt; Set-Action1Region -Region Australia</dev:code>
         <dev:remarks>
           <maml:para>Configures PSAction1 module to use the Australia API endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region 'NorthAmerica-2'</dev:code>
+        <dev:remarks>
+          <maml:para>Configures PSAction1 module to use the NorthAmerica-2 API endpoint.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1331,26 +1301,16 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>Package_ID</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>BufferSize</maml:name>
         <maml:description>
-          <maml:para>Identifier of the package in the software repository.</maml:para>
+          <maml:para>Size of the upload chunk buffer in bytes.</maml:para>
+          <maml:para>Larger buffers reduce the number of HTTP requests but increase memory usage.</maml:para>
+          <maml:para>Default value: 24 MB .</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>Version_ID</maml:name>
-        <maml:description>
-          <maml:para>Identifier of the version of the package that the file will be uploaded to.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
+          <maml:name>Int32</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -1359,6 +1319,18 @@
         <maml:name>Filename</maml:name>
         <maml:description>
           <maml:para>Path to the file that will be uploaded.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Package_ID</maml:name>
+        <maml:description>
+          <maml:para>Identifier of the package in the software repository.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1382,16 +1354,14 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-        <maml:name>BufferSize</maml:name>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Version_ID</maml:name>
         <maml:description>
-          <maml:para>Size of the upload chunk buffer in bytes.</maml:para>
-          <maml:para>Larger buffers reduce the number of HTTP requests but increase memory usage.</maml:para>
-          <maml:para>Default value: 24 MB .</maml:para>
+          <maml:para>Identifier of the version of the package that the file will be uploaded to.</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>Int32</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -1510,14 +1480,12 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>Type</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Endpoint_Id</maml:name>
         <maml:description>
-          <maml:para>Specifies the type of requery operation to perform.</maml:para>
-          <maml:para>Accepted values:</maml:para>
-          <maml:para> - ReportData</maml:para>
-          <maml:para> - InstalledSoftware</maml:para>
-          <maml:para> - InstalledUpdates</maml:para>
+          <maml:para>Specifies the endpoint identifier for endpoint-specific data refresh.</maml:para>
+          <maml:para>If omitted, the operation is executed at the organization level.</maml:para>
+          <maml:para>If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1526,12 +1494,14 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>Endpoint_Id</maml:name>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Type</maml:name>
         <maml:description>
-          <maml:para>Specifies the endpoint identifier for endpoint-specific data refresh.</maml:para>
-          <maml:para>If omitted, the operation is executed at the organization level.</maml:para>
-          <maml:para>If the selected requery type does not support endpoint targeting, the parameter is ignored and the request defaults to a default Action1 organization-wide operation.</maml:para>
+          <maml:para>Specifies the type of requery operation to perform.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para> - ReportData</maml:para>
+          <maml:para> - InstalledSoftware</maml:para>
+          <maml:para> - InstalledUpdates</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1762,50 +1732,6 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>Type</maml:name>
-        <maml:description>
-          <maml:para>Specifies the target object type for the operation.</maml:para>
-          <maml:para>Allowed values:</maml:para>
-          <maml:para> - EndpointGroup</maml:para>
-          <maml:para> - Endpoint</maml:para>
-          <maml:para> - Automation</maml:para>
-          <maml:para> - CustomAttribute</maml:para>
-          <maml:para> - RawURI</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>Data</maml:name>
-        <maml:description>
-          <maml:para>Object containing data to send in the API request body.</maml:para>
-          <maml:para>For `Modify` and `ModifyMembers`, this usually contains the updated properties or membership list.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
-        <dev:type>
-          <maml:name>Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>Id</maml:name>
-        <maml:description>
-          <maml:para>Identifier of the object being modified or deleted.</maml:para>
-          <maml:para>Required for most `Modify` and `Delete` operations.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
         <maml:name>AttributeName</maml:name>
         <maml:description>
@@ -1830,14 +1756,15 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-        <maml:name>URI</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Data</maml:name>
         <maml:description>
-          <maml:para>Raw API URI used when `-Type RawURI` is specified.</maml:para>
+          <maml:para>Object containing data to send in the API request body.</maml:para>
+          <maml:para>For `Modify` and `ModifyMembers`, this usually contains the updated properties or membership list.</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
         <dev:type>
-          <maml:name>String</maml:name>
+          <maml:name>Object</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -1853,6 +1780,49 @@
           <maml:uri />
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>Id</maml:name>
+        <maml:description>
+          <maml:para>Identifier of the object being modified or deleted.</maml:para>
+          <maml:para>Required for most `Modify` and `Delete` operations.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Type</maml:name>
+        <maml:description>
+          <maml:para>Specifies the target object type for the operation.</maml:para>
+          <maml:para>Allowed values:</maml:para>
+          <maml:para> - EndpointGroup</maml:para>
+          <maml:para> - Endpoint</maml:para>
+          <maml:para> - Automation</maml:para>
+          <maml:para> - CustomAttribute</maml:para>
+          <maml:para> - RawURI</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+        <maml:name>URI</maml:name>
+        <maml:description>
+          <maml:para>Raw API URI used when `-Type RawURI` is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
