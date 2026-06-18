@@ -13,8 +13,14 @@ Sets the default Action1 organization for the current PowerShell session.
 
 ## SYNTAX
 
+### ById (Default)
 ```
 Set-Action1DefaultOrg [-Org_ID] <String> [<CommonParameters>]
+```
+
+### ByName
+```
+Set-Action1DefaultOrg -Org_Name <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -80,11 +86,35 @@ This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The v
 
 ```yaml
 Type: String
-Parameter Sets: (All)
-Aliases:
+Parameter Sets: ById
+Aliases: OrgId
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Org_Name
+
+Specifies the Action1 organization name to resolve and use as the default organization.
+
+The command searches the available organizations for an exact name match. The name must match exactly and must identify a single organization.
+
+If no organization is found, the command returns a terminating error.
+
+If multiple organizations have the same name, the command returns a terminating error and instructs the user to specify the organization ID with `-Org_ID`.
+
+Using this parameter requires valid Action1 authentication and access to list organizations.
+
+```yaml
+Type: String
+Parameter Sets: ByName
+Aliases: OrgName
+
+Required: True
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

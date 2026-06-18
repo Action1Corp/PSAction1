@@ -279,3 +279,13 @@ Credentials are stored only for the duration of the session
 [Start-Action1Requery](Start-Action1Requery.md)
 
 [Start-Action1PackageUpload](Start-Action1PackageUpload.md)
+
+[Get-Action1Vulnerabilities](Get-Action1Vulnerabilities.md)
+
+[Get-Action1Vulnerability](Get-Action1Vulnerability.md)
+
+[Get-Action1VulnerabilityRemediations](Get-Action1VulnerabilityRemediations.md)
+
+[Remove-Action1VulnerabilityRemediation](Remove-Action1VulnerabilityRemediation.md)
+
+[Remove-Action1VulnerabilityRemediations](Remove-Action1VulnerabilityRemediations.md)
