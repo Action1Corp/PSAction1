@@ -47,9 +47,10 @@ jobs:
             }
             else {
               Write-Host "Found $($files.Count) PowerShell files. Preparing..."
+              $sourceRoot = (Resolve-Path $sourceDir).Path.TrimEnd([char[]]@('\','/'))
+              
               foreach ($file in $files) {
-                $sourceRoot = (Resolve-Path $sourceDir).Path.TrimEnd('\', '/')
-                $relativePath = $file.FullName.Substring($sourceRoot.Length).TrimStart('\', '/')
+                $relativePath = $file.FullName.Substring($sourceRoot.Length).TrimStart([char[]]@('\','/'))
 
                 $signedFilePath = Join-Path -Path $stagingDir -ChildPath $relativePath
                 $signedFileDir = Split-Path -Path $signedFilePath -Parent
