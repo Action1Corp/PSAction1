@@ -1,8 +1,5 @@
-#NO PS1
-#*.ps1
-
-#NO TXT
-#*.txt
+# VS Code local workspace settings
+.vscode/
 
 #NO ZIP
 *.zip
