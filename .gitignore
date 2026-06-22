@@ -1,6 +1,17 @@
 # VS Code local workspace settings
 .vscode/
 
+# JetBrains local workspace settings
+.idea/
+
+# Visual Studio local workspace settings
+.vs/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
 # Build / packaging output
 artifacts/
 release/
