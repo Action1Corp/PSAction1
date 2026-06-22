@@ -47,13 +47,21 @@ jobs:
             }
             else {
               Write-Host "Found $($files.Count) PowerShell files. Preparing..."
-                foreach ($file in $files) {
-                  $fileBaseName = $file.BaseName
-                  $fileExtension = $file.Extension
-                  $signedFilePath = Join-Path -Path $stagingDir -ChildPath "$fileBaseName$fileExtension"
-                  Copy-Item -Path $file.FullName -Destination $signedFilePath -Force
-                  Write-Host "Staged $signedFilePath PowerShell file."
+              $sourceRoot = (Resolve-Path $sourceDir).Path.TrimEnd([char[]]@('\','/'))
+              
+              foreach ($file in $files) {
+                $relativePath = $file.FullName.Substring($sourceRoot.Length).TrimStart([char[]]@('\','/'))
+
+                $signedFilePath = Join-Path -Path $stagingDir -ChildPath $relativePath
+                $signedFileDir = Split-Path -Path $signedFilePath -Parent
+
+                if (-not (Test-Path -Path $signedFileDir)) {
+                  New-Item -Path $signedFileDir -ItemType Directory -Force | Out-Null
                 }
+
+                Copy-Item -Path $file.FullName -Destination $signedFilePath -Force
+                Write-Host "Staged $signedFilePath PowerShell file."
+              }
               Write-Host "##vso[task.setvariable variable=PSExists;isOutput=true]true"
             }
 
