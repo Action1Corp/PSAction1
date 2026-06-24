@@ -1,8 +1,44 @@
-#NO PS1
-#*.ps1
+# VS Code local workspace settings
+.vscode/
 
-#NO TXT
-#*.txt
+# JetBrains local workspace settings
+.idea/
 
-#NO ZIP
+# Visual Studio local workspace settings
+.vs/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Build / packaging output
+artifacts/
+release/
+bin/
+obj/
+out/
+
+# PowerShell package artifacts
+*.nupkg
+*.snupkg
+
+# Archives
 *.zip
+
+# Test / coverage output
+TestResults/
+coverage/
+coverage.xml
+*.trx
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Local secrets / environment files
+.env
+.env.*
+*.local.ps1
+*.secrets.ps1
