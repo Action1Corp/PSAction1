@@ -87,6 +87,7 @@
                         'Start-Action1PackageUpload',
                         'Get-Action1Vulnerabilities',
                         'Get-Action1Vulnerability',
+                        'Get-Action1VulnerabilityEndpoints',
                         'Get-Action1VulnerabilityRemediations',
                         'New-Action1CompensatingControlRemediation',
                         'Update-Action1CompensatingControlRemediation',
