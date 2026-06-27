@@ -2121,6 +2121,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>* `AvailableUpdate`</maml:para>
       <maml:para></maml:para>
       <maml:para>The command creates the target directory when it does not already exist and overwrites the target CSV file if it already exists.</maml:para>
+      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
     <command:syntax>
@@ -2131,6 +2132,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:description>
             <maml:para>Specifies the path to the CSV file to create.</maml:para>
             <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates `Action1_VulnerabilitiesEndpoints.csv` in the current location.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -2210,6 +2212,18 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           </dev:type>
           <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -2232,6 +2246,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:description>
           <maml:para>Specifies the path to the CSV file to create.</maml:para>
           <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates `Action1_VulnerabilitiesEndpoints.csv` in the current location.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -2280,6 +2295,19 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:uri />
         </dev:type>
         <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -2346,6 +2374,13 @@ Export-Action1VulnerabilitiesEndpointsCsv -Path $Path -RemediationStatus All_exc
 Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, ApplicationName, InstalledVersion, AvailableUpdate</dev:code>
         <dev:remarks>
           <maml:para>Exports high severity vulnerability endpoint records, excluding vulnerabilities with applied compensating controls, and displays selected CSV columns.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 6: Export to a read-only or hidden CSV file -----</maml:title>
+        <dev:code>Export-Action1VulnerabilitiesEndpointsCsv -Path 'C:\Reports\VulnerabilityEndpoints.csv' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Exports vulnerability endpoint records and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

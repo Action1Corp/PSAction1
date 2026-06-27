@@ -15,7 +15,7 @@ Exports Action1 vulnerability endpoint details to a CSV file.
 
 ```
 Export-Action1VulnerabilitiesEndpointsCsv [[-Path] <String>] [-CVEIds <String[]>] [-RemediationStatus <String>]
- [-Score <String>] [<CommonParameters>]
+ [-Score <String>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -39,6 +39,8 @@ The command writes the following CSV columns:
 * `AvailableUpdate`
 
 The command creates the target directory when it does not already exist and overwrites the target CSV file if it already exists.
+
+Use **Force** to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. **Force** does not override file locks or insufficient file system permissions.
 
 The command uses the module default organization configured by **Set-Action1DefaultOrg**.
 
@@ -88,6 +90,14 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
 
 Exports high severity vulnerability endpoint records, excluding vulnerabilities with applied compensating controls, and displays selected CSV columns.
 
+### Example 6: Export to a read-only or hidden CSV file
+
+```powershell
+Export-Action1VulnerabilitiesEndpointsCsv -Path 'C:\Reports\VulnerabilityEndpoints.csv' -Force
+```
+
+Exports vulnerability endpoint records and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.
+
 ## PARAMETERS
 
 ### -CVEIds
@@ -115,6 +125,8 @@ Accept wildcard characters: False
 Specifies the path to the CSV file to create.
 
 If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.
+
+If the existing target file has read-only or hidden file attributes, use **Force**.
 
 If this parameter is not specified, the command creates `Action1_VulnerabilitiesEndpoints.csv` in the current location.
 
@@ -182,6 +194,24 @@ Accepted values: Critical, High, Medium, Low, All
 Required: False
 Position: Named
 Default value: All
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.
+
+This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

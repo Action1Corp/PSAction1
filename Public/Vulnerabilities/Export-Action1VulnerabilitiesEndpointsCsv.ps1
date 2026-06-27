@@ -9,6 +9,7 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false, Position = 0)]
+        [ValidateNotNullOrEmpty()]
         [string]$Path = (Join-Path -Path (Get-Location) -ChildPath 'Action1_VulnerabilitiesEndpoints.csv'),
 
         [Parameter(Mandatory = $false)]
@@ -21,7 +22,10 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('Critical', 'High', 'Medium', 'Low', 'All')]
-        [string]$Score = 'All'
+        [string]$Score = 'All',
+
+        [Parameter(Mandatory = $false)]
+        [switch]$Force
     )
 
     $ExportColumns = @(
@@ -47,7 +51,24 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
     }
 
     $Header = $ExportColumns -join ','
-    Set-Content -LiteralPath $ResolvedPath -Value $Header -Encoding UTF8
+
+    $SetContentParams = @{
+        LiteralPath = $ResolvedPath
+        Value       = $Header
+        Encoding    = 'UTF8'
+    }
+
+    if ($Force.IsPresent) {
+        $SetContentParams.Force = $true
+    }
+
+    try {
+        Set-Content @SetContentParams
+    }
+    catch {
+        throw "Unable to initialize CSV file '$ResolvedPath'. Close the file if it is open in another application, verify write permissions, or use -Force for read-only/hidden files. Error: $($_.Exception.Message)"
+    }
+
     Write-Action1Debug "Initialized CSV file '$ResolvedPath'."
 
     $VulnerabilityByCVEId = [ordered]@{}
@@ -211,7 +232,18 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
             )
 
             if ($CsvLines.Count -gt 0) {
-                Add-Content -LiteralPath $ResolvedPath -Value $CsvLines -Encoding UTF8
+
+                $AddContentParams = @{
+                    LiteralPath = $ResolvedPath
+                    Value       = $CsvLines
+                    Encoding    = 'UTF8'
+                }
+
+                if ($Force.IsPresent) {
+                    $AddContentParams.Force = $true
+                }
+
+                Add-Content @AddContentParams
                 $TotalRowsExported += $CsvLines.Count
                 Write-Action1Debug "Appended $($CsvLines.Count) row(s) for vulnerability '$CVEId' to '$ResolvedPath'."
             }
