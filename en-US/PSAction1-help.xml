@@ -2098,6 +2098,278 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Export-Action1VulnerabilitiesEndpointsCsv</command:name>
+      <command:verb>Export</command:verb>
+      <command:noun>Action1VulnerabilitiesEndpointsCsv</command:noun>
+      <maml:description>
+        <maml:para>Exports Action1 vulnerability endpoint details to a CSV file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Exports a CSV report that maps Action1 vulnerabilities to affected endpoints in the current Action1 organization.</maml:para>
+      <maml:para>The command can export endpoint details for all vulnerabilities returned by Get-Action1Vulnerabilities , optionally filtered by remediation status and severity score, or it can export endpoint details only for explicitly specified CVE IDs.</maml:para>
+      <maml:para>For each selected CVE ID, the command retrieves affected endpoints by using Get-Action1VulnerabilityEndpoints . When available, vulnerability metadata is retrieved by using Get-Action1Vulnerability .</maml:para>
+      <maml:para>The command writes the following CSV columns:</maml:para>
+      <maml:para>* `CVEId`</maml:para>
+      <maml:para>* `CVSSScore`</maml:para>
+      <maml:para>* `Severity`</maml:para>
+      <maml:para>* `RemediationStatus`</maml:para>
+      <maml:para>* `EndpointId`</maml:para>
+      <maml:para>* `EndpointName`</maml:para>
+      <maml:para>* `ApplicationName`</maml:para>
+      <maml:para>* `InstalledVersion`</maml:para>
+      <maml:para>* `AvailableUpdate`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites the target CSV file if it already exists.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-Action1VulnerabilitiesEndpointsCsv</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the CSV file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If this parameter is not specified, the command creates `Action1_VulnerabilitiesEndpoints.csv` in the current location.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>(Join-Path -Path (Get-Location) -ChildPath 'Action1_VulnerabilitiesEndpoints.csv')</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>CVEIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more CVE IDs whose affected endpoint records should be exported.</maml:para>
+            <maml:para>Each value must match the `CVE-YYYY-NNN` or `CVE-YYYY-NNNNNN` format.</maml:para>
+            <maml:para>When this parameter is specified, the command uses only the provided CVE IDs. RemediationStatus and Score are not used to select CVEs.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>RemediationStatus</maml:name>
+          <maml:description>
+            <maml:para>Specifies the remediation status used to select vulnerabilities when CVEIds is not specified.</maml:para>
+            <maml:para>The default value is `All`.</maml:para>
+            <maml:para>The acceptable values for this parameter are:</maml:para>
+            <maml:para>* `Overdue`</maml:para>
+            <maml:para>* `Due_soon`</maml:para>
+            <maml:para>* `Overdue_due_soon`</maml:para>
+            <maml:para>* `Due_later`</maml:para>
+            <maml:para>* `Control_applied`</maml:para>
+            <maml:para>* `All_except_control_applied`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Overdue</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Due_soon</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Overdue_due_soon</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Due_later</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Control_applied</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All_except_control_applied</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Score</maml:name>
+          <maml:description>
+            <maml:para>Specifies the vulnerability severity score used to select vulnerabilities when CVEIds is not specified.</maml:para>
+            <maml:para>The default value is `All`.</maml:para>
+            <maml:para>The acceptable values for this parameter are:</maml:para>
+            <maml:para>* `Critical`</maml:para>
+            <maml:para>* `High`</maml:para>
+            <maml:para>* `Medium`</maml:para>
+            <maml:para>* `Low`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Critical</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">High</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Medium</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Low</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>CVEIds</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more CVE IDs whose affected endpoint records should be exported.</maml:para>
+          <maml:para>Each value must match the `CVE-YYYY-NNN` or `CVE-YYYY-NNNNNN` format.</maml:para>
+          <maml:para>When this parameter is specified, the command uses only the provided CVE IDs. RemediationStatus and Score are not used to select CVEs.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the CSV file to create.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If this parameter is not specified, the command creates `Action1_VulnerabilitiesEndpoints.csv` in the current location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>(Join-Path -Path (Get-Location) -ChildPath 'Action1_VulnerabilitiesEndpoints.csv')</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>RemediationStatus</maml:name>
+        <maml:description>
+          <maml:para>Specifies the remediation status used to select vulnerabilities when CVEIds is not specified.</maml:para>
+          <maml:para>The default value is `All`.</maml:para>
+          <maml:para>The acceptable values for this parameter are:</maml:para>
+          <maml:para>* `Overdue`</maml:para>
+          <maml:para>* `Due_soon`</maml:para>
+          <maml:para>* `Overdue_due_soon`</maml:para>
+          <maml:para>* `Due_later`</maml:para>
+          <maml:para>* `Control_applied`</maml:para>
+          <maml:para>* `All_except_control_applied`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Score</maml:name>
+        <maml:description>
+          <maml:para>Specifies the vulnerability severity score used to select vulnerabilities when CVEIds is not specified.</maml:para>
+          <maml:para>The default value is `All`.</maml:para>
+          <maml:para>The acceptable values for this parameter are:</maml:para>
+          <maml:para>* `Critical`</maml:para>
+          <maml:para>* `High`</maml:para>
+          <maml:para>* `Medium`</maml:para>
+          <maml:para>* `Low`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not return pipeline output. It creates or overwrites a CSV file at the specified path.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>Requires permission to view vulnerabilities in Action1.</maml:para>
+        <maml:para>The command displays progress while processing CVE IDs.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>Example 1: Export all vulnerability endpoint records to the default CSV file</maml:title>
+        <dev:code>Export-Action1VulnerabilitiesEndpointsCsv</dev:code>
+        <dev:remarks>
+          <maml:para>Exports vulnerability endpoint records to `Action1_VulnerabilitiesEndpoints.csv` in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 2: Export critical vulnerability endpoint records to a specific file</maml:title>
+        <dev:code>Export-Action1VulnerabilitiesEndpointsCsv -Path 'C:\Reports\CriticalVulnerabilityEndpoints.csv' -Score Critical</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoint records for vulnerabilities with a critical score to the specified CSV file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 3: Export overdue vulnerability endpoint records ---</maml:title>
+        <dev:code>Export-Action1VulnerabilitiesEndpointsCsv -Path 'C:\Reports\OverdueVulnerabilityEndpoints.csv' -RemediationStatus Overdue</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoint records for vulnerabilities with an overdue remediation status to the specified CSV file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 4: Export endpoint records for specific CVE IDs ---</maml:title>
+        <dev:code>Export-Action1VulnerabilitiesEndpointsCsv -Path '.\SelectedCveEndpoints.csv' -CVEIds 'CVE-2024-12345', 'CVE-2024-23456'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoint records only for the specified CVE IDs.</maml:para>
+          <maml:para>When CVEIds is specified, RemediationStatus and Score are not used to select CVEs.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 5: Export and import the CSV data for review -----</maml:title>
+        <dev:code>$Path = 'C:\Reports\VulnerabilityEndpoints.csv'
+Export-Action1VulnerabilitiesEndpointsCsv -Path $Path -RemediationStatus All_except_control_applied -Score High
+Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, ApplicationName, InstalledVersion, AvailableUpdate</dev:code>
+        <dev:remarks>
+          <maml:para>Exports high severity vulnerability endpoint records, excluding vulnerabilities with applied compensating controls, and displays selected CSV columns.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerabilities</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityEndpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-Action1Vulnerabilities</command:name>
       <command:verb>Get</command:verb>
       <command:noun>Action1Vulnerabilities</command:noun>
@@ -2406,6 +2678,110 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-Action1VulnerabilityEndpoints</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1VulnerabilityEndpoints</command:noun>
+      <maml:description>
+        <maml:para>Gets endpoints affected by an Action1 vulnerability.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets endpoints in the current Action1 organization that are affected by a specific vulnerability.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>The CVE ID must use the standard CVE format, such as `CVE-2024-12345`.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1VulnerabilityEndpoints</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>CVEId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the CVE ID whose affected endpoints should be retrieved.</maml:para>
+            <maml:para>The value must match the `CVE-YYYY-NNN` or `CVE-YYYY-NNNNNN` format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>CVEId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the CVE ID whose affected endpoints should be retrieved.</maml:para>
+          <maml:para>The value must match the `CVE-YYYY-NNN` or `CVE-YYYY-NNNNNN` format.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns vulnerable endpoint objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>Requires permission to view vulnerabilities in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----- Example 1: Get endpoints affected by a vulnerability -----</maml:title>
+        <dev:code>Get-Action1VulnerabilityEndpoints -CVEId 'CVE-2024-12345'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets endpoints affected by `CVE-2024-12345`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2: Display affected endpoint details ---------</maml:title>
+        <dev:code>Get-Action1VulnerabilityEndpoints -CVEId 'CVE-2024-12345' | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the affected endpoints and displays all returned fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Vulnerability</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1VulnerabilityRemediations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-Action1VulnerabilityRemediations</command:name>
       <command:verb>Get</command:verb>
       <command:noun>Action1VulnerabilityRemediations</command:noun>
@@ -2416,6 +2792,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     <maml:description>
       <maml:para>Gets previously applied remediation records, including compensating control records, for a specific vulnerability in the current Action1 organization.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>The CVE ID must use the standard CVE format, such as `CVE-2024-12345`.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -2707,6 +3084,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     <maml:description>
       <maml:para>Deletes a specific remediation record for a specific vulnerability in the current Action1 organization.</maml:para>
       <maml:para>The Action1 API requires both the CVE ID and the remediation ID to delete a remediation record.</maml:para>
+      <maml:para>The CVE ID must use the standard CVE format, such as `CVE-2024-12345`.</maml:para>
       <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
     </maml:description>
     <command:syntax>

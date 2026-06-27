@@ -13,8 +13,9 @@ Exports Action1 vulnerability endpoint details to a CSV file.
 
 ## SYNTAX
 
-```powershell
-Export-Action1VulnerabilitiesEndpointsCsv [[-Path] <String>] [-CVEIds <String[]>] [-RemediationStatus <String>] [-Score <String>] [<CommonParameters>]
+```
+Export-Action1VulnerabilitiesEndpointsCsv [[-Path] <String>] [-CVEIds <String[]>] [-RemediationStatus <String>]
+ [-Score <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -89,26 +90,6 @@ Exports high severity vulnerability endpoint records, excluding vulnerabilities 
 
 ## PARAMETERS
 
-### -Path
-
-Specifies the path to the CSV file to create.
-
-If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.
-
-If this parameter is not specified, the command creates `Action1_VulnerabilitiesEndpoints.csv` in the current location.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: (Join-Path -Path (Get-Location) -ChildPath 'Action1_VulnerabilitiesEndpoints.csv')
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -CVEIds
 
 Specifies one or more CVE IDs whose affected endpoint records should be exported.
@@ -125,6 +106,26 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Path
+
+Specifies the path to the CSV file to create.
+
+If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.
+
+If this parameter is not specified, the command creates `Action1_VulnerabilitiesEndpoints.csv` in the current location.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
+Default value: (Join-Path -Path (Get-Location) -ChildPath 'Action1_VulnerabilitiesEndpoints.csv')
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -149,6 +150,7 @@ The acceptable values for this parameter are:
 Type: String
 Parameter Sets: (All)
 Aliases:
+Accepted values: Overdue, Due_soon, Overdue_due_soon, Due_later, Control_applied, All_except_control_applied, All
 
 Required: False
 Position: Named
@@ -175,6 +177,7 @@ The acceptable values for this parameter are:
 Type: String
 Parameter Sets: (All)
 Aliases:
+Accepted values: Critical, High, Medium, Low, All
 
 Required: False
 Position: Named
@@ -184,7 +187,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
