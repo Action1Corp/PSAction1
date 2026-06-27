@@ -46,7 +46,7 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
         $null = New-Item -Path $ParentPath -ItemType Directory -Force
     }
 
-    $Header = ($ExportColumns | ForEach-Object { '"{0}"' -f ($_ -replace '"', '""') }) -join ','
+    $Header = $ExportColumns -join ','
     Set-Content -LiteralPath $ResolvedPath -Value $Header -Encoding UTF8
     Write-Action1Debug "Initialized CSV file '$ResolvedPath'."
 
@@ -182,13 +182,38 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
                 }
             }
 
-            if ($RowsToWrite.Count -gt 0) {
+            $CsvLines = @(
                 $RowsToWrite |
                     Select-Object -Property $ExportColumns |
-                    Export-Csv -LiteralPath $ResolvedPath -NoTypeInformation -Encoding UTF8 -Append
+                    ForEach-Object {
+                        $Row = $_
 
-                $TotalRowsExported += $RowsToWrite.Count
-                Write-Action1Debug "Appended $($RowsToWrite.Count) row(s) for vulnerability '$CVEId' to '$ResolvedPath'."
+                        $CsvFields = foreach ($Column in $ExportColumns) {
+                            $Value = $Row.$Column
+
+                            if ($null -eq $Value) {
+                                ''
+                            }
+                            else {
+                                $StringValue = [string]$Value
+
+                                if ($StringValue -match '[,"\r\n]') {
+                                    '"{0}"' -f ($StringValue -replace '"', '""')
+                                }
+                                else {
+                                    $StringValue
+                                }
+                            }
+                        }
+
+                        $CsvFields -join ','
+                    }
+            )
+
+            if ($CsvLines.Count -gt 0) {
+                Add-Content -LiteralPath $ResolvedPath -Value $CsvLines -Encoding UTF8
+                $TotalRowsExported += $CsvLines.Count
+                Write-Action1Debug "Appended $($CsvLines.Count) row(s) for vulnerability '$CVEId' to '$ResolvedPath'."
             }
             else {
                 Write-Action1Debug "No CSV rows were produced for vulnerability '$CVEId'."
