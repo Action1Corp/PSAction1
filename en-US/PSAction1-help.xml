@@ -474,6 +474,8 @@
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica-2</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NA-2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
           </command:parameterValueGroup>
@@ -1232,6 +1234,7 @@ PS C:\&gt; New-Action1 -Item RawURI -URI '/v1/custom/resource' -Data $Payload</d
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica-2</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NA-2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
           </command:parameterValueGroup>
