@@ -92,7 +92,8 @@
                         'New-Action1CompensatingControlRemediation',
                         'Update-Action1CompensatingControlRemediation',
                         'Remove-Action1CompensatingControlRemediation',
-                        'Remove-Action1CompensatingControlRemediations'
+                        'Remove-Action1CompensatingControlRemediations',
+                        'Export-Action1VulnerabilitiesEndpointsCsv'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = '*'

@@ -8,8 +8,7 @@
 function Export-Action1VulnerabilitiesEndpointsCsv {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory = $false, Position = 0)]
         [string]$Path = (Join-Path -Path (Get-Location) -ChildPath 'Action1_VulnerabilitiesEndpoints.csv'),
 
         [Parameter(Mandatory = $false)]
