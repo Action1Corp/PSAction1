@@ -84,6 +84,7 @@
         'Set-Action1Region'
         'Get-Action1Region'
         'Set-Action1Debug'
+        'Get-Action1Debug'
 
         # Vulnerabilities
         'Get-Action1Vulnerabilities'
