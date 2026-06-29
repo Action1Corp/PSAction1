@@ -63,7 +63,7 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
     }
 
     try {
-        Set-Content @SetContentParams
+        Set-Content @SetContentParams -ErrorAction Stop
     }
     catch {
         throw "Unable to initialize CSV file '$ResolvedPath'. Close the file if it is open in another application, verify write permissions, or use -Force for read-only/hidden files. Error: $($_.Exception.Message)"
@@ -246,7 +246,7 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
                     $AddContentParams.Force = $true
                 }
 
-                Add-Content @AddContentParams
+                Add-Content @AddContentParams -ErrorAction Stop
                 $TotalRowsExported += $CsvLines.Count
                 Write-Action1Debug "Appended $($CsvLines.Count) row(s) for vulnerability '$CVEId' to '$ResolvedPath'."
             }
