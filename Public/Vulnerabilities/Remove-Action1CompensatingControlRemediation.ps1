@@ -10,6 +10,7 @@ function Remove-Action1CompensatingControlRemediation {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
+        [ValidatePattern('^CVE-\d{4}-\d{3,6}$')]
         [string]$CVEId,
 
         [Parameter(Mandatory = $true)]
