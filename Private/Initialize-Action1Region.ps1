@@ -33,7 +33,7 @@ function Initialize-Action1Region {
             $index -ge 0 -and
             $index -lt $regions.Count
         ) {
-            $Script:Action1_BaseURI = $regions[$index].Value
+            Set-Action1Region -Region $regions[$index].Key
         }
         else {
             Write-Warning "Invalid selection."

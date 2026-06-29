@@ -6,6 +6,7 @@
 # © Action1 Corporation
 
 $Script:Action1_BaseURI = ''
+$Script:Action1_Region = ''
 $Script:Action1_Default_Org_Id = $null
 $Script:Action1_Default_Org_Name = $null
 
