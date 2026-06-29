@@ -10,7 +10,7 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
     param(
         [Parameter(Mandatory = $false, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string]$Path = (Join-Path -Path (Get-Location) -ChildPath 'Action1_VulnerabilitiesEndpoints.csv'),
+        [string]$Path,
 
         [Parameter(Mandatory = $false)]
         [ValidatePattern('^CVE-\d{4}-\d{3,6}$')]
@@ -39,6 +39,12 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
         'InstalledVersion',
         'AvailableUpdate'
     )
+
+    if (-not $PSBoundParameters.ContainsKey('Path')) {
+        $Timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+        $FileName = 'Action1__VulnerabilitiesEndpoints_{0}.csv' -f $Timestamp
+        $Path = Join-Path -Path (Get-Location) -ChildPath $FileName
+    }
 
     Write-Action1Debug "Starting vulnerability endpoints CSV export to '$Path'."
 
