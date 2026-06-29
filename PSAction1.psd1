@@ -87,13 +87,15 @@
         'Get-Action1Debug'
 
         # Vulnerabilities
-        'Get-Action1Vulnerabilities'
         'Get-Action1Vulnerability'
+        'Get-Action1Vulnerabilities'
         'Get-Action1VulnerabilityRemediations'
+        'Get-Action1VulnerabilityEndpoints'
         'New-Action1CompensatingControlRemediation'
         'Update-Action1CompensatingControlRemediation'
         'Remove-Action1CompensatingControlRemediation'
         'Remove-Action1CompensatingControlRemediations'
+        'Export-Action1VulnerabilitiesEndpointsCsv'
 
         # Legacy
         'Set-Action1Locale'

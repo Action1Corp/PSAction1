@@ -24,6 +24,8 @@ Deletes a specific remediation record for a specific vulnerability in the curren
 
 The Action1 API requires both the CVE ID and the remediation ID to delete a remediation record.
 
+The CVE ID must use the standard CVE format, such as `CVE-2024-12345`.
+
 This command supports PowerShell confirmation. Use **-WhatIf** to preview the delete operation. Use **-Force** to bypass the confirmation prompt.
 
 ## EXAMPLES
