@@ -38,7 +38,9 @@ function New-Action1 {
             $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["N_$Item"])
         }
         else {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["N_$Item"] -Org_ID $(Initialize-Action1DefaultOrg))
+            Initialize-Action1DefaultOrg
+            $Org_ID = Get-Action1DefaultOrgId
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["N_$Item"] -Org_ID $Org_ID)
         } 
         return Invoke-Action1ApiRequest -Method POST -Path $Path -Label $Item -Body $Data
     }

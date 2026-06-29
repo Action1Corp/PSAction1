@@ -35,7 +35,8 @@ function New-Action1CompensatingControlRemediation {
         [string]$ProductName
     )
 
-    $Org_ID = Initialize-Action1DefaultOrg
+    Initialize-Action1DefaultOrg
+    $Org_ID = Get-Action1DefaultOrgId
 
     if (-not $Script:Action1_UriMap.ContainsKey('N_VulnerabilityRemediation')) {
         throw "Action1 URI map key 'N_VulnerabilityRemediation' is not defined."

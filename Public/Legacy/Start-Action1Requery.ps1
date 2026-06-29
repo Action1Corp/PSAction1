@@ -20,17 +20,20 @@ function Start-Action1Requery {
         $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["R_$Type"])
     }
     else {
+        Initialize-Action1DefaultOrg
+        $Org_ID = Get-Action1DefaultOrgId
+
         if ($Endpoint_Id) {
             if ($Script:Action1_UriMap["R_$Type"].ToString().Contains("`$Object_ID")) {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["R_$Type"] -Org_ID $(Initialize-Action1DefaultOrg) -Object_ID $Endpoint_Id)
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["R_$Type"] -Org_ID $Org_ID -Object_ID $Endpoint_Id)
             }
             else {
                 Write-Error "Endpoint_Id was specified but this action is not endpoint specific, can continue, defaulting to system wide."
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["R_$Type"] -Org_ID $(Initialize-Action1DefaultOrg))
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["R_$Type"] -Org_ID $Org_ID)
             } 
         }
         else {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["R_$Type"] -Org_ID $(Initialize-Action1DefaultOrg))
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["R_$Type"] -Org_ID $Org_ID)
         }
     } 
 
