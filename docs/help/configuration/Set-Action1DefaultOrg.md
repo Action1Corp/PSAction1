@@ -32,9 +32,9 @@ The command supports two ways to set the default organization:
 * By organization ID using `-Org_ID`.
 * By unique organization name using `-Org_Name`.
 
-When `-Org_ID` is used, the value is stored directly as the default organization ID. This preserves backward compatibility with existing scripts that already call `Set-Action1DefaultOrg -Org_ID <id>`.
+When `-Org_ID` is used, the command resolves the organization by ID and stores both the organization ID and organization name as the default organization context.
 
-When `-Org_Name` is used, the command retrieves the available organizations, searches for an organization with the specified name, and stores the matching organization's ID as the default organization context.
+When `-Org_Name` is used, the command retrieves the available organizations, searches for an organization with the specified name, and stores both the matching organization's ID and name as the default organization context.
 
 The default organization value is stored only for the duration of the current PowerShell session.
 
@@ -46,7 +46,7 @@ The default organization value is stored only for the duration of the current Po
 PS C:\> Set-Action1DefaultOrg -Org_ID "88c8b425-871e-4ff6-9afc-00df8592c6db"
 ```
 
-Sets the default organization ID directly.
+Resolves the organization by ID and sets it as the default organization.
 
 This is the recommended option for automation scripts because organization IDs are unique and unambiguous.
 
@@ -56,7 +56,7 @@ This is the recommended option for automation scripts because organization IDs a
 PS C:\> Set-Action1DefaultOrg -Org_Name "MyOrgName"
 ```
 
-Finds an organization named `MyOrgName` and stores its organization ID as the default organization context.
+Finds an organization named `MyOrgName` and stores its organization ID and name as the default organization context.
 
 The organization name must be unique. If more than one organization has the specified name, the command returns a terminating error and the organization ID must be used instead.
 
@@ -82,7 +82,7 @@ Uses the `OrgName` alias for `-Org_Name`.
 
 Specifies the Action1 organization ID to use as the default organization for subsequent module commands.
 
-This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The value is stored directly and is not resolved through the API.
+The command resolves the ID through the API and stores the matching organization ID and name.
 
 ```yaml
 Type: String
@@ -145,10 +145,9 @@ The default organization value is stored in a script scope variable and is avail
 
 ## RELATED LINKS
 
-[Get-Action1](Get-Action1.md)
-
+[Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
+[Get-Action1DefaultOrgId](Get-Action1DefaultOrgId.md)
+[Get-Action1DefaultOrgName](Get-Action1DefaultOrgName.md)
 [Set-Action1Credentials](Set-Action1Credentials.md)
-
 [Set-Action1Region](Set-Action1Region.md)
-
 [about_PSAction1](about_PSAction1.md)
