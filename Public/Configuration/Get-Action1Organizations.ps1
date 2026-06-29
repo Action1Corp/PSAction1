@@ -19,17 +19,45 @@ function Get-Action1Organizations {
     $endpoint = & $Script:Action1_UriMap['G_Organizations']
     $Path = "$Script:Action1_BaseURI{0}" -f $endpoint
     $requestParams = @{
-        Method = 'GET'
-        Path   = $Path
-        Label  = 'Organizations'
+        Path  = $Path
+        Label = 'Organizations'
     }
-    $organizations = Invoke-Action1ApiRequest @requestParams
+    $response = @(
+        Invoke-Action1PagedGetRequest @requestParams |
+            Where-Object { $null -ne $_ }
+    )
 
-    if ($null -eq $organizations) {
+    if ($response.Count -eq 0) {
         Write-Error 'Unable to get Action1 organizations.' -ErrorAction Stop
     }
 
-    @($organizations) |
+    $organizations = $response
+
+    $isPagedResponse = (
+        $response.Count -eq 1 -and
+        $response[0].PSObject.Properties.Name -contains 'items'
+    )
+
+    if ($isPagedResponse) {
+        $organizations = $response[0].items
+    }
+
+    if ($null -eq $organizations) {
+        $message = 'Action1 organizations response did not contain items.'
+        Write-Error $message -ErrorAction Stop
+    }
+
+    $organizationList = @(
+        $organizations |
+            Where-Object { $null -ne $_ }
+    )
+
+    if ($organizationList.Count -eq 0) {
+        $message = 'Action1 organizations response did not contain items.'
+        Write-Error $message -ErrorAction Stop
+    }
+
+    $organizationList |
         ForEach-Object {
             [PSCustomObject]@{
                 Org_Name = $_.name
