@@ -14,7 +14,7 @@ Gets vulnerabilities for the current Action1 organization.
 ## SYNTAX
 
 ```
-Get-Action1Vulnerabilities [[-RemediationStatus] <String>] [-Score <String>] [<CommonParameters>]
+Get-Action1Vulnerabilities [[-RemediationStatus] <String>] [[-Score] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -114,7 +114,7 @@ Accepted values:
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Due soon, Overdue, Due later, Control_applied
+Accepted values: Overdue, Due_soon, Overdue_due_soon, Due_later, Control_applied, All_except_control_applied, All
 
 Required: False
 Position: 0
@@ -141,9 +141,10 @@ Accepted values:
 Type: String
 Parameter Sets: (All)
 Aliases:
+Accepted values: Critical, High, Medium, Low, All
 
 Required: False
-Position: Named
+Position: 1
 Default value: Critical
 Accept pipeline input: False
 Accept wildcard characters: False

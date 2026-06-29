@@ -33,11 +33,20 @@ PS C:\> Get-Action1DefaultOrgName
 
 Returns the currently configured default organization name.
 
+## PARAMETERS
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
 ## OUTPUTS
 
 ### System.String
 
 The default organization name, or no output when a default organization is not configured.
+
+## NOTES
 
 ## RELATED LINKS
 

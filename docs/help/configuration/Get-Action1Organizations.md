@@ -33,11 +33,20 @@ PS C:\> Get-Action1Organizations
 
 Returns organization names and IDs available to the current account.
 
+## PARAMETERS
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
 ## OUTPUTS
 
 ### PSCustomObject
 
 Each object contains `Org_Name` and `Org_ID` properties.
+
+## NOTES
 
 ## RELATED LINKS
 

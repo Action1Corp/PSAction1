@@ -2,6 +2,328 @@
 <helpItems schema="maml" xmlns="http://msh">
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-Action1Debug</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Debug</command:noun>
+      <maml:description>
+        <maml:para>Gets the PSAction1 module debug mode state for the current PowerShell session.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1Debug` returns the debug mode state stored by `Set-Action1Debug`.</maml:para>
+      <maml:para>The value is stored only for the duration of the current PowerShell session.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Debug</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe objects to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Boolean</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>The current PSAction1 module debug mode state.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Debug mode affects only the current PowerShell session and is stored in a script-scope variable.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------- Example 1: Get the debug mode state -------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1Debug
+False</dev:code>
+        <dev:remarks>
+          <maml:para>Returns `$true` when debug mode is enabled and `$false` when debug mode is disabled.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 2: Set and verify the debug mode state --------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Debug -Enabled $true
+PS C:\&gt; Get-Action1Debug
+True</dev:code>
+        <dev:remarks>
+          <maml:para>Enables debug mode for PSAction1 module, then returns the configured state.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Debug</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1DefaultOrgId</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1DefaultOrgId</command:noun>
+      <maml:description>
+        <maml:para>Gets the default Action1 organization ID for the current PowerShell session.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1DefaultOrgId` returns the organization ID stored by `Set-Action1DefaultOrg`.</maml:para>
+      <maml:para>The value is stored only for the duration of the current PowerShell session.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1DefaultOrgId</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>The default organization ID, or no output when a default organization is not configured.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------- Example 1: Get the default organization ID ----------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1DefaultOrgId</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the currently configured default organization ID.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgName</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1DefaultOrgName</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1DefaultOrgName</command:noun>
+      <maml:description>
+        <maml:para>Gets the default Action1 organization name for the current PowerShell session.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1DefaultOrgName` returns the organization name stored by `Set-Action1DefaultOrg`.</maml:para>
+      <maml:para>The value is stored only for the duration of the current PowerShell session.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1DefaultOrgName</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>The default organization name, or no output when a default organization is not configured.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- Example 1: Get the default organization name ---------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1DefaultOrgName</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the currently configured default organization name.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Organizations</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Organizations</command:noun>
+      <maml:description>
+        <maml:para>Gets Action1 organizations available to the current account.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1Organizations` calls the Action1 organizations endpoint and returns a sorted object list containing organization names and IDs.</maml:para>
+      <maml:para>Results are sorted by organization name, then organization ID.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Organizations</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Each object contains `Org_Name` and `Org_ID` properties.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------------- Example 1: List organizations ----------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1Organizations</dev:code>
+        <dev:remarks>
+          <maml:para>Returns organization names and IDs available to the current account.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgName</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Region</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Region</command:noun>
+      <maml:description>
+        <maml:para>Gets the configured Action1 API region for the current PowerShell session.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1Region` returns the Action1 API region configured by `Set-Action1Region`.</maml:para>
+      <maml:para>The value is stored only for the duration of the current PowerShell session.</maml:para>
+      <maml:para>If the region name is not available but the module has a configured API base URI, the command tries to resolve the region name from the module's internal host lookup table.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Region</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe objects to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>The configured Action1 API region, or no output when a region is not configured.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>`Get-Action1Region` returns the region name, not the full Action1 API base URI.</maml:para>
+        <maml:para>When the region is inferred from the configured API base URI, duplicate host aliases resolve to the first matching region in the module's internal host lookup table.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- Example 1: Get the configured Action1 region ---------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1Region</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the currently configured Action1 API region.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2: Set and verify the Action1 region ---------</maml:title>
+        <dev:code>PS C:\&gt; Set-Action1Region -Region Europe
+PS C:\&gt; Get-Action1Region
+Europe</dev:code>
+        <dev:remarks>
+          <maml:para>Configures the PSAction1 module to use the Europe API endpoint, then returns the configured region.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Region</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>about_PSAction1</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Set-Action1Credentials</command:name>
       <command:verb>Set</command:verb>
       <command:noun>Action1Credentials</command:noun>
@@ -205,8 +527,8 @@
       <maml:para>* By organization ID using `-Org_ID`.</maml:para>
       <maml:para>* By unique organization name using `-Org_Name`.</maml:para>
       <maml:para></maml:para>
-      <maml:para>When `-Org_ID` is used, the value is stored directly as the default organization ID. This preserves backward compatibility with existing scripts that already call `Set-Action1DefaultOrg -Org_ID &lt;id&gt;`.</maml:para>
-      <maml:para>When `-Org_Name` is used, the command retrieves the available organizations, searches for an organization with the specified name, and stores the matching organization's ID as the default organization context.</maml:para>
+      <maml:para>When `-Org_ID` is used, the command resolves the organization by ID and stores both the organization ID and organization name as the default organization context.</maml:para>
+      <maml:para>When `-Org_Name` is used, the command retrieves the available organizations, searches for an organization with the specified name, and stores both the matching organization's ID and name as the default organization context.</maml:para>
       <maml:para>The default organization value is stored only for the duration of the current PowerShell session.</maml:para>
     </maml:description>
     <command:syntax>
@@ -216,7 +538,7 @@
           <maml:name>Org_ID</maml:name>
           <maml:description>
             <maml:para>Specifies the Action1 organization ID to use as the default organization for subsequent module commands.</maml:para>
-            <maml:para>This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The value is stored directly and is not resolved through the API.</maml:para>
+            <maml:para>The command resolves the ID through the API and stores the matching organization ID and name.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -251,7 +573,7 @@
         <maml:name>Org_ID</maml:name>
         <maml:description>
           <maml:para>Specifies the Action1 organization ID to use as the default organization for subsequent module commands.</maml:para>
-          <maml:para>This parameter preserves the original behavior of `Set-Action1DefaultOrg`. The value is stored directly and is not resolved through the API.</maml:para>
+          <maml:para>The command resolves the ID through the API and stores the matching organization ID and name.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -309,7 +631,7 @@
         <maml:title>-------- Example 1: Set the default organization by ID --------</maml:title>
         <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_ID "88c8b425-871e-4ff6-9afc-00df8592c6db"</dev:code>
         <dev:remarks>
-          <maml:para>Sets the default organization ID directly.</maml:para>
+          <maml:para>Resolves the organization by ID and sets it as the default organization.</maml:para>
           <maml:para>This is the recommended option for automation scripts because organization IDs are unique and unambiguous.</maml:para>
         </dev:remarks>
       </command:example>
@@ -317,7 +639,7 @@
         <maml:title>------- Example 2: Set the default organization by name -------</maml:title>
         <dev:code>PS C:\&gt; Set-Action1DefaultOrg -Org_Name "MyOrgName"</dev:code>
         <dev:remarks>
-          <maml:para>Finds an organization named `MyOrgName` and stores its organization ID as the default organization context.</maml:para>
+          <maml:para>Finds an organization named `MyOrgName` and stores its organization ID and name as the default organization context.</maml:para>
           <maml:para>The organization name must be unique. If more than one organization has the specified name, the command returns a terminating error and the organization ID must be used instead.</maml:para>
         </dev:remarks>
       </command:example>
@@ -338,7 +660,15 @@
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Get-Action1</maml:linkText>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgName</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
@@ -474,6 +804,8 @@
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NorthAmerica-2</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NA-2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
           </command:parameterValueGroup>
@@ -641,7 +973,7 @@
             <command:parameterValue required="false" command:variableLength="false">Automations</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">AdvancedSettings</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Apps</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">CutomAttribute</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">CustomAttribute</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">EndpointGroupMembers</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">EndpointGroups</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Me</command:parameterValue>
@@ -660,7 +992,7 @@
             <command:parameterValue required="false" command:variableLength="false">ReportExport</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Reports</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Scripts</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">AgentDepoyment</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">AgentDeployment</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Vulnerabilities</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">RawURI</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Settings</command:parameterValue>
@@ -1232,6 +1564,7 @@ PS C:\&gt; New-Action1 -Item RawURI -URI '/v1/custom/resource' -Data $Payload</d
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">NorthAmerica-2</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">NA-2</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Europe</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Australia</command:parameterValue>
           </command:parameterValueGroup>
@@ -2131,10 +2464,13 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
             <maml:para>* `All`</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">Due soon</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Overdue</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Due later</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Due_soon</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Overdue_due_soon</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Due_later</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Control_applied</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All_except_control_applied</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -2143,7 +2479,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           </dev:type>
           <dev:defaultValue>Control_applied</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Score</maml:name>
           <maml:description>
             <maml:para>Filters vulnerabilities by severity score.</maml:para>
@@ -2155,6 +2491,13 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
             <maml:para>* `Low`</maml:para>
             <maml:para>* `All`</maml:para>
           </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Critical</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">High</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Medium</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Low</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -2186,7 +2529,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:type>
         <dev:defaultValue>Control_applied</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Score</maml:name>
         <maml:description>
           <maml:para>Filters vulnerabilities by severity score.</maml:para>
@@ -2915,6 +3258,32 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Remove-Action1CompensatingControlRemediations</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Score</maml:name>
+          <maml:description>
+            <maml:para>Filters vulnerabilities by severity score.</maml:para>
+            <maml:para>Specify `All` to disable score filtering and remove all severity score remediation records.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Critical`</maml:para>
+            <maml:para>* `High`</maml:para>
+            <maml:para>* `Medium`</maml:para>
+            <maml:para>* `Low`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Critical</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">High</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Medium</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Low</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
           <maml:name>Confirm</maml:name>
           <maml:description>
@@ -2948,25 +3317,6 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Score</maml:name>
-          <maml:description>
-            <maml:para>Filters vulnerabilities by severity score.</maml:para>
-            <maml:para>Specify `All` to disable score filtering and remove all severity score remediation records.</maml:para>
-            <maml:para>Accepted values:</maml:para>
-            <maml:para>* `Critical`</maml:para>
-            <maml:para>* `High`</maml:para>
-            <maml:para>* `Medium`</maml:para>
-            <maml:para>* `Low`</maml:para>
-            <maml:para>* `All`</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>All</dev:defaultValue>
-        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -2994,19 +3344,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
-        <maml:name>WhatIf</maml:name>
-        <maml:description>
-          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Score</maml:name>
         <maml:description>
           <maml:para>Filters vulnerabilities by severity score.</maml:para>
@@ -3024,6 +3362,18 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:uri />
         </dev:type>
         <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>

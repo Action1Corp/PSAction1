@@ -238,7 +238,7 @@ When this parameter is set to `Settings`, the `For` parameter must also be speci
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: AutomationInstances, Automations, AdvancedSettings, Apps, CutomAttribute, EndpointGroupMembers, EndpointGroups, Me, Endpoint, EndpointApps, Endpoints, Logs, MissingUpdates, Organizations, Packages, PackageVersions, Policy, Policies, PolicyResults, ReportData, ReportExport, Reports, Scripts, AgentDepoyment, Vulnerabilities, RawURI, Settings
+Accepted values: AutomationInstances, Automations, AdvancedSettings, Apps, CustomAttribute, EndpointGroupMembers, EndpointGroups, Me, Endpoint, EndpointApps, Endpoints, Logs, MissingUpdates, Organizations, Packages, PackageVersions, Policy, Policies, PolicyResults, ReportData, ReportExport, Reports, Scripts, AgentDeployment, Vulnerabilities, RawURI, Settings
 
 Required: True
 Position: 0
