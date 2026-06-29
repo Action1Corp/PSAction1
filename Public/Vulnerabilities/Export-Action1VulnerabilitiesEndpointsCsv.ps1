@@ -106,14 +106,7 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
         Write-Action1Debug "Retrieved $($Vulnerabilities.Count) vulnerability record(s)."
 
         foreach ($Vulnerability in $Vulnerabilities) {
-            $CVEId = Get-PropertyValue -InputObject $Vulnerability -Name @('cve_id', 'CVEId', 'cveId', 'CVE', 'cve')
-
-            if ([string]::IsNullOrWhiteSpace($CVEId)) {
-                $FallbackId = Get-PropertyValue -InputObject $Vulnerability -Name @('id')
-                if ($FallbackId -match '^CVE-\d{4}-\d{3,6}$') {
-                    $CVEId = $FallbackId
-                }
-            }
+            $CVEId = $Vulnerability.cve_id
 
             if ([string]::IsNullOrWhiteSpace($CVEId)) {
                 Write-Action1Debug 'Skipping vulnerability object because no CVE identifier was found.'
@@ -157,48 +150,58 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
             Write-Action1Debug "Retrieved $($AffectedEndpoints.Count) endpoint record(s) for vulnerability '$CVEId'."
 
             $RowsToWrite = New-Object System.Collections.Generic.List[object]
+            $CVSSScore = $Vulnerability.cvss_score
+            $Severity = $Vulnerability.base_severity
+            $RemediationStatusValue = $Vulnerability.remediation_status
 
             foreach ($Endpoint in $AffectedEndpoints) {
-                $SoftwareItems = @(Get-PropertyValue -InputObject $Endpoint -Name @('software', 'Software'))
-
-                if ($SoftwareItems.Count -eq 1 -and $null -ne $SoftwareItems[0]) {
-                    $NestedItems = Get-PropertyValue -InputObject $SoftwareItems[0] -Name @('items', 'Items')
-                    if ($null -ne $NestedItems) {
-                        $SoftwareItems = @($NestedItems)
-                    }
-                }
-
-                if ($SoftwareItems.Count -eq 1 -and $null -eq $SoftwareItems[0]) {
-                    $SoftwareItems = @()
-                }
+                $SoftwareItems = @($Endpoint.software | Where-Object { $null -ne $_ })
 
                 if ($SoftwareItems.Count -eq 0) {
                     $RowsToWrite.Add([pscustomobject][ordered]@{
                         CVEId             = $CVEId
-                        CVSSScore         = Get-PropertyValue -InputObject $Vulnerability -Name @('cvss_score', 'cvss', 'cvssScore', 'score_value')
-                        Severity          = Get-PropertyValue -InputObject $Vulnerability -Name @('score', 'severity', 'Severity')
-                        RemediationStatus = Get-PropertyValue -InputObject $Vulnerability -Name @('remediation_status', 'remediationStatus')
-                        EndpointId        = Get-PropertyValue -InputObject $Endpoint -Name @('endpoint_id', 'endpointId', 'id')
-                        EndpointName      = Get-PropertyValue -InputObject $Endpoint -Name @('endpoint_name', 'endpointName', 'computer_name', 'computerName', 'name')
-                        ApplicationName   = Get-PropertyValue -InputObject $Endpoint -Name @('product_name', 'productName', 'application_name', 'applicationName')
-                        InstalledVersion  = Get-PropertyValue -InputObject $Endpoint -Name @('version', 'installed_version', 'installedVersion', 'current_version', 'currentVersion')
-                        AvailableUpdate   = Get-PropertyValue -InputObject $Endpoint -Name @('available_update', 'available_updates', 'availableVersion', 'fixed_version', 'fixedVersion')
+                        CVSSScore         = $CVSSScore
+                        Severity          = $Severity
+                        RemediationStatus = $RemediationStatusValue
+                        EndpointId        = $Endpoint.endpoint_id
+                        EndpointName      = $Endpoint.endpoint_name
+                        ApplicationName   = $null
+                        InstalledVersion  = $null
+                        AvailableUpdate   = $null
                     })
 
                     continue
                 }
 
                 foreach ($Software in $SoftwareItems) {
+                    $InstalledVersions = @(
+                        $Software.versions |
+                            Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.version) } |
+                            ForEach-Object { [string]$_.version }
+                    )
+
+                    $AvailableUpdates = @(
+                        $Software.available_updates |
+                            ForEach-Object {
+                                if (-not [string]::IsNullOrWhiteSpace([string]$_.name)) {
+                                    [string]$_.name
+                                }
+                                elseif (-not [string]::IsNullOrWhiteSpace([string]$_.version)) {
+                                    [string]$_.version
+                                }
+                            }
+                    )
+
                     $RowsToWrite.Add([pscustomobject][ordered]@{
                         CVEId             = $CVEId
-                        CVSSScore         = Get-PropertyValue -InputObject $Vulnerability -Name @('cvss_score', 'cvss', 'cvssScore', 'score_value')
-                        Severity          = Get-PropertyValue -InputObject $Vulnerability -Name @('score', 'severity', 'Severity')
-                        RemediationStatus = Get-PropertyValue -InputObject $Vulnerability -Name @('remediation_status', 'remediationStatus')
-                        EndpointId        = Get-PropertyValue -InputObject $Endpoint -Name @('endpoint_id', 'endpointId', 'id')
-                        EndpointName      = Get-PropertyValue -InputObject $Endpoint -Name @('endpoint_name', 'endpointName', 'computer_name', 'computerName', 'name')
-                        ApplicationName   = Get-PropertyValue -InputObject $Software -Name @('product_name', 'productName', 'application_name', 'applicationName', 'name')
-                        InstalledVersion  = Get-PropertyValue -InputObject $Software -Name @('version', 'installed_version', 'installedVersion', 'current_version', 'currentVersion')
-                        AvailableUpdate   = Get-PropertyValue -InputObject $Software -Name @('available_update', 'available_updates', 'availableVersion', 'fixed_version', 'fixedVersion')
+                        CVSSScore         = $CVSSScore
+                        Severity          = $Severity
+                        RemediationStatus = $RemediationStatusValue
+                        EndpointId        = $Endpoint.endpoint_id
+                        EndpointName      = $Endpoint.endpoint_name
+                        ApplicationName   = $Software.product_name
+                        InstalledVersion  = $InstalledVersions -join '; '
+                        AvailableUpdate   = $AvailableUpdates -join '; '
                     })
                 }
             }
