@@ -20,8 +20,9 @@ function Start-Action1Requery {
         $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["R_$Type"])
     }
     else {
-        Initialize-Action1DefaultOrg
-        $Org_ID = Get-Action1DefaultOrgId
+        if (Initialize-Action1DefaultOrg) {
+            $Org_ID = Get-Action1DefaultOrgId
+        }
 
         if ($Endpoint_Id) {
             if ($Script:Action1_UriMap["R_$Type"].ToString().Contains("`$Object_ID")) {

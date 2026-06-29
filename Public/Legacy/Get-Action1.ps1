@@ -290,8 +290,9 @@ function Get-Action1 {
         }
     }
     else {
-        Initialize-Action1DefaultOrg
-        $Org_ID = Get-Action1DefaultOrgId
+        if (Initialize-Action1DefaultOrg) {
+            $Org_ID = Get-Action1DefaultOrgId
+        }
 
         if ($Id) {
             $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"] -Org_ID $Org_ID -Object_ID $Id)

@@ -42,8 +42,9 @@ function Update-Action1 {
         } 
     }
 
-    Initialize-Action1DefaultOrg
-    $Org_ID = Get-Action1DefaultOrgId
+    if (Initialize-Action1DefaultOrg) {
+        $Org_ID = Get-Action1DefaultOrgId
+    }
 
     switch ($Action) {
         'ModifyMembers' {

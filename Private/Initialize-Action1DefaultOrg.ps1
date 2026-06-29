@@ -14,7 +14,7 @@ function Initialize-Action1DefaultOrg {
 
     if ($Org_ID -and $Org_Name) {
         Write-Action1Debug 'Default organization is already initialized.'
-        return
+        return $true
     }
 
     if ($Script:Action1_Interactive) {
@@ -25,7 +25,7 @@ function Initialize-Action1DefaultOrg {
 
         if ($Org_ID -and $Org_Name) {
             Write-Action1Debug 'Default organization was initialized interactively.'
-            return
+            return $true
         }
 
         throw 'Default organization was not selected.'
