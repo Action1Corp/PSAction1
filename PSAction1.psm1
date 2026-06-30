@@ -13,7 +13,7 @@
 
 $Script:ModuleRoot = $PSScriptRoot
 
-$RequiredPrivateFiles = @(
+$BootstrapFilesToLoadFirst = @(
     'Private\Configuration\Action1.Defaults.ps1'
     'Private\Configuration\Action1.Hosts.ps1'
     'Private\Configuration\Action1.UriMap.ps1'
@@ -22,7 +22,7 @@ $RequiredPrivateFiles = @(
     'Private\Templates\PackageDeployTemplate.ps1'
 )
 
-foreach ($RelativePath in $RequiredPrivateFiles) {
+foreach ($RelativePath in $BootstrapFilesToLoadFirst) {
     $FullPath = Join-Path $Script:ModuleRoot $RelativePath
 
     if (-not (Test-Path -LiteralPath $FullPath -PathType Leaf)) {
@@ -32,7 +32,7 @@ foreach ($RelativePath in $RequiredPrivateFiles) {
     . $FullPath
 }
 
-$LoadedPrivateFiles = $RequiredPrivateFiles | ForEach-Object {
+$LoadedPrivateFiles = $BootstrapFilesToLoadFirst | ForEach-Object {
     [System.IO.Path]::GetFullPath((Join-Path $Script:ModuleRoot $_))
 }
 
