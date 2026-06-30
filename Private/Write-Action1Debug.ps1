@@ -18,7 +18,7 @@ function Write-Action1Debug {
         return
     }
 
-    $Timestamp = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ss')
+    $Timestamp = (Get-Date).ToString('yy-MM-ddTHH:mm:ss')
     $LogMessage = '{0} DEBUG Action1 - {1}' -f $Timestamp, $Message
     Write-Host $LogMessage -ForegroundColor Blue
 }
