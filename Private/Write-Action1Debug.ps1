@@ -18,7 +18,9 @@ function Write-Action1Debug {
         return
     }
 
-    $Timestamp = (Get-Date).ToString('yy-MM-ddTHH:mm:ss')
+    $Now = Get-Date
+    $Timezone = $Now.ToString('zzz').Replace(':', '')
+    $Timestamp = '{0}{1}' -f $Now.ToString('yyMMdd HH:mm:ss'), $Timezone
     $LogMessage = '{0} DEBUG Action1 - {1}' -f $Timestamp, $Message
     Write-Host $LogMessage -ForegroundColor Blue
 }
