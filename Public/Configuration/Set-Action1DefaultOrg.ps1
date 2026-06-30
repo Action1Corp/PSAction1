@@ -28,12 +28,19 @@ function Set-Action1DefaultOrg {
 
     switch ($PSCmdlet.ParameterSetName) {
         'ById' {
-            $Script:Action1_Default_Org = $Org_ID
+            Write-Action1Debug "Resolving default organization by ID '$Org_ID'."
+            $organization = Resolve-Action1OrganizationById -Org_ID $Org_ID
+            $Script:Action1_Default_Org_Id = $organization.Org_ID
+            $Script:Action1_Default_Org_Name = $organization.Org_Name
         }
 
         'ByName' {
+            Write-Action1Debug "Resolving default organization by name '$Org_Name'."
             $organization = Resolve-Action1OrganizationByName -Org_Name $Org_Name
-            $Script:Action1_Default_Org = $organization.id
+            $Script:Action1_Default_Org_Id = $organization.Org_ID
+            $Script:Action1_Default_Org_Name = $organization.Org_Name
         }
     }
+
+    Write-Action1Debug "Default organization set to '$Script:Action1_Default_Org_Name'."
 }

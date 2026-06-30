@@ -13,11 +13,12 @@ function Resolve-Action1OrganizationByName {
         [string]$Org_Name
     )
 
-    $organizations = @(Get-Action1 -Query Organizations -ErrorAction Stop)
+    Write-Action1Debug "Resolving organization by name '$Org_Name'."
+    $organizations = @(Get-Action1Organizations -ErrorAction Stop)
 
     $matchedOrgs = @(
         $organizations | Where-Object {
-            $_.name -ieq $Org_Name
+            $_.Org_Name -ieq $Org_Name
         }
     )
 
@@ -27,7 +28,7 @@ function Resolve-Action1OrganizationByName {
 
     if ($matchedOrgs.Count -gt 1) {
         $matchDetails = ($matchedOrgs | ForEach-Object {
-            "$($_.name) [$($_.id)]"
+            "$($_.Org_Name) [$($_.Org_ID)]"
         }) -join ', '
 
         Write-Error "Organization name '$Org_Name' is not unique. Matching organizations: $matchDetails. Use -Org_ID with the exact organization ID." -ErrorAction Stop

@@ -20,6 +20,7 @@ $Script:Action1_UriMap = @{
     G_Me                   = { "/Me" }
     G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID" }
     G_Organizations        = { "/organizations" }
+    N_Organization         = { "/organizations" }
     G_Packages             = { "/packages/all" }
     G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
@@ -38,7 +39,6 @@ $Script:Action1_UriMap = @{
     D_VulnerabilityRemediation     = { param($Org_ID, $CVEId, $RemediationId) "/vulnerabilities/$Org_ID/$CVEId/remediations/$RemediationId" }
     N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    N_Organization         = { "/organizations" }
     N_Remediation          = { param($Org_ID)  "/policies/instances/$Org_ID" }
     N_DeferredRemediation  = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }

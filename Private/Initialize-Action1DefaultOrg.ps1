@@ -9,17 +9,33 @@ function Initialize-Action1DefaultOrg {
     [CmdletBinding()]
     param()
 
-    if ($null -eq $Script:Action1_Default_Org) {
-        if ($Script:Action1_Interactive) {
-            Set-Action1DefaultOrg
+    $Org_ID = Get-Action1DefaultOrgId
+    $Org_Name = Get-Action1DefaultOrgName
 
-            if ($null -eq $Script:Action1_Default_Org) {
-                throw "Default organization was not selected."
-            }
-        }
-        else {
-            throw "Default Org not set. Call Set-Action1DefaultOrg before making API calls."
-        }
+    if ($Org_ID -and $Org_Name) {
+        Write-Action1Debug 'Default organization is already initialized.'
+        return $true
     }
-    return $Script:Action1_Default_Org
+
+    if ($Script:Action1_Interactive) {
+        Set-Action1DefaultOrg
+
+        $Org_ID = Get-Action1DefaultOrgId
+        $Org_Name = Get-Action1DefaultOrgName
+
+        if ($Org_ID -and $Org_Name) {
+            Write-Action1Debug 'Default organization was initialized interactively.'
+            return $true
+        }
+
+        throw 'Default organization was not selected.'
+    }
+
+    if (-not $Org_ID) {
+        throw 'Default Org ID not set. Call Set-Action1DefaultOrg before making API calls.'
+    }
+
+    if (-not $Org_Name) {
+        throw 'Default Org name not set. Call Set-Action1DefaultOrg before making API calls.'
+    }
 }

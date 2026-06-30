@@ -74,26 +74,38 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = 'Set-Action1Credentials', 
-                        'Set-Action1DefaultOrg', 
-                        'Set-Action1Locale',
-                        'Set-Action1Region', 
-                        'Set-Action1Debug', 
-                        'New-Action1', 
-                        'Get-Action1',
-                        'Update-Action1',
-                        'Set-Action1Interactive',
-                        'Start-Action1Requery',
-                        'Start-Action1PackageUpload',
-                        'Get-Action1Vulnerabilities',
-                        'Get-Action1Vulnerability',
-                        'Get-Action1VulnerabilityEndpoints',
-                        'Get-Action1VulnerabilityRemediations',
-                        'New-Action1CompensatingControlRemediation',
-                        'Update-Action1CompensatingControlRemediation',
-                        'Remove-Action1CompensatingControlRemediation',
-                        'Remove-Action1CompensatingControlRemediations',
-                        'Export-Action1VulnerabilitiesEndpointsCsv'
+    FunctionsToExport = @(
+        # Configuration
+        'Set-Action1Credentials'
+        'Set-Action1DefaultOrg'
+        'Get-Action1DefaultOrgId'
+        'Get-Action1DefaultOrgName'
+        'Get-Action1Organizations'
+        'Set-Action1Region'
+        'Get-Action1Region'
+        'Set-Action1Debug'
+        'Get-Action1Debug'
+
+        # Vulnerabilities
+        'Get-Action1Vulnerability'
+        'Get-Action1Vulnerabilities'
+        'Get-Action1VulnerabilityRemediations'
+        'Get-Action1VulnerabilityEndpoints'
+        'New-Action1CompensatingControlRemediation'
+        'Update-Action1CompensatingControlRemediation'
+        'Remove-Action1CompensatingControlRemediation'
+        'Remove-Action1CompensatingControlRemediations'
+        'Export-Action1VulnerabilitiesEndpointsCsv'
+
+        # Legacy
+        'Set-Action1Locale'
+        'New-Action1'
+        'Get-Action1'
+        'Update-Action1'
+        'Set-Action1Interactive'
+        'Start-Action1Requery'
+        'Start-Action1PackageUpload'
+    )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = '*'

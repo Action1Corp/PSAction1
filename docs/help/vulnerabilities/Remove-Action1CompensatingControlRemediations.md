@@ -14,7 +14,7 @@ Deletes compensating control remediation records for vulnerabilities with remedi
 ## SYNTAX
 
 ```
-Remove-Action1CompensatingControlRemediations [-Score <String>] [-Force] [-WhatIf] [-Confirm]
+Remove-Action1CompensatingControlRemediations [[-Score] <String>] [-Force] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
@@ -116,22 +116,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -WhatIf
-
-Shows what would happen if the command runs. The command is not run.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Score
 
 Filters vulnerabilities by severity score.
@@ -150,10 +134,27 @@ Accepted values:
 Type: String
 Parameter Sets: (All)
 Aliases:
+Accepted values: Critical, High, Medium, Low, All
+
+Required: False
+Position: 0
+Default value: All
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the command runs. The command is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
 
 Required: False
 Position: Named
-Default value: All
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

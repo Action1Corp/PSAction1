@@ -6,10 +6,14 @@
 # © Action1 Corporation
 
 function Set-Action1Region {
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
         [ValidateSet('NorthAmerica', 'NorthAmerica-2', 'NA-2', 'Europe', 'Australia')]
         [String]$Region
     )
+
     $Script:Action1_BaseURI = $Script:Action1_Hosts[$Region]
+    $Script:Action1_Region = $Region
+    Write-Action1Debug "Action1 region set to '$Region'."
 }

@@ -16,7 +16,9 @@ function Get-Action1Vulnerabilities {
         [string]$Score = 'Critical'
     )
 
-    $Org_ID = Initialize-Action1DefaultOrg
+    if (Initialize-Action1DefaultOrg) {
+        $Org_ID = Get-Action1DefaultOrgId
+    }
 
     if (-not $Script:Action1_UriMap.ContainsKey('G_Vulnerabilities')) {
         throw "Action1 URI map key 'G_Vulnerabilities' is not defined."
