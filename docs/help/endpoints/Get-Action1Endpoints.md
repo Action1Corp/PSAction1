@@ -14,18 +14,16 @@ Gets managed endpoints for the current Action1 organization.
 ## SYNTAX
 
 ```
-Get-Action1Endpoints [[-Status] <String>] [[-Online_Status] <String>] [[-Updater_Status] <String>] [[-Vulnerability_Status] <String>] [<CommonParameters>]
+Get-Action1Endpoints [[-Status] <String>] [[-OnlineStatus] <String>] [[-UpdateStatus] <String>] [[-VulnerabilityStatus] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Gets managed endpoint records from the current Action1 organization by using the Action1 endpoints API.
 
-By default, the command returns endpoints with the status `Disconnected`.
-
 Use **Status** to filter endpoints by connection or uninstall status.
 
-Use **Online_Status**, **Updater_Status**, and **Vulnerability_Status** to filter endpoints by health status.
+Use **OnlineStatus**, **UpdateStatus**, and **VulnerabilityStatus** to filter endpoints by health status.
 
 Specify an empty string or `$null` for a filter parameter to skip that filter.
 
@@ -39,7 +37,7 @@ The command uses the module default organization configured by **Set-Action1Defa
 Get-Action1Endpoints
 ```
 
-Gets disconnected endpoints in the current organization.
+Gets all endpoints in the current organization.
 
 This is the default behavior.
 
@@ -62,7 +60,7 @@ Gets managed endpoints without applying the status filter.
 ### Example 4: Get endpoints with online warnings
 
 ```powershell
-Get-Action1Endpoints -Status $null -Online_Status WARNING
+Get-Action1Endpoints -Status $null -OnlineStatus WARNING
 ```
 
 Gets managed endpoints where the online status is `WARNING`, without applying the endpoint status filter.
@@ -70,16 +68,16 @@ Gets managed endpoints where the online status is `WARNING`, without applying th
 ### Example 5: Get endpoints with update and vulnerability errors
 
 ```powershell
-Get-Action1Endpoints -Status $null -Updater_Status ERROR -Vulnerability_Status ERROR
+Get-Action1Endpoints -Status $null -UpdateStatus ERROR -VulnerabilityStatus ERROR
 ```
 
-Gets managed endpoints where the updater status and vulnerability status are both `ERROR`.
+Gets managed endpoints where the update status and vulnerability status are both `ERROR`.
 
 ### Example 6: Review selected endpoint fields
 
 ```powershell
 Get-Action1Endpoints -Status Connected |
-    Select-Object id, name, status, online_status, updater_status, vulnerability_status
+    Select-Object id, name, status, online_status, update_status, vulnerability_status
 ```
 
 Gets connected endpoints and selects key fields.
@@ -106,12 +104,12 @@ Accepted values: Connected, Disconnected, Pending Uninstall
 
 Required: False
 Position: 0
-Default value: Disconnected
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Online_Status
+### -OnlineStatus
 
 Filters endpoints by online health status.
 
@@ -137,11 +135,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Updater_Status
+### -UpdateStatus
 
-Filters endpoints by updater health status.
+Filters endpoints by update health status.
 
-Specify an empty string or `$null` to disable updater status filtering.
+Specify an empty string or `$null` to disable update status filtering.
 
 Accepted values:
 
@@ -163,7 +161,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Vulnerability_Status
+### -VulnerabilityStatus
 
 Filters endpoints by vulnerability health status.
 
