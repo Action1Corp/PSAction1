@@ -42,11 +42,20 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
 
     if (-not $PSBoundParameters.ContainsKey('Path')) {
         if (Initialize-Action1DefaultOrg) {
+            $orgName = Get-Action1DefaultOrgName
             $orgId = Get-Action1DefaultOrgId
         }
 
-        $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
-        $fileName = 'Action1_{0}_VulnerabilitiesEndpoints_{1}.csv' -f $orgId, $timestamp
+        $normalizedOrgName = ConvertTo-LatinAlphaNumericString -InputString $orgName
+
+        if ([string]::IsNullOrWhiteSpace($normalizedOrgName)) {
+            Write-Action1Debug 'Default organization name is empty after normalization.'
+            $normalizedOrgName = $orgId
+        }
+
+        $timestamp = Get-Date -Format 'yyMMdd_HHmm'
+        $fileNameFormat = 'Action1_{0}_VulnerabilitiesEndpoints_{1}.csv'
+        $fileName = $fileNameFormat -f $normalizedOrgName, $timestamp
         $Path = Join-Path -Path (Get-Location) -ChildPath $fileName
     }
 
