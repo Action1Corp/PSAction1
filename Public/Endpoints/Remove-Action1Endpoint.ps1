@@ -11,8 +11,8 @@ function Remove-Action1Endpoint {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            $ParsedGuid = [guid]::Empty
-            [guid]::TryParseExact($_, 'D', [ref]$ParsedGuid)
+            $parsedGuid = [guid]::Empty
+            [guid]::TryParseExact($_, 'D', [ref]$parsedGuid)
         })]
         [string]$EndpointId,
 
@@ -20,22 +20,22 @@ function Remove-Action1Endpoint {
     )
 
     if (Initialize-Action1DefaultOrg) {
-        $Org_ID = Get-Action1DefaultOrgId
+        $orgId = Get-Action1DefaultOrgId
     }
 
     if (-not $Script:Action1_UriMap.ContainsKey('D_Endpoint')) {
         throw "Action1 URI map key 'D_Endpoint' is not defined."
     }
 
-    $Endpoint = & $Script:Action1_UriMap['D_Endpoint'] $Org_ID $EndpointId
-    $Path = "$Script:Action1_BaseURI{0}" -f $Endpoint
-    $Target = "endpoint '$EndpointId'"
+    $endpoint = & $Script:Action1_UriMap['D_Endpoint'] $orgId $EndpointId
+    $path = "$Script:Action1_BaseURI{0}" -f $endpoint
+    $target = "endpoint '$EndpointId'"
 
     if ($Force) {
         $ConfirmPreference = 'None'
     }
 
-    if (-not $PSCmdlet.ShouldProcess($Target, 'Delete Action1 endpoint')) {
+    if (-not $PSCmdlet.ShouldProcess($target, 'Delete Action1 endpoint')) {
         Write-Action1Debug "Skipped deleting endpoint '$EndpointId'."
 
         [pscustomobject]@{
@@ -48,13 +48,13 @@ function Remove-Action1Endpoint {
 
     Write-Action1Debug "Deleting endpoint '$EndpointId'."
 
-    $Response = Invoke-Action1ApiRequest `
+    $response = Invoke-Action1ApiRequest `
         -Method DELETE `
-        -Path $Path `
+        -Path $path `
         -Label "Delete endpoint '$EndpointId'" `
         -RawResponse
 
-    if ($null -eq $Response) {
+    if ($null -eq $response) {
         Write-Error ("Failed to delete endpoint '{0}'." -f $EndpointId)
 
         [pscustomobject]@{
@@ -70,6 +70,6 @@ function Remove-Action1Endpoint {
     [pscustomobject]@{
         EndpointId = $EndpointId
         Status     = 'Removed'
-        Response   = $Response
+        Response   = $response
     }
 }

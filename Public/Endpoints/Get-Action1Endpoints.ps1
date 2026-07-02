@@ -31,53 +31,53 @@ function Get-Action1Endpoints {
     )
 
     if (Initialize-Action1DefaultOrg) {
-        $Org_ID = Get-Action1DefaultOrgId
+        $orgId = Get-Action1DefaultOrgId
     }
 
     if (-not $Script:Action1_UriMap.ContainsKey('G_Endpoints')) {
         throw "Action1 URI map key 'G_Endpoints' is not defined."
     }
 
-    $Endpoint = & $Script:Action1_UriMap['G_Endpoints'] $Org_ID
-    $Path = "$Script:Action1_BaseURI{0}" -f $Endpoint
-    $AddArgs = $null
-    $DebugFilters = @()
+    $endpoint = & $Script:Action1_UriMap['G_Endpoints'] $orgId
+    $path = "$Script:Action1_BaseURI{0}" -f $endpoint
+    $addArgs = $null
+    $debugFilters = @()
 
     if (-not [string]::IsNullOrWhiteSpace($Status)) {
-        $EncodedStatus = [System.Uri]::EscapeDataString($Status)
-        $QueryArgument = "status=$EncodedStatus"
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument $QueryArgument
-        $DebugFilters += "status '$Status'"
+        $encodedStatus = [System.Uri]::EscapeDataString($Status)
+        $queryArgument = "status=$encodedStatus"
+        $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
+        $debugFilters += "status '$Status'"
     }
 
     if (-not [string]::IsNullOrWhiteSpace($Online_Status)) {
-        $EncodedOnlineStatus = [System.Uri]::EscapeDataString($Online_Status)
-        $QueryArgument = "online_status=$EncodedOnlineStatus"
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument $QueryArgument
-        $DebugFilters += "online status '$Online_Status'"
+        $encodedOnlineStatus = [System.Uri]::EscapeDataString($Online_Status)
+        $queryArgument = "online_status=$encodedOnlineStatus"
+        $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
+        $debugFilters += "online status '$Online_Status'"
     }
 
     if (-not [string]::IsNullOrWhiteSpace($Updater_Status)) {
-        $EncodedUpdaterStatus = [System.Uri]::EscapeDataString($Updater_Status)
-        $QueryArgument = "updater_status=$EncodedUpdaterStatus"
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument $QueryArgument
-        $DebugFilters += "updater status '$Updater_Status'"
+        $encodedUpdaterStatus = [System.Uri]::EscapeDataString($Updater_Status)
+        $queryArgument = "updater_status=$encodedUpdaterStatus"
+        $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
+        $debugFilters += "updater status '$Updater_Status'"
     }
 
     if (-not [string]::IsNullOrWhiteSpace($Vulnerability_Status)) {
-        $EncodedVulnStatus = [System.Uri]::EscapeDataString($Vulnerability_Status)
-        $QueryArgument = "vulnerability_status=$EncodedVulnStatus"
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument $QueryArgument
-        $DebugFilters += "vulnerability status '$Vulnerability_Status'"
+        $encodedVulnStatus = [System.Uri]::EscapeDataString($Vulnerability_Status)
+        $queryArgument = "vulnerability_status=$encodedVulnStatus"
+        $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
+        $debugFilters += "vulnerability status '$Vulnerability_Status'"
     }
 
-    $DebugMessage = 'Listing endpoints'
+    $debugMessage = 'Listing endpoints'
 
-    if ($DebugFilters.Count -gt 0) {
-        $DebugMessage = '{0} with {1}' -f $DebugMessage, ($DebugFilters -join ', ')
+    if ($debugFilters.Count -gt 0) {
+        $debugMessage = '{0} with {1}' -f $debugMessage, ($debugFilters -join ', ')
     }
 
-    Write-Action1Debug "$DebugMessage."
+    Write-Action1Debug "$debugMessage."
 
-    Invoke-Action1PagedGetRequest -Path $Path -Label 'Endpoints' -AddArgs $AddArgs
+    Invoke-Action1PagedGetRequest -Path $path -Label 'Endpoints' -AddArgs $addArgs
 }

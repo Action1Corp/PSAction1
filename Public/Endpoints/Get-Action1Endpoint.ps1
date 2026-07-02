@@ -11,24 +11,24 @@ function Get-Action1Endpoint {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            $ParsedGuid = [guid]::Empty
-            [guid]::TryParseExact($_, 'D', [ref]$ParsedGuid)
+            $parsedGuid = [guid]::Empty
+            [guid]::TryParseExact($_, 'D', [ref]$parsedGuid)
         })]
         [string]$EndpointId
     )
 
     if (Initialize-Action1DefaultOrg) {
-        $Org_ID = Get-Action1DefaultOrgId
+        $orgId = Get-Action1DefaultOrgId
     }
 
     if (-not $Script:Action1_UriMap.ContainsKey('G_Endpoint')) {
         throw "Action1 URI map key 'G_Endpoint' is not defined."
     }
 
-    $Endpoint = & $Script:Action1_UriMap['G_Endpoint'] $Org_ID $EndpointId
-    $Path = "$Script:Action1_BaseURI{0}" -f $Endpoint
+    $endpoint = & $Script:Action1_UriMap['G_Endpoint'] $orgId $EndpointId
+    $path = "$Script:Action1_BaseURI{0}" -f $endpoint
 
     Write-Action1Debug "Getting endpoint '$EndpointId'."
 
-    Invoke-Action1ApiRequest -Method GET -Path $Path -Label "Endpoint '$EndpointId'"
+    Invoke-Action1ApiRequest -Method GET -Path $path -Label "Endpoint '$EndpointId'"
 }

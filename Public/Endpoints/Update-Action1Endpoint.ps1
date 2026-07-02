@@ -11,8 +11,8 @@ function Update-Action1Endpoint {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            $ParsedGuid = [guid]::Empty
-            [guid]::TryParseExact($_, 'D', [ref]$ParsedGuid)
+            $parsedGuid = [guid]::Empty
+            [guid]::TryParseExact($_, 'D', [ref]$parsedGuid)
         })]
         [string]$EndpointId,
 
@@ -25,52 +25,52 @@ function Update-Action1Endpoint {
         [string]$Comment
     )
 
-    $Body = @{}
+    $body = @{}
 
     if ($PSBoundParameters.ContainsKey('Name')) {
-        $Body.name = $Name
+        $body.name = $Name
     }
 
     if ($PSBoundParameters.ContainsKey('Comment')) {
-        $Body.comment = $Comment
+        $body.comment = $Comment
     }
 
-    if ($Body.Count -eq 0) {
+    if ($body.Count -eq 0) {
         Write-Error "Specify at least one value to update: -Name or -Comment."
         return
     }
 
     if (Initialize-Action1DefaultOrg) {
-        $Org_ID = Get-Action1DefaultOrgId
+        $orgId = Get-Action1DefaultOrgId
     }
 
     if (-not $Script:Action1_UriMap.ContainsKey('U_Endpoint')) {
         throw "Action1 URI map key 'U_Endpoint' is not defined."
     }
 
-    $Endpoint = & $Script:Action1_UriMap['U_Endpoint'] $Org_ID $EndpointId
-    $Path = "$Script:Action1_BaseURI{0}" -f $Endpoint
-    $Target = "endpoint '$EndpointId'"
+    $endpoint = & $Script:Action1_UriMap['U_Endpoint'] $orgId $EndpointId
+    $path = "$Script:Action1_BaseURI{0}" -f $endpoint
+    $target = "endpoint '$EndpointId'"
 
-    if (-not $PSCmdlet.ShouldProcess($Target, 'Update Action1 endpoint')) {
+    if (-not $PSCmdlet.ShouldProcess($target, 'Update Action1 endpoint')) {
         Write-Action1Debug "Skipped updating endpoint '$EndpointId'."
         return
     }
 
     Write-Action1Debug "Updating endpoint '$EndpointId'."
 
-    $Response = Invoke-Action1ApiRequest `
+    $response = Invoke-Action1ApiRequest `
         -Method PATCH `
-        -Path $Path `
+        -Path $path `
         -Label "Update endpoint '$EndpointId'" `
-        -Body $Body
+        -Body $body
 
-    if ($null -eq $Response) {
+    if ($null -eq $response) {
         Write-Error ("Failed to update endpoint '{0}'." -f $EndpointId)
         return
     }
 
     Write-Action1Debug "Updated endpoint '$EndpointId'."
 
-    $Response
+    $response
 }

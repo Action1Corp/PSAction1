@@ -23,35 +23,35 @@ function Update-Action1CompensatingControlRemediation {
     )
 
     if (Initialize-Action1DefaultOrg) {
-        $Org_ID = Get-Action1DefaultOrgId
+        $orgId = Get-Action1DefaultOrgId
     }
 
     if (-not $Script:Action1_UriMap.ContainsKey('U_VulnerabilityRemediation')) {
         throw "Action1 URI map key 'U_VulnerabilityRemediation' is not defined."
     }
 
-    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['U_VulnerabilityRemediation'] $Org_ID $CVEId $RemediationId)
-    $Target = "CVE '$CVEId' remediation '$RemediationId'"
+    $path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['U_VulnerabilityRemediation'] $orgId $CVEId $RemediationId)
+    $target = "CVE '$CVEId' remediation '$RemediationId'"
 
-    if (-not $PSCmdlet.ShouldProcess($Target, 'Update Action1 compensating control remediation')) {
+    if (-not $PSCmdlet.ShouldProcess($target, 'Update Action1 compensating control remediation')) {
         Write-Action1Debug "Skipped updating remediation '$RemediationId' for vulnerability '$CVEId'."
         return
     }
 
-    $Body = @{
+    $body = @{
         comment = $Comment
     }
 
     Write-Action1Debug "Updating remediation '$RemediationId' for vulnerability '$CVEId'."
 
-    $Response = Invoke-Action1ApiRequest  -Method PATCH -Path $Path -Label "Update compensating control remediation '$RemediationId'" -Body $Body
+    $response = Invoke-Action1ApiRequest  -Method PATCH -Path $path -Label "Update compensating control remediation '$RemediationId'" -Body $body
 
-    if ($null -eq $Response) {
+    if ($null -eq $response) {
         Write-Error ("Failed to update remediation '{0}' for vulnerability '{1}'." -f $RemediationId, $CVEId)
         return
     }
 
     Write-Action1Debug "Updated remediation '$RemediationId' for vulnerability '$CVEId'."
 
-    $Response
+    $response
 }
