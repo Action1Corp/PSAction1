@@ -13,7 +13,7 @@
 
 $Script:ModuleRoot = $PSScriptRoot
 
-$ConfigurationFiles = @(
+$BootstrapFilesToLoadFirst = @(
     'Private\Configuration\Action1.Defaults.ps1'
     'Private\Configuration\Action1.Hosts.ps1'
     'Private\Configuration\Action1.UriMap.ps1'
@@ -22,16 +22,22 @@ $ConfigurationFiles = @(
     'Private\Templates\PackageDeployTemplate.ps1'
 )
 
-foreach ($RelativePath in $ConfigurationFiles) {
-    . (Join-Path $Script:ModuleRoot $RelativePath)
+foreach ($RelativePath in $BootstrapFilesToLoadFirst) {
+    $FullPath = Join-Path $Script:ModuleRoot $RelativePath
+
+    if (-not (Test-Path -LiteralPath $FullPath -PathType Leaf)) {
+        throw "Required module file not found: $RelativePath"
+    }
+
+    . $FullPath
+}
+
+$LoadedPrivateFiles = $BootstrapFilesToLoadFirst | ForEach-Object {
+    [System.IO.Path]::GetFullPath((Join-Path $Script:ModuleRoot $_))
 }
 
 Get-ChildItem -Path (Join-Path $Script:ModuleRoot 'Private') -Filter '*.ps1' -Recurse |
-    Where-Object {
-        $_.FullName -notmatch '\\Private\\Configuration\\' -and
-        $_.FullName -notmatch '\\Private\\Initialization\\' -and
-        $_.FullName -notmatch '\\Private\\Templates\\'
-    } |
+    Where-Object { $LoadedPrivateFiles -notcontains $_.FullName } |
     Sort-Object FullName |
     ForEach-Object {
         . $_.FullName

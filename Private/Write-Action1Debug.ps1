@@ -8,14 +8,19 @@
 function Write-Action1Debug {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory, Position = 0)]
+        [Parameter(Position = 0)]
+        [AllowNull()]
         [AllowEmptyString()]
-        [string]$Message
+        [string]$Message = ''
     )
 
     if (-not $Script:Action1_DebugEnabled) {
         return
     }
 
-    Write-Host ("Action1 Debug: {0}" -f $Message) -ForegroundColor Blue
+    $Now = Get-Date
+    $Timezone = $Now.ToString('zzz').Replace(':', '')
+    $Timestamp = '{0}{1}' -f $Now.ToString('yyMMdd HH:mm:ss'), $Timezone
+    $LogMessage = '{0} DEBUG Action1 - {1}' -f $Timestamp, $Message
+    Write-Host $LogMessage -ForegroundColor Blue
 }
