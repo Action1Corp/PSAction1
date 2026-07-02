@@ -89,6 +89,7 @@
         # Endpoints
         'Get-Action1Endpoints'
         'Get-Action1Endpoint'
+        'Update-Action1Endpoint'
         'Remove-Action1Endpoint'
 
         # Vulnerabilities
