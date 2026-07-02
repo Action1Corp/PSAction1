@@ -21,21 +21,21 @@ function Remove-Action1CompensatingControlRemediation {
     )
 
     if (Initialize-Action1DefaultOrg) {
-        $Org_ID = Get-Action1DefaultOrgId
+        $orgId = Get-Action1DefaultOrgId
     }
 
     if (-not $Script:Action1_UriMap.ContainsKey('D_VulnerabilityRemediation')) {
         throw "Action1 URI map key 'D_VulnerabilityRemediation' is not defined."
     }
 
-    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['D_VulnerabilityRemediation'] $Org_ID $CVEId $RemediationId)
-    $Target = "CVE '$CVEId' remediation '$RemediationId'"
+    $path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['D_VulnerabilityRemediation'] $orgId $CVEId $RemediationId)
+    $target = "CVE '$CVEId' remediation '$RemediationId'"
 
     if ($Force) {
         $ConfirmPreference = 'None'
     }
 
-    if (-not $PSCmdlet.ShouldProcess($Target, 'Delete Action1 vulnerability remediation')) {
+    if (-not $PSCmdlet.ShouldProcess($target, 'Delete Action1 vulnerability remediation')) {
         Write-Action1Debug "Skipped deleting remediation '$RemediationId' for vulnerability '$CVEId'."
 
         [pscustomobject]@{
@@ -49,9 +49,9 @@ function Remove-Action1CompensatingControlRemediation {
 
     Write-Action1Debug "Deleting remediation '$RemediationId' for vulnerability '$CVEId'."
 
-    $Response = Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "Delete compensating control remediation '$RemediationId'"
+    $response = Invoke-Action1ApiRequest -Method DELETE -Path $path -Label "Delete compensating control remediation '$RemediationId'"
 
-    if ($null -eq $Response) {
+    if ($null -eq $response) {
         Write-Error ("Failed to delete remediation '{0}' for vulnerability '{1}'." -f $RemediationId, $CVEId)
 
         [pscustomobject]@{
@@ -69,6 +69,6 @@ function Remove-Action1CompensatingControlRemediation {
         CVEId         = $CVEId
         RemediationId = $RemediationId
         Status        = 'Removed'
-        Response      = $Response
+        Response      = $response
     }
 }

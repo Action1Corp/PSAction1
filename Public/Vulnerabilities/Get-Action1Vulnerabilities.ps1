@@ -17,26 +17,26 @@ function Get-Action1Vulnerabilities {
     )
 
     if (Initialize-Action1DefaultOrg) {
-        $Org_ID = Get-Action1DefaultOrgId
+        $orgId = Get-Action1DefaultOrgId
     }
 
     if (-not $Script:Action1_UriMap.ContainsKey('G_Vulnerabilities')) {
         throw "Action1 URI map key 'G_Vulnerabilities' is not defined."
     }
 
-    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['G_Vulnerabilities'] $Org_ID)
-    $AddArgs = $null
+    $path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['G_Vulnerabilities'] $orgId)
+    $addArgs = $null
 
     if ($RemediationStatus -ne 'All'){
-        $EncodedStatus = [System.Uri]::EscapeDataString($RemediationStatus)
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument "remediation_status=$EncodedStatus"
+        $encodedStatus = [System.Uri]::EscapeDataString($RemediationStatus)
+        $addArgs = Join-QueryString -QueryString $addArgs -Argument "remediation_status=$encodedStatus"
     }
 
     if ($Score -ne 'All'){
-        $AddArgs = Join-QueryString -QueryString $AddArgs -Argument "score=$Score"
+        $addArgs = Join-QueryString -QueryString $addArgs -Argument "score=$Score"
     }
 
     Write-Action1Debug "Listing vulnerabilities with remediation status '$RemediationStatus' and score '$Score'."
 
-    Invoke-Action1PagedGetRequest -Path $Path -Label 'Vulnerabilities' -AddArgs $AddArgs
+    Invoke-Action1PagedGetRequest -Path $path -Label 'Vulnerabilities' -AddArgs $addArgs
 }

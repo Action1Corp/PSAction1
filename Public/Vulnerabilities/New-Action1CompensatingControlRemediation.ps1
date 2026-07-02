@@ -36,30 +36,30 @@ function New-Action1CompensatingControlRemediation {
     )
 
     if (Initialize-Action1DefaultOrg) {
-        $Org_ID = Get-Action1DefaultOrgId
+        $orgId = Get-Action1DefaultOrgId
     }
 
     if (-not $Script:Action1_UriMap.ContainsKey('N_VulnerabilityRemediation')) {
         throw "Action1 URI map key 'N_VulnerabilityRemediation' is not defined."
     }
 
-    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['N_VulnerabilityRemediation'] $Org_ID $CVEId)
+    $path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['N_VulnerabilityRemediation'] $orgId $CVEId)
 
-    $Body = @{
+    $body = @{
         comment      = $Comment
         product_name = $ProductName
     }
 
     Write-Action1Debug ("Creating compensating control remediation for vulnerability '{0}'." -f $CVEId)
 
-    $Response = Invoke-Action1ApiRequest  -Method POST -Path $Path -Label "Create compensating control remediation '$CVEId'" -Body $Body
+    $response = Invoke-Action1ApiRequest  -Method POST -Path $path -Label "Create compensating control remediation '$CVEId'" -Body $body
 
-    if ($null -eq $Response) {
+    if ($null -eq $response) {
         Write-Error ("Failed to create compensating control remediation for vulnerability '{0}'." -f $CVEId)
         return
     }
 
     Write-Action1Debug ("Created compensating control remediation for vulnerability '{0}'." -f $CVEId)
 
-    $Response
+    $response
 }

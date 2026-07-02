@@ -17,9 +17,9 @@ function Get-Action1Organizations {
     }
 
     $endpoint = & $Script:Action1_UriMap['G_Organizations']
-    $Path = "$Script:Action1_BaseURI{0}" -f $endpoint
+    $path = "$Script:Action1_BaseURI{0}" -f $endpoint
     $requestParams = @{
-        Path  = $Path
+        Path  = $path
         Label = 'Organizations'
     }
     $response = @(
