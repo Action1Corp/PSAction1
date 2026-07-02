@@ -87,12 +87,13 @@
         'Get-Action1Debug'
 
         # Endpoints
-        'Get-Action1Endpoint'
         'Get-Action1Endpoints'
+        'Get-Action1Endpoint'
+        'Remove-Action1Endpoint'
 
         # Vulnerabilities
-        'Get-Action1Vulnerability'
         'Get-Action1Vulnerabilities'
+        'Get-Action1Vulnerability'
         'Get-Action1VulnerabilityRemediations'
         'Get-Action1VulnerabilityEndpoints'
         'New-Action1CompensatingControlRemediation'

@@ -11,6 +11,7 @@ $Script:Action1_UriMap = @{
     G_Apps                 = { param($Org_ID) "/apps/$Org_ID/data" }
     G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?endpoint_id=$Object_ID" }
     G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
+    D_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
     G_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
     G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }
     G_EndpointApps         = { param($Org_ID, $Object_ID) "/apps/$Org_ID/data/$Object_ID" }
