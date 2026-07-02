@@ -27,19 +27,19 @@ function Invoke-Action1ApiRequest {
         $Path += "?{0}" -f $AddArgs
     }
 
-    $headers = @{}
+    $requestHeaders = @{}
 
     if (-not $SkipAuthenticationCheck) {
         if (Initialize-Action1Token) {
-            $headers.Authorization = "Bearer $($Script:Action1_Token.access_token)"
+            $requestHeaders.Authorization = "Bearer $($Script:Action1_Token.access_token)"
         }
     }
 
-    $headers['Content-Type'] = 'application/json; charset=utf-8'
+    $requestHeaders['Content-Type'] = 'application/json; charset=utf-8'
 
     if ($Headers) {
         foreach ($key in @($Headers.Keys)) {
-            $headers[$key] = $Headers[$key]
+            $requestHeaders[$key] = $Headers[$key]
         }
     }
 
@@ -60,7 +60,7 @@ function Invoke-Action1ApiRequest {
         Uri             = $Path
         Method          = $Method
         UseBasicParsing = $true
-        Headers         = $headers
+        Headers         = $requestHeaders
         ErrorAction     = 'Stop'
     }
 
