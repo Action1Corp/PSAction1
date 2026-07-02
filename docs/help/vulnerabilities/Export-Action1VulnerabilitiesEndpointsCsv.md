@@ -120,6 +120,24 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Force
+
+Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.
+
+This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Path
 
 Specifies the path to the CSV file to create.
@@ -194,24 +212,6 @@ Accepted values: Critical, High, Medium, Low, All
 Required: False
 Position: Named
 Default value: All
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Force
-
-Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.
-
-This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

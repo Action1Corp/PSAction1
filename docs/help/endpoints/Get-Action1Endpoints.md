@@ -14,7 +14,8 @@ Gets managed endpoints for the current Action1 organization.
 ## SYNTAX
 
 ```
-Get-Action1Endpoints [[-Status] <String>] [[-OnlineStatus] <String>] [[-UpdateStatus] <String>] [[-VulnerabilityStatus] <String>] [<CommonParameters>]
+Get-Action1Endpoints [[-Status] <String>] [[-OnlineStatus] <String>] [[-UpdateStatus] <String>]
+ [[-VulnerabilityStatus] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -84,31 +85,6 @@ Gets connected endpoints and selects key fields.
 
 ## PARAMETERS
 
-### -Status
-
-Filters endpoints by endpoint status.
-
-Specify an empty string or `$null` to disable status filtering.
-
-Accepted values:
-
-* `Connected`
-* `Disconnected`
-* `Pending Uninstall`
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: Connected, Disconnected, Pending Uninstall
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -OnlineStatus
 
 Filters endpoints by online health status.
@@ -126,10 +102,35 @@ Accepted values:
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED
+Accepted values: , SUCCESS, WARNING, ERROR, UNDEFINED
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Status
+
+Filters endpoints by endpoint status.
+
+Specify an empty string or `$null` to disable status filtering.
+
+Accepted values:
+
+* `Connected`
+* `Disconnected`
+* `Pending Uninstall`
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: , Connected, Disconnected, Pending Uninstall
+
+Required: False
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -152,7 +153,7 @@ Accepted values:
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED
+Accepted values: , SUCCESS, WARNING, ERROR, UNDEFINED
 
 Required: False
 Position: 2
@@ -178,7 +179,7 @@ Accepted values:
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED
+Accepted values: , SUCCESS, WARNING, ERROR, UNDEFINED
 
 Required: False
 Position: 3
@@ -188,7 +189,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

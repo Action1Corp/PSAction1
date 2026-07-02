@@ -914,6 +914,795 @@ Europe</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-Action1Endpoint</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Endpoint</command:noun>
+      <maml:description>
+        <maml:para>Gets one managed endpoint from the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets detailed information about a specific managed endpoint by using the Action1 endpoints API.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Endpoint</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>EndpointId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the managed endpoint to retrieve.</maml:para>
+            <maml:para>The endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>EndpointId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the managed endpoint to retrieve.</maml:para>
+          <maml:para>The endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the managed endpoint object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------------- Example 1: Get an endpoint by ID ---------------</maml:title>
+        <dev:code>Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets details for the specified endpoint in the current Action1 organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 2: Display endpoint details -------------</maml:title>
+        <dev:code>Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the endpoint and displays all returned fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Endpoints</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Endpoints</command:noun>
+      <maml:description>
+        <maml:para>Gets managed endpoints for the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets managed endpoint records from the current Action1 organization by using the Action1 endpoints API.</maml:para>
+      <maml:para>Use Status to filter endpoints by connection or uninstall status.</maml:para>
+      <maml:para>Use OnlineStatus , UpdateStatus , and VulnerabilityStatus to filter endpoints by health status.</maml:para>
+      <maml:para>Specify an empty string or `$null` for a filter parameter to skip that filter.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Endpoints</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Status</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by endpoint status.</maml:para>
+            <maml:para>Specify an empty string or `$null` to disable status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Connected`</maml:para>
+            <maml:para>* `Disconnected`</maml:para>
+            <maml:para>* `Pending Uninstall`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>OnlineStatus</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by online health status.</maml:para>
+            <maml:para>Specify an empty string or `$null` to disable online status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `SUCCESS`</maml:para>
+            <maml:para>* `WARNING`</maml:para>
+            <maml:para>* `ERROR`</maml:para>
+            <maml:para>* `UNDEFINED`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>UpdateStatus</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by update health status.</maml:para>
+            <maml:para>Specify an empty string or `$null` to disable update status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `SUCCESS`</maml:para>
+            <maml:para>* `WARNING`</maml:para>
+            <maml:para>* `ERROR`</maml:para>
+            <maml:para>* `UNDEFINED`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>VulnerabilityStatus</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by vulnerability health status.</maml:para>
+            <maml:para>Specify an empty string or `$null` to disable vulnerability status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `SUCCESS`</maml:para>
+            <maml:para>* `WARNING`</maml:para>
+            <maml:para>* `ERROR`</maml:para>
+            <maml:para>* `UNDEFINED`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>OnlineStatus</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by online health status.</maml:para>
+          <maml:para>Specify an empty string or `$null` to disable online status filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `SUCCESS`</maml:para>
+          <maml:para>* `WARNING`</maml:para>
+          <maml:para>* `ERROR`</maml:para>
+          <maml:para>* `UNDEFINED`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Status</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by endpoint status.</maml:para>
+          <maml:para>Specify an empty string or `$null` to disable status filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Connected`</maml:para>
+          <maml:para>* `Disconnected`</maml:para>
+          <maml:para>* `Pending Uninstall`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>UpdateStatus</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by update health status.</maml:para>
+          <maml:para>Specify an empty string or `$null` to disable update status filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `SUCCESS`</maml:para>
+          <maml:para>* `WARNING`</maml:para>
+          <maml:para>* `ERROR`</maml:para>
+          <maml:para>* `UNDEFINED`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>VulnerabilityStatus</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by vulnerability health status.</maml:para>
+          <maml:para>Specify an empty string or `$null` to disable vulnerability status filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `SUCCESS`</maml:para>
+          <maml:para>* `WARNING`</maml:para>
+          <maml:para>* `ERROR`</maml:para>
+          <maml:para>* `UNDEFINED`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns managed endpoint objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command retrieves paged results from the Action1 API and returns endpoint objects to the pipeline.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------ Example 1: Get disconnected endpoints ------------</maml:title>
+        <dev:code>Get-Action1Endpoints</dev:code>
+        <dev:remarks>
+          <maml:para>Gets all endpoints in the current organization.</maml:para>
+          <maml:para>This is the default behavior.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------- Example 2: Get connected endpoints --------------</maml:title>
+        <dev:code>Get-Action1Endpoints -Status Connected</dev:code>
+        <dev:remarks>
+          <maml:para>Gets endpoints where the status is `Connected`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------ Example 3: Get endpoints without status filtering ------</maml:title>
+        <dev:code>Get-Action1Endpoints -Status $null</dev:code>
+        <dev:remarks>
+          <maml:para>Gets managed endpoints without applying the status filter.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 4: Get endpoints with online warnings --------</maml:title>
+        <dev:code>Get-Action1Endpoints -Status $null -OnlineStatus WARNING</dev:code>
+        <dev:remarks>
+          <maml:para>Gets managed endpoints where the online status is `WARNING`, without applying the endpoint status filter.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title> Example 5: Get endpoints with update and vulnerability errors </maml:title>
+        <dev:code>Get-Action1Endpoints -Status $null -UpdateStatus ERROR -VulnerabilityStatus ERROR</dev:code>
+        <dev:remarks>
+          <maml:para>Gets managed endpoints where the update status and vulnerability status are both `ERROR`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 6: Review selected endpoint fields ----------</maml:title>
+        <dev:code>Get-Action1Endpoints -Status Connected |
+    Select-Object id, name, status, online_status, update_status, vulnerability_status</dev:code>
+        <dev:remarks>
+          <maml:para>Gets connected endpoints and selects key fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1Endpoint</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1Endpoint</command:noun>
+      <maml:description>
+        <maml:para>Deletes one managed endpoint from the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Deletes a specific managed endpoint by using the Action1 endpoints API.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1Endpoint</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>EndpointId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the managed endpoint to delete.</maml:para>
+            <maml:para>The endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>EndpointId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the managed endpoint to delete.</maml:para>
+          <maml:para>The endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns a status object with EndpointId, Status, and Response. The Response value contains the raw response body returned by the DELETE request.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage endpoints in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------------- Example 1: Delete an endpoint ----------------</maml:title>
+        <dev:code>Remove-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46'</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation, then deletes the specified managed endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 2: Preview endpoint deletion -------------</maml:title>
+        <dev:code>Remove-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be deleted without sending the DELETE request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 3: Delete without prompting -------------</maml:title>
+        <dev:code>Remove-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Deletes the managed endpoint without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoint</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Update-Action1Endpoint</command:name>
+      <command:verb>Update</command:verb>
+      <command:noun>Action1Endpoint</command:noun>
+      <maml:description>
+        <maml:para>Updates the name or comment of one managed endpoint in the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Updates a specific managed endpoint by using the Action1 endpoints API.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>Specify at least one value to update: -Name or -Comment . You can specify both parameters in the same command.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the update operation without sending the PATCH request. Use -Confirm to prompt for confirmation before sending the PATCH request.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-Action1Endpoint</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>EndpointId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the managed endpoint to update.</maml:para>
+            <maml:para>The endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new endpoint name.</maml:para>
+            <maml:para>Specify -Name , -Comment , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>Comment</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new endpoint comment.</maml:para>
+            <maml:para>Specify -Comment , -Name , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Comment</maml:name>
+        <maml:description>
+          <maml:para>Specifies the new endpoint comment.</maml:para>
+          <maml:para>Specify -Comment , -Name , or both. The command writes an error when neither parameter is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>EndpointId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the managed endpoint to update.</maml:para>
+          <maml:para>The endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>Specifies the new endpoint name.</maml:para>
+          <maml:para>Specify -Name , -Comment , or both. The command writes an error when neither parameter is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the updated endpoint object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage endpoints in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------- Example 1: Update an endpoint name --------------</maml:title>
+        <dev:code>Update-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Name 'Accounting-Laptop-01'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the name of the specified managed endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------ Example 2: Update an endpoint comment ------------</maml:title>
+        <dev:code>Update-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Comment 'Assigned to the accounting department.'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the comment of the specified managed endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 3: Update an endpoint name and comment --------</maml:title>
+        <dev:code>Update-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Name 'Accounting-Laptop-01' `
+    -Comment 'Assigned to the accounting department.'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates both the name and comment of the specified managed endpoint.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------ Example 4: Preview an endpoint update ------------</maml:title>
+        <dev:code>Update-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Name 'Accounting-Laptop-01' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be updated without sending the PATCH request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 5: Prompt before updating an endpoint --------</maml:title>
+        <dev:code>Update-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Comment 'Assigned to the accounting department.' `
+    -Confirm</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation before sending the PATCH request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoint</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Endpoint</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-Action1</command:name>
       <command:verb>Get</command:verb>
       <command:noun>Action1</command:noun>
@@ -2466,7 +3255,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
             <maml:para>Specifies the path to the CSV file to create.</maml:para>
             <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
-            <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyyyMMdd_HHmmss.csv` naming format. The organization name is normalized to Latin letters and digits while preserving capitalization.</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyMMdd_HHmm.csv` naming format. The organization name is normalized to Latin letters and digits while preserving capitalization.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -2488,6 +3277,18 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>RemediationStatus</maml:name>
@@ -2545,18 +3346,6 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           </dev:type>
           <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Force</maml:name>
-          <maml:description>
-            <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
-            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -2574,13 +3363,26 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the CSV file to create.</maml:para>
           <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
-          <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyyyMMdd_HHmmss.csv` naming format. The organization name is normalized to Latin letters and digits while preserving capitalization.</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyMMdd_HHmm.csv` naming format. The organization name is normalized to Latin letters and digits while preserving capitalization.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -2628,19 +3430,6 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:uri />
         </dev:type>
         <dev:defaultValue>All</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Force</maml:name>
-        <maml:description>
-          <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
-          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
