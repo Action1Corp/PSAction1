@@ -86,6 +86,10 @@
         'Set-Action1Debug'
         'Get-Action1Debug'
 
+        # Endpoints
+        'Get-Action1Endpoint'
+        'Get-Action1Endpoints'
+
         # Vulnerabilities
         'Get-Action1Vulnerability'
         'Get-Action1Vulnerabilities'
