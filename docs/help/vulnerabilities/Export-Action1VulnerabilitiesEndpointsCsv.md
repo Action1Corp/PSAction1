@@ -52,7 +52,7 @@ The command uses the module default organization configured by **Set-Action1Defa
 Export-Action1VulnerabilitiesEndpointsCsv
 ```
 
-Exports vulnerability endpoint records to a timestamped CSV file in the current location.
+Exports vulnerability endpoint records to a CSV file named with the default organization ID and timestamp in the current location.
 
 ### Example 2: Export critical vulnerability endpoint records to a specific file
 
@@ -128,7 +128,7 @@ If the path contains a directory that does not exist, the command creates the di
 
 If the existing target file has read-only or hidden file attributes, use **Force**.
 
-If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1__VulnerabilitiesEndpoints_yyyyMMdd_HHmmss.csv` naming format.
+If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgId_VulnerabilitiesEndpoints_yyyyMMdd_HHmmss.csv` naming format.
 
 ```yaml
 Type: String

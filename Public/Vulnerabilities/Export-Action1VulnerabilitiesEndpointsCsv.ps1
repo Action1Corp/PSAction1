@@ -41,8 +41,12 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
     )
 
     if (-not $PSBoundParameters.ContainsKey('Path')) {
+        if (Initialize-Action1DefaultOrg) {
+            $Org_ID = Get-Action1DefaultOrgId
+        }
+
         $Timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
-        $FileName = 'Action1__VulnerabilitiesEndpoints_{0}.csv' -f $Timestamp
+        $FileName = 'Action1_{0}_VulnerabilitiesEndpoints_{1}.csv' -f $Org_ID, $Timestamp
         $Path = Join-Path -Path (Get-Location) -ChildPath $FileName
     }
 
