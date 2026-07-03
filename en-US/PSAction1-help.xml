@@ -1024,7 +1024,7 @@ Europe</dev:code>
       <maml:para>Gets managed endpoint records from the current Action1 organization by using the Action1 endpoints API.</maml:para>
       <maml:para>Use Status to filter endpoints by connection or uninstall status.</maml:para>
       <maml:para>Use OnlineStatus , UpdateStatus , and VulnerabilityStatus to filter endpoints by health status.</maml:para>
-      <maml:para>Specify an empty string or `$null` for a filter parameter to skip that filter.</maml:para>
+      <maml:para>Specify `All` for a filter parameter to skip that filter.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
     <command:syntax>
@@ -1034,99 +1034,103 @@ Europe</dev:code>
           <maml:name>Status</maml:name>
           <maml:description>
             <maml:para>Filters endpoints by endpoint status.</maml:para>
-            <maml:para>Specify an empty string or `$null` to disable status filtering.</maml:para>
+            <maml:para>Specify `All` to disable status filtering.</maml:para>
             <maml:para>Accepted values:</maml:para>
             <maml:para>* `Connected`</maml:para>
             <maml:para>* `Disconnected`</maml:para>
             <maml:para>* `Pending Uninstall`</maml:para>
+            <maml:para>* `All`</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>OnlineStatus</maml:name>
           <maml:description>
             <maml:para>Filters endpoints by online health status.</maml:para>
-            <maml:para>Specify an empty string or `$null` to disable online status filtering.</maml:para>
+            <maml:para>Specify `All` to disable online status filtering.</maml:para>
             <maml:para>Accepted values:</maml:para>
             <maml:para>* `SUCCESS`</maml:para>
             <maml:para>* `WARNING`</maml:para>
             <maml:para>* `ERROR`</maml:para>
             <maml:para>* `UNDEFINED`</maml:para>
+            <maml:para>* `All`</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>UpdateStatus</maml:name>
           <maml:description>
             <maml:para>Filters endpoints by update health status.</maml:para>
-            <maml:para>Specify an empty string or `$null` to disable update status filtering.</maml:para>
+            <maml:para>Specify `All` to disable update status filtering.</maml:para>
             <maml:para>Accepted values:</maml:para>
             <maml:para>* `SUCCESS`</maml:para>
             <maml:para>* `WARNING`</maml:para>
             <maml:para>* `ERROR`</maml:para>
             <maml:para>* `UNDEFINED`</maml:para>
+            <maml:para>* `All`</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
           <maml:name>VulnerabilityStatus</maml:name>
           <maml:description>
             <maml:para>Filters endpoints by vulnerability health status.</maml:para>
-            <maml:para>Specify an empty string or `$null` to disable vulnerability status filtering.</maml:para>
+            <maml:para>Specify `All` to disable vulnerability status filtering.</maml:para>
             <maml:para>Accepted values:</maml:para>
             <maml:para>* `SUCCESS`</maml:para>
             <maml:para>* `WARNING`</maml:para>
             <maml:para>* `ERROR`</maml:para>
             <maml:para>* `UNDEFINED`</maml:para>
+            <maml:para>* `All`</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -1135,72 +1139,76 @@ Europe</dev:code>
         <maml:name>OnlineStatus</maml:name>
         <maml:description>
           <maml:para>Filters endpoints by online health status.</maml:para>
-          <maml:para>Specify an empty string or `$null` to disable online status filtering.</maml:para>
+          <maml:para>Specify `All` to disable online status filtering.</maml:para>
           <maml:para>Accepted values:</maml:para>
           <maml:para>* `SUCCESS`</maml:para>
           <maml:para>* `WARNING`</maml:para>
           <maml:para>* `ERROR`</maml:para>
           <maml:para>* `UNDEFINED`</maml:para>
+          <maml:para>* `All`</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Status</maml:name>
         <maml:description>
           <maml:para>Filters endpoints by endpoint status.</maml:para>
-          <maml:para>Specify an empty string or `$null` to disable status filtering.</maml:para>
+          <maml:para>Specify `All` to disable status filtering.</maml:para>
           <maml:para>Accepted values:</maml:para>
           <maml:para>* `Connected`</maml:para>
           <maml:para>* `Disconnected`</maml:para>
           <maml:para>* `Pending Uninstall`</maml:para>
+          <maml:para>* `All`</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>UpdateStatus</maml:name>
         <maml:description>
           <maml:para>Filters endpoints by update health status.</maml:para>
-          <maml:para>Specify an empty string or `$null` to disable update status filtering.</maml:para>
+          <maml:para>Specify `All` to disable update status filtering.</maml:para>
           <maml:para>Accepted values:</maml:para>
           <maml:para>* `SUCCESS`</maml:para>
           <maml:para>* `WARNING`</maml:para>
           <maml:para>* `ERROR`</maml:para>
           <maml:para>* `UNDEFINED`</maml:para>
+          <maml:para>* `All`</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>VulnerabilityStatus</maml:name>
         <maml:description>
           <maml:para>Filters endpoints by vulnerability health status.</maml:para>
-          <maml:para>Specify an empty string or `$null` to disable vulnerability status filtering.</maml:para>
+          <maml:para>Specify `All` to disable vulnerability status filtering.</maml:para>
           <maml:para>Accepted values:</maml:para>
           <maml:para>* `SUCCESS`</maml:para>
           <maml:para>* `WARNING`</maml:para>
           <maml:para>* `ERROR`</maml:para>
           <maml:para>* `UNDEFINED`</maml:para>
+          <maml:para>* `All`</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -1231,7 +1239,7 @@ Europe</dev:code>
     </maml:alertSet>
     <command:examples>
       <command:example>
-        <maml:title>------------ Example 1: Get disconnected endpoints ------------</maml:title>
+        <maml:title>----------------- Example 1: Get all endpoints -----------------</maml:title>
         <dev:code>Get-Action1Endpoints</dev:code>
         <dev:remarks>
           <maml:para>Gets all endpoints in the current organization.</maml:para>
@@ -1247,21 +1255,21 @@ Europe</dev:code>
       </command:example>
       <command:example>
         <maml:title>------ Example 3: Get endpoints without status filtering ------</maml:title>
-        <dev:code>Get-Action1Endpoints -Status $null</dev:code>
+        <dev:code>Get-Action1Endpoints -Status All</dev:code>
         <dev:remarks>
           <maml:para>Gets managed endpoints without applying the status filter.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------- Example 4: Get endpoints with online warnings --------</maml:title>
-        <dev:code>Get-Action1Endpoints -Status $null -OnlineStatus WARNING</dev:code>
+        <dev:code>Get-Action1Endpoints -Status All -OnlineStatus WARNING</dev:code>
         <dev:remarks>
           <maml:para>Gets managed endpoints where the online status is `WARNING`, without applying the endpoint status filter.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title> Example 5: Get endpoints with update and vulnerability errors </maml:title>
-        <dev:code>Get-Action1Endpoints -Status $null -UpdateStatus ERROR -VulnerabilityStatus ERROR</dev:code>
+        <dev:code>Get-Action1Endpoints -Status All -UpdateStatus ERROR -VulnerabilityStatus ERROR</dev:code>
         <dev:remarks>
           <maml:para>Gets managed endpoints where the update status and vulnerability status are both `ERROR`.</maml:para>
         </dev:remarks>

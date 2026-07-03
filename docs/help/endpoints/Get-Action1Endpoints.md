@@ -26,13 +26,13 @@ Use **Status** to filter endpoints by connection or uninstall status.
 
 Use **OnlineStatus**, **UpdateStatus**, and **VulnerabilityStatus** to filter endpoints by health status.
 
-Specify an empty string or `$null` for a filter parameter to skip that filter.
+Specify `All` for a filter parameter to skip that filter.
 
 The command uses the module default organization configured by **Set-Action1DefaultOrg**.
 
 ## EXAMPLES
 
-### Example 1: Get disconnected endpoints
+### Example 1: Get all endpoints
 
 ```powershell
 Get-Action1Endpoints
@@ -53,7 +53,7 @@ Gets endpoints where the status is `Connected`.
 ### Example 3: Get endpoints without status filtering
 
 ```powershell
-Get-Action1Endpoints -Status $null
+Get-Action1Endpoints -Status All
 ```
 
 Gets managed endpoints without applying the status filter.
@@ -61,7 +61,7 @@ Gets managed endpoints without applying the status filter.
 ### Example 4: Get endpoints with online warnings
 
 ```powershell
-Get-Action1Endpoints -Status $null -OnlineStatus WARNING
+Get-Action1Endpoints -Status All -OnlineStatus WARNING
 ```
 
 Gets managed endpoints where the online status is `WARNING`, without applying the endpoint status filter.
@@ -69,7 +69,7 @@ Gets managed endpoints where the online status is `WARNING`, without applying th
 ### Example 5: Get endpoints with update and vulnerability errors
 
 ```powershell
-Get-Action1Endpoints -Status $null -UpdateStatus ERROR -VulnerabilityStatus ERROR
+Get-Action1Endpoints -Status All -UpdateStatus ERROR -VulnerabilityStatus ERROR
 ```
 
 Gets managed endpoints where the update status and vulnerability status are both `ERROR`.
@@ -89,7 +89,7 @@ Gets connected endpoints and selects key fields.
 
 Filters endpoints by online health status.
 
-Specify an empty string or `$null` to disable online status filtering.
+Specify `All` to disable online status filtering.
 
 Accepted values:
 
@@ -97,16 +97,17 @@ Accepted values:
 * `WARNING`
 * `ERROR`
 * `UNDEFINED`
+* `All`
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: , SUCCESS, WARNING, ERROR, UNDEFINED
+Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED, All
 
 Required: False
 Position: 1
-Default value: None
+Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -115,23 +116,24 @@ Accept wildcard characters: False
 
 Filters endpoints by endpoint status.
 
-Specify an empty string or `$null` to disable status filtering.
+Specify `All` to disable status filtering.
 
 Accepted values:
 
 * `Connected`
 * `Disconnected`
 * `Pending Uninstall`
+* `All`
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: , Connected, Disconnected, Pending Uninstall
+Accepted values: Connected, Disconnected, Pending Uninstall, All
 
 Required: False
 Position: 0
-Default value: None
+Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -140,7 +142,7 @@ Accept wildcard characters: False
 
 Filters endpoints by update health status.
 
-Specify an empty string or `$null` to disable update status filtering.
+Specify `All` to disable update status filtering.
 
 Accepted values:
 
@@ -148,16 +150,17 @@ Accepted values:
 * `WARNING`
 * `ERROR`
 * `UNDEFINED`
+* `All`
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: , SUCCESS, WARNING, ERROR, UNDEFINED
+Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED, All
 
 Required: False
 Position: 2
-Default value: None
+Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -166,7 +169,7 @@ Accept wildcard characters: False
 
 Filters endpoints by vulnerability health status.
 
-Specify an empty string or `$null` to disable vulnerability status filtering.
+Specify `All` to disable vulnerability status filtering.
 
 Accepted values:
 
@@ -174,16 +177,17 @@ Accepted values:
 * `WARNING`
 * `ERROR`
 * `UNDEFINED`
+* `All`
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: , SUCCESS, WARNING, ERROR, UNDEFINED
+Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED, All
 
 Required: False
 Position: 3
-Default value: None
+Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -9,25 +9,17 @@ function Get-Action1Endpoints {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [AllowNull()]
-        [AllowEmptyString()]
-        [ValidateSet('', 'Connected', 'Disconnected', 'Pending Uninstall')]
-        [string]$Status,
+        [ValidateSet('Connected', 'Disconnected', 'Pending Uninstall', 'All')]
+        [string]$Status = 'All',
         [Parameter(Mandatory = $false)]
-        [AllowNull()]
-        [AllowEmptyString()]
-        [ValidateSet('', 'SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED')]
-        [string]$OnlineStatus,
+        [ValidateSet('SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED', 'All')]
+        [string]$OnlineStatus = 'All',
         [Parameter(Mandatory = $false)]
-        [AllowNull()]
-        [AllowEmptyString()]
-        [ValidateSet('', 'SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED')]
-        [string]$UpdateStatus,
+        [ValidateSet('SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED', 'All')]
+        [string]$UpdateStatus = 'All',
         [Parameter(Mandatory = $false)]
-        [AllowNull()]
-        [AllowEmptyString()]
-        [ValidateSet('', 'SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED')]
-        [string]$VulnerabilityStatus
+        [ValidateSet('SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED', 'All')]
+        [string]$VulnerabilityStatus = 'All'
     )
 
     if (Initialize-Action1DefaultOrg) {
@@ -43,28 +35,28 @@ function Get-Action1Endpoints {
     $addArgs = $null
     $debugFilters = @()
 
-    if (-not [string]::IsNullOrWhiteSpace($Status)) {
+    if ($Status -ne 'All') {
         $encodedStatus = [System.Uri]::EscapeDataString($Status)
         $queryArgument = "status=$encodedStatus"
         $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
         $debugFilters += "status '$Status'"
     }
 
-    if (-not [string]::IsNullOrWhiteSpace($OnlineStatus)) {
+    if ($OnlineStatus -ne 'All') {
         $encodedOnlineStatus = [System.Uri]::EscapeDataString($OnlineStatus)
         $queryArgument = "online_status=$encodedOnlineStatus"
         $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
         $debugFilters += "online status '$OnlineStatus'"
     }
 
-    if (-not [string]::IsNullOrWhiteSpace($UpdateStatus)) {
+    if ($UpdateStatus -ne 'All') {
         $encodedUpdateStatus = [System.Uri]::EscapeDataString($UpdateStatus)
         $queryArgument = "update_status=$encodedUpdateStatus"
         $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
         $debugFilters += "update status '$UpdateStatus'"
     }
 
-    if (-not [string]::IsNullOrWhiteSpace($VulnerabilityStatus)) {
+    if ($VulnerabilityStatus -ne 'All') {
         $encodedVulnStatus = [System.Uri]::EscapeDataString($VulnerabilityStatus)
         $queryArgument = "vulnerability_status=$encodedVulnStatus"
         $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
