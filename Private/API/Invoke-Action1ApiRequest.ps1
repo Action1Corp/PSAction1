@@ -69,6 +69,7 @@ function Invoke-Action1ApiRequest {
     }
 
     $retry429Count = 0
+    $retry429BaseTimeout = $Script:Action1_429RetryBaseTimeout
 
     while ($true) {
         Write-Action1Debug "$Method request to $Path. RawResponse flag is $RawResponse"
@@ -100,19 +101,35 @@ function Invoke-Action1ApiRequest {
         }
         catch {
             $statusCode = $null
+            $exceptionResponse = $_.Exception.Response
 
-            if ($_.Exception.Response) {
-                $statusCode = [int]$_.Exception.Response.StatusCode
+            if ($exceptionResponse) {
+                $statusCode = [int]$exceptionResponse.StatusCode
             }
 
-            Write-Action1Debug ("Failed response code {0} for {1} to {2}" -f $statusCode, $Method, $Path)
+            $responseContentParams = @{
+                    Response    = $exceptionResponse
+                    ErrorRecord = $_
+            }
+            $responseContent = Trace-WebResponseContent @responseContentParams
+            if ([string]::IsNullOrWhiteSpace($responseContent)) {
+                $responseContent = '<empty response content>'
+            }
+
+            Write-Action1Debug (
+                "Failed response code {0} for {1} request to {2}. Response: {3}" -f
+                $statusCode, $Method, $Path, $responseContent
+            )
 
             if ($statusCode -eq 429) {
-                
-                $retryTimeout = [Math]::Pow(2,$retry429Count) * $Script:Action1_429RetryBaseTimeout
+                $retryTimeout = [Math]::Pow(2, $retry429Count) * $retry429BaseTimeout
                 $retry429Count++
 
-                Write-Action1Debug ("429 received for '{0}'. Retry #{1}. Sleeping {2} ms." -f $Label, $retry429Count, $retryTimeout)
+                Write-Action1Debug (
+                    "429 received for {0}. Retry #{1}. Sleeping {2} ms." -f
+                    $Label, $retry429Count, $retryTimeout
+                )
+
                 Start-Sleep -Milliseconds $retryTimeout
                 continue
             }
