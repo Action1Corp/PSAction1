@@ -92,6 +92,7 @@
         'Update-Action1Endpoint'
         'Remove-Action1Endpoint'
         'Remove-Action1DisconnectedEndpoints'
+        'Remove-Action1DublicatedEndpoints'
 
         # Vulnerabilities
         'Get-Action1Vulnerabilities'
