@@ -30,9 +30,17 @@ function Invoke-Action1ApiRequest {
     $requestHeaders = @{}
 
     if (-not $SkipAuthenticationCheck) {
-        if (Initialize-Action1Token) {
-            $requestHeaders.Authorization = "Bearer $($Script:Action1_Token.access_token)"
+        if (-not (Initialize-Action1Token)) {
+            Write-Action1Debug "No authentication token. Aborting $Method request to $Path."
+            return $null
         }
+
+        if ([string]::IsNullOrEmpty($Script:Action1_Token.access_token)) {
+            Write-Action1Debug "No authentication token. Aborting $Method request to $Path."
+            return $null
+        }
+
+        $requestHeaders.Authorization = "Bearer $($Script:Action1_Token.access_token)"
     }
 
     $requestHeaders['Content-Type'] = 'application/json; charset=utf-8'

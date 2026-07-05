@@ -29,12 +29,16 @@ function Request-Action1Token {
                     client_secret = $Script:Action1_Secret
                 } `
                 -SkipAuthenticationCheck
+            if ($null -eq $token) {
+                Write-Error "Error fetching auth token: token request failed with the error above."
+                return $null
+            }
+
             $token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
             return $token
         }
         catch [System.Net.WebException] {
             Write-Error "Error fetching auth token: $($_)."
-            Write-Error $token
             return $null
         }     
     }
