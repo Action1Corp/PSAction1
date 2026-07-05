@@ -143,4 +143,5 @@ Requires permission to manage endpoints in Action1.
 
 [Get-Action1Endpoint](Get-Action1Endpoint.md)
 [Get-Action1Endpoints](Get-Action1Endpoints.md)
+[Remove-Action1Endpoints](Remove-Action1Endpoints.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)

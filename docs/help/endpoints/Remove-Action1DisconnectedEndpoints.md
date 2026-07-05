@@ -26,7 +26,7 @@ using **Get-Action1Endpoints -Status Disconnected**.
 
 The command filters endpoints where **last_seen** is older than or equal to the
 configured cutoff date, then removes matching endpoints by using
-**Remove-Action1Endpoint**.
+**Remove-Action1Endpoints**.
 
 The command uses the module default organization configured by
 **Set-Action1DefaultOrg**.
@@ -148,8 +148,8 @@ You cannot pipe input to this command.
 ### PSCustomObject
 
 Returns cleanup statistics with DisconnectedEndpointsProcessed,
-EndpointsMatched, EndpointsRemovalProcessed, EndpointsRemoved,
-EndpointsSkipped, EndpointsFailed, and DaysDisconnected.
+EndpointsMatched, EndpointsRemovalSucceeded, EndpointsRemovalProcessed,
+EndpointsRemoved, EndpointsSkipped, EndpointsFailed, and DaysDisconnected.
 
 ## NOTES
 
@@ -159,4 +159,5 @@ Requires permission to manage endpoints in Action1.
 
 [Get-Action1Endpoints](Get-Action1Endpoints.md)
 [Remove-Action1Endpoint](Remove-Action1Endpoint.md)
+[Remove-Action1Endpoints](Remove-Action1Endpoints.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)

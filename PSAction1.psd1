@@ -91,6 +91,7 @@
         'Get-Action1Endpoint'
         'Update-Action1Endpoint'
         'Remove-Action1Endpoint'
+        'Remove-Action1Endpoints'
         'Remove-Action1DisconnectedEndpoints'
         'Remove-Action1DublicatedEndpoints'
 

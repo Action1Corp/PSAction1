@@ -91,78 +91,25 @@ function Remove-Action1DublicatedEndpoints {
     Write-Action1Debug "Found $($endpointsToRemove.Count) duplicated endpoint(s)."
 
     $totalEndpointsToRemove = $endpointsToRemove.Count
-    $processedEndpoints = 0
-    $endpointsRemoved = 0
-    $endpointsSkipped = 0
-    $endpointsFailed = 0
-
-    foreach ($endpoint in $endpointsToRemove) {
-        $processedEndpoints++
-
-        $endpointId = [string]$endpoint.Id
-        $lastSeenText = $endpoint.LastSeen.ToString($dateFormat)
-        $target = "endpoint '$endpointId'"
-        $action = "Delete duplicated Action1 endpoint last seen '$lastSeenText'"
-        $percentComplete = [int](($processedEndpoints / $totalEndpointsToRemove) * 100)
-        $progressCount = "$processedEndpoints of $totalEndpointsToRemove"
-        $progressStatus = "Processing $endpointId ($progressCount)"
-
-        Write-Progress `
-            -Activity 'Removing duplicated Action1 endpoints' `
-            -Status $progressStatus `
-            -PercentComplete $percentComplete
-
-        if (-not $PSCmdlet.ShouldProcess($target, $action)) {
-            Write-Action1Debug "Skipped deleting duplicated endpoint '$endpointId'."
-            $endpointsSkipped++
-
-            continue
-        }
-
-        Write-Action1Debug "Deleting duplicated endpoint '$endpointId'."
-
-        try {
-            $result = Remove-Action1Endpoint -EndpointId $endpointId -Force `
-                -ErrorAction Stop
-        }
-        catch {
-            Write-Action1Debug (
-                "Failed deleting duplicated endpoint '$endpointId'. " +
-                "Error: $($_.Exception.Message)"
-            )
-            $endpointsFailed++
-
-            continue
-        }
-
-        if ($null -eq $result) {
-            $endpointsFailed++
-            continue
-        }
-
-        switch ($result.Status) {
-            'Removed' { $endpointsRemoved++ }
-            'Skipped' { $endpointsSkipped++ }
-            'Failed'  { $endpointsFailed++ }
-            default   { $endpointsFailed++ }
-        }
-    }
-
-    Write-Progress -Activity 'Removing duplicated Action1 endpoints' -Completed
+    $endpointIdsToRemove = @($endpointsToRemove | ForEach-Object { $_.Id })
+    $removalResult = Remove-Action1Endpoints -EndpointIds $endpointIdsToRemove
 
     Write-Action1Debug (
-        "Duplicated endpoint cleanup completed. Processed: $processedEndpoints; " +
-        "Removed: $endpointsRemoved; Skipped: $endpointsSkipped; " +
-        "Failed: $endpointsFailed."
+        "Duplicated endpoint cleanup completed. " +
+        "Processed: $($removalResult.EndpointsRemovalProcessed); " +
+        "Removed: $($removalResult.EndpointsRemoved); " +
+        "Skipped: $($removalResult.EndpointsSkipped); " +
+        "Failed: $($removalResult.EndpointsFailed)."
     )
 
     [pscustomobject]@{
         EndpointsTotal            = $endpoints.Count
         EndpointsDuplicated       = $totalEndpointsToRemove
-        EndpointsRemovalProcessed = $processedEndpoints
-        EndpointsRemoved          = $endpointsRemoved
-        EndpointsSkipped          = $endpointsSkipped
-        EndpointsFailed           = $endpointsFailed
+        EndpointsRemovalSucceeded = $removalResult.Succeeded
+        EndpointsRemovalProcessed = $removalResult.EndpointsRemovalProcessed
+        EndpointsRemoved          = $removalResult.EndpointsRemoved
+        EndpointsSkipped          = $removalResult.EndpointsSkipped
+        EndpointsFailed           = $removalResult.EndpointsFailed
         EndpointsInvalid          = $invalidEndpoints
     }
 }

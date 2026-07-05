@@ -24,7 +24,7 @@ Gets all managed endpoints from the current Action1 organization by using
 
 The command groups endpoints by **MAC**, compares **last_seen** values, keeps
 the newest endpoint for each MAC address, and removes older duplicates by using
-**Remove-Action1Endpoint**.
+**Remove-Action1Endpoints**.
 
 Endpoints missing **id**, **MAC**, or a parseable **last_seen** value are skipped.
 
@@ -120,8 +120,8 @@ You cannot pipe input to this command.
 ### PSCustomObject
 
 Returns cleanup statistics with EndpointsTotal, EndpointsDuplicated,
-EndpointsRemovalProcessed, EndpointsRemoved, EndpointsSkipped,
-EndpointsFailed, and EndpointsInvalid.
+EndpointsRemovalSucceeded, EndpointsRemovalProcessed, EndpointsRemoved,
+EndpointsSkipped, EndpointsFailed, and EndpointsInvalid.
 
 ## NOTES
 
@@ -131,4 +131,5 @@ Requires permission to manage endpoints in Action1.
 
 [Get-Action1Endpoints](Get-Action1Endpoints.md)
 [Remove-Action1Endpoint](Remove-Action1Endpoint.md)
+[Remove-Action1Endpoints](Remove-Action1Endpoints.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
