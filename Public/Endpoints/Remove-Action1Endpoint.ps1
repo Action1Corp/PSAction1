@@ -33,7 +33,7 @@ function Remove-Action1Endpoint {
         $ConfirmPreference = 'None'
     }
 
-    if (-not $PSCmdlet.ShouldProcess($target, 'Delete Action1 endpoint')) {
+    if (-not $PSCmdlet.ShouldProcess($target, 'Delete endpoint')) {
         Write-Action1Debug "Skipped deleting endpoint '$EndpointId'."
 
         [pscustomobject]@{

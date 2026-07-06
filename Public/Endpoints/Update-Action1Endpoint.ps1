@@ -50,7 +50,7 @@ function Update-Action1Endpoint {
     $path = "$Script:Action1_BaseURI{0}" -f $uri
     $target = "endpoint '$EndpointId'"
 
-    if (-not $PSCmdlet.ShouldProcess($target, 'Update Action1 endpoint')) {
+    if (-not $PSCmdlet.ShouldProcess($target, 'Update endpoint')) {
         Write-Action1Debug "Skipped updating endpoint '$EndpointId'."
         return
     }

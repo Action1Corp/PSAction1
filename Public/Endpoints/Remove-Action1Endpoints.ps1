@@ -84,7 +84,7 @@ function Remove-Action1Endpoints {
 
         $target = "endpoint '$endpointId'"
 
-        if (-not $PSCmdlet.ShouldProcess($target, 'Delete Action1 endpoint')) {
+        if (-not $PSCmdlet.ShouldProcess($target, 'Delete endpoint')) {
             Write-Action1Debug "Skipped deleting endpoint '$endpointId'."
             $endpointsSkipped++
 
