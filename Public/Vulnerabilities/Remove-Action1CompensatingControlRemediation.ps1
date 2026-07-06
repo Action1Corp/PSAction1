@@ -24,11 +24,10 @@ function Remove-Action1CompensatingControlRemediation {
         $orgId = Get-Action1DefaultOrgId
     }
 
-    if (-not $Script:Action1_UriMap.ContainsKey('D_VulnerabilityRemediation')) {
-        throw "Action1 URI map key 'D_VulnerabilityRemediation' is not defined."
-    }
+    $uriPathBuilder = Get-UriMapValue -Key 'D_VulnerabilityRemediation'
 
-    $path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['D_VulnerabilityRemediation'] $orgId $CVEId $RemediationId)
+    $uri = & $uriPathBuilder $orgId $CVEId $RemediationId
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
     $target = "CVE '$CVEId' remediation '$RemediationId'"
 
     if ($Force) {

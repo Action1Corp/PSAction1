@@ -39,11 +39,10 @@ function New-Action1CompensatingControlRemediation {
         $orgId = Get-Action1DefaultOrgId
     }
 
-    if (-not $Script:Action1_UriMap.ContainsKey('N_VulnerabilityRemediation')) {
-        throw "Action1 URI map key 'N_VulnerabilityRemediation' is not defined."
-    }
+    $uriPathBuilder = Get-UriMapValue -Key 'N_VulnerabilityRemediation'
 
-    $path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['N_VulnerabilityRemediation'] $orgId $CVEId)
+    $uri = & $uriPathBuilder $orgId $CVEId
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
 
     $body = @{
         comment      = $Comment

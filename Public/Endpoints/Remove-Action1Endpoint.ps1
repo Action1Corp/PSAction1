@@ -23,12 +23,10 @@ function Remove-Action1Endpoint {
         $orgId = Get-Action1DefaultOrgId
     }
 
-    if (-not $Script:Action1_UriMap.ContainsKey('D_Endpoint')) {
-        throw "Action1 URI map key 'D_Endpoint' is not defined."
-    }
+    $uriPathBuilder = Get-UriMapValue -Key 'D_Endpoint'
 
-    $endpoint = & $Script:Action1_UriMap['D_Endpoint'] $orgId $EndpointId
-    $path = "$Script:Action1_BaseURI{0}" -f $endpoint
+    $uri = & $uriPathBuilder $orgId $EndpointId
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
     $target = "endpoint '$EndpointId'"
 
     if ($Force) {

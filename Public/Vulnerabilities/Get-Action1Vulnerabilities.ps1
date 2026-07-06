@@ -20,11 +20,10 @@ function Get-Action1Vulnerabilities {
         $orgId = Get-Action1DefaultOrgId
     }
 
-    if (-not $Script:Action1_UriMap.ContainsKey('G_Vulnerabilities')) {
-        throw "Action1 URI map key 'G_Vulnerabilities' is not defined."
-    }
+    $uriPathBuilder = Get-UriMapValue -Key 'G_Vulnerabilities'
 
-    $path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['G_Vulnerabilities'] $orgId)
+    $uri = & $uriPathBuilder $orgId
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
     $addArgs = $null
 
     if ($RemediationStatus -ne 'All'){

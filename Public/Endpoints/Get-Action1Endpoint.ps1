@@ -21,12 +21,10 @@ function Get-Action1Endpoint {
         $orgId = Get-Action1DefaultOrgId
     }
 
-    if (-not $Script:Action1_UriMap.ContainsKey('G_Endpoint')) {
-        throw "Action1 URI map key 'G_Endpoint' is not defined."
-    }
+    $uriPathBuilder = Get-UriMapValue -Key 'G_Endpoint'
 
-    $endpoint = & $Script:Action1_UriMap['G_Endpoint'] $orgId $EndpointId
-    $path = "$Script:Action1_BaseURI{0}" -f $endpoint
+    $uri = & $uriPathBuilder $orgId $EndpointId
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
 
     Write-Action1Debug "Getting endpoint '$EndpointId'."
 

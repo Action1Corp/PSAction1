@@ -26,11 +26,10 @@ function Update-Action1CompensatingControlRemediation {
         $orgId = Get-Action1DefaultOrgId
     }
 
-    if (-not $Script:Action1_UriMap.ContainsKey('U_VulnerabilityRemediation')) {
-        throw "Action1 URI map key 'U_VulnerabilityRemediation' is not defined."
-    }
+    $uriPathBuilder = Get-UriMapValue -Key 'U_VulnerabilityRemediation'
 
-    $path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap['U_VulnerabilityRemediation'] $orgId $CVEId $RemediationId)
+    $uri = & $uriPathBuilder $orgId $CVEId $RemediationId
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
     $target = "CVE '$CVEId' remediation '$RemediationId'"
 
     if (-not $PSCmdlet.ShouldProcess($target, 'Update Action1 compensating control remediation')) {

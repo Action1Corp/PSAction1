@@ -44,12 +44,10 @@ function Update-Action1Endpoint {
         $orgId = Get-Action1DefaultOrgId
     }
 
-    if (-not $Script:Action1_UriMap.ContainsKey('U_Endpoint')) {
-        throw "Action1 URI map key 'U_Endpoint' is not defined."
-    }
+    $uriPathBuilder = Get-UriMapValue -Key 'U_Endpoint'
 
-    $endpoint = & $Script:Action1_UriMap['U_Endpoint'] $orgId $EndpointId
-    $path = "$Script:Action1_BaseURI{0}" -f $endpoint
+    $uri = & $uriPathBuilder $orgId $EndpointId
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
     $target = "endpoint '$EndpointId'"
 
     if (-not $PSCmdlet.ShouldProcess($target, 'Update Action1 endpoint')) {
