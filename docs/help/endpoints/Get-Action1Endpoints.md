@@ -14,8 +14,8 @@ Gets managed endpoints for the current Action1 organization.
 ## SYNTAX
 
 ```
-Get-Action1Endpoints [[-Status] <String>] [[-OnlineStatus] <String>] [[-UpdateStatus] <String>]
- [[-VulnerabilityStatus] <String>] [<CommonParameters>]
+Get-Action1Endpoints [[-Status] <String>] [[-RebootRequired] <String>] [[-OS] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -24,7 +24,9 @@ Gets managed endpoint records from the current Action1 organization by using the
 
 Use **Status** to filter endpoints by connection or uninstall status.
 
-Use **OnlineStatus**, **UpdateStatus**, and **VulnerabilityStatus** to filter endpoints by health status.
+Use **RebootRequired** to filter endpoints by reboot requirement.
+
+Use **OS** to filter endpoints by operating system family.
 
 Specify `All` for a filter parameter to skip that filter.
 
@@ -58,52 +60,50 @@ Get-Action1Endpoints -Status All
 
 Gets managed endpoints without applying the status filter.
 
-### Example 4: Get endpoints with online warnings
+### Example 4: Get endpoints that require reboot
 
 ```powershell
-Get-Action1Endpoints -Status All -OnlineStatus WARNING
+Get-Action1Endpoints -Status All -RebootRequired Yes
 ```
 
-Gets managed endpoints where the online status is `WARNING`, without applying the endpoint status filter.
+Gets managed endpoints that require reboot, without applying the endpoint status filter.
 
-### Example 5: Get endpoints with update and vulnerability errors
+### Example 5: Get Windows 11 endpoints that require reboot
 
 ```powershell
-Get-Action1Endpoints -Status All -UpdateStatus ERROR -VulnerabilityStatus ERROR
+Get-Action1Endpoints -Status All -RebootRequired Yes -OS 'Windows 11'
 ```
 
-Gets managed endpoints where the update status and vulnerability status are both `ERROR`.
+Gets managed Windows 11 endpoints that require reboot.
 
 ### Example 6: Review selected endpoint fields
 
 ```powershell
 Get-Action1Endpoints -Status Connected |
-    Select-Object id, name, status, online_status, update_status, vulnerability_status
+    Select-Object id, name, status, reboot_required, OS
 ```
 
 Gets connected endpoints and selects key fields.
 
 ## PARAMETERS
 
-### -OnlineStatus
+### -RebootRequired
 
-Filters endpoints by online health status.
+Filters endpoints by reboot requirement.
 
-Specify `All` to disable online status filtering.
+Specify `All` to disable reboot requirement filtering.
 
 Accepted values:
 
-* `SUCCESS`
-* `WARNING`
-* `ERROR`
-* `UNDEFINED`
+* `Yes`
+* `No`
 * `All`
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED, All
+Accepted values: Yes, No, All
 
 Required: False
 Position: 1
@@ -138,55 +138,29 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -UpdateStatus
+### -OS
 
-Filters endpoints by update health status.
+Filters endpoints by operating system family.
 
-Specify `All` to disable update status filtering.
+Specify `All` to disable OS filtering.
 
 Accepted values:
 
-* `SUCCESS`
-* `WARNING`
-* `ERROR`
-* `UNDEFINED`
+* `Windows 11`
+* `Windows 10`
+* `Windows Server`
+* `macOS`
+* `linux`
 * `All`
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED, All
+Accepted values: Windows 11, Windows 10, Windows Server, macOS, linux, All
 
 Required: False
 Position: 2
-Default value: All
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -VulnerabilityStatus
-
-Filters endpoints by vulnerability health status.
-
-Specify `All` to disable vulnerability status filtering.
-
-Accepted values:
-
-* `SUCCESS`
-* `WARNING`
-* `ERROR`
-* `UNDEFINED`
-* `All`
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: SUCCESS, WARNING, ERROR, UNDEFINED, All
-
-Required: False
-Position: 3
 Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False

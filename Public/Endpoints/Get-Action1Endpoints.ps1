@@ -12,14 +12,11 @@ function Get-Action1Endpoints {
         [ValidateSet('Connected', 'Disconnected', 'Pending Uninstall', 'All')]
         [string]$Status = 'All',
         [Parameter(Mandatory = $false)]
-        [ValidateSet('SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED', 'All')]
-        [string]$OnlineStatus = 'All',
+        [ValidateSet('Yes', 'No', 'All')]
+        [string]$RebootRequired = 'All',
         [Parameter(Mandatory = $false)]
-        [ValidateSet('SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED', 'All')]
-        [string]$UpdateStatus = 'All',
-        [Parameter(Mandatory = $false)]
-        [ValidateSet('SUCCESS', 'WARNING', 'ERROR', 'UNDEFINED', 'All')]
-        [string]$VulnerabilityStatus = 'All'
+        [ValidateSet('Windows 11', 'Windows 10', 'Windows Server', 'macOS', 'linux', 'All')]
+        [string]$OS = 'All'
     )
 
     if (Initialize-Action1DefaultOrg) {
@@ -42,25 +39,18 @@ function Get-Action1Endpoints {
         $debugFilters += "status '$Status'"
     }
 
-    if ($OnlineStatus -ne 'All') {
-        $encodedOnlineStatus = [System.Uri]::EscapeDataString($OnlineStatus)
-        $queryArgument = "online_status=$encodedOnlineStatus"
+    if ($RebootRequired -ne 'All') {
+        $encodedRebootRequired = [System.Uri]::EscapeDataString($RebootRequired)
+        $queryArgument = "reboot_required=$encodedRebootRequired"
         $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
-        $debugFilters += "online status '$OnlineStatus'"
+        $debugFilters += "reboot required '$RebootRequired'"
     }
 
-    if ($UpdateStatus -ne 'All') {
-        $encodedUpdateStatus = [System.Uri]::EscapeDataString($UpdateStatus)
-        $queryArgument = "update_status=$encodedUpdateStatus"
+    if ($OS -ne 'All') {
+        $encodedOS = [System.Uri]::EscapeDataString($OS)
+        $queryArgument = "OS=$encodedOS"
         $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
-        $debugFilters += "update status '$UpdateStatus'"
-    }
-
-    if ($VulnerabilityStatus -ne 'All') {
-        $encodedVulnStatus = [System.Uri]::EscapeDataString($VulnerabilityStatus)
-        $queryArgument = "vulnerability_status=$encodedVulnStatus"
-        $addArgs = Join-QueryString -QueryString $addArgs -Argument $queryArgument
-        $debugFilters += "vulnerability status '$VulnerabilityStatus'"
+        $debugFilters += "OS '$OS'"
     }
 
     $debugMessage = 'Listing endpoints'
