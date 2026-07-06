@@ -26,7 +26,8 @@ The command groups endpoints by **MAC**, compares **last_seen** values, keeps
 the newest endpoint for each MAC address, and removes older duplicates by using
 **Remove-Action1Endpoints**.
 
-Endpoints missing **id**, **MAC**, or a parseable **last_seen** value are skipped.
+Endpoints missing **id**, **MAC**, or **last_seen**, or endpoints with an
+unparseable **last_seen** value, are skipped and counted as invalid.
 
 The command uses the module default organization configured by
 **Set-Action1DefaultOrg**.

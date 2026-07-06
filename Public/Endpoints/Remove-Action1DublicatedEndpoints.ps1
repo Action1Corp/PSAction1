@@ -16,13 +16,20 @@ function Remove-Action1DublicatedEndpoints {
     Write-Action1Debug "Retrieved $($endpoints.Count) endpoint record(s)."
 
     $dateFormat = 'yyyy-MM-dd_HH-mm-ss'
+    $requiredProperties = @('id', 'MAC', 'last_seen')
     $endpointsByMac = @{}
     $endpointsToRemove = New-Object System.Collections.ArrayList
     $invalidEndpoints = 0
 
     foreach ($endpoint in $endpoints) {
-        if ($null -eq $endpoint) {
-            Write-Action1Debug 'Skipping null endpoint object.'
+        if (
+            -not (
+                Test-ObjectProperties `
+                    -InputObject $endpoint `
+                    -PropertyNames $requiredProperties `
+                    -ObjectName 'endpoint object'
+            )
+        ) {
             $invalidEndpoints++
             continue
         }
