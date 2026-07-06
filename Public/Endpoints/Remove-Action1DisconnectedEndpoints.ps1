@@ -27,7 +27,7 @@ function Remove-Action1DisconnectedEndpoints {
     )
 
     $dateFormat = 'yyyy-MM-dd_HH-mm-ss'
-    $requiredProperties = @('id', 'last_seen')
+    $requiredProperties = @('id', 'name', 'last_seen')
     $endpointsToRemove = New-Object System.Collections.ArrayList
     $invalidEndpoints = 0
 
@@ -45,17 +45,21 @@ function Remove-Action1DisconnectedEndpoints {
         }
 
         $endpointId = [string]$endpoint.id
+        $endpointName = [string]$endpoint.name
         $lastSeenText = [string]$endpoint.last_seen
 
         if ([string]::IsNullOrWhiteSpace($endpointId)) {
-            Write-Action1Debug 'Skipping endpoint object because id is empty.'
+            Write-Action1Debug (
+                "Skipping endpoint with name '$endpointName' because id is empty."
+            )
             $invalidEndpoints++
             continue
         }
 
         if ([string]::IsNullOrWhiteSpace($lastSeenText)) {
             Write-Action1Debug (
-                "Skipping endpoint '$endpointId' because last_seen is empty."
+                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
+                "because last_seen is empty."
             )
             $invalidEndpoints++
             continue
@@ -66,17 +70,23 @@ function Remove-Action1DisconnectedEndpoints {
         }
         catch {
             Write-Action1Debug (
-                "Skipping endpoint '$endpointId' because last_seen '$lastSeenText' " +
-                "does not match '$dateFormat'."
+                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
+                "because last_seen '$lastSeenText' does not match '$dateFormat'."
             )
             $invalidEndpoints++
             continue
         }
 
         if ($lastSeen -le $filterTime) {
+            Write-Action1Debug (
+                "Endpoint with id '$endpointId' and name: '$endpointName' " +
+                "matched disconnected cleanup filter."
+            )
+
             [void]$endpointsToRemove.Add(
                 [pscustomobject]@{
                     Id       = $endpointId
+                    Name     = $endpointName
                     LastSeen = $lastSeen
                 }
             )

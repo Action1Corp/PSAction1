@@ -16,7 +16,7 @@ function Remove-Action1DublicatedEndpoints {
     Write-Action1Debug "Retrieved $($endpoints.Count) endpoint record(s)."
 
     $dateFormat = 'yyyy-MM-dd_HH-mm-ss'
-    $requiredProperties = @('id', 'MAC', 'last_seen')
+    $requiredProperties = @('id', 'name', 'MAC', 'last_seen')
     $endpointsByMac = @{}
     $endpointsToRemove = New-Object System.Collections.ArrayList
     $invalidEndpoints = 0
@@ -35,24 +35,31 @@ function Remove-Action1DublicatedEndpoints {
         }
 
         $endpointId = [string]$endpoint.id
+        $endpointName = [string]$endpoint.name
         $mac = [string]$endpoint.MAC
         $lastSeenText = [string]$endpoint.last_seen
 
         if ([string]::IsNullOrWhiteSpace($endpointId)) {
-            Write-Action1Debug 'Skipping endpoint object because id is empty.'
+            Write-Action1Debug (
+                "Skipping endpoint with name '$endpointName' because id is empty."
+            )
             $invalidEndpoints++
             continue
         }
 
         if ([string]::IsNullOrWhiteSpace($mac)) {
-            Write-Action1Debug "Skipping endpoint '$endpointId' because MAC is empty."
+            Write-Action1Debug (
+                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
+                "because MAC is empty."
+            )
             $invalidEndpoints++
             continue
         }
 
         if ([string]::IsNullOrWhiteSpace($lastSeenText)) {
             Write-Action1Debug (
-                "Skipping endpoint '$endpointId' because last_seen is empty."
+                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
+                "because last_seen is empty."
             )
             $invalidEndpoints++
             continue
@@ -63,8 +70,8 @@ function Remove-Action1DublicatedEndpoints {
         }
         catch {
             Write-Action1Debug (
-                "Skipping endpoint '$endpointId' because last_seen '$lastSeenText' " +
-                "does not match '$dateFormat'."
+                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
+                "because last_seen '$lastSeenText' does not match '$dateFormat'."
             )
             $invalidEndpoints++
             continue
@@ -73,6 +80,7 @@ function Remove-Action1DublicatedEndpoints {
         $macKey = $mac.Trim().ToUpperInvariant()
         $candidate = [pscustomobject]@{
             Id       = $endpointId
+            Name     = $endpointName
             MAC      = $mac.Trim()
             LastSeen = $lastSeen
         }
@@ -87,12 +95,18 @@ function Remove-Action1DublicatedEndpoints {
         if ($candidate.LastSeen -gt $freshestEndpoint.LastSeen) {
             [void]$endpointsToRemove.Add($freshestEndpoint)
             $endpointsByMac[$macKey] = $candidate
-            Write-Action1Debug "Endpoint '$endpointId' is newest for MAC '$macKey'."
+            Write-Action1Debug (
+                "Endpoint with id '$endpointId' and name: '$endpointName' " +
+                "is newest for MAC '$macKey'."
+            )
             continue
         }
 
         [void]$endpointsToRemove.Add($candidate)
-        Write-Action1Debug "Endpoint '$endpointId' is duplicate for MAC '$macKey'."
+        Write-Action1Debug (
+            "Endpoint with id '$endpointId' and name: '$endpointName' " +
+            "is duplicate for MAC '$macKey'."
+        )
     }
 
     Write-Action1Debug "Found $($endpointsToRemove.Count) duplicated endpoint(s)."

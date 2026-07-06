@@ -27,10 +27,10 @@ function Remove-Action1Endpoints {
     $endpointsFailed = 0
     $endpointsInvalid = 0
 
-    Write-Action1Debug "Removing $totalEndpointsToRemove Action1 endpoint(s)."
+    Write-Action1Debug "Removing $totalEndpointsToRemove endpoint(s)."
 
     if ($totalEndpointsToRemove -eq 0) {
-        Write-Action1Debug 'No Action1 endpoint IDs were supplied for removal.'
+        Write-Action1Debug 'No endpoint IDs were supplied for removal.'
 
         [pscustomobject]@{
             Succeeded                 = $true
@@ -58,7 +58,7 @@ function Remove-Action1Endpoints {
         }
 
         Write-Progress `
-            -Activity 'Removing Action1 endpoints' `
+            -Activity 'Removing endpoints' `
             -Status $progressStatus `
             -PercentComplete $percentComplete
 
@@ -121,7 +121,7 @@ function Remove-Action1Endpoints {
         }
     }
 
-    Write-Progress -Activity 'Removing Action1 endpoints' -Completed
+    Write-Progress -Activity 'Removing endpoints' -Completed
 
     Write-Action1Debug (
         "Endpoint removal completed. Processed: $processedEndpoints; " +
