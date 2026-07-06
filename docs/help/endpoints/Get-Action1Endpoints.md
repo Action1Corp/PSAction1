@@ -14,8 +14,7 @@ Gets managed endpoints for the current Action1 organization.
 ## SYNTAX
 
 ```
-Get-Action1Endpoints [[-Status] <String>] [[-RebootRequired] <String>] [[-OS] <String>]
- [<CommonParameters>]
+Get-Action1Endpoints [[-Status] <String>] [[-RebootRequired] <String>] [[-OS] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -87,6 +86,34 @@ Gets connected endpoints and selects key fields.
 
 ## PARAMETERS
 
+### -OS
+
+Filters endpoints by operating system family.
+
+Specify `All` to disable OS filtering.
+
+Accepted values:
+
+* `Windows 11`
+* `Windows 10`
+* `Windows Server`
+* `macOS`
+* `linux`
+* `All`
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: Windows 11, Windows 10, Windows Server, macOS, linux, All
+
+Required: False
+Position: 2
+Default value: All
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -RebootRequired
 
 Filters endpoints by reboot requirement.
@@ -133,34 +160,6 @@ Accepted values: Connected, Disconnected, Pending Uninstall, All
 
 Required: False
 Position: 0
-Default value: All
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -OS
-
-Filters endpoints by operating system family.
-
-Specify `All` to disable OS filtering.
-
-Accepted values:
-
-* `Windows 11`
-* `Windows 10`
-* `Windows Server`
-* `macOS`
-* `linux`
-* `All`
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: Windows 11, Windows 10, Windows Server, macOS, linux, All
-
-Required: False
-Position: 2
 Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -1023,7 +1023,8 @@ Europe</dev:code>
     <maml:description>
       <maml:para>Gets managed endpoint records from the current Action1 organization by using the Action1 endpoints API.</maml:para>
       <maml:para>Use Status to filter endpoints by connection or uninstall status.</maml:para>
-      <maml:para>Use OnlineStatus , UpdateStatus , and VulnerabilityStatus to filter endpoints by health status.</maml:para>
+      <maml:para>Use RebootRequired to filter endpoints by reboot requirement.</maml:para>
+      <maml:para>Use OS to filter endpoints by operating system family.</maml:para>
       <maml:para>Specify `All` for a filter parameter to skip that filter.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
@@ -1055,22 +1056,18 @@ Europe</dev:code>
           <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>OnlineStatus</maml:name>
+          <maml:name>RebootRequired</maml:name>
           <maml:description>
-            <maml:para>Filters endpoints by online health status.</maml:para>
-            <maml:para>Specify `All` to disable online status filtering.</maml:para>
+            <maml:para>Filters endpoints by reboot requirement.</maml:para>
+            <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
             <maml:para>Accepted values:</maml:para>
-            <maml:para>* `SUCCESS`</maml:para>
-            <maml:para>* `WARNING`</maml:para>
-            <maml:para>* `ERROR`</maml:para>
-            <maml:para>* `UNDEFINED`</maml:para>
+            <maml:para>* `Yes`</maml:para>
+            <maml:para>* `No`</maml:para>
             <maml:para>* `All`</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">No</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1081,48 +1078,24 @@ Europe</dev:code>
           <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-          <maml:name>UpdateStatus</maml:name>
+          <maml:name>OS</maml:name>
           <maml:description>
-            <maml:para>Filters endpoints by update health status.</maml:para>
-            <maml:para>Specify `All` to disable update status filtering.</maml:para>
+            <maml:para>Filters endpoints by operating system family.</maml:para>
+            <maml:para>Specify `All` to disable OS filtering.</maml:para>
             <maml:para>Accepted values:</maml:para>
-            <maml:para>* `SUCCESS`</maml:para>
-            <maml:para>* `WARNING`</maml:para>
-            <maml:para>* `ERROR`</maml:para>
-            <maml:para>* `UNDEFINED`</maml:para>
+            <maml:para>* `Windows 11`</maml:para>
+            <maml:para>* `Windows 10`</maml:para>
+            <maml:para>* `Windows Server`</maml:para>
+            <maml:para>* `macOS`</maml:para>
+            <maml:para>* `linux`</maml:para>
             <maml:para>* `All`</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>All</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>VulnerabilityStatus</maml:name>
-          <maml:description>
-            <maml:para>Filters endpoints by vulnerability health status.</maml:para>
-            <maml:para>Specify `All` to disable vulnerability status filtering.</maml:para>
-            <maml:para>Accepted values:</maml:para>
-            <maml:para>* `SUCCESS`</maml:para>
-            <maml:para>* `WARNING`</maml:para>
-            <maml:para>* `ERROR`</maml:para>
-            <maml:para>* `UNDEFINED`</maml:para>
-            <maml:para>* `All`</maml:para>
-          </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">SUCCESS</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">WARNING</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">ERROR</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">UNDEFINED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows 11</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows 10</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows Server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">macOS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">linux</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1135,16 +1108,34 @@ Europe</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>OnlineStatus</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>OS</maml:name>
         <maml:description>
-          <maml:para>Filters endpoints by online health status.</maml:para>
-          <maml:para>Specify `All` to disable online status filtering.</maml:para>
+          <maml:para>Filters endpoints by operating system family.</maml:para>
+          <maml:para>Specify `All` to disable OS filtering.</maml:para>
           <maml:para>Accepted values:</maml:para>
-          <maml:para>* `SUCCESS`</maml:para>
-          <maml:para>* `WARNING`</maml:para>
-          <maml:para>* `ERROR`</maml:para>
-          <maml:para>* `UNDEFINED`</maml:para>
+          <maml:para>* `Windows 11`</maml:para>
+          <maml:para>* `Windows 10`</maml:para>
+          <maml:para>* `Windows Server`</maml:para>
+          <maml:para>* `macOS`</maml:para>
+          <maml:para>* `linux`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>RebootRequired</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by reboot requirement.</maml:para>
+          <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Yes`</maml:para>
+          <maml:para>* `No`</maml:para>
           <maml:para>* `All`</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1163,44 +1154,6 @@ Europe</dev:code>
           <maml:para>* `Connected`</maml:para>
           <maml:para>* `Disconnected`</maml:para>
           <maml:para>* `Pending Uninstall`</maml:para>
-          <maml:para>* `All`</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>All</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>UpdateStatus</maml:name>
-        <maml:description>
-          <maml:para>Filters endpoints by update health status.</maml:para>
-          <maml:para>Specify `All` to disable update status filtering.</maml:para>
-          <maml:para>Accepted values:</maml:para>
-          <maml:para>* `SUCCESS`</maml:para>
-          <maml:para>* `WARNING`</maml:para>
-          <maml:para>* `ERROR`</maml:para>
-          <maml:para>* `UNDEFINED`</maml:para>
-          <maml:para>* `All`</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>All</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>VulnerabilityStatus</maml:name>
-        <maml:description>
-          <maml:para>Filters endpoints by vulnerability health status.</maml:para>
-          <maml:para>Specify `All` to disable vulnerability status filtering.</maml:para>
-          <maml:para>Accepted values:</maml:para>
-          <maml:para>* `SUCCESS`</maml:para>
-          <maml:para>* `WARNING`</maml:para>
-          <maml:para>* `ERROR`</maml:para>
-          <maml:para>* `UNDEFINED`</maml:para>
           <maml:para>* `All`</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -1261,29 +1214,350 @@ Europe</dev:code>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>-------- Example 4: Get endpoints with online warnings --------</maml:title>
-        <dev:code>Get-Action1Endpoints -Status All -OnlineStatus WARNING</dev:code>
+        <maml:title>--------- Example 4: Get endpoints that require reboot ---------</maml:title>
+        <dev:code>Get-Action1Endpoints -Status All -RebootRequired Yes</dev:code>
         <dev:remarks>
-          <maml:para>Gets managed endpoints where the online status is `WARNING`, without applying the endpoint status filter.</maml:para>
+          <maml:para>Gets managed endpoints that require reboot, without applying the endpoint status filter.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title> Example 5: Get endpoints with update and vulnerability errors </maml:title>
-        <dev:code>Get-Action1Endpoints -Status All -UpdateStatus ERROR -VulnerabilityStatus ERROR</dev:code>
+        <maml:title>--- Example 5: Get Windows 11 endpoints that require reboot ---</maml:title>
+        <dev:code>Get-Action1Endpoints -Status All -RebootRequired Yes -OS 'Windows 11'</dev:code>
         <dev:remarks>
-          <maml:para>Gets managed endpoints where the update status and vulnerability status are both `ERROR`.</maml:para>
+          <maml:para>Gets managed Windows 11 endpoints that require reboot.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>---------- Example 6: Review selected endpoint fields ----------</maml:title>
         <dev:code>Get-Action1Endpoints -Status Connected |
-    Select-Object id, name, status, online_status, update_status, vulnerability_status</dev:code>
+    Select-Object id, name, status, reboot_required, OS</dev:code>
         <dev:remarks>
           <maml:para>Gets connected endpoints and selects key fields.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1DisconnectedEndpoints</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1DisconnectedEndpoints</command:noun>
+      <maml:description>
+        <maml:para>Deletes disconnected managed endpoints that have not been seen for a specified number of days.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets disconnected managed endpoints from the current Action1 organization by using Get-Action1Endpoints -Status Disconnected .</maml:para>
+      <maml:para>The command filters endpoints where last_seen is older than or equal to the configured cutoff date, then removes matching endpoints by using Remove-Action1Endpoints .</maml:para>
+      <maml:para>Endpoints missing id or last_seen , or endpoints with an unparseable last_seen value, are skipped and counted as invalid.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operations. Use -Confirm to require confirmation before each endpoint is removed.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1DisconnectedEndpoints</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>DaysDisconnected</maml:name>
+          <maml:description>
+            <maml:para>Specifies how many days an endpoint must be disconnected before it is removed.</maml:para>
+            <maml:para>The command removes disconnected endpoints whose last_seen value is older than or equal to the cutoff date calculated from this value.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>90</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>DaysDisconnected</maml:name>
+        <maml:description>
+          <maml:para>Specifies how many days an endpoint must be disconnected before it is removed.</maml:para>
+          <maml:para>The command removes disconnected endpoints whose last_seen value is older than or equal to the cutoff date calculated from this value.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>90</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns cleanup statistics with DisconnectedEndpointsProcessed, EndpointsMatched, EndpointsRemovalSucceeded, EndpointsRemovalProcessed, EndpointsRemoved, EndpointsSkipped, EndpointsFailed, EndpointsInvalid, and DaysDisconnected.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage endpoints in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------- Example 1: Remove default candidates -------------</maml:title>
+        <dev:code>Remove-Action1DisconnectedEndpoints</dev:code>
+        <dev:remarks>
+          <maml:para>Gets disconnected endpoints, selects endpoints whose last_seen value is at least 90 days old, prompts for confirmation, and removes the selected endpoints.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------------- Example 2: Use a 180-day cutoff ---------------</maml:title>
+        <dev:code>Remove-Action1DisconnectedEndpoints -DaysDisconnected 180</dev:code>
+        <dev:remarks>
+          <maml:para>Gets disconnected endpoints and removes endpoints that have not been seen for at least 180 days.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------------ Example 3: Preview removal ------------------</maml:title>
+        <dev:code>Remove-Action1DisconnectedEndpoints -DaysDisconnected 180 -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows which disconnected endpoints would be removed without sending DELETE requests.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------------- Example 4: Prompt before removal ---------------</maml:title>
+        <dev:code>Remove-Action1DisconnectedEndpoints -DaysDisconnected 180 -Confirm</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation before each matching endpoint is removed.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 5: Review cleanup statistics -------------</maml:title>
+        <dev:code>$result = Remove-Action1DisconnectedEndpoints -DaysDisconnected 180
+$result | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Runs the cleanup and displays the summary statistics returned by the command.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Endpoint</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1DublicatedEndpoints</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1DublicatedEndpoints</command:noun>
+      <maml:description>
+        <maml:para>Deletes duplicated managed endpoints that share the same MAC address.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets all managed endpoints from the current Action1 organization by using Get-Action1Endpoints -Status All .</maml:para>
+      <maml:para>The command groups endpoints by MAC , compares last_seen values, keeps the newest endpoint for each MAC address, and removes older duplicates by using Remove-Action1Endpoints .</maml:para>
+      <maml:para>Endpoints missing id , MAC , or last_seen , or endpoints with an unparseable last_seen value, are skipped and counted as invalid.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operations. Use -Confirm to require confirmation before each endpoint is removed.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1DublicatedEndpoints</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns cleanup statistics with EndpointsTotal, EndpointsDuplicated, EndpointsRemovalSucceeded, EndpointsRemovalProcessed, EndpointsRemoved, EndpointsSkipped, EndpointsFailed, and EndpointsInvalid.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage endpoints in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------ Example 1: Remove duplicated endpoints ------------</maml:title>
+        <dev:code>Remove-Action1DublicatedEndpoints</dev:code>
+        <dev:remarks>
+          <maml:para>Gets all endpoints, keeps the newest endpoint for each MAC address, prompts for confirmation, and removes older duplicated endpoints.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------------ Example 2: Preview removal ------------------</maml:title>
+        <dev:code>Remove-Action1DublicatedEndpoints -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows which duplicated endpoints would be removed without sending DELETE requests.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------------- Example 3: Prompt before removal ---------------</maml:title>
+        <dev:code>Remove-Action1DublicatedEndpoints -Confirm</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation before each duplicated endpoint is removed.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 4: Review cleanup statistics -------------</maml:title>
+        <dev:code>$result = Remove-Action1DublicatedEndpoints
+$result | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Runs the cleanup and displays the summary statistics returned by the command.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Endpoint</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
         <maml:uri></maml:uri>
@@ -1461,6 +1735,177 @@ Europe</dev:code>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1Endpoints</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1Endpoints</command:noun>
+      <maml:description>
+        <maml:para>Deletes multiple managed endpoints from the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Deletes managed endpoints by using the Action1 endpoints API.</maml:para>
+      <maml:para>The command accepts endpoint IDs, validates each ID, shows progress, asks for PowerShell confirmation, and removes valid endpoints by using Remove-Action1Endpoint .</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>Use -WhatIf to preview the delete operations. Use -Confirm to require confirmation before each endpoint is removed.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1Endpoints</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>EndpointIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies the IDs of the managed endpoints to delete.</maml:para>
+            <maml:para>Each endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>EndpointIds</maml:name>
+        <maml:description>
+          <maml:para>Specifies the IDs of the managed endpoints to delete.</maml:para>
+          <maml:para>Each endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns removal statistics with Succeeded, EndpointsRequested, EndpointsRemovalProcessed, EndpointsRemoved, EndpointsSkipped, EndpointsFailed, and EndpointsInvalid.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage endpoints in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----------------- Example 1: Remove endpoints -----------------</maml:title>
+        <dev:code>$endpointIds = @(
+    '5e79941d-e4cc-40f3-899b-0cff63836d46'
+    'f93c2a28-9a31-4633-8902-63f130b8a455'
+)
+
+Remove-Action1Endpoints -EndpointIds $endpointIds</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation, then removes the specified managed endpoints.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 2: Preview endpoint removal -------------</maml:title>
+        <dev:code>Remove-Action1Endpoints -EndpointIds $endpointIds -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows which endpoints would be removed without sending DELETE requests.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 3: Review removal statistics -------------</maml:title>
+        <dev:code>$result = Remove-Action1Endpoints -EndpointIds $endpointIds
+$result | Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Runs the removal and displays the summary statistics returned by the command.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoint</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Endpoint</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>

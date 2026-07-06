@@ -15,8 +15,7 @@ number of days.
 ## SYNTAX
 
 ```
-Remove-Action1DisconnectedEndpoints [[-DaysDisconnected] <Int32>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Remove-Action1DisconnectedEndpoints [[-DaysDisconnected] <Int32>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
