@@ -17,8 +17,8 @@ function Remove-Action1DublicatedEndpoints {
 
     $dateFormat = 'yyyy-MM-dd_HH-mm-ss'
     $requiredProperties = @('id', 'name', 'MAC', 'last_seen')
-    $endpointsByMac = @{}
-    $endpointsToRemove = New-Object System.Collections.ArrayList
+    $newestEndpointByMacAddress = @{}
+    $duplicateEndpointsToRemove = New-Object System.Collections.ArrayList
     $invalidEndpoints = 0
 
     foreach ($endpoint in $endpoints) {
@@ -77,43 +77,49 @@ function Remove-Action1DublicatedEndpoints {
             continue
         }
 
-        $macKey = $mac.Trim().ToUpperInvariant()
-        $candidate = [pscustomobject]@{
+        $normalizedMacAddress = $mac.Trim().ToUpperInvariant()
+        $currentEndpoint = [pscustomobject]@{
             Id       = $endpointId
             Name     = $endpointName
             MAC      = $mac.Trim()
             LastSeen = $lastSeen
         }
 
-        if (-not $endpointsByMac.ContainsKey($macKey)) {
-            $endpointsByMac[$macKey] = $candidate
-            continue
+        if (-not $newestEndpointByMacAddress.ContainsKey($normalizedMacAddress)) {
+            $newestEndpointByMacAddress[$normalizedMacAddress] = $currentEndpoint
         }
+        else {
+            $newestEndpointForMacAddress = $newestEndpointByMacAddress[
+                $normalizedMacAddress
+            ]
 
-        $freshestEndpoint = $endpointsByMac[$macKey]
-
-        if ($candidate.LastSeen -gt $freshestEndpoint.LastSeen) {
-            [void]$endpointsToRemove.Add($freshestEndpoint)
-            $endpointsByMac[$macKey] = $candidate
-            Write-Action1Debug (
-                "Endpoint with id '$endpointId' and name: '$endpointName' " +
-                "is newest for MAC '$macKey'."
-            )
-            continue
+            if ($currentEndpoint.LastSeen -gt $newestEndpointForMacAddress.LastSeen) {
+                [void]$duplicateEndpointsToRemove.Add($newestEndpointForMacAddress)
+                $newestEndpointByMacAddress[$normalizedMacAddress] = $currentEndpoint
+                Write-Action1Debug (
+                    "Endpoint with id '$endpointId' and name: '$endpointName' " +
+                    "is newest for MAC '$normalizedMacAddress'."
+                )
+            }
+            else {
+                [void]$duplicateEndpointsToRemove.Add($currentEndpoint)
+                Write-Action1Debug (
+                    "Endpoint with id '$endpointId' and name: '$endpointName' " +
+                    "is duplicate for MAC '$normalizedMacAddress'."
+                )
+            }
         }
-
-        [void]$endpointsToRemove.Add($candidate)
-        Write-Action1Debug (
-            "Endpoint with id '$endpointId' and name: '$endpointName' " +
-            "is duplicate for MAC '$macKey'."
-        )
     }
 
-    Write-Action1Debug "Found $($endpointsToRemove.Count) duplicated endpoint(s)."
+    Write-Action1Debug (
+        "Found $($duplicateEndpointsToRemove.Count) duplicated endpoint(s)."
+    )
 
-    $totalEndpointsToRemove = $endpointsToRemove.Count
-    $endpointIdsToRemove = @($endpointsToRemove | ForEach-Object { $_.Id })
-    $removalResult = Remove-Action1Endpoints -EndpointIds $endpointIdsToRemove
+    $totalDuplicateEndpointsToRemove = $duplicateEndpointsToRemove.Count
+    $duplicateEndpointIdsToRemove = @(
+        $duplicateEndpointsToRemove | ForEach-Object { $_.Id }
+    )
+    $removalResult = Remove-Action1Endpoints -EndpointIds $duplicateEndpointIdsToRemove
 
     Write-Action1Debug (
         "Duplicated endpoint cleanup completed. " +
@@ -125,7 +131,7 @@ function Remove-Action1DublicatedEndpoints {
 
     [pscustomobject]@{
         EndpointsTotal            = $endpoints.Count
-        EndpointsDuplicated       = $totalEndpointsToRemove
+        EndpointsDuplicated       = $totalDuplicateEndpointsToRemove
         EndpointsRemovalSucceeded = $removalResult.Succeeded
         EndpointsRemovalProcessed = $removalResult.EndpointsRemovalProcessed
         EndpointsRemoved          = $removalResult.EndpointsRemoved
