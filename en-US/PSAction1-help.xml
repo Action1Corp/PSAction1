@@ -1760,7 +1760,7 @@ $result | Format-List</dev:code>
       <maml:para>Deletes managed endpoints by using the Action1 endpoints API.</maml:para>
       <maml:para>The command accepts endpoint IDs, validates each ID, shows progress, asks for PowerShell confirmation, and removes valid endpoints by using Remove-Action1Endpoint .</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
-      <maml:para>Use -WhatIf to preview the delete operations. Use -Confirm to require confirmation before each endpoint is removed.</maml:para>
+      <maml:para>Use -WhatIf to preview the delete operations. Use -Confirm to require confirmation before each endpoint is removed. Use -Force to bypass confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1782,6 +1782,17 @@ $result | Format-List</dev:code>
           <maml:name>Confirm</maml:name>
           <maml:description>
             <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -1827,6 +1838,18 @@ $result | Format-List</dev:code>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
         <maml:name>WhatIf</maml:name>
@@ -1892,6 +1915,13 @@ Remove-Action1Endpoints -EndpointIds $endpointIds</dev:code>
 $result | Format-List</dev:code>
         <dev:remarks>
           <maml:para>Runs the removal and displays the summary statistics returned by the command.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 4: Remove endpoints without prompting --------</maml:title>
+        <dev:code>Remove-Action1Endpoints -EndpointIds $endpointIds -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Deletes the managed endpoints without prompting for confirmation.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

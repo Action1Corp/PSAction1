@@ -12,13 +12,19 @@ function Remove-Action1Endpoints {
         [AllowNull()]
         [AllowEmptyCollection()]
         [AllowEmptyString()]
-        [string[]]$EndpointIds
+        [string[]]$EndpointIds,
+
+        [switch]$Force
     )
 
     $totalEndpointsToRemove = 0
 
     if ($null -ne $EndpointIds) {
         $totalEndpointsToRemove = $EndpointIds.Count
+    }
+
+    if ($Force) {
+        $ConfirmPreference = 'None'
     }
 
     $processedEndpoints = 0

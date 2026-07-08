@@ -14,7 +14,7 @@ Deletes multiple managed endpoints from the current Action1 organization.
 ## SYNTAX
 
 ```
-Remove-Action1Endpoints [-EndpointIds] <String[]> [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-Action1Endpoints [-EndpointIds] <String[]> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,7 +29,8 @@ The command uses the module default organization configured by
 **Set-Action1DefaultOrg**.
 
 Use **-WhatIf** to preview the delete operations. Use **-Confirm** to require
-confirmation before each endpoint is removed.
+confirmation before each endpoint is removed. Use **-Force** to bypass
+confirmation prompts.
 
 ## EXAMPLES
 
@@ -62,6 +63,14 @@ $result | Format-List
 ```
 
 Runs the removal and displays the summary statistics returned by the command.
+
+### Example 4: Remove endpoints without prompting
+
+```powershell
+Remove-Action1Endpoints -EndpointIds $endpointIds -Force
+```
+
+Deletes the managed endpoints without prompting for confirmation.
 
 ## PARAMETERS
 
@@ -96,6 +105,22 @@ Aliases:
 Required: True
 Position: 0
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Bypasses confirmation prompts. **-WhatIf** is still honored when it is specified.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
