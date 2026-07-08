@@ -91,7 +91,7 @@ function Invoke-Action1ApiRequest {
             }
 
             if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 300) {
-                Write-Action1Debug ("Success response code {0} for {1} to {2}" -f $($response.StatusCode), $Method, $Path)
+                Write-Action1Debug ("Success response code {0} for {1} request to {2}" -f $($response.StatusCode), $Method, $Path)
                 if ($RawResponse) {
                     return $response.Content
                 }
