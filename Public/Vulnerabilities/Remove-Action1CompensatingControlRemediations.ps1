@@ -16,7 +16,7 @@ function Remove-Action1CompensatingControlRemediations {
 
     $remediationStatus = 'Control_applied'
 
-    $GetFirstPropertyValue = {
+    $getFirstPropertyValue = {
         param(
             [Parameter(Mandatory = $true)]
             [object]$InputObject,
@@ -25,12 +25,12 @@ function Remove-Action1CompensatingControlRemediations {
             [string[]]$PropertyName
         )
 
-        foreach ($Name in $PropertyName) {
-            if ($InputObject.PSObject.Properties.Name -contains $Name) {
-                $Value = $InputObject.$Name
+        foreach ($name in $PropertyName) {
+            if ($InputObject.PSObject.Properties.Name -contains $name) {
+                $value = $InputObject.$name
 
-                if ($null -ne $Value -and -not [string]::IsNullOrWhiteSpace([string]$Value)) {
-                    return [string]$Value
+                if ($null -ne $value -and -not [string]::IsNullOrWhiteSpace([string]$value)) {
+                    return [string]$value
                 }
             }
         }
@@ -40,109 +40,109 @@ function Remove-Action1CompensatingControlRemediations {
 
     Write-Action1Debug "Starting bulk remediation cleanup. RemediationStatus: '$remediationStatus'. Score '$Score'. Force switch: $Force."
 
-    $Vulnerabilities = @(
+    $vulnerabilities = @(
         Get-Action1Vulnerabilities -RemediationStatus $remediationStatus -Score $Score | Where-Object { $null -ne $_ }
     )
 
-    $TotalVulnerabilities = $Vulnerabilities.Count
+    $totalVulnerabilities = $vulnerabilities.Count
 
-    Write-Host ("Found {0} vulnerabilities with remediation status '$remediationStatus' and  score '$Score'." -f $TotalVulnerabilities)
+    Write-Host ("Found {0} vulnerabilities with remediation status '$remediationStatus' and  score '$Score'." -f $totalVulnerabilities)
 
-    $ProcessedVulnerabilities = 0
-    $RemediationsFound = 0
-    $RemediationsRemoved = 0
-    $RemediationsSkipped = 0
-    $RemediationsFailed = 0
+    $processedVulnerabilities = 0
+    $remediationsFound = 0
+    $remediationsRemoved = 0
+    $remediationsSkipped = 0
+    $remediationsFailed = 0
 
-    if ($TotalVulnerabilities -eq 0) {
+    if ($totalVulnerabilities -eq 0) {
         Write-Host ("No vulnerabilities with remediation status '$remediationStatus' and  score '$Score' were found.")
 
         [pscustomobject]@{
-            VulnerabilitiesProcessed = $ProcessedVulnerabilities
-            RemediationsFound        = $RemediationsFound
-            RemediationsRemoved      = $RemediationsRemoved
-            RemediationsSkipped      = $RemediationsSkipped
-            RemediationsFailed       = $RemediationsFailed
+            VulnerabilitiesProcessed = $processedVulnerabilities
+            RemediationsFound        = $remediationsFound
+            RemediationsRemoved      = $remediationsRemoved
+            RemediationsSkipped      = $remediationsSkipped
+            RemediationsFailed       = $remediationsFailed
             RemediationStatus        = $remediationStatus
             Score                    = $Score
         }
         return
     }
 
-    foreach ($Vulnerability in $Vulnerabilities) {
-        $ProcessedVulnerabilities++
+    foreach ($vulnerability in $vulnerabilities) {
+        $processedVulnerabilities++
 
-        $CVEId = & $GetFirstPropertyValue -InputObject $Vulnerability -PropertyName @('cve_id', 'CVEId', 'cve', 'id')
+        $cveId = & $getFirstPropertyValue -InputObject $vulnerability -PropertyName @('cve_id', 'CVEId', 'cve', 'id')
 
-        if ([string]::IsNullOrWhiteSpace($CVEId)) {
-            Write-Warning ("Skipping vulnerability #{0} because a CVE id could not be found." -f $ProcessedVulnerabilities)
-            $RemediationsFailed++
+        if ([string]::IsNullOrWhiteSpace($cveId)) {
+            Write-Warning ("Skipping vulnerability #{0} because a CVE id could not be found." -f $processedVulnerabilities)
+            $remediationsFailed++
             continue
         }
 
-        $PercentComplete = [int](($ProcessedVulnerabilities / $TotalVulnerabilities) * 100)
+        $percentComplete = [int](($processedVulnerabilities / $totalVulnerabilities) * 100)
 
         Write-Progress `
             -Activity 'Removing Action1 vulnerability remediations' `
-            -Status ("Processing {0} ({1} of {2})" -f $CVEId, $ProcessedVulnerabilities, $TotalVulnerabilities) `
-            -PercentComplete $PercentComplete
+            -Status ("Processing {0} ({1} of {2})" -f $cveId, $processedVulnerabilities, $totalVulnerabilities) `
+            -PercentComplete $percentComplete
 
-        Write-Action1Debug ("Processing vulnerability '{0}' ({1} of {2})." -f $CVEId, $ProcessedVulnerabilities, $TotalVulnerabilities)
+        Write-Action1Debug ("Processing vulnerability '{0}' ({1} of {2})." -f $cveId, $processedVulnerabilities, $totalVulnerabilities)
 
-        $Remediations = @(
-            Get-Action1VulnerabilityRemediations -CVEId $CVEId |
+        $remediations = @(
+            Get-Action1VulnerabilityRemediations -CVEId $cveId |
                 Where-Object { $null -ne $_ }
         )
 
-        if ($Remediations.Count -eq 0) {
-            Write-Action1Debug "No remediation records found for vulnerability '$CVEId'."
+        if ($remediations.Count -eq 0) {
+            Write-Action1Debug "No remediation records found for vulnerability '$cveId'."
             continue
         }
 
-        $RemediationsFound += $Remediations.Count
+        $remediationsFound += $remediations.Count
 
         Write-Host ""
-        Write-Host ("Remediations to delete for {0}:" -f $CVEId)
-        $Remediations |
+        Write-Host ("Remediations to delete for {0}:" -f $cveId)
+        $remediations |
             Select-Object remediation_id, id, type, user, comment, created_at, updated_at |
             Format-List |
             Out-Host
 
-        foreach ($Remediation in $Remediations) {
-            $RemediationId = & $GetFirstPropertyValue -InputObject $Remediation -PropertyName @('remediation_id', 'RemediationId', 'id')
+        foreach ($remediation in $remediations) {
+            $remediationId = & $getFirstPropertyValue -InputObject $remediation -PropertyName @('remediation_id', 'RemediationId', 'id')
 
-            if ([string]::IsNullOrWhiteSpace($RemediationId)) {
-                Write-Warning ("Skipping a remediation for vulnerability '{0}' because remediation id could not be found." -f $CVEId)
-                $RemediationsFailed++
+            if ([string]::IsNullOrWhiteSpace($remediationId)) {
+                Write-Warning ("Skipping a remediation for vulnerability '{0}' because remediation id could not be found." -f $cveId)
+                $remediationsFailed++
                 continue
             }
 
-            $Result = Remove-Action1CompensatingControlRemediation -CVEId $CVEId -RemediationId $RemediationId -Force:$Force
+            $result = Remove-Action1CompensatingControlRemediation -CVEId $cveId -RemediationId $remediationId -Force:$Force
 
-            if ($null -eq $Result) {
-                $RemediationsFailed++
+            if ($null -eq $result) {
+                $remediationsFailed++
                 continue
             }
 
-            switch ($Result.Status) {
-                'Removed' { $RemediationsRemoved++ }
-                'Skipped' { $RemediationsSkipped++ }
-                'Failed'  { $RemediationsFailed++ }
-                default   { $RemediationsFailed++ }
+            switch ($result.Status) {
+                'Removed' { $remediationsRemoved++ }
+                'Skipped' { $remediationsSkipped++ }
+                'Failed'  { $remediationsFailed++ }
+                default   { $remediationsFailed++ }
             }
         }
     }
 
     Write-Progress -Activity 'Removing Action1 vulnerability remediations' -Completed
 
-    Write-Host ("{0} vulnerabilities processed, {1} remediations with status '{2}' and  score '{3}' removed successfully." -f $ProcessedVulnerabilities, $RemediationsRemoved, $remediationStatus, $Score)
+    Write-Host ("{0} vulnerabilities processed, {1} remediations with status '{2}' and  score '{3}' removed successfully." -f $processedVulnerabilities, $remediationsRemoved, $remediationStatus, $Score)
 
     [pscustomobject]@{
-        VulnerabilitiesProcessed = $ProcessedVulnerabilities
-        RemediationsFound        = $RemediationsFound
-        RemediationsRemoved      = $RemediationsRemoved
-        RemediationsSkipped      = $RemediationsSkipped
-        RemediationsFailed       = $RemediationsFailed
+        VulnerabilitiesProcessed = $processedVulnerabilities
+        RemediationsFound        = $remediationsFound
+        RemediationsRemoved      = $remediationsRemoved
+        RemediationsSkipped      = $remediationsSkipped
+        RemediationsFailed       = $remediationsFailed
         RemediationStatus        = $remediationStatus
         Score                    = $Score
     }

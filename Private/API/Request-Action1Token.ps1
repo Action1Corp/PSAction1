@@ -20,7 +20,7 @@ function Request-Action1Token {
             } 
         }
         try {
-            $Token = Invoke-Action1ApiRequest `
+            $token = Invoke-Action1ApiRequest `
                 -Method POST `
                 -Path "$Script:Action1_BaseURI/oauth2/token" `
                 -Label 'Request OAuth2 token' `
@@ -29,12 +29,16 @@ function Request-Action1Token {
                     client_secret = $Script:Action1_Secret
                 } `
                 -SkipAuthenticationCheck
-            $Token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$Token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
-            return $Token
+            if ($null -eq $token) {
+                Write-Error "Error fetching auth token: token request failed with the error above."
+                return $null
+            }
+
+            $token | Add-Member -MemberType NoteProperty -Name "expires_at" -Value $(Get-Date).AddSeconds(([int]$token.expires_in - 5)) #Expire token 5 seconds early to avoid race condition timeouts.
+            return $token
         }
         catch [System.Net.WebException] {
             Write-Error "Error fetching auth token: $($_)."
-            Write-Error $Token
             return $null
         }     
     }

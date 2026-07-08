@@ -86,9 +86,18 @@
         'Set-Action1Debug'
         'Get-Action1Debug'
 
+        # Endpoints
+        'Get-Action1Endpoints'
+        'Get-Action1Endpoint'
+        'Update-Action1Endpoint'
+        'Remove-Action1Endpoint'
+        'Remove-Action1Endpoints'
+        'Remove-Action1DisconnectedEndpoints'
+        'Remove-Action1DublicatedEndpoints'
+
         # Vulnerabilities
-        'Get-Action1Vulnerability'
         'Get-Action1Vulnerabilities'
+        'Get-Action1Vulnerability'
         'Get-Action1VulnerabilityRemediations'
         'Get-Action1VulnerabilityEndpoints'
         'New-Action1CompensatingControlRemediation'

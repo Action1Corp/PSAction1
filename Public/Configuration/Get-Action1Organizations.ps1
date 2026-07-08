@@ -11,15 +11,12 @@ function Get-Action1Organizations {
 
     Write-Action1Debug 'Getting Action1 organizations.'
 
-    if (-not $Script:Action1_UriMap.ContainsKey('G_Organizations')) {
-        $message = "Action1 URI map key 'G_Organizations' is not defined."
-        Write-Error $message -ErrorAction Stop
-    }
+    $uriPathBuilder = Get-UriMapValue -Key 'G_Organizations'
 
-    $endpoint = & $Script:Action1_UriMap['G_Organizations']
-    $Path = "$Script:Action1_BaseURI{0}" -f $endpoint
+    $uri = & $uriPathBuilder
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
     $requestParams = @{
-        Path  = $Path
+        Path  = $path
         Label = 'Organizations'
     }
     $response = @(

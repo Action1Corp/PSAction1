@@ -19,7 +19,7 @@ function Invoke-Action1PagedGetRequest {
         [int]$Limit = 200
     )
 
-    $HasProperty = {
+    $hasProperty = {
         param(
             [object]$InputObject,
             [string]$PropertyName
@@ -32,7 +32,7 @@ function Invoke-Action1PagedGetRequest {
         return ($InputObject.PSObject.Properties.Name -contains $PropertyName)
     }
 
-    $ConvertToInt64 = {
+    $convertToInt64 = {
         param(
             [object]$Value
         )
@@ -56,7 +56,7 @@ function Invoke-Action1PagedGetRequest {
         return $null
     }
 
-    $GetPageItemCount = {
+    $getPageItemCount = {
         param(
             [object]$CurrentPage
         )
@@ -65,7 +65,7 @@ function Invoke-Action1PagedGetRequest {
             return 0
         }
 
-        if (-not (& $HasProperty $CurrentPage 'items')) {
+        if (-not (& $hasProperty $CurrentPage 'items')) {
             return 0
         }
 
@@ -76,7 +76,7 @@ function Invoke-Action1PagedGetRequest {
         return @($CurrentPage.items).Count
     }
 
-    $RemovePagingArguments = {
+    $removePagingArguments = {
         param(
             [string]$QueryString
         )
@@ -100,69 +100,69 @@ function Invoke-Action1PagedGetRequest {
         return ($queryParts -join '&')
     }
 
-    $BaseArgs = & $RemovePagingArguments $AddArgs
+    $baseArgs = & $removePagingArguments $AddArgs
 
-    $BuildPageRequestArgs = {
+    $buildPageRequestArgs = {
         param(
             [int64]$CurrentOffset,
             [int64]$CurrentLimit
         )
 
-        $requestArgs = $BaseArgs
+        $requestArgs = $baseArgs
         $requestArgs = Join-QueryString -QueryString $requestArgs -Argument "from=$CurrentOffset"
         $requestArgs = Join-QueryString -QueryString $requestArgs -Argument "limit=$CurrentLimit"
 
         return $requestArgs
     }
 
-    $RequestArgs = & $BuildPageRequestArgs $Offset $Limit
+    $requestArgs = & $buildPageRequestArgs $Offset $Limit
 
-    $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs
+    $page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $requestArgs
 
-    if ($null -eq $Page) {
+    if ($null -eq $page) {
         Write-Action1Debug "[$Label] Page 1 returned null. Stopping pagination."
         return $null
     }
 
-    if (-not (& $HasProperty $Page 'items')) {
+    if (-not (& $hasProperty $page 'items')) {
         Write-Action1Debug "[$Label] Response is not a paged result. Returning response as-is."
-        $Page
+        $page
         return
     }
 
-    $PageNumber = 1
-    $ItemCount = & $GetPageItemCount $Page
+    $pageNumber = 1
+    $itemCount = & $getPageItemCount $page
 
-    Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
+    Write-Action1Debug "[$Label] Processing page $pageNumber. Items: $itemCount"
 
-    foreach ($Item in @($Page.items)) {
-        $Item
+    foreach ($item in @($page.items)) {
+        $item
     }
 
-    if (& $HasProperty $Page 'next_page') {
-        while (-not [string]::IsNullOrWhiteSpace([string]$Page.next_page)) {
-            $PageNumber++
+    if (& $hasProperty $page 'next_page') {
+        while (-not [string]::IsNullOrWhiteSpace([string]$page.next_page)) {
+            $pageNumber++
 
-            Write-Action1Debug "[$Label] Requesting page $PageNumber by next_page..."
+            Write-Action1Debug "[$Label] Requesting page $pageNumber by next_page..."
 
-            $Page = Invoke-Action1ApiRequest -Method GET -Path $Page.next_page -Label $Label
+            $page = Invoke-Action1ApiRequest -Method GET -Path $page.next_page -Label $Label
 
-            if ($null -eq $Page) {
-                Write-Action1Debug "[$Label] Page $PageNumber returned null. Stopping pagination."
+            if ($null -eq $page) {
+                Write-Action1Debug "[$Label] Page $pageNumber returned null. Stopping pagination."
                 break
             }
 
-            if (-not (& $HasProperty $Page 'items')) {
-                Write-Action1Debug "[$Label] Page $PageNumber does not contain items. Stopping pagination."
+            if (-not (& $hasProperty $page 'items')) {
+                Write-Action1Debug "[$Label] Page $pageNumber does not contain items. Stopping pagination."
                 break
             }
 
-            $ItemCount = & $GetPageItemCount $Page
+            $itemCount = & $getPageItemCount $page
 
-            Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
+            Write-Action1Debug "[$Label] Processing page $pageNumber. Items: $itemCount"
 
-            foreach ($Item in @($Page.items)) {
-                $Item
+            foreach ($item in @($page.items)) {
+                $item
             }
         }
 
@@ -172,91 +172,91 @@ function Invoke-Action1PagedGetRequest {
     Write-Action1Debug "[$Label] Response does not contain next_page. Trying total_items/from/limit pagination."
 
     if (
-        -not (& $HasProperty $Page 'total_items') -or
-        -not (& $HasProperty $Page 'limit') -or
-        -not (& $HasProperty $Page 'from')
+        -not (& $hasProperty $page 'total_items') -or
+        -not (& $hasProperty $page 'limit') -or
+        -not (& $hasProperty $page 'from')
     ) {
         Write-Action1Debug "[$Label] total_items/from/limit paging properties are incomplete. Stopping pagination."
         return
     }
 
-    $TotalItems = & $ConvertToInt64 $Page.total_items
-    $ResponseLimit = & $ConvertToInt64 $Page.limit
-    $ResponseFrom = & $ConvertToInt64 $Page.from
+    $totalItems = & $convertToInt64 $page.total_items
+    $responseLimit = & $convertToInt64 $page.limit
+    $responseFrom = & $convertToInt64 $page.from
 
-    if ($null -eq $TotalItems) {
-        Write-Action1Debug "[$Label] total_items value '$($Page.total_items)' is not numeric. Stopping pagination."
+    if ($null -eq $totalItems) {
+        Write-Action1Debug "[$Label] total_items value '$($page.total_items)' is not numeric. Stopping pagination."
         return
     }
 
-    if ($null -eq $ResponseLimit -or $ResponseLimit -le 0) {
-        Write-Action1Debug "[$Label] limit value '$($Page.limit)' is not a positive numeric value. Stopping pagination."
+    if ($null -eq $responseLimit -or $responseLimit -le 0) {
+        Write-Action1Debug "[$Label] limit value '$($page.limit)' is not a positive numeric value. Stopping pagination."
         return
     }
 
-    if ($null -eq $ResponseFrom -or $ResponseFrom -lt 0) {
-        Write-Action1Debug "[$Label] from value '$($Page.from)' is not a valid numeric value. Stopping pagination."
+    if ($null -eq $responseFrom -or $responseFrom -lt 0) {
+        Write-Action1Debug "[$Label] from value '$($page.from)' is not a valid numeric value. Stopping pagination."
         return
     }
 
-    $NextOffset = $ResponseFrom + $ResponseLimit
+    $nextOffset = $responseFrom + $responseLimit
 
-    while ($NextOffset -lt $TotalItems) {
-        $PageNumber++
+    while ($nextOffset -lt $totalItems) {
+        $pageNumber++
 
-        Write-Action1Debug "[$Label] Requesting page $PageNumber by offset. from=$NextOffset; limit=$ResponseLimit; total_items=$TotalItems"
+        Write-Action1Debug "[$Label] Requesting page $pageNumber by offset. from=$nextOffset; limit=$responseLimit; total_items=$totalItems"
 
-        $RequestArgs = & $BuildPageRequestArgs $NextOffset $ResponseLimit
+        $requestArgs = & $buildPageRequestArgs $nextOffset $responseLimit
 
-        $Page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $RequestArgs
+        $page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $requestArgs
 
-        if ($null -eq $Page) {
-            Write-Action1Debug "[$Label] Page $PageNumber returned null. Stopping pagination."
+        if ($null -eq $page) {
+            Write-Action1Debug "[$Label] Page $pageNumber returned null. Stopping pagination."
             break
         }
 
-        if (-not (& $HasProperty $Page 'items')) {
-            Write-Action1Debug "[$Label] Page $PageNumber does not contain items. Stopping pagination."
+        if (-not (& $hasProperty $page 'items')) {
+            Write-Action1Debug "[$Label] Page $pageNumber does not contain items. Stopping pagination."
             break
         }
 
-        $ItemCount = & $GetPageItemCount $Page
+        $itemCount = & $getPageItemCount $page
 
-        Write-Action1Debug "[$Label] Processing page $PageNumber. Items: $ItemCount"
+        Write-Action1Debug "[$Label] Processing page $pageNumber. Items: $itemCount"
 
-        foreach ($Item in @($Page.items)) {
-            $Item
+        foreach ($item in @($page.items)) {
+            $item
         }
 
         # Re-read paging metadata from every response because some endpoints may
         # normalize the requested limit, update total_items between requests, or
         # return unexpected paging values. This also prevents infinite loops when
         # the returned offset does not advance.
-        $PreviousOffset = $NextOffset
+        $previousOffset = $nextOffset
 
-        $CurrentTotalItems = & $ConvertToInt64 $Page.total_items
-        $CurrentLimit = & $ConvertToInt64 $Page.limit
-        $CurrentFrom = & $ConvertToInt64 $Page.from
+        $currentTotalItems = & $convertToInt64 $page.total_items
+        $currentLimit = & $convertToInt64 $page.limit
+        $currentFrom = & $convertToInt64 $page.from
 
-        if ($null -ne $CurrentTotalItems) {
-            $TotalItems = $CurrentTotalItems
+        if ($null -ne $currentTotalItems) {
+            $totalItems = $currentTotalItems
         }
 
-        if ($null -eq $CurrentLimit -or $CurrentLimit -le 0) {
-            Write-Action1Debug "[$Label] Page $PageNumber returned invalid limit '$($Page.limit)'. Stopping pagination."
+        if ($null -eq $currentLimit -or $currentLimit -le 0) {
+            Write-Action1Debug "[$Label] Page $pageNumber returned invalid limit '$($page.limit)'. Stopping pagination."
             break
         }
 
-        if ($null -eq $CurrentFrom -or $CurrentFrom -lt 0) {
-            Write-Action1Debug "[$Label] Page $PageNumber returned invalid from '$($Page.from)'. Stopping pagination."
+        if ($null -eq $currentFrom -or $currentFrom -lt 0) {
+            Write-Action1Debug "[$Label] Page $pageNumber returned invalid from '$($page.from)'. Stopping pagination."
             break
         }
 
-        $ResponseLimit = $CurrentLimit
-        $NextOffset = $CurrentFrom + $CurrentLimit
+        $responseLimit = $currentLimit
+        $nextOffset = $currentFrom + $currentLimit
 
-        if ($NextOffset -le $PreviousOffset) {
-            Write-Action1Debug "[$Label] Next offset did not advance. Previous offset: $PreviousOffset; next offset: $NextOffset. Stopping pagination."
+        if ($nextOffset -le $previousOffset) {
+            Write-Action1Debug "[$Label] Next offset did not advance. Previous offset: $previousOffset; next offset: $nextOffset. Stopping pagination."
             break
         }
     }

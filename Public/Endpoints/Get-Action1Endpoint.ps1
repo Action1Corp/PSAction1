@@ -5,25 +5,28 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
-function Get-Action1VulnerabilityEndpoints {
+function Get-Action1Endpoint {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [ValidatePattern('^CVE-\d{4}-\d{3,6}$')]
-        [string]$CVEId
+        [ValidateScript({
+            $parsedGuid = [guid]::Empty
+            [guid]::TryParseExact($_, 'D', [ref]$parsedGuid)
+        })]
+        [string]$EndpointId
     )
 
     if (Initialize-Action1DefaultOrg) {
         $orgId = Get-Action1DefaultOrgId
     }
 
-    $uriPathBuilder = Get-UriMapValue -Key 'G_VulnerabilityEndpoints'
+    $uriPathBuilder = Get-UriMapValue -Key 'G_Endpoint'
 
-    $uri = & $uriPathBuilder $orgId $CVEId
+    $uri = & $uriPathBuilder $orgId $EndpointId
     $path = "$Script:Action1_BaseURI{0}" -f $uri
 
-    Write-Action1Debug "Listing endpoints affected by vulnerability '$CVEId'."
+    Write-Action1Debug "Getting endpoint '$EndpointId'."
 
-    Invoke-Action1PagedGetRequest -Path $path -Label "Vulnerability endpoints '$CVEId'"
+    Invoke-Action1ApiRequest -Method GET -Path $path -Label "Endpoint '$EndpointId'"
 }
