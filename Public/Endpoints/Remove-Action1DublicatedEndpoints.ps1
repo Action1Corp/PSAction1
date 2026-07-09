@@ -125,15 +125,8 @@ function Remove-Action1DublicatedEndpoints {
     )
 
     $totalDuplicateEndpointsToRemove = $duplicateEndpointsToRemove.Count
-    $duplicateEndpointsToRemoveById = @{}
-
-    foreach ($duplicateEndpointToRemove in $duplicateEndpointsToRemove) {
-        $duplicateEndpointId = $duplicateEndpointToRemove.Id
-        $duplicateEndpointName = $duplicateEndpointToRemove.Name
-        $duplicateEndpointsToRemoveById[$duplicateEndpointId] = $duplicateEndpointName
-    }
-
-    $removalResult = Remove-Action1Endpoints -Endpoints $duplicateEndpointsToRemoveById
+    $removalResult = Remove-Action1Endpoints `
+        -EndpointObjects $duplicateEndpointsToRemove
 
     Write-Action1Debug (
         "Duplicated done. Processed:{0}; removed:{1}; skipped:{2}; failed:{3}." -f

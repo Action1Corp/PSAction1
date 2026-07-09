@@ -108,13 +108,7 @@ function Remove-Action1DisconnectedEndpoints {
     Write-Action1Debug "Found $($endpointsToRemove.Count) endpoint(s) to remove."
 
     $totalEndpointsToRemove = $endpointsToRemove.Count
-    $endpointsToRemoveHashtable = @{}
-
-    foreach ($endpointToRemove in $endpointsToRemove) {
-        $endpointsToRemoveHashtable[$endpointToRemove.Id] = $endpointToRemove.Name
-    }
-
-    $removalResult = Remove-Action1Endpoints -Endpoints $endpointsToRemoveHashtable
+    $removalResult = Remove-Action1Endpoints -EndpointObjects $endpointsToRemove
 
     Write-Action1Debug (
         "Disconnected done. Processed:{0}; removed:{1}; skipped:{2}; failed:{3}." -f
