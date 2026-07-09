@@ -16,6 +16,11 @@ function Remove-Action1Endpoint {
         })]
         [string]$EndpointId,
 
+        [Parameter(Mandatory = $false)]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]$EndpointName,
+
         [switch]$Force
     )
 
@@ -27,47 +32,60 @@ function Remove-Action1Endpoint {
 
     $uri = & $uriPathBuilder $orgId $EndpointId
     $path = "$Script:Action1_BaseURI{0}" -f $uri
-    $target = "endpoint '$EndpointId'"
+    $resolvedEndpointName = $null
 
     if ($Force) {
         $ConfirmPreference = 'None'
     }
 
-    if (-not $PSCmdlet.ShouldProcess($target, 'Delete endpoint')) {
-        Write-Action1Debug "Skipped deleting endpoint '$EndpointId'."
+    if (-not [string]::IsNullOrWhiteSpace($EndpointName)) {
+        $resolvedEndpointName = $EndpointName.Trim()
+    }
+
+    $endpointLabel = "endpoint with id '$EndpointId'"
+
+    if ($null -ne $resolvedEndpointName) {
+        $endpointLabel = "$endpointLabel and name '$resolvedEndpointName'"
+    }
+
+    if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Delete endpoint')) {
+        Write-Action1Debug "Skipped deleting $endpointLabel."
 
         [pscustomobject]@{
-            EndpointId = $EndpointId
-            Status     = 'Skipped'
-            Response   = $null
+            EndpointId   = $EndpointId
+            EndpointName = $resolvedEndpointName
+            Status       = 'Skipped'
+            Response     = $null
         }
         return
     }
 
-    Write-Action1Debug "Deleting endpoint '$EndpointId'."
+    Write-Action1Debug "Deleting $endpointLabel."
 
     $response = Invoke-Action1ApiRequest `
         -Method DELETE `
         -Path $path `
-        -Label "Delete endpoint '$EndpointId'" `
+        -Label "Delete $endpointLabel" `
         -RawResponse
 
     if ($null -eq $response) {
-        Write-Error ("Failed to delete endpoint '{0}'." -f $EndpointId)
+        Write-Error "Failed to delete $endpointLabel."
 
         [pscustomobject]@{
-            EndpointId = $EndpointId
-            Status     = 'Failed'
-            Response   = $null
+            EndpointId   = $EndpointId
+            EndpointName = $resolvedEndpointName
+            Status       = 'Failed'
+            Response     = $null
         }
         return
     }
 
-    Write-Action1Debug "Deleted endpoint '$EndpointId'."
+    Write-Action1Debug "$endpointLabel was deleted successfully."
 
     [pscustomobject]@{
-        EndpointId = $EndpointId
-        Status     = 'Removed'
-        Response   = $response
+        EndpointId   = $EndpointId
+        EndpointName = $resolvedEndpointName
+        Status       = 'Removed'
+        Response     = $response
     }
 }

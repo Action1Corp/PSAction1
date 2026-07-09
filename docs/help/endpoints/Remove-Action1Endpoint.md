@@ -14,12 +14,16 @@ Deletes one managed endpoint from the current Action1 organization.
 ## SYNTAX
 
 ```
-Remove-Action1Endpoint [-EndpointId] <String> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-Action1Endpoint [-EndpointId] <String> [[-EndpointName] <String>] [-Force] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Deletes a specific managed endpoint by using the Action1 endpoints API.
+
+When **-EndpointName** is specified, the name is included in confirmation,
+debug, error, and output information. The endpoint ID remains the delete target.
 
 The command uses the module default organization configured by **Set-Action1DefaultOrg**.
 
@@ -50,6 +54,16 @@ Remove-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' -Force
 ```
 
 Deletes the managed endpoint without prompting for confirmation.
+
+### Example 4: Delete an endpoint with name context
+
+```powershell
+Remove-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -EndpointName 'DESKTOP-01'
+```
+
+Prompts for confirmation using both the endpoint ID and endpoint name.
 
 ## PARAMETERS
 
@@ -83,6 +97,26 @@ Aliases:
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -EndpointName
+
+Specifies the endpoint name to include in confirmation, debug, error, and output
+information.
+
+The endpoint name is optional context. The command deletes the endpoint by
+**EndpointId**.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -133,7 +167,8 @@ You cannot pipe input to this command.
 
 ### PSCustomObject
 
-Returns a status object with EndpointId, Status, and Response. The Response value contains the raw response body returned by the DELETE request.
+Returns a status object with EndpointId, EndpointName, Status, and Response. The
+Response value contains the raw response body returned by the DELETE request.
 
 ## NOTES
 

@@ -1575,6 +1575,7 @@ $result | Format-List</dev:code>
     </command:details>
     <maml:description>
       <maml:para>Deletes a specific managed endpoint by using the Action1 endpoints API.</maml:para>
+      <maml:para>When -EndpointName is specified, the name is included in confirmation, debug, error, and output information. The endpoint ID remains the delete target.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
       <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
     </maml:description>
@@ -1586,6 +1587,19 @@ $result | Format-List</dev:code>
           <maml:description>
             <maml:para>Specifies the ID of the managed endpoint to delete.</maml:para>
             <maml:para>The endpoint ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>EndpointName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the endpoint name to include in confirmation, debug, error, and output information.</maml:para>
+            <maml:para>The endpoint name is optional context. The command deletes the endpoint by EndpointId .</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1655,6 +1669,19 @@ $result | Format-List</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>EndpointName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the endpoint name to include in confirmation, debug, error, and output information.</maml:para>
+          <maml:para>The endpoint name is optional context. The command deletes the endpoint by EndpointId .</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
@@ -1696,7 +1723,7 @@ $result | Format-List</dev:code>
           <maml:name>PSCustomObject</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>Returns a status object with EndpointId, Status, and Response. The Response value contains the raw response body returned by the DELETE request.</maml:para>
+          <maml:para>Returns a status object with EndpointId, EndpointName, Status, and Response. The Response value contains the raw response body returned by the DELETE request.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -1725,6 +1752,15 @@ $result | Format-List</dev:code>
         <dev:code>Remove-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' -Force</dev:code>
         <dev:remarks>
           <maml:para>Deletes the managed endpoint without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 4: Delete an endpoint with name context -------</maml:title>
+        <dev:code>Remove-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -EndpointName 'DESKTOP-01'</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation using both the endpoint ID and endpoint name.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1758,14 +1794,26 @@ $result | Format-List</dev:code>
     </command:details>
     <maml:description>
       <maml:para>Deletes managed endpoints by using the Action1 endpoints API.</maml:para>
-      <maml:para>The command accepts endpoint IDs, validates each ID, shows progress, asks for PowerShell confirmation, and removes valid endpoints by using Remove-Action1Endpoint .</maml:para>
+      <maml:para>The command accepts endpoint IDs or a hashtable that maps endpoint IDs to endpoint names. It validates each endpoint ID, shows progress, asks for PowerShell confirmation, and removes valid endpoints by using Remove-Action1Endpoint .</maml:para>
+      <maml:para>When endpoint names are supplied through -Endpoints , the names are included in confirmation, debug, error, and output information. The endpoint IDs remain the delete targets.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
       <maml:para>Use -WhatIf to preview the delete operations. Use -Confirm to require confirmation before each endpoint is removed. Use -Force to bypass confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Remove-Action1Endpoints</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>EndpointIds</maml:name>
           <maml:description>
             <maml:para>Specifies the IDs of the managed endpoints to delete.</maml:para>
@@ -1778,6 +1826,31 @@ $result | Format-List</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1Endpoints</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
           <maml:name>Confirm</maml:name>
           <maml:description>
@@ -1788,6 +1861,19 @@ $result | Format-List</dev:code>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Endpoints</maml:name>
+          <maml:description>
+            <maml:para>Specifies the managed endpoints to delete as a hashtable. Each key is an endpoint ID and each value is an optional endpoint name.</maml:para>
+            <maml:para>Each endpoint ID key must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
@@ -1826,7 +1912,7 @@ $result | Format-List</dev:code>
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>EndpointIds</maml:name>
         <maml:description>
           <maml:para>Specifies the IDs of the managed endpoints to delete.</maml:para>
@@ -1835,6 +1921,19 @@ $result | Format-List</dev:code>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Endpoints</maml:name>
+        <maml:description>
+          <maml:para>Specifies the managed endpoints to delete as a hashtable. Each key is an endpoint ID and each value is an optional endpoint name.</maml:para>
+          <maml:para>Each endpoint ID key must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>Hashtable</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -1922,6 +2021,18 @@ $result | Format-List</dev:code>
         <dev:code>Remove-Action1Endpoints -EndpointIds $endpointIds -Force</dev:code>
         <dev:remarks>
           <maml:para>Deletes the managed endpoints without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 5: Remove endpoints with name context --------</maml:title>
+        <dev:code>$endpoints = @{
+    '5e79941d-e4cc-40f3-899b-0cff63836d46' = 'DESKTOP-01'
+    'f93c2a28-9a31-4633-8902-63f130b8a455' = 'SERVER-02'
+}
+
+Remove-Action1Endpoints -Endpoints $endpoints</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation and includes endpoint names in removal details.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

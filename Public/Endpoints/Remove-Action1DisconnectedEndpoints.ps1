@@ -13,7 +13,8 @@ function Remove-Action1DisconnectedEndpoints {
         [int]$DaysDisconnected = 90
     )
 
-    $filterTime = (Get-Date).AddDays(-$DaysDisconnected)
+    $currentTime = Get-Date
+    $filterTime = $currentTime.AddDays(-$DaysDisconnected)
     $filterTimeText = $filterTime.ToString('yyyy-MM-dd HH:mm:ss')
 
     Write-Action1Debug (
@@ -58,8 +59,9 @@ function Remove-Action1DisconnectedEndpoints {
 
         if ([string]::IsNullOrWhiteSpace($lastSeenText)) {
             Write-Action1Debug (
-                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
-                "because last_seen is empty."
+                "Skip endpoint id '{0}', name '{1}': last_seen empty." -f
+                $endpointId,
+                $endpointName
             )
             $invalidEndpoints++
             continue
@@ -70,18 +72,28 @@ function Remove-Action1DisconnectedEndpoints {
         }
         catch {
             Write-Action1Debug (
-                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
-                "because last_seen '$lastSeenText' does not match '$dateFormat'."
+                "Skip endpoint id '{0}', name '{1}': last_seen '{2}' not '{3}'." -f
+                $endpointId,
+                $endpointName,
+                $lastSeenText,
+                $dateFormat
             )
             $invalidEndpoints++
             continue
         }
 
         if ($lastSeen -le $filterTime) {
-            Write-Action1Debug (
-                "Endpoint with id '$endpointId' and name: '$endpointName' " +
-                "matched disconnected cleanup filter."
+            $endpointDisconnectedDays = [int][Math]::Floor(
+                ($currentTime - $lastSeen).TotalDays
             )
+            $matchedEndpointMessage = (
+                "Marked to delete endpoint id '{0}', name '{1}', disconnected for {2} day(s)." -f
+                $endpointId,
+                $endpointName,
+                $endpointDisconnectedDays
+            )
+
+            Write-Action1Debug $matchedEndpointMessage
 
             [void]$endpointsToRemove.Add(
                 [pscustomobject]@{
@@ -96,15 +108,20 @@ function Remove-Action1DisconnectedEndpoints {
     Write-Action1Debug "Found $($endpointsToRemove.Count) endpoint(s) to remove."
 
     $totalEndpointsToRemove = $endpointsToRemove.Count
-    $endpointIdsToRemove = @($endpointsToRemove | ForEach-Object { $_.Id })
-    $removalResult = Remove-Action1Endpoints -EndpointIds $endpointIdsToRemove
+    $endpointsToRemoveHashtable = @{}
+
+    foreach ($endpointToRemove in $endpointsToRemove) {
+        $endpointsToRemoveHashtable[$endpointToRemove.Id] = $endpointToRemove.Name
+    }
+
+    $removalResult = Remove-Action1Endpoints -Endpoints $endpointsToRemoveHashtable
 
     Write-Action1Debug (
-        "Disconnected endpoint cleanup completed. " +
-        "Processed: $($removalResult.EndpointsRemovalProcessed); " +
-        "Removed: $($removalResult.EndpointsRemoved); " +
-        "Skipped: $($removalResult.EndpointsSkipped); " +
-        "Failed: $($removalResult.EndpointsFailed)."
+        "Disconnected done. Processed:{0}; removed:{1}; skipped:{2}; failed:{3}." -f
+        $removalResult.EndpointsRemovalProcessed,
+        $removalResult.EndpointsRemoved,
+        $removalResult.EndpointsSkipped,
+        $removalResult.EndpointsFailed
     )
 
     [pscustomobject]@{
