@@ -5,4 +5,4 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
-$Script:Action1_429RetryBaseTimeout = 2000
+$Script:Action1_429RetryBaseTimeoutSeconds = 2

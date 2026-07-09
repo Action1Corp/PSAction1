@@ -77,10 +77,9 @@ function Invoke-Action1ApiRequest {
     }
 
     $retry429Count = 0
-    $retry429BaseTimeout = $Script:Action1_429RetryBaseTimeout
+    $retry429BaseTimeoutSeconds = $Script:Action1_429RetryBaseTimeoutSeconds
 
     while ($true) {
-        Write-Action1Debug "$Method request to $Path. RawResponse flag is $RawResponse"
         try {
             if($Script:Action1_DebugEnabled){$webRequestSW = [System.Diagnostics.Stopwatch]::StartNew()}
 
@@ -88,11 +87,11 @@ function Invoke-Action1ApiRequest {
 
             if($Script:Action1_DebugEnabled){
                 $webRequestSW.Stop()
-                Write-Action1Debug ("{2} request to {0} took {1}ms" -f $Path, $($webRequestSW.ElapsedMilliseconds), $Method)
+                Write-Action1Debug ("{2} request to {0} took {1}ms. RawResponse flag is {3}" -f $Path, $($webRequestSW.ElapsedMilliseconds), $Method, $RawResponse)
             }
 
             if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 300) {
-                Write-Action1Debug ("Success response code {0} for {1} to {2}" -f $($response.StatusCode), $Method, $Path)
+                Write-Action1Debug ("Success response code {0} for {1} request to {2}" -f $($response.StatusCode), $Method, $Path)
                 if ($RawResponse) {
                     return $response.Content
                 }
@@ -120,6 +119,9 @@ function Invoke-Action1ApiRequest {
                     ErrorRecord = $_
             }
             $responseContent = Trace-WebResponseContent @responseContentParams
+            $errorDetails = Get-JsonPropertyValue `
+                -JsonContent $responseContent `
+                -PropertyName 'details'
             if ([string]::IsNullOrWhiteSpace($responseContent)) {
                 $responseContent = '<empty response content>'
             }
@@ -130,15 +132,33 @@ function Invoke-Action1ApiRequest {
             )
 
             if ($statusCode -eq 429) {
-                $retryTimeout = [Math]::Pow(2, $retry429Count) * $retry429BaseTimeout
+                $retryTimeout = $null
+                if (Test-ObjectProperties $errorDetails 'retry_after' 'error details') {
+                    $retryAfter = 0
+                    $parsedRetryAfter = [int]::TryParse(
+                        [string]$errorDetails.retry_after,
+                        [ref]$retryAfter
+                    )
+
+                    if ($parsedRetryAfter -and $retryAfter -gt 0) {
+                        $retryTimeout = $retryAfter
+                    }
+                }
+
+                if ($null -eq $retryTimeout) {
+                    $retryTimeout = [int](
+                        [Math]::Pow(2, $retry429Count) * $retry429BaseTimeoutSeconds
+                    )
+                }
+
                 $retry429Count++
 
                 Write-Action1Debug (
-                    "429 received for {0}. Retry #{1}. Sleeping {2} ms." -f
+                    "429 received for {0}. Retry #{1}. Sleeping {2} seconds." -f
                     $Label, $retry429Count, $retryTimeout
                 )
 
-                Start-Sleep -Milliseconds $retryTimeout
+                Start-Sleep -Seconds $retryTimeout
                 continue
             }
 
