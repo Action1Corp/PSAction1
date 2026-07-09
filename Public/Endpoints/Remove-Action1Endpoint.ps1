@@ -34,11 +34,11 @@ function Remove-Action1Endpoint {
 
     process {
         if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObject') {
-            $target = ConvertTo-Action1EndpointDeleteTarget `
+            $target = ConvertTo-Action1EndpointTarget `
                 -EndpointObject $EndpointObject
         }
         else {
-            $target = ConvertTo-Action1EndpointDeleteTarget `
+            $target = ConvertTo-Action1EndpointTarget `
                 -EndpointId $EndpointId
         }
 

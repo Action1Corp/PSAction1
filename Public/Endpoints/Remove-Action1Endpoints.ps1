@@ -41,7 +41,7 @@ function Remove-Action1Endpoints {
     process {
         if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObjects') {
             foreach ($endpointObject in $EndpointObjects) {
-                $target = ConvertTo-Action1EndpointDeleteTarget `
+                $target = ConvertTo-Action1EndpointTarget `
                     -EndpointObject $endpointObject
 
                 [void]$endpointTargets.Add($target)
@@ -49,7 +49,7 @@ function Remove-Action1Endpoints {
         }
         else {
             foreach ($endpointId in $EndpointIds) {
-                $target = ConvertTo-Action1EndpointDeleteTarget `
+                $target = ConvertTo-Action1EndpointTarget `
                     -EndpointId $endpointId
 
                 [void]$endpointTargets.Add($target)

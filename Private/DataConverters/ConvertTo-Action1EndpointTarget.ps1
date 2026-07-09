@@ -5,7 +5,7 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
-function ConvertTo-Action1EndpointDeleteTarget {
+function ConvertTo-Action1EndpointTarget {
     [CmdletBinding(DefaultParameterSetName = 'ByEndpointId')]
     param(
         [Parameter(Mandatory = $false, ParameterSetName = 'ByEndpointId')]

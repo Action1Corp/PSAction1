@@ -13,14 +13,25 @@ Updates the name or comment of one managed endpoint in the current Action1 organ
 
 ## SYNTAX
 
+### ByEndpointId (Default)
 ```
-Update-Action1Endpoint [-EndpointId] <String> [[-Name] <String>] [[-Comment] <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Update-Action1Endpoint [-EndpointId] <String> [-Name <String>] [-Comment <String>] [-Force] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
+```
+
+### ByEndpointObject
+```
+Update-Action1Endpoint -EndpointObject <Object> [-Name <String>] [-Comment <String>] [-Force] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Updates a specific managed endpoint by using the Action1 endpoints API.
+
+The command accepts an endpoint ID or an endpoint object with an **id** property.
+When the endpoint object includes **name**, the name is included in
+confirmation, debug, and error information.
 
 The command uses the module default organization configured by **Set-Action1DefaultOrg**.
 
@@ -29,7 +40,7 @@ parameters in the same command.
 
 This command supports PowerShell confirmation. Use **-WhatIf** to preview the update
 operation without sending the PATCH request. Use **-Confirm** to prompt for confirmation
-before sending the PATCH request.
+before sending the PATCH request. Use **-Force** to bypass confirmation prompts.
 
 ## EXAMPLES
 
@@ -86,6 +97,36 @@ Update-Action1Endpoint `
 
 Prompts for confirmation before sending the PATCH request.
 
+### Example 6: Update an endpoint object
+
+```powershell
+$endpoint = Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46'
+Update-Action1Endpoint -EndpointObject $endpoint -Comment 'Assigned to accounting.'
+```
+
+Updates the endpoint object by using its **id** property.
+
+### Example 7: Preview an endpoint update from the pipeline
+
+```powershell
+Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Update-Action1Endpoint -Name 'Accounting-Laptop-01' -WhatIf
+```
+
+Gets the endpoint object and shows the update operation without sending the
+PATCH request.
+
+### Example 8: Update an endpoint without prompting
+
+```powershell
+Update-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Comment 'Assigned to the accounting department.' `
+    -Force
+```
+
+Updates the endpoint comment without prompting for confirmation.
+
 ## PARAMETERS
 
 ### -Comment
@@ -101,7 +142,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -132,12 +173,47 @@ The endpoint ID must use the standard GUID format, such as
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ByEndpointId
 Aliases:
 
 Required: True
 Position: 0
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -EndpointObject
+
+Specifies the managed endpoint object to update.
+
+The object must include an **id** property. If the object includes a **name**
+property, the name is included in confirmation, debug, and error information.
+
+```yaml
+Type: Object
+Parameter Sets: ByEndpointObject
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Force
+
+Bypasses confirmation prompts. **-WhatIf** is still honored when it is specified.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -155,7 +231,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -182,9 +258,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
+### System.Object
 
-You cannot pipe input to this command.
+You can pipe endpoint objects with an **id** property to this command.
 
 ## OUTPUTS
 
