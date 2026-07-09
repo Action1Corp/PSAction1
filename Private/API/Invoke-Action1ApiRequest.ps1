@@ -119,7 +119,9 @@ function Invoke-Action1ApiRequest {
                     ErrorRecord = $_
             }
             $responseContent = Trace-WebResponseContent @responseContentParams
-            $errorDetails = Get-Action1ErrorResponseDetails -ResponseContent $responseContent
+            $errorDetails = Get-JsonPropertyValue `
+                -JsonContent $responseContent `
+                -PropertyName 'details'
             if ([string]::IsNullOrWhiteSpace($responseContent)) {
                 $responseContent = '<empty response content>'
             }
