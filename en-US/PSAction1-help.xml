@@ -4859,6 +4859,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
       <maml:para>The command sends a POST request to the Action1 vulnerabilities remediation API endpoint for the specified CVE ID.</maml:para>
       <maml:para>The request body includes the following values: `comment` - The value of the Comment * parameter. `product_name` - The value of the ProductName * parameter.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the create operation without sending the POST request.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4909,6 +4910,28 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -4945,6 +4968,18 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>ProductName</maml:name>
         <maml:description>
@@ -4957,6 +4992,18 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -5006,6 +5053,17 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
     Format-List</dev:code>
         <dev:remarks>
           <maml:para>Creates the remediation record and displays all fields returned by Action1.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 3: Preview remediation creation -----------</maml:title>
+        <dev:code>New-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -Comment 'The vulnerable component is isolated.' `
+    -ProductName 'Example Product' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows the create operation that would be performed without sending the request.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
