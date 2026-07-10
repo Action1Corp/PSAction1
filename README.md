@@ -764,6 +764,15 @@ PS C:\> Get-Action1 RawURI -URI https://app.action1.com/api/3.0/policies/schedul
 
 ```
 
+### Development checks
+
+Repository maintainers can run PSScriptAnalyzer before submitting code changes.
+The analyzer settings file is stored in the repository root as
+`PSScriptAnalyzerSettings.psd1`.
+
+Use the [PSScriptAnalyzer procedure](docs/PSScriptAnalyzer.md) for the standard
+command and the current repository-specific rule exclusions.
+
 ### Troubleshooting
 
  At any time you can enable and disable debug mode to get more information about operations and communication with the server. This is especially useful when looking at JSON POST/PATCH data going to the server.
