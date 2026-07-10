@@ -6,7 +6,7 @@
 # © Action1 Corporation
 
 function New-Action1CompensatingControlRemediation {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidatePattern('^CVE-\d{4}-\d{3,6}$')]
@@ -35,6 +35,16 @@ function New-Action1CompensatingControlRemediation {
         [string]$ProductName
     )
 
+    $target = "CVE '$CVEId' product '$ProductName'"
+    $createAction = 'Create compensating control remediation'
+
+    if (-not $PSCmdlet.ShouldProcess($target, $createAction)) {
+        Write-Action1Debug (
+            "Skipped creating compensating control remediation for $target."
+        )
+        return
+    }
+
     if (Initialize-Action1DefaultOrg) {
         $orgId = Get-Action1DefaultOrgId
     }
@@ -49,16 +59,29 @@ function New-Action1CompensatingControlRemediation {
         product_name = $ProductName
     }
 
-    Write-Action1Debug ("Creating compensating control remediation for vulnerability '{0}'." -f $CVEId)
+    Write-Action1Debug (
+        "Creating compensating control remediation for vulnerability '{0}'." -f
+        $CVEId
+    )
 
-    $response = Invoke-Action1ApiRequest  -Method POST -Path $path -Label "Create compensating control remediation '$CVEId'" -Body $body
+    $response = Invoke-Action1ApiRequest `
+        -Method POST `
+        -Path $path `
+        -Label "Create compensating control remediation '$CVEId'" `
+        -Body $body
 
     if ($null -eq $response) {
-        Write-Error ("Failed to create compensating control remediation for vulnerability '{0}'." -f $CVEId)
+        Write-Error (
+            "Failed to create compensating control remediation for vulnerability '{0}'." -f
+            $CVEId
+        )
         return
     }
 
-    Write-Action1Debug ("Created compensating control remediation for vulnerability '{0}'." -f $CVEId)
+    Write-Action1Debug (
+        "Created compensating control remediation for vulnerability '{0}'." -f
+        $CVEId
+    )
 
     $response
 }

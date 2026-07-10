@@ -14,8 +14,8 @@ Creates a compensating control remediation record for an Action1 vulnerability.
 ## SYNTAX
 
 ```
-New-Action1CompensatingControlRemediation [-CVEId] <String> [-Comment] <String> [-ProductName] <String>
- [<CommonParameters>]
+New-Action1CompensatingControlRemediation [-CVEId] <String> [-Comment] <String> [-ProductName] <String> [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,6 +30,9 @@ The request body includes the following values:
 * `product_name` - The value of the **ProductName** parameter.
 
 The command uses the module default organization configured by **Set-Action1DefaultOrg**.
+
+This command supports PowerShell confirmation. Use **-WhatIf** to preview the
+create operation without sending the POST request.
 
 ## EXAMPLES
 
@@ -55,6 +58,18 @@ New-Action1CompensatingControlRemediation `
 ```
 
 Creates the remediation record and displays all fields returned by Action1.
+
+### Example 3: Preview remediation creation
+
+```powershell
+New-Action1CompensatingControlRemediation `
+    -CVEId 'CVE-2024-12345' `
+    -Comment 'The vulnerable component is isolated.' `
+    -ProductName 'Example Product' `
+    -WhatIf
+```
+
+Shows the create operation that would be performed without sending the request.
 
 ## PARAMETERS
 
@@ -117,6 +132,38 @@ Aliases:
 Required: True
 Position: 2
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the command.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the command runs. The command is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
