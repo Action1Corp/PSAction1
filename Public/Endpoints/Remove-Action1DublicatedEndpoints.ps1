@@ -6,6 +6,11 @@
 # © Action1 Corporation
 
 function Remove-Action1DublicatedEndpoints {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSShouldProcess',
+        '',
+        Justification = 'Deletion confirmation is handled by Remove-Action1Endpoints.'
+    )]
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     param()
 
