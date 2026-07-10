@@ -6,6 +6,11 @@
 # © Action1 Corporation
 
 function Remove-Action1CompensatingControlRemediations {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSShouldProcess',
+        '',
+        Justification = 'Deletion confirmation is handled by Remove-Action1CompensatingControlRemediation.'
+    )]
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     param(
         [Parameter(Mandatory = $false)]
@@ -46,7 +51,13 @@ function Remove-Action1CompensatingControlRemediations {
 
     $totalVulnerabilities = $vulnerabilities.Count
 
-    Write-Host ("Found {0} vulnerabilities with remediation status '$remediationStatus' and  score '$Score'." -f $totalVulnerabilities)
+    $foundMessage = (
+        "Found {0} vulnerabilities with remediation status '{1}' and score '{2}'." -f
+        $totalVulnerabilities,
+        $remediationStatus,
+        $Score
+    )
+    Write-Information $foundMessage -InformationAction Continue
 
     $processedVulnerabilities = 0
     $remediationsFound = 0
@@ -55,7 +66,12 @@ function Remove-Action1CompensatingControlRemediations {
     $remediationsFailed = 0
 
     if ($totalVulnerabilities -eq 0) {
-        Write-Host ("No vulnerabilities with remediation status '$remediationStatus' and  score '$Score' were found.")
+        $notFoundMessage = (
+            "No vulnerabilities with remediation status '{0}' and score '{1}' were found." -f
+            $remediationStatus,
+            $Score
+        )
+        Write-Information $notFoundMessage -InformationAction Continue
 
         [pscustomobject]@{
             VulnerabilitiesProcessed = $processedVulnerabilities
@@ -101,8 +117,9 @@ function Remove-Action1CompensatingControlRemediations {
 
         $remediationsFound += $remediations.Count
 
-        Write-Host ""
-        Write-Host ("Remediations to delete for {0}:" -f $cveId)
+        Write-Information '' -InformationAction Continue
+        Write-Information ("Remediations to delete for {0}:" -f $cveId) `
+            -InformationAction Continue
         $remediations |
             Select-Object remediation_id, id, type, user, comment, created_at, updated_at |
             Format-List |
@@ -135,7 +152,14 @@ function Remove-Action1CompensatingControlRemediations {
 
     Write-Progress -Activity 'Removing Action1 vulnerability remediations' -Completed
 
-    Write-Host ("{0} vulnerabilities processed, {1} remediations with status '{2}' and  score '{3}' removed successfully." -f $processedVulnerabilities, $remediationsRemoved, $remediationStatus, $Score)
+    $doneMessage = (
+        "{0} vulnerabilities processed, {1} remediations with status '{2}' and score '{3}' removed successfully." -f
+        $processedVulnerabilities,
+        $remediationsRemoved,
+        $remediationStatus,
+        $Score
+    )
+    Write-Information $doneMessage -InformationAction Continue
 
     [pscustomobject]@{
         VulnerabilitiesProcessed = $processedVulnerabilities
