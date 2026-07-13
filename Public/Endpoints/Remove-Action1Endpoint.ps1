@@ -34,21 +34,21 @@ function Remove-Action1Endpoint {
 
     process {
         if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObject') {
-            $target = ConvertTo-Action1EndpointTarget `
+            $endpointIdentity = New-Action1EndpointIdentity `
                 -EndpointObject $EndpointObject
         }
         else {
-            $target = ConvertTo-Action1EndpointTarget `
+            $endpointIdentity = New-Action1EndpointIdentity `
                 -EndpointId $EndpointId
         }
 
-        if (-not $target.IsValid) {
-            Write-Action1Debug $target.ErrorMessage
-            Write-Error $target.ErrorMessage
+        if (-not $endpointIdentity.IsValid) {
+            Write-Action1Debug $endpointIdentity.ErrorMessage
+            Write-Error $endpointIdentity.ErrorMessage
 
             [pscustomobject]@{
-                EndpointId   = $target.EndpointId
-                EndpointName = $target.EndpointName
+                EndpointId   = $endpointIdentity.EndpointId
+                EndpointName = $endpointIdentity.EndpointName
                 Status       = 'Invalid'
                 Response     = $null
             }
@@ -61,25 +61,27 @@ function Remove-Action1Endpoint {
 
         $uriPathBuilder = Get-UriMapValue -Key 'D_Endpoint'
 
-        $uri = & $uriPathBuilder $orgId $target.EndpointId
+        $uri = & $uriPathBuilder $orgId $endpointIdentity.EndpointId
         $path = "$Script:Action1_BaseURI{0}" -f $uri
 
         if ($Force) {
             $ConfirmPreference = 'None'
         }
 
-        $endpointLabel = "endpoint with id '$($target.EndpointId)'"
+        $endpointLabel = "endpoint with id '$($endpointIdentity.EndpointId)'"
 
-        if ($null -ne $target.EndpointName) {
-            $endpointLabel = "$endpointLabel and name '$($target.EndpointName)'"
+        if ($null -ne $endpointIdentity.EndpointName) {
+            $endpointLabel = (
+                "$endpointLabel and name '$($endpointIdentity.EndpointName)'"
+            )
         }
 
         if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Delete endpoint')) {
             Write-Action1Debug "Skipped deleting $endpointLabel."
 
             [pscustomobject]@{
-                EndpointId   = $target.EndpointId
-                EndpointName = $target.EndpointName
+                EndpointId   = $endpointIdentity.EndpointId
+                EndpointName = $endpointIdentity.EndpointName
                 Status       = 'Skipped'
                 Response     = $null
             }
@@ -98,8 +100,8 @@ function Remove-Action1Endpoint {
             Write-Error "Failed to delete $endpointLabel."
 
             [pscustomobject]@{
-                EndpointId   = $target.EndpointId
-                EndpointName = $target.EndpointName
+                EndpointId   = $endpointIdentity.EndpointId
+                EndpointName = $endpointIdentity.EndpointName
                 Status       = 'Failed'
                 Response     = $null
             }
@@ -109,8 +111,8 @@ function Remove-Action1Endpoint {
         Write-Action1Debug "$endpointLabel was deleted successfully."
 
         [pscustomobject]@{
-            EndpointId   = $target.EndpointId
-            EndpointName = $target.EndpointName
+            EndpointId   = $endpointIdentity.EndpointId
+            EndpointName = $endpointIdentity.EndpointName
             Status       = 'Removed'
             Response     = $response
         }
