@@ -6,71 +6,42 @@
 # © Action1 Corporation
 
 function New-Action1EndpointIdentity {
-    [CmdletBinding(DefaultParameterSetName = 'ByEndpointId')]
+    [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false, ParameterSetName = 'ByEndpointId')]
+        [Parameter(Mandatory = $false)]
         [AllowNull()]
         [AllowEmptyString()]
         [string]$EndpointId,
 
-        [Parameter(Mandatory = $false, ParameterSetName = 'ByEndpointObject')]
+        [Parameter(Mandatory = $false)]
         [AllowNull()]
-        [object]$EndpointObject
+        [AllowEmptyString()]
+        [string]$EndpointName
     )
 
     $resolvedEndpointId = $null
     $resolvedEndpointName = $null
 
-    if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObject') {
-        if ($null -eq $EndpointObject) {
-            return [pscustomobject]@{
-                IsValid      = $false
-                EndpointId   = $null
-                EndpointName = $null
-                ErrorMessage = 'Endpoint object cannot be null.'
-            }
-        }
+    $resolvedEndpointId = [string]$EndpointId
 
-        $idProperty = $EndpointObject.PSObject.Properties |
-            Where-Object { $_.Name -eq 'id' } |
-            Select-Object -First 1
-
-        if ($null -eq $idProperty) {
-            return [pscustomobject]@{
-                IsValid      = $false
-                EndpointId   = $null
-                EndpointName = $null
-                ErrorMessage = "Endpoint object must include an 'id' property."
-            }
-        }
-
-        $resolvedEndpointId = [string]$idProperty.Value
-        $nameProperty = $EndpointObject.PSObject.Properties |
-            Where-Object { $_.Name -eq 'name' } |
-            Select-Object -First 1
-
-        if ($null -ne $nameProperty) {
-            $rawEndpointName = [string]$nameProperty.Value
-
-            if (-not [string]::IsNullOrWhiteSpace($rawEndpointName)) {
-                $resolvedEndpointName = $rawEndpointName.Trim()
-            }
-        }
-    }
-    else {
-        $resolvedEndpointId = [string]$EndpointId
+    if (-not [string]::IsNullOrWhiteSpace($EndpointName)) {
+        $resolvedEndpointName = $EndpointName.Trim()
     }
 
     if ([string]::IsNullOrWhiteSpace($resolvedEndpointId)) {
         return [pscustomobject]@{
-            IsValid      = $false
-            EndpointId   = $null
-            EndpointName = $resolvedEndpointName
-            ErrorMessage = 'Endpoint ID cannot be null, empty, or whitespace.'
+            IsValid       = $false
+            EndpointId    = $null
+            EndpointName  = $resolvedEndpointName
+            EndpointLabel = $null
+            ErrorMessage  = 'Endpoint ID cannot be null, empty, or whitespace.'
         }
     }
 
     $resolvedEndpointId = $resolvedEndpointId.Trim()
+    $endpointLabel = New-Action1EndpointLabel `
+        -EndpointId $resolvedEndpointId `
+        -EndpointName $resolvedEndpointName
     $parsedGuid = [guid]::Empty
 
     if (-not [guid]::TryParseExact($resolvedEndpointId, 'D', [ref]$parsedGuid)) {
@@ -79,17 +50,19 @@ function New-Action1EndpointIdentity {
         )
 
         return [pscustomobject]@{
-            IsValid      = $false
-            EndpointId   = $resolvedEndpointId
-            EndpointName = $resolvedEndpointName
-            ErrorMessage = $errorMessage
+            IsValid       = $false
+            EndpointId    = $resolvedEndpointId
+            EndpointName  = $resolvedEndpointName
+            EndpointLabel = $endpointLabel
+            ErrorMessage  = $errorMessage
         }
     }
 
     [pscustomobject]@{
-        IsValid      = $true
-        EndpointId   = $resolvedEndpointId
-        EndpointName = $resolvedEndpointName
-        ErrorMessage = $null
+        IsValid       = $true
+        EndpointId    = $resolvedEndpointId
+        EndpointName  = $resolvedEndpointName
+        EndpointLabel = $endpointLabel
+        ErrorMessage  = $null
     }
 }

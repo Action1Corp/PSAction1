@@ -104,15 +104,41 @@ function Remove-Action1Endpoints {
 
             try {
                 if ($endpointRemovalRequest.ParameterSetName -eq 'ByEndpointObject') {
+                    $endpointIdentity = Get-Action1EndpointIdentityFromObject `
+                        -EndpointObject $endpointRemovalRequest.EndpointObject
+                }
+                else {
+                    $endpointIdentity = New-Action1EndpointIdentity `
+                        -EndpointId $endpointRemovalRequest.EndpointId
+                }
+
+                if (-not $endpointIdentity.IsValid) {
+                    Write-Action1Debug $endpointIdentity.ErrorMessage
+                    Write-Error $endpointIdentity.ErrorMessage
+                    $endpointsInvalid++
+
+                    continue
+                }
+
+                $endpointLabel = $endpointIdentity.EndpointLabel
+
+                if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Delete endpoint')) {
+                    Write-Action1Debug "Skipped deleting $endpointLabel."
+                    $endpointsSkipped++
+
+                    continue
+                }
+
+                if ($endpointRemovalRequest.ParameterSetName -eq 'ByEndpointObject') {
                     $result = Remove-Action1Endpoint `
                         -EndpointObject $endpointRemovalRequest.EndpointObject `
-                        -Force:$Force `
+                        -Force `
                         -ErrorAction Continue
                 }
                 else {
                     $result = Remove-Action1Endpoint `
-                        -EndpointId $endpointRemovalRequest.EndpointId `
-                        -Force:$Force `
+                        -EndpointId $endpointIdentity.EndpointId `
+                        -Force `
                         -ErrorAction Continue
                 }
             }

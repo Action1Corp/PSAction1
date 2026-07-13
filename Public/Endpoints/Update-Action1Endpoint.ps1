@@ -67,7 +67,7 @@ function Update-Action1Endpoint {
         }
 
         if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObject') {
-            $endpointIdentity = New-Action1EndpointIdentity `
+            $endpointIdentity = Get-Action1EndpointIdentityFromObject `
                 -EndpointObject $EndpointObject
         }
         else {
@@ -87,13 +87,7 @@ function Update-Action1Endpoint {
 
             $uri = & $uriPathBuilder $orgId $endpointIdentity.EndpointId
             $path = "$Script:Action1_BaseURI{0}" -f $uri
-            $endpointLabel = "endpoint with id '$($endpointIdentity.EndpointId)'"
-
-            if ($null -ne $endpointIdentity.EndpointName) {
-                $endpointLabel = (
-                    "$endpointLabel and name '$($endpointIdentity.EndpointName)'"
-                )
-            }
+            $endpointLabel = $endpointIdentity.EndpointLabel
 
             if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Update endpoint')) {
                 Write-Action1Debug "Skipped updating $endpointLabel."

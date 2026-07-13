@@ -42,6 +42,9 @@ Use **-WhatIf** to preview the delete operations. Use **-Confirm** to require
 confirmation before each endpoint is removed. Use **-Force** to bypass
 confirmation prompts.
 
+Bulk confirmation choices such as **Yes to All** and **No to All** apply to the
+remaining endpoints in the current command.
+
 ## EXAMPLES
 
 ### Example 1: Remove endpoints by ID

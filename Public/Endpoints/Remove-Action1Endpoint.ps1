@@ -34,7 +34,7 @@ function Remove-Action1Endpoint {
 
     process {
         if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObject') {
-            $endpointIdentity = New-Action1EndpointIdentity `
+            $endpointIdentity = Get-Action1EndpointIdentityFromObject `
                 -EndpointObject $EndpointObject
         }
         else {
@@ -68,13 +68,7 @@ function Remove-Action1Endpoint {
             $ConfirmPreference = 'None'
         }
 
-        $endpointLabel = "endpoint with id '$($endpointIdentity.EndpointId)'"
-
-        if ($null -ne $endpointIdentity.EndpointName) {
-            $endpointLabel = (
-                "$endpointLabel and name '$($endpointIdentity.EndpointName)'"
-            )
-        }
+        $endpointLabel = $endpointIdentity.EndpointLabel
 
         if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Delete endpoint')) {
             Write-Action1Debug "Skipped deleting $endpointLabel."
