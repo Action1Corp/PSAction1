@@ -49,7 +49,7 @@ function Remove-Action1Endpoint {
             [pscustomobject]@{
                 EndpointId   = $target.EndpointId
                 EndpointName = $target.EndpointName
-                Status       = 'Failed'
+                Status       = 'Invalid'
                 Response     = $null
             }
             return

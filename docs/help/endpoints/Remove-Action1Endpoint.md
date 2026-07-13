@@ -194,6 +194,7 @@ You can pipe endpoint objects with an **id** property to this command.
 
 Returns a status object with EndpointId, EndpointName, Status, and Response. The
 Response value contains the raw response body returned by the DELETE request.
+Status can be Removed, Skipped, Failed, or Invalid.
 
 ## NOTES
 
