@@ -1575,6 +1575,7 @@ $result | Format-List</dev:code>
     </command:details>
     <maml:description>
       <maml:para>Deletes a specific managed endpoint by using the Action1 endpoints API.</maml:para>
+      <maml:para>The command also accepts an endpoint object with an id property. When the object includes name , the name is included in confirmation, debug, error, and output information.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
       <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
     </maml:description>
@@ -1628,6 +1629,55 @@ $result | Format-List</dev:code>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1Endpoint</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>EndpointObject</maml:name>
+          <maml:description>
+            <maml:para>Specifies the managed endpoint object to delete.</maml:para>
+            <maml:para>The object must include an id property. If the object includes a name property, the name is included in confirmation, debug, error, and output information.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
@@ -1651,6 +1701,19 @@ $result | Format-List</dev:code>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>EndpointObject</maml:name>
+        <maml:description>
+          <maml:para>Specifies the managed endpoint object to delete.</maml:para>
+          <maml:para>The object must include an id property. If the object includes a name property, the name is included in confirmation, debug, error, and output information.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -1683,10 +1746,10 @@ $result | Format-List</dev:code>
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>None</maml:name>
+          <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
+          <maml:para>You can pipe endpoint objects with an id property to this command.</maml:para>
         </maml:description>
       </command:inputType>
     </command:inputTypes>
@@ -1696,7 +1759,7 @@ $result | Format-List</dev:code>
           <maml:name>PSCustomObject</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>Returns a status object with EndpointId, Status, and Response. The Response value contains the raw response body returned by the DELETE request.</maml:para>
+          <maml:para>Returns a status object with EndpointId, EndpointName, Status, and Response. The Response value contains the raw response body returned by the DELETE request. Status can be Removed, Skipped, Failed, or Invalid.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -1725,6 +1788,30 @@ $result | Format-List</dev:code>
         <dev:code>Remove-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' -Force</dev:code>
         <dev:remarks>
           <maml:para>Deletes the managed endpoint without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 4: Delete an endpoint object -------------</maml:title>
+        <dev:code>$endpoint = Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46'
+Remove-Action1Endpoint -EndpointObject $endpoint</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation, then deletes the endpoint by using the object's id property.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 5: Delete an endpoint from the pipeline -------</maml:title>
+        <dev:code>Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Remove-Action1Endpoint</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the endpoint object, then deletes it by using the object's id property.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 6: Preview endpoint deletion from the pipeline ----</maml:title>
+        <dev:code>Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Remove-Action1Endpoint -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the endpoint object and shows the delete operation without sending the DELETE request.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1758,14 +1845,27 @@ $result | Format-List</dev:code>
     </command:details>
     <maml:description>
       <maml:para>Deletes managed endpoints by using the Action1 endpoints API.</maml:para>
-      <maml:para>The command accepts endpoint IDs, validates each ID, shows progress, asks for PowerShell confirmation, and removes valid endpoints by using Remove-Action1Endpoint .</maml:para>
+      <maml:para>The command accepts endpoint IDs or endpoint objects with an id property. It validates each endpoint ID, shows progress, asks for PowerShell confirmation, and removes valid endpoints by using Remove-Action1Endpoint .</maml:para>
+      <maml:para>When endpoint objects include name , the names are included in confirmation, debug, error, and output information. The endpoint IDs remain the delete targets.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
       <maml:para>Use -WhatIf to preview the delete operations. Use -Confirm to require confirmation before each endpoint is removed. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>Bulk confirmation choices such as Yes to All and No to All apply to the remaining endpoints in the current command.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Remove-Action1Endpoints</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>EndpointIds</maml:name>
           <maml:description>
             <maml:para>Specifies the IDs of the managed endpoints to delete.</maml:para>
@@ -1778,6 +1878,31 @@ $result | Format-List</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1Endpoints</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
           <maml:name>Confirm</maml:name>
           <maml:description>
@@ -1788,6 +1913,19 @@ $result | Format-List</dev:code>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>EndpointObjects</maml:name>
+          <maml:description>
+            <maml:para>Specifies managed endpoint objects to delete.</maml:para>
+            <maml:para>Each object must include an id property. If an object includes a name property, the name is included in confirmation, debug, error, and output information.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+          <dev:type>
+            <maml:name>Object[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
@@ -1826,7 +1964,7 @@ $result | Format-List</dev:code>
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>EndpointIds</maml:name>
         <maml:description>
           <maml:para>Specifies the IDs of the managed endpoints to delete.</maml:para>
@@ -1835,6 +1973,19 @@ $result | Format-List</dev:code>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>EndpointObjects</maml:name>
+        <maml:description>
+          <maml:para>Specifies managed endpoint objects to delete.</maml:para>
+          <maml:para>Each object must include an id property. If an object includes a name property, the name is included in confirmation, debug, error, and output information.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+        <dev:type>
+          <maml:name>Object[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -1867,10 +2018,10 @@ $result | Format-List</dev:code>
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>None</maml:name>
+          <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
+          <maml:para>You can pipe endpoint objects with an id property to this command.</maml:para>
         </maml:description>
       </command:inputType>
     </command:inputTypes>
@@ -1891,7 +2042,7 @@ $result | Format-List</dev:code>
     </maml:alertSet>
     <command:examples>
       <command:example>
-        <maml:title>----------------- Example 1: Remove endpoints -----------------</maml:title>
+        <maml:title>-------------- Example 1: Remove endpoints by ID --------------</maml:title>
         <dev:code>$endpointIds = @(
     '5e79941d-e4cc-40f3-899b-0cff63836d46'
     'f93c2a28-9a31-4633-8902-63f130b8a455'
@@ -1922,6 +2073,28 @@ $result | Format-List</dev:code>
         <dev:code>Remove-Action1Endpoints -EndpointIds $endpointIds -Force</dev:code>
         <dev:remarks>
           <maml:para>Deletes the managed endpoints without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------- Example 5: Remove endpoint objects --------------</maml:title>
+        <dev:code>$endpoints = Get-Action1Endpoints -Status Disconnected
+Remove-Action1Endpoints -EndpointObjects $endpoints</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation and removes the supplied endpoint objects by using their id properties.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 6: Remove endpoint objects from the pipeline -----</maml:title>
+        <dev:code>Get-Action1Endpoints -Status Disconnected | Remove-Action1Endpoints</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the endpoint objects received from the pipeline and returns one summary object.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>- Example 7: Preview endpoint object removal from the pipeline -</maml:title>
+        <dev:code>Get-Action1Endpoints -Status Disconnected | Remove-Action1Endpoints -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows which disconnected endpoint objects would be removed without sending DELETE requests.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1955,9 +2128,10 @@ $result | Format-List</dev:code>
     </command:details>
     <maml:description>
       <maml:para>Updates a specific managed endpoint by using the Action1 endpoints API.</maml:para>
+      <maml:para>The command accepts an endpoint ID or an endpoint object with an id property. When the endpoint object includes name , the name is included in confirmation, debug, and error information.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
       <maml:para>Specify at least one value to update: -Name or -Comment . You can specify both parameters in the same command.</maml:para>
-      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the update operation without sending the PATCH request. Use -Confirm to prompt for confirmation before sending the PATCH request.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the update operation without sending the PATCH request. Use -Confirm to prompt for confirmation before sending the PATCH request. Use -Force to bypass confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1975,20 +2149,7 @@ $result | Format-List</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>Name</maml:name>
-          <maml:description>
-            <maml:para>Specifies the new endpoint name.</maml:para>
-            <maml:para>Specify -Name , -Comment , or both. The command writes an error when neither parameter is specified.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Comment</maml:name>
           <maml:description>
             <maml:para>Specifies the new endpoint comment.</maml:para>
@@ -2012,6 +2173,105 @@ $result | Format-List</dev:code>
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new endpoint name.</maml:para>
+            <maml:para>Specify -Name , -Comment , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Update-Action1Endpoint</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Comment</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new endpoint comment.</maml:para>
+            <maml:para>Specify -Comment , -Name , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>EndpointObject</maml:name>
+          <maml:description>
+            <maml:para>Specifies the managed endpoint object to update.</maml:para>
+            <maml:para>The object must include an id property. If the object includes a name property, the name is included in confirmation, debug, and error information.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new endpoint name.</maml:para>
+            <maml:para>Specify -Name , -Comment , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
           <maml:name>WhatIf</maml:name>
           <maml:description>
@@ -2026,7 +2286,7 @@ $result | Format-List</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Comment</maml:name>
         <maml:description>
           <maml:para>Specifies the new endpoint comment.</maml:para>
@@ -2064,7 +2324,32 @@ $result | Format-List</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>EndpointObject</maml:name>
+        <maml:description>
+          <maml:para>Specifies the managed endpoint object to update.</maml:para>
+          <maml:para>The object must include an id property. If the object includes a name property, the name is included in confirmation, debug, and error information.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Name</maml:name>
         <maml:description>
           <maml:para>Specifies the new endpoint name.</maml:para>
@@ -2093,10 +2378,10 @@ $result | Format-List</dev:code>
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>None</maml:name>
+          <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
+          <maml:para>You can pipe endpoint objects with an id property to this command.</maml:para>
         </maml:description>
       </command:inputType>
     </command:inputTypes>
@@ -2162,6 +2447,32 @@ $result | Format-List</dev:code>
     -Confirm</dev:code>
         <dev:remarks>
           <maml:para>Prompts for confirmation before sending the PATCH request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 6: Update an endpoint object -------------</maml:title>
+        <dev:code>$endpoint = Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46'
+Update-Action1Endpoint -EndpointObject $endpoint -Comment 'Assigned to accounting.'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the endpoint object by using its id property.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 7: Preview an endpoint update from the pipeline ---</maml:title>
+        <dev:code>Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Update-Action1Endpoint -Name 'Accounting-Laptop-01' -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the endpoint object and shows the update operation without sending the PATCH request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 8: Update an endpoint without prompting -------</maml:title>
+        <dev:code>Update-Action1Endpoint `
+    -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Comment 'Assigned to the accounting department.' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the endpoint comment without prompting for confirmation.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

@@ -6,144 +6,191 @@
 # © Action1 Corporation
 
 function Remove-Action1Endpoints {
-    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
+    [CmdletBinding(
+        SupportsShouldProcess = $true,
+        ConfirmImpact = 'High',
+        DefaultParameterSetName = 'ByEndpointIds'
+    )]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByEndpointIds')]
         [AllowNull()]
         [AllowEmptyCollection()]
         [AllowEmptyString()]
         [string[]]$EndpointIds,
 
+        [Parameter(
+            Mandatory = $true,
+            ParameterSetName = 'ByEndpointObjects',
+            ValueFromPipeline = $true
+        )]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [object[]]$EndpointObjects,
+
         [switch]$Force
     )
 
-    $totalEndpointsToRemove = 0
+    begin {
+        $endpointRemovalRequests = New-Object System.Collections.ArrayList
 
-    if ($null -ne $EndpointIds) {
-        $totalEndpointsToRemove = $EndpointIds.Count
+        if ($Force) {
+            $ConfirmPreference = 'None'
+        }
     }
 
-    if ($Force) {
-        $ConfirmPreference = 'None'
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObjects') {
+            foreach ($endpointObject in $EndpointObjects) {
+                [void]$endpointRemovalRequests.Add(
+                    [pscustomobject]@{
+                        ParameterSetName = 'ByEndpointObject'
+                        EndpointId       = $null
+                        EndpointObject   = $endpointObject
+                    }
+                )
+            }
+        }
+        else {
+            foreach ($endpointId in $EndpointIds) {
+                [void]$endpointRemovalRequests.Add(
+                    [pscustomobject]@{
+                        ParameterSetName = 'ByEndpointId'
+                        EndpointId       = $endpointId
+                        EndpointObject   = $null
+                    }
+                )
+            }
+        }
     }
 
-    $processedEndpoints = 0
-    $endpointsRemoved = 0
-    $endpointsSkipped = 0
-    $endpointsFailed = 0
-    $endpointsInvalid = 0
+    end {
+        $totalEndpointsToRemove = $endpointRemovalRequests.Count
+        $processedEndpoints = 0
+        $endpointsRemoved = 0
+        $endpointsSkipped = 0
+        $endpointsFailed = 0
+        $endpointsInvalid = 0
 
-    Write-Action1Debug "Removing $totalEndpointsToRemove endpoint(s)."
+        Write-Action1Debug "Removing $totalEndpointsToRemove endpoint(s)."
 
-    if ($totalEndpointsToRemove -eq 0) {
-        Write-Action1Debug 'No endpoint IDs were supplied for removal.'
+        if ($totalEndpointsToRemove -eq 0) {
+            Write-Action1Debug 'No endpoints were supplied for removal.'
+
+            [pscustomobject]@{
+                Succeeded                 = $true
+                EndpointsRequested        = 0
+                EndpointsRemovalProcessed = 0
+                EndpointsRemoved          = 0
+                EndpointsSkipped          = 0
+                EndpointsFailed           = 0
+                EndpointsInvalid          = 0
+            }
+            return
+        }
+
+        foreach ($endpointRemovalRequest in $endpointRemovalRequests) {
+            $processedEndpoints++
+
+            $progressCount = "$processedEndpoints of $totalEndpointsToRemove"
+            $progressStatus = "Processing endpoint $progressCount"
+            $percentComplete = [int](
+                ($processedEndpoints / $totalEndpointsToRemove) * 100
+            )
+
+            Write-Progress `
+                -Activity 'Removing endpoints' `
+                -Status $progressStatus `
+                -PercentComplete $percentComplete
+
+            try {
+                if ($endpointRemovalRequest.ParameterSetName -eq 'ByEndpointObject') {
+                    $endpointIdentity = Get-Action1EndpointIdentityFromObject `
+                        -EndpointObject $endpointRemovalRequest.EndpointObject
+                }
+                else {
+                    $endpointIdentity = New-Action1EndpointIdentity `
+                        -EndpointId $endpointRemovalRequest.EndpointId
+                }
+
+                if (-not $endpointIdentity.IsValid) {
+                    Write-Action1Debug $endpointIdentity.ErrorMessage
+                    Write-Error $endpointIdentity.ErrorMessage
+                    $endpointsInvalid++
+
+                    continue
+                }
+
+                $endpointLabel = $endpointIdentity.EndpointLabel
+
+                if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Delete endpoint')) {
+                    Write-Action1Debug "Skipped deleting $endpointLabel."
+                    $endpointsSkipped++
+
+                    continue
+                }
+
+                if ($endpointRemovalRequest.ParameterSetName -eq 'ByEndpointObject') {
+                    $result = Remove-Action1Endpoint `
+                        -EndpointObject $endpointRemovalRequest.EndpointObject `
+                        -Force `
+                        -ErrorAction Continue
+                }
+                else {
+                    $result = Remove-Action1Endpoint `
+                        -EndpointId $endpointIdentity.EndpointId `
+                        -Force `
+                        -ErrorAction Continue
+                }
+            }
+            catch {
+                Write-Action1Debug (
+                    "Failed deleting endpoint request {0}. Error: {1}" -f
+                    $processedEndpoints,
+                    $_.Exception.Message
+                )
+                $endpointsFailed++
+
+                continue
+            }
+
+            if ($null -eq $result) {
+                Write-Action1Debug (
+                    "Endpoint request $processedEndpoints removal returned no result."
+                )
+                $endpointsFailed++
+                continue
+            }
+
+            switch ($result.Status) {
+                'Removed' { $endpointsRemoved++ }
+                'Skipped' { $endpointsSkipped++ }
+                'Invalid' { $endpointsInvalid++ }
+                'Failed'  { $endpointsFailed++ }
+                default   { $endpointsFailed++ }
+            }
+        }
+
+        Write-Progress -Activity 'Removing endpoints' -Completed
+
+        Write-Action1Debug (
+            "Done. Processed:{0}; removed:{1}; skipped:{2}; failed:{3}; invalid:{4}." -f
+            $processedEndpoints,
+            $endpointsRemoved,
+            $endpointsSkipped,
+            $endpointsFailed,
+            $endpointsInvalid
+        )
+
+        $succeeded = ($endpointsFailed -eq 0 -and $endpointsInvalid -eq 0)
 
         [pscustomobject]@{
-            Succeeded                 = $true
-            EndpointsRequested        = 0
-            EndpointsRemovalProcessed = 0
-            EndpointsRemoved          = 0
-            EndpointsSkipped          = 0
-            EndpointsFailed           = 0
-            EndpointsInvalid          = 0
+            Succeeded                 = $succeeded
+            EndpointsRequested        = $totalEndpointsToRemove
+            EndpointsRemovalProcessed = $processedEndpoints
+            EndpointsRemoved          = $endpointsRemoved
+            EndpointsSkipped          = $endpointsSkipped
+            EndpointsFailed           = $endpointsFailed
+            EndpointsInvalid          = $endpointsInvalid
         }
-        return
-    }
-
-    foreach ($rawEndpointId in $EndpointIds) {
-        $processedEndpoints++
-
-        $endpointId = [string]$rawEndpointId
-        $progressCount = "$processedEndpoints of $totalEndpointsToRemove"
-        $progressStatus = "Processing endpoint $progressCount"
-        $percentComplete = [int](($processedEndpoints / $totalEndpointsToRemove) * 100)
-
-        if (-not [string]::IsNullOrWhiteSpace($endpointId)) {
-            $endpointId = $endpointId.Trim()
-            $progressStatus = "Processing $endpointId ($progressCount)"
-        }
-
-        Write-Progress `
-            -Activity 'Removing endpoints' `
-            -Status $progressStatus `
-            -PercentComplete $percentComplete
-
-        if ([string]::IsNullOrWhiteSpace($endpointId)) {
-            Write-Action1Debug 'Skipping endpoint removal because endpoint ID is empty.'
-            Write-Error 'Endpoint ID cannot be null, empty, or whitespace.'
-            $endpointsInvalid++
-
-            continue
-        }
-
-        $parsedGuid = [guid]::Empty
-
-        if (-not [guid]::TryParseExact($endpointId, 'D', [ref]$parsedGuid)) {
-            Write-Action1Debug (
-                "Skipping endpoint removal because '$endpointId' is not a GUID."
-            )
-            Write-Error "Endpoint ID '$endpointId' must use the standard GUID format."
-            $endpointsInvalid++
-
-            continue
-        }
-
-        $target = "endpoint '$endpointId'"
-
-        if (-not $PSCmdlet.ShouldProcess($target, 'Delete endpoint')) {
-            Write-Action1Debug "Skipped deleting endpoint '$endpointId'."
-            $endpointsSkipped++
-
-            continue
-        }
-
-        Write-Action1Debug "Deleting endpoint '$endpointId'."
-
-        try {
-            $result = Remove-Action1Endpoint -EndpointId $endpointId -Force `
-                -ErrorAction Stop
-        }
-        catch {
-            Write-Action1Debug (
-                "Failed deleting endpoint '$endpointId'. " +
-                "Error: $($_.Exception.Message)"
-            )
-            $endpointsFailed++
-
-            continue
-        }
-
-        if ($null -eq $result) {
-            Write-Action1Debug "Endpoint '$endpointId' removal returned no result."
-            $endpointsFailed++
-            continue
-        }
-
-        switch ($result.Status) {
-            'Removed' { $endpointsRemoved++ }
-            'Skipped' { $endpointsSkipped++ }
-            'Failed'  { $endpointsFailed++ }
-            default   { $endpointsFailed++ }
-        }
-    }
-
-    Write-Progress -Activity 'Removing endpoints' -Completed
-
-    Write-Action1Debug (
-        "Endpoint removal completed. Processed: $processedEndpoints; " +
-        "Removed: $endpointsRemoved; Skipped: $endpointsSkipped; " +
-        "Failed: $endpointsFailed; Invalid: $endpointsInvalid."
-    )
-
-    $succeeded = ($endpointsFailed -eq 0 -and $endpointsInvalid -eq 0)
-
-    [pscustomobject]@{
-        Succeeded                 = $succeeded
-        EndpointsRequested        = $totalEndpointsToRemove
-        EndpointsRemovalProcessed = $processedEndpoints
-        EndpointsRemoved          = $endpointsRemoved
-        EndpointsSkipped          = $endpointsSkipped
-        EndpointsFailed           = $endpointsFailed
-        EndpointsInvalid          = $endpointsInvalid
     }
 }

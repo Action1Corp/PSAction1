@@ -13,13 +13,23 @@ Deletes one managed endpoint from the current Action1 organization.
 
 ## SYNTAX
 
+### ByEndpointId (Default)
 ```
 Remove-Action1Endpoint [-EndpointId] <String> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### ByEndpointObject
+```
+Remove-Action1Endpoint -EndpointObject <Object> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Deletes a specific managed endpoint by using the Action1 endpoints API.
+
+The command also accepts an endpoint object with an **id** property. When the
+object includes **name**, the name is included in confirmation, debug, error,
+and output information.
 
 The command uses the module default organization configured by **Set-Action1DefaultOrg**.
 
@@ -51,6 +61,35 @@ Remove-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' -Force
 
 Deletes the managed endpoint without prompting for confirmation.
 
+### Example 4: Delete an endpoint object
+
+```powershell
+$endpoint = Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46'
+Remove-Action1Endpoint -EndpointObject $endpoint
+```
+
+Prompts for confirmation, then deletes the endpoint by using the object's
+**id** property.
+
+### Example 5: Delete an endpoint from the pipeline
+
+```powershell
+Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Remove-Action1Endpoint
+```
+
+Gets the endpoint object, then deletes it by using the object's **id** property.
+
+### Example 6: Preview endpoint deletion from the pipeline
+
+```powershell
+Get-Action1Endpoint -EndpointId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Remove-Action1Endpoint -WhatIf
+```
+
+Gets the endpoint object and shows the delete operation without sending the
+DELETE request.
+
 ## PARAMETERS
 
 ### -Confirm
@@ -78,13 +117,33 @@ The endpoint ID must use the standard GUID format, such as
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ByEndpointId
 Aliases:
 
 Required: True
 Position: 0
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -EndpointObject
+
+Specifies the managed endpoint object to delete.
+
+The object must include an **id** property. If the object includes a **name**
+property, the name is included in confirmation, debug, error, and output
+information.
+
+```yaml
+Type: Object
+Parameter Sets: ByEndpointObject
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -125,15 +184,17 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
+### System.Object
 
-You cannot pipe input to this command.
+You can pipe endpoint objects with an **id** property to this command.
 
 ## OUTPUTS
 
 ### PSCustomObject
 
-Returns a status object with EndpointId, Status, and Response. The Response value contains the raw response body returned by the DELETE request.
+Returns a status object with EndpointId, EndpointName, Status, and Response. The
+Response value contains the raw response body returned by the DELETE request.
+Status can be Removed, Skipped, Failed, or Invalid.
 
 ## NOTES
 

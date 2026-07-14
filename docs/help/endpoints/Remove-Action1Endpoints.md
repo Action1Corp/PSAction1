@@ -13,17 +13,27 @@ Deletes multiple managed endpoints from the current Action1 organization.
 
 ## SYNTAX
 
+### ByEndpointIds (Default)
 ```
-Remove-Action1Endpoints [-EndpointIds] <String[]> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-Action1Endpoints -EndpointIds <String[]> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### ByEndpointObjects
+```
+Remove-Action1Endpoints -EndpointObjects <Object[]> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Deletes managed endpoints by using the Action1 endpoints API.
 
-The command accepts endpoint IDs, validates each ID, shows progress, asks for
-PowerShell confirmation, and removes valid endpoints by using
-**Remove-Action1Endpoint**.
+The command accepts endpoint IDs or endpoint objects with an **id** property. It
+validates each endpoint ID, shows progress, asks for PowerShell confirmation,
+and removes valid endpoints by using **Remove-Action1Endpoint**.
+
+When endpoint objects include **name**, the names are included in confirmation,
+debug, error, and output information. The endpoint IDs remain the delete
+targets.
 
 The command uses the module default organization configured by
 **Set-Action1DefaultOrg**.
@@ -32,9 +42,12 @@ Use **-WhatIf** to preview the delete operations. Use **-Confirm** to require
 confirmation before each endpoint is removed. Use **-Force** to bypass
 confirmation prompts.
 
+Bulk confirmation choices such as **Yes to All** and **No to All** apply to the
+remaining endpoints in the current command.
+
 ## EXAMPLES
 
-### Example 1: Remove endpoints
+### Example 1: Remove endpoints by ID
 
 ```powershell
 $endpointIds = @(
@@ -72,6 +85,34 @@ Remove-Action1Endpoints -EndpointIds $endpointIds -Force
 
 Deletes the managed endpoints without prompting for confirmation.
 
+### Example 5: Remove endpoint objects
+
+```powershell
+$endpoints = Get-Action1Endpoints -Status Disconnected
+Remove-Action1Endpoints -EndpointObjects $endpoints
+```
+
+Prompts for confirmation and removes the supplied endpoint objects by using
+their **id** properties.
+
+### Example 6: Remove endpoint objects from the pipeline
+
+```powershell
+Get-Action1Endpoints -Status Disconnected | Remove-Action1Endpoints
+```
+
+Removes the endpoint objects received from the pipeline and returns one summary
+object.
+
+### Example 7: Preview endpoint object removal from the pipeline
+
+```powershell
+Get-Action1Endpoints -Status Disconnected | Remove-Action1Endpoints -WhatIf
+```
+
+Shows which disconnected endpoint objects would be removed without sending
+DELETE requests.
+
 ## PARAMETERS
 
 ### -Confirm
@@ -99,13 +140,33 @@ Each endpoint ID must use the standard GUID format, such as
 
 ```yaml
 Type: String[]
-Parameter Sets: (All)
+Parameter Sets: ByEndpointIds
 Aliases:
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -EndpointObjects
+
+Specifies managed endpoint objects to delete.
+
+Each object must include an **id** property. If an object includes a **name**
+property, the name is included in confirmation, debug, error, and output
+information.
+
+```yaml
+Type: Object[]
+Parameter Sets: ByEndpointObjects
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -146,9 +207,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
+### System.Object
 
-You cannot pipe input to this command.
+You can pipe endpoint objects with an **id** property to this command.
 
 ## OUTPUTS
 

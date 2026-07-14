@@ -49,8 +49,9 @@ function Remove-Action1DublicatedEndpoints {
 
         if ([string]::IsNullOrWhiteSpace($mac)) {
             Write-Action1Debug (
-                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
-                "because MAC is empty."
+                "Skip endpoint id '{0}', name '{1}': MAC empty." -f
+                $endpointId,
+                $endpointName
             )
             $invalidEndpoints++
             continue
@@ -58,8 +59,9 @@ function Remove-Action1DublicatedEndpoints {
 
         if ([string]::IsNullOrWhiteSpace($lastSeenText)) {
             Write-Action1Debug (
-                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
-                "because last_seen is empty."
+                "Skip endpoint id '{0}', name '{1}': last_seen empty." -f
+                $endpointId,
+                $endpointName
             )
             $invalidEndpoints++
             continue
@@ -70,8 +72,11 @@ function Remove-Action1DublicatedEndpoints {
         }
         catch {
             Write-Action1Debug (
-                "Skipping endpoint with id '$endpointId' and name: '$endpointName' " +
-                "because last_seen '$lastSeenText' does not match '$dateFormat'."
+                "Skip endpoint id '{0}', name '{1}': last_seen '{2}' not '{3}'." -f
+                $endpointId,
+                $endpointName,
+                $lastSeenText,
+                $dateFormat
             )
             $invalidEndpoints++
             continue
@@ -97,15 +102,19 @@ function Remove-Action1DublicatedEndpoints {
                 [void]$duplicateEndpointsToRemove.Add($newestEndpointForMacAddress)
                 $newestEndpointByMacAddress[$normalizedMacAddress] = $currentEndpoint
                 Write-Action1Debug (
-                    "Endpoint with id '$endpointId' and name: '$endpointName' " +
-                    "is newest for MAC '$normalizedMacAddress'."
+                    "Endpoint with id '{0}' and name: '{1}' is newest for MAC '{2}'." -f
+                    $endpointId,
+                    $endpointName,
+                    $normalizedMacAddress
                 )
             }
             else {
                 [void]$duplicateEndpointsToRemove.Add($currentEndpoint)
                 Write-Action1Debug (
-                    "Endpoint with id '$endpointId' and name: '$endpointName' " +
-                    "is duplicate for MAC '$normalizedMacAddress'."
+                    "Endpoint id '{0}', name '{1}' is duplicated by MAC '{2}'." -f
+                    $endpointId,
+                    $endpointName,
+                    $normalizedMacAddress
                 )
             }
         }
@@ -116,17 +125,15 @@ function Remove-Action1DublicatedEndpoints {
     )
 
     $totalDuplicateEndpointsToRemove = $duplicateEndpointsToRemove.Count
-    $duplicateEndpointIdsToRemove = @(
-        $duplicateEndpointsToRemove | ForEach-Object { $_.Id }
-    )
-    $removalResult = Remove-Action1Endpoints -EndpointIds $duplicateEndpointIdsToRemove
+    $removalResult = Remove-Action1Endpoints `
+        -EndpointObjects $duplicateEndpointsToRemove
 
     Write-Action1Debug (
-        "Duplicated endpoint cleanup completed. " +
-        "Processed: $($removalResult.EndpointsRemovalProcessed); " +
-        "Removed: $($removalResult.EndpointsRemoved); " +
-        "Skipped: $($removalResult.EndpointsSkipped); " +
-        "Failed: $($removalResult.EndpointsFailed)."
+        "Duplicated done. Processed:{0}; removed:{1}; skipped:{2}; failed:{3}." -f
+        $removalResult.EndpointsRemovalProcessed,
+        $removalResult.EndpointsRemoved,
+        $removalResult.EndpointsSkipped,
+        $removalResult.EndpointsFailed
     )
 
     [pscustomobject]@{
