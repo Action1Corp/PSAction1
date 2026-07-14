@@ -67,15 +67,16 @@ function Update-Action1Endpoint {
         }
 
         if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObject') {
-            $target = ConvertTo-Action1EndpointTarget -EndpointObject $EndpointObject
+            $endpointIdentity = Get-Action1EndpointIdentityFromObject `
+                -EndpointObject $EndpointObject
         }
         else {
-            $target = ConvertTo-Action1EndpointTarget -EndpointId $EndpointId
+            $endpointIdentity = New-Action1EndpointIdentity -EndpointId $EndpointId
         }
 
-        if (-not $target.IsValid) {
-            Write-Action1Debug $target.ErrorMessage
-            Write-Error $target.ErrorMessage
+        if (-not $endpointIdentity.IsValid) {
+            Write-Action1Debug $endpointIdentity.ErrorMessage
+            Write-Error $endpointIdentity.ErrorMessage
         }
         else {
             if (Initialize-Action1DefaultOrg) {
@@ -84,13 +85,9 @@ function Update-Action1Endpoint {
 
             $uriPathBuilder = Get-UriMapValue -Key 'U_Endpoint'
 
-            $uri = & $uriPathBuilder $orgId $target.EndpointId
+            $uri = & $uriPathBuilder $orgId $endpointIdentity.EndpointId
             $path = "$Script:Action1_BaseURI{0}" -f $uri
-            $endpointLabel = "endpoint with id '$($target.EndpointId)'"
-
-            if ($null -ne $target.EndpointName) {
-                $endpointLabel = "$endpointLabel and name '$($target.EndpointName)'"
-            }
+            $endpointLabel = $endpointIdentity.EndpointLabel
 
             if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Update endpoint')) {
                 Write-Action1Debug "Skipped updating $endpointLabel."

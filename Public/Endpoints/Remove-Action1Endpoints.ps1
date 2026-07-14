@@ -31,7 +31,7 @@ function Remove-Action1Endpoints {
     )
 
     begin {
-        $endpointTargets = New-Object System.Collections.ArrayList
+        $endpointRemovalRequests = New-Object System.Collections.ArrayList
 
         if ($Force) {
             $ConfirmPreference = 'None'
@@ -41,24 +41,30 @@ function Remove-Action1Endpoints {
     process {
         if ($PSCmdlet.ParameterSetName -eq 'ByEndpointObjects') {
             foreach ($endpointObject in $EndpointObjects) {
-                $target = ConvertTo-Action1EndpointTarget `
-                    -EndpointObject $endpointObject
-
-                [void]$endpointTargets.Add($target)
+                [void]$endpointRemovalRequests.Add(
+                    [pscustomobject]@{
+                        ParameterSetName = 'ByEndpointObject'
+                        EndpointId       = $null
+                        EndpointObject   = $endpointObject
+                    }
+                )
             }
         }
         else {
             foreach ($endpointId in $EndpointIds) {
-                $target = ConvertTo-Action1EndpointTarget `
-                    -EndpointId $endpointId
-
-                [void]$endpointTargets.Add($target)
+                [void]$endpointRemovalRequests.Add(
+                    [pscustomobject]@{
+                        ParameterSetName = 'ByEndpointId'
+                        EndpointId       = $endpointId
+                        EndpointObject   = $null
+                    }
+                )
             }
         }
     }
 
     end {
-        $totalEndpointsToRemove = $endpointTargets.Count
+        $totalEndpointsToRemove = $endpointRemovalRequests.Count
         $processedEndpoints = 0
         $endpointsRemoved = 0
         $endpointsSkipped = 0
@@ -82,7 +88,7 @@ function Remove-Action1Endpoints {
             return
         }
 
-        foreach ($target in $endpointTargets) {
+        foreach ($endpointRemovalRequest in $endpointRemovalRequests) {
             $processedEndpoints++
 
             $progressCount = "$processedEndpoints of $totalEndpointsToRemove"
@@ -91,51 +97,55 @@ function Remove-Action1Endpoints {
                 ($processedEndpoints / $totalEndpointsToRemove) * 100
             )
 
-            if (-not [string]::IsNullOrWhiteSpace($target.EndpointId)) {
-                $progressStatus = "Processing $($target.EndpointId) ($progressCount)"
-            }
-
             Write-Progress `
                 -Activity 'Removing endpoints' `
                 -Status $progressStatus `
                 -PercentComplete $percentComplete
 
-            if (-not $target.IsValid) {
-                Write-Action1Debug $target.ErrorMessage
-                Write-Error $target.ErrorMessage
-                $endpointsInvalid++
-
-                continue
-            }
-
-            $endpointLabel = "endpoint with id '$($target.EndpointId)'"
-
-            if ($null -ne $target.EndpointName) {
-                $endpointLabel = "$endpointLabel and name '$($target.EndpointName)'"
-            }
-
-            if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Delete endpoint')) {
-                Write-Action1Debug "Skipped deleting $endpointLabel."
-                $endpointsSkipped++
-
-                continue
-            }
-
             try {
-                $endpointObject = [pscustomobject]@{
-                    id   = $target.EndpointId
-                    name = $target.EndpointName
+                if ($endpointRemovalRequest.ParameterSetName -eq 'ByEndpointObject') {
+                    $endpointIdentity = Get-Action1EndpointIdentityFromObject `
+                        -EndpointObject $endpointRemovalRequest.EndpointObject
+                }
+                else {
+                    $endpointIdentity = New-Action1EndpointIdentity `
+                        -EndpointId $endpointRemovalRequest.EndpointId
                 }
 
-                $result = Remove-Action1Endpoint `
-                    -EndpointObject $endpointObject `
-                    -Force `
-                    -ErrorAction Stop
+                if (-not $endpointIdentity.IsValid) {
+                    Write-Action1Debug $endpointIdentity.ErrorMessage
+                    Write-Error $endpointIdentity.ErrorMessage
+                    $endpointsInvalid++
+
+                    continue
+                }
+
+                $endpointLabel = $endpointIdentity.EndpointLabel
+
+                if (-not $PSCmdlet.ShouldProcess($endpointLabel, 'Delete endpoint')) {
+                    Write-Action1Debug "Skipped deleting $endpointLabel."
+                    $endpointsSkipped++
+
+                    continue
+                }
+
+                if ($endpointRemovalRequest.ParameterSetName -eq 'ByEndpointObject') {
+                    $result = Remove-Action1Endpoint `
+                        -EndpointObject $endpointRemovalRequest.EndpointObject `
+                        -Force `
+                        -ErrorAction Continue
+                }
+                else {
+                    $result = Remove-Action1Endpoint `
+                        -EndpointId $endpointIdentity.EndpointId `
+                        -Force `
+                        -ErrorAction Continue
+                }
             }
             catch {
                 Write-Action1Debug (
-                    "Failed deleting {0}. Error: {1}" -f
-                    $endpointLabel,
+                    "Failed deleting endpoint request {0}. Error: {1}" -f
+                    $processedEndpoints,
                     $_.Exception.Message
                 )
                 $endpointsFailed++
@@ -144,7 +154,9 @@ function Remove-Action1Endpoints {
             }
 
             if ($null -eq $result) {
-                Write-Action1Debug "$endpointLabel removal returned no result."
+                Write-Action1Debug (
+                    "Endpoint request $processedEndpoints removal returned no result."
+                )
                 $endpointsFailed++
                 continue
             }
@@ -152,6 +164,7 @@ function Remove-Action1Endpoints {
             switch ($result.Status) {
                 'Removed' { $endpointsRemoved++ }
                 'Skipped' { $endpointsSkipped++ }
+                'Invalid' { $endpointsInvalid++ }
                 'Failed'  { $endpointsFailed++ }
                 default   { $endpointsFailed++ }
             }
