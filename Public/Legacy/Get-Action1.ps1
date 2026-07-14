@@ -167,13 +167,12 @@ function Get-Action1 {
                             param([string]$CVE_ID) 
                             $vul = (($Script:Action1_CVE_Lookup[$CVE_ID]).software).available_updates
                             if ($null -eq $vul) {
-                                Write-Host "No patch for $CVE_ID found in Action1." -ForegroundColor Red
+                                Write-Warning "No patch for $CVE_ID found in Action1."
                             }
                             else { 
                                 foreach ($item in $vul) {
                                     $upd = $item.package_id
                                     $ver = $item.version
-                                    $name = $item.name
                                     if (!($null -eq $this.actions.params.packages[0].$upd)) {
                                         Write-Action1Debug "$upd has already been added to this template.`nThis happens when an update addresses more than one CVE in a single package."
                                     }
@@ -214,7 +213,7 @@ function Get-Action1 {
                             $pack = Get-Action1 Packages | Where-Object { $_.id -eq $Package_ID }
                             $name = $pack.name
                             if ($null -eq $pack) {
-                                Write-Host "Unable to locate package $Package_ID." -ForegroundColor Red
+                                Write-Warning "Unable to locate package $Package_ID."
                             }
                             else { 
                                 if (!($null -eq $this.actions.params.packages[0].$pack)) {
@@ -249,33 +248,6 @@ function Get-Action1 {
     $Rawlist = @('ReportExport', 'Logs')
 
     $AddArgs = ""
-    $sbPolicyResultsDetail = {
-        Invoke-Action1PagedGetRequest -Path $this.details -Label 'PolicyResultsDetails'
-    }
-    $sbCustomFieldGet = { param([string]$name)($this.custom | Where-Object { $_.name -eq $name }).value }
-
-    $ItemAction = $null
-
-    switch -Wildcard ($Query) {
-        'PolicyResults' {
-            $ItemAction = {
-                param($Item)
-
-                $Item | Add-Member -MemberType ScriptMethod -Name "GetDetails" -Value $sbPolicyResultsDetail -Force
-                $Item
-            }
-        }
-
-        'Endpoint*' {
-            $ItemAction = {
-                param($Item)
-
-                $Item | Add-Member -MemberType ScriptMethod -Name "GetCustomAttribute" -Value $sbCustomFieldGet -Force
-                $Item
-            }
-        }
-    }
-
     if (!$Script:Action1_UriMap["G_$Query"].ToString().Contains("`$Org_ID")) {
         if (!$Script:Action1_UriMap["G_$Query"].ToString().Contains("`$Object_ID")) {
             $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"])

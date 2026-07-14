@@ -22,7 +22,8 @@ function Initialize-Action1Region {
     while ([string]::IsNullOrWhiteSpace($Script:Action1_BaseURI)) {
 
         for ($i = 0; $i -lt $regions.Count; $i++) {
-            Write-Host "$i : $($regions[$i].Key)"
+            Write-Information ("{0} : {1}" -f $i, $regions[$i].Key) `
+                -InformationAction Continue
         }
 
         $selection = Read-Host -Prompt 'Select your data center region'

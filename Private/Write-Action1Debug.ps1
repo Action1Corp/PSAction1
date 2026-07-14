@@ -6,6 +6,11 @@
 # © Action1 Corporation
 
 function Write-Action1Debug {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSAvoidUsingWriteHost',
+        '',
+        Justification = 'This helper intentionally writes colorized debug output.'
+    )]
     [CmdletBinding()]
     param(
         [Parameter(Position = 0)]

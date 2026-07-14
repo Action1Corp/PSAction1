@@ -27,8 +27,8 @@ The command filters endpoints where **last_seen** is older than or equal to the
 configured cutoff date, then removes matching endpoints by using
 **Remove-Action1Endpoints**.
 
-Endpoints missing **id** or **last_seen**, or endpoints with an unparseable
-**last_seen** value, are skipped and counted as invalid.
+Endpoints missing **id**, **name**, or **last_seen**, or endpoints with an
+unparseable **last_seen** value, are skipped and counted as invalid.
 
 The command uses the module default organization configured by
 **Set-Action1DefaultOrg**.
