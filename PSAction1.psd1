@@ -17,7 +17,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.7.10'
+    ModuleVersion     = '1.8.11'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -117,13 +117,13 @@
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-    CmdletsToExport   = '*'
+    CmdletsToExport   = @()
 
     # Variables to export from this module
-    VariablesToExport = '*'
+    VariablesToExport = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport   = '*'
+    AliasesToExport   = @()
 
     # DSC resources to export from this module
     # DscResourcesToExport = @()
@@ -140,10 +140,10 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('Action1')
+            Tags = @('Action1', 'PSAction1')
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri = 'https://github.com/Action1Corp/PSAction1/blob/main/TERMS_OF_USE.md'
 
             # A URL to the main website for this project.
             ProjectUri = 'https://github.com/Action1Corp/PSAction1'
@@ -152,14 +152,34 @@
             # IconUri = ''
 
             # ReleaseNotes of this module
-            # ReleaseNotes = ''
+            ReleaseNotes = @'
+1. New cmdlets:
+    Vulnerabilities:
+        Export-Action1VulnerabilitiesEndpointsCsv
+        Get-Action1VulnerabilityEndpoints
+    Configuration:
+        Get-Action1Organizations
+        Get-Action1DefaultOrgName
+        Get-Action1DefaultOrgId
+        Get-Action1Region
+        Get-Action1Debug
+    Endpoints:
+        Remove-Action1DisconnectedEndpoints
+        Remove-Action1DublicatedEndpoints
+        Get-Action1Endpoints
+        Get-Action1Endpoint
+        Update-Action1Endpoint
+        Remove-Action1Endpoint
+        Remove-Action1Endpoints
+2. Support retry_timeout field handling in 429 HTTP error code response.
+'@
 
         } # End of PSData hashtable
 
     } # End of PrivateData hashtable
 
     # HelpInfo URI of this module
-    HelpInfoURI = ''
+    # HelpInfoURI = ''
 
     # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
     # DefaultCommandPrefix = ''
