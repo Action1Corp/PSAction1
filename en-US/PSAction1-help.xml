@@ -1422,9 +1422,9 @@ $result | Format-List</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Remove-Action1DublicatedEndpoints</command:name>
+      <command:name>Remove-Action1DuplicateEndpoints</command:name>
       <command:verb>Remove</command:verb>
-      <command:noun>Action1DublicatedEndpoints</command:noun>
+      <command:noun>Action1DuplicateEndpoints</command:noun>
       <maml:description>
         <maml:para>Deletes duplicated managed endpoints that share the same MAC address.</maml:para>
       </maml:description>
@@ -1438,7 +1438,7 @@ $result | Format-List</dev:code>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Remove-Action1DublicatedEndpoints</maml:name>
+        <maml:name>Remove-Action1DuplicateEndpoints</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
           <maml:name>Confirm</maml:name>
           <maml:description>
@@ -1517,28 +1517,28 @@ $result | Format-List</dev:code>
     <command:examples>
       <command:example>
         <maml:title>------------ Example 1: Remove duplicated endpoints ------------</maml:title>
-        <dev:code>Remove-Action1DublicatedEndpoints</dev:code>
+        <dev:code>Remove-Action1DuplicateEndpoints</dev:code>
         <dev:remarks>
           <maml:para>Gets all endpoints, keeps the newest endpoint for each MAC address, prompts for confirmation, and removes older duplicated endpoints.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>------------------ Example 2: Preview removal ------------------</maml:title>
-        <dev:code>Remove-Action1DublicatedEndpoints -WhatIf</dev:code>
+        <dev:code>Remove-Action1DuplicateEndpoints -WhatIf</dev:code>
         <dev:remarks>
           <maml:para>Shows which duplicated endpoints would be removed without sending DELETE requests.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>--------------- Example 3: Prompt before removal ---------------</maml:title>
-        <dev:code>Remove-Action1DublicatedEndpoints -Confirm</dev:code>
+        <dev:code>Remove-Action1DuplicateEndpoints -Confirm</dev:code>
         <dev:remarks>
           <maml:para>Prompts for confirmation before each duplicated endpoint is removed.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>------------- Example 4: Review cleanup statistics -------------</maml:title>
-        <dev:code>$result = Remove-Action1DublicatedEndpoints
+        <dev:code>$result = Remove-Action1DuplicateEndpoints
 $result | Format-List</dev:code>
         <dev:remarks>
           <maml:para>Runs the cleanup and displays the summary statistics returned by the command.</maml:para>
