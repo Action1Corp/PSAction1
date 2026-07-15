@@ -768,10 +768,15 @@ PS C:\> Get-Action1 RawURI -URI https://app.action1.com/api/3.0/policies/schedul
 
 Repository maintainers can run PSScriptAnalyzer before submitting code changes.
 The analyzer settings file is stored in the repository root as
-`PSScriptAnalyzerSettings.psd1`.
+`PSScriptAnalyzerSettings.psd1`, and the repository-specific naming rules are
+stored in `tools/PSScriptAnalyzer`.
 
 Use the [PSScriptAnalyzer procedure](docs/PSScriptAnalyzer.md) for the standard
-command and the current repository-specific rule exclusions.
+command:
+
+```PowerShell
+PS C:\> .\tools\Invoke-PSScriptAnalyzer.ps1
+```
 
 ### Troubleshooting
 
