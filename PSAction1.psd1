@@ -93,7 +93,7 @@
         'Remove-Action1Endpoint'
         'Remove-Action1Endpoints'
         'Remove-Action1DisconnectedEndpoints'
-        'Remove-Action1DublicatedEndpoints'
+        'Remove-Action1DuplicateEndpoints'
 
         # Vulnerabilities
         'Get-Action1Vulnerabilities'
@@ -165,7 +165,7 @@
         Get-Action1Debug
     Endpoints:
         Remove-Action1DisconnectedEndpoints
-        Remove-Action1DublicatedEndpoints
+        Remove-Action1DuplicateEndpoints
         Get-Action1Endpoints
         Get-Action1Endpoint
         Update-Action1Endpoint
