@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Remove-Action1DublicatedEndpoints
+# Remove-Action1DuplicateEndpoints
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Deletes duplicated managed endpoints that share the same MAC address.
 ## SYNTAX
 
 ```
-Remove-Action1DublicatedEndpoints [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-Action1DuplicateEndpoints [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,7 +41,7 @@ is removed.
 ### Example 1: Remove duplicated endpoints
 
 ```powershell
-Remove-Action1DublicatedEndpoints
+Remove-Action1DuplicateEndpoints
 ```
 
 Gets all endpoints, keeps the newest endpoint for each MAC address, prompts for
@@ -50,7 +50,7 @@ confirmation, and removes older duplicated endpoints.
 ### Example 2: Preview removal
 
 ```powershell
-Remove-Action1DublicatedEndpoints -WhatIf
+Remove-Action1DuplicateEndpoints -WhatIf
 ```
 
 Shows which duplicated endpoints would be removed without sending DELETE
@@ -59,7 +59,7 @@ requests.
 ### Example 3: Prompt before removal
 
 ```powershell
-Remove-Action1DublicatedEndpoints -Confirm
+Remove-Action1DuplicateEndpoints -Confirm
 ```
 
 Prompts for confirmation before each duplicated endpoint is removed.
@@ -67,7 +67,7 @@ Prompts for confirmation before each duplicated endpoint is removed.
 ### Example 4: Review cleanup statistics
 
 ```powershell
-$result = Remove-Action1DublicatedEndpoints
+$result = Remove-Action1DuplicateEndpoints
 $result | Format-List
 ```
 

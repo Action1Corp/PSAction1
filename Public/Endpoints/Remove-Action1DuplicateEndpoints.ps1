@@ -5,7 +5,7 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
-function Remove-Action1DublicatedEndpoints {
+function Remove-Action1DuplicateEndpoints {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSShouldProcess',
         '',
