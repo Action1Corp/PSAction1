@@ -91,11 +91,183 @@ PS C:\> Import-Module PSAction1
 
 Once installed from the PowerShell gallery, this module will remain resident and does not have to be explicitly installed on each PowerShell console execution or machine reboot.
 
+## Verify installed version and update
+
+You can check which **PSAction1** version is installed locally before importing
+or updating the module.
+
+```PowerShell
+
+PS C:\> Get-InstalledModule -Name PSAction1 | Select-Object Name, Version, Repository, InstalledLocation
+
+```
+
+This command checks the version installed by PowerShellGet from the PowerShell
+Gallery. It is the preferred verification method when the module was installed
+with **Install-Module**.
+
+If more than one version is installed on the machine, use this command to list
+all available local versions:
+
+```PowerShell
+
+PS C:\> Get-Module -ListAvailable -Name PSAction1 | Sort-Object Version -Descending | Select-Object Name, Version, Path
+
+```
+
+PowerShell imports the highest available version by default, unless a specific
+version is requested in the import statement.
+
+To verify the version imported into the current PowerShell session, run:
+
+```PowerShell
+
+PS C:\> Import-Module PSAction1
+
+PS C:\> Get-Module -Name PSAction1 | Select-Object Name, Version, Path
+
+```
+
+This confirms the version that the current console or script session is using.
+If the output does not show the expected version after an update, close and
+reopen PowerShell or remove and re-import the module:
+
+```PowerShell
+
+PS C:\> Remove-Module PSAction1 -Force
+
+PS C:\> Import-Module PSAction1
+
+PS C:\> Get-Module -Name PSAction1 | Select-Object Name, Version, Path
+
+```
+
+You can check the latest version available in the PowerShell Gallery from
+PowerShell:
+
+```PowerShell
+
+PS C:\> Find-Module -Name PSAction1 -Repository PSGallery | Select-Object Name, Version, Repository
+
+```
+
+On Windows PowerShell 5.1, if the PowerShell Gallery connection fails because
+of an older TLS setting, enable TLS 1.2 for the current session and retry:
+
+```PowerShell
+
+PS C:\> [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+PS C:\> Find-Module -Name PSAction1 -Repository PSGallery | Select-Object Name, Version, Repository
+
+```
+
+You can also open the PowerShell Gallery package page in a browser. For example,
+release **1.8.12** is available at:
+
+[https://www.powershellgallery.com/packages/PSAction1/1.8.12](https://www.powershellgallery.com/packages/PSAction1/1.8.12)
+
+To compare the locally installed version with the latest PowerShell Gallery
+version, run:
+
+```PowerShell
+
+PS C:\> $installedModule = Get-InstalledModule -Name PSAction1 -ErrorAction Stop
+
+PS C:\> $galleryModule = Find-Module -Name PSAction1 -Repository PSGallery -ErrorAction Stop
+
+PS C:\> [PSCustomObject]@{
+    InstalledVersion = $installedModule.Version
+    GalleryVersion   = $galleryModule.Version
+    UpdateAvailable  = ([version]$installedModule.Version -lt [version]$galleryModule.Version)
+}
+
+```
+
+If **UpdateAvailable** is **True**, a newer released version is available in the
+PowerShell Gallery.
+
+Before updating, preview what PowerShellGet will do:
+
+```PowerShell
+
+PS C:\> Update-Module -Name PSAction1 -WhatIf
+
+```
+
+This command does not install anything. It only shows the update action that
+would be performed.
+
+To update **PSAction1** to the latest released version from the PowerShell
+Gallery, run:
+
+```PowerShell
+
+PS C:\> Update-Module -Name PSAction1
+
+```
+
+If you installed the module for the current user, you can explicitly keep the
+update in the current user scope:
+
+```PowerShell
+
+PS C:\> Update-Module -Name PSAction1 -Scope CurrentUser
+
+```
+
+If you installed the module for all users, run PowerShell as administrator and
+update the all-users installation:
+
+```PowerShell
+
+PS C:\> Update-Module -Name PSAction1 -Scope AllUsers
+
+```
+
+To update without the interactive confirmation prompt, use **-Force**:
+
+```PowerShell
+
+PS C:\> Update-Module -Name PSAction1 -Force
+
+```
+
+To update to a specific released version, use **-RequiredVersion**. The specified
+version must exist in the PowerShell Gallery:
+
+```PowerShell
+
+PS C:\> Update-Module -Name PSAction1 -RequiredVersion 1.8.12
+
+```
+
+To return information about the updated module version after the update, use
+**-PassThru**:
+
+```PowerShell
+
+PS C:\> Update-Module -Name PSAction1 -PassThru | Select-Object Name, Version, Repository, InstalledLocation
+
+```
+
+:left_speech_bubble: **Note:** _**Update-Module** works for modules installed
+with **Install-Module** from an online gallery. If **PSAction1** was installed
+manually by copying files into `$PSModulePath`, replace the manually copied
+module folder with the newer release or install the gallery package with
+**Install-Module**._
+
 ## Manual Installation
 
-If you prefer to review the code prior to use, you can download the module and put it manually in your `$PSModulePath`.
+Manual installation is intended for reviewing the code before use, testing a
+development build, or using a build supplied for troubleshooting. Download the
+module from GitHub and copy the module folder into a directory listed in
+`$PSModulePath`.
 
-Download the latest builds from GitHub, or use the [PowerShell Gallery](https://www.PowerShellgallery.com/packages/PSAction1) for the latest stable release.
+For the latest stable release, install **PSAction1** from the
+[PowerShell Gallery](https://www.PowerShellgallery.com/packages/PSAction1) and
+use the version verification and update procedure above. **Update-Module** does
+not manage a module that was installed manually by copying files.
 
 Then import the module into your script's session:
 
@@ -113,7 +285,8 @@ Get-Action1
 
 ```
 
- This must be done on each execution of your script, so it is to place the import statement at the beginning of your script.
+ This must be done on each execution of your script, so place the import
+statement at the beginning of your script.
 
 :stop_sign: **Important:**  _Code downloaded from GitHub may be under active development. For maximum stability, use the version from the PowerShell Gallery. Use development builds only if instructed by support or when troubleshooting specific issues._
 
