@@ -19,8 +19,15 @@ function New-Action1OrganizationLabel {
         [string]$Org_Name
     )
 
-    if ([string]::IsNullOrWhiteSpace($Org_ID)) {
+    if (
+        [string]::IsNullOrWhiteSpace($Org_ID) -and
+        [string]::IsNullOrWhiteSpace($Org_Name)
+    ) {
         return $null
+    }
+
+    if ([string]::IsNullOrWhiteSpace($Org_ID)) {
+        return "organization with name '$($Org_Name.Trim())'"
     }
 
     $organizationLabel = "organization with id '$($Org_ID.Trim())'"
