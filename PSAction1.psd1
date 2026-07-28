@@ -80,11 +80,17 @@
         'Set-Action1DefaultOrg'
         'Get-Action1DefaultOrgId'
         'Get-Action1DefaultOrgName'
-        'Get-Action1Organizations'
         'Set-Action1Region'
         'Get-Action1Region'
         'Set-Action1Debug'
         'Get-Action1Debug'
+
+        # Organizations
+        'Get-Action1Organization'
+        'Get-Action1Organizations'
+        'New-Action1Organization'
+        'Update-Action1Organization'
+        'Remove-Action1Organization'
 
         # Endpoints
         'Get-Action1Endpoints'
@@ -158,11 +164,16 @@
         Export-Action1VulnerabilitiesEndpointsCsv
         Get-Action1VulnerabilityEndpoints
     Configuration:
-        Get-Action1Organizations
         Get-Action1DefaultOrgName
         Get-Action1DefaultOrgId
         Get-Action1Region
         Get-Action1Debug
+    Organizations:
+        Get-Action1Organization
+        Get-Action1Organizations
+        New-Action1Organization
+        Update-Action1Organization
+        Remove-Action1Organization
     Endpoints:
         Remove-Action1DisconnectedEndpoints
         Remove-Action1DuplicateEndpoints
