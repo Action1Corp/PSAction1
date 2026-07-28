@@ -91,6 +91,7 @@
         'New-Action1Organization'
         'Update-Action1Organization'
         'Remove-Action1Organization'
+        'Export-Action1OrganizationsCsv'
 
         # Endpoints
         'Get-Action1Endpoints'
@@ -168,12 +169,6 @@
         Get-Action1DefaultOrgId
         Get-Action1Region
         Get-Action1Debug
-    Organizations:
-        Get-Action1Organization
-        Get-Action1Organizations
-        New-Action1Organization
-        Update-Action1Organization
-        Remove-Action1Organization
     Endpoints:
         Remove-Action1DisconnectedEndpoints
         Remove-Action1DuplicateEndpoints

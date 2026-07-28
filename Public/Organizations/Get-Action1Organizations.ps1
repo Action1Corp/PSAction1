@@ -56,9 +56,12 @@ function Get-Action1Organizations {
 
     $organizationList |
         ForEach-Object {
-            [PSCustomObject]@{
-                Org_Name = $_.name
-                Org_ID   = $_.id
+            [PSCustomObject][ordered]@{
+                Org_Name     = $_.name
+                Org_ID       = $_.id
+                Description  = $_.description
+                Type         = $_.type
+                EnterpriseId = $_.enterprise_id
             }
         } |
         Sort-Object -Property Org_Name, Org_ID
