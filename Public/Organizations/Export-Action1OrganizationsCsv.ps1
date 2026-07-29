@@ -30,7 +30,7 @@ function Export-Action1OrganizationsCsv {
     )
 
     if (-not $PSBoundParameters.ContainsKey('Path')) {
-        $timestamp = Get-Date -Format 'yyMMdd_HHmm'
+        $timestamp = Get-UtcTimestamp -Template 'yyMMdd_HHmm'
         $fileName = 'Action1_Organizations_{0}.csv' -f $timestamp
         $Path = Join-Path -Path (Get-Location) -ChildPath $fileName
     }
@@ -118,7 +118,7 @@ function Export-Action1OrganizationsCsv {
     $totalRowsExported = 0
 
     foreach ($organization in $organizationsToExport) {
-        $exportedAt = (Get-Date).ToUniversalTime().ToString('yyyy-MM-dd_HH-mm-ss')
+        $exportedAt = Get-UtcTimestamp
 
         $csvRow = [PSCustomObject][ordered]@{
             Id           = $organization.Org_ID

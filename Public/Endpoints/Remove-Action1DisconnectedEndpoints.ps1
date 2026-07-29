@@ -32,7 +32,7 @@ function Remove-Action1DisconnectedEndpoints {
         "Retrieved $($disconnectedEndpoints.Count) disconnected endpoint record(s)."
     )
 
-    $dateFormat = 'yyyy-MM-dd_HH-mm-ss'
+    $dateFormat = $Script:Action1_UtcTimestampTemplate
     $requiredProperties = @('id', 'name', 'last_seen')
     $endpointsToRemove = New-Object System.Collections.ArrayList
     $invalidEndpoints = 0

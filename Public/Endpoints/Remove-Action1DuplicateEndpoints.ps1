@@ -20,7 +20,7 @@ function Remove-Action1DuplicateEndpoints {
 
     Write-Action1Debug "Retrieved $($endpoints.Count) endpoint record(s)."
 
-    $dateFormat = 'yyyy-MM-dd_HH-mm-ss'
+    $dateFormat = $Script:Action1_UtcTimestampTemplate
     $requiredProperties = @('id', 'name', 'MAC', 'last_seen')
     $newestEndpointByMacAddress = @{}
     $duplicateEndpointsToRemove = New-Object System.Collections.ArrayList

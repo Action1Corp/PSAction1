@@ -6,3 +6,4 @@
 # © Action1 Corporation
 
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
+$Script:Action1_UtcTimestampTemplate = 'yyyy-MM-dd_HH-mm-ss'
