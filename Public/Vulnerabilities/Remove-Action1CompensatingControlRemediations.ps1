@@ -21,28 +21,6 @@ function Remove-Action1CompensatingControlRemediations {
 
     $remediationStatus = 'Control_applied'
 
-    $getFirstPropertyValue = {
-        param(
-            [Parameter(Mandatory = $true)]
-            [object]$InputObject,
-
-            [Parameter(Mandatory = $true)]
-            [string[]]$PropertyName
-        )
-
-        foreach ($name in $PropertyName) {
-            if ($InputObject.PSObject.Properties.Name -contains $name) {
-                $value = $InputObject.$name
-
-                if ($null -ne $value -and -not [string]::IsNullOrWhiteSpace([string]$value)) {
-                    return [string]$value
-                }
-            }
-        }
-
-        return $null
-    }
-
     Write-Action1Debug "Starting bulk remediation cleanup. RemediationStatus: '$remediationStatus'. Score '$Score'. Force switch: $Force."
 
     $vulnerabilities = @(
@@ -88,7 +66,9 @@ function Remove-Action1CompensatingControlRemediations {
     foreach ($vulnerability in $vulnerabilities) {
         $processedVulnerabilities++
 
-        $cveId = & $getFirstPropertyValue -InputObject $vulnerability -PropertyName @('cve_id', 'CVEId', 'cve', 'id')
+        $cveId = Get-FirstPropertyValue `
+            -InputObject $vulnerability `
+            -PropertyName @('cve_id', 'CVEId', 'cve', 'id')
 
         if ([string]::IsNullOrWhiteSpace($cveId)) {
             Write-Warning ("Skipping vulnerability #{0} because a CVE id could not be found." -f $processedVulnerabilities)
@@ -126,7 +106,9 @@ function Remove-Action1CompensatingControlRemediations {
             Out-Host
 
         foreach ($remediation in $remediations) {
-            $remediationId = & $getFirstPropertyValue -InputObject $remediation -PropertyName @('remediation_id', 'RemediationId', 'id')
+            $remediationId = Get-FirstPropertyValue `
+                -InputObject $remediation `
+                -PropertyName @('remediation_id', 'RemediationId', 'id')
 
             if ([string]::IsNullOrWhiteSpace($remediationId)) {
                 Write-Warning ("Skipping a remediation for vulnerability '{0}' because remediation id could not be found." -f $cveId)
