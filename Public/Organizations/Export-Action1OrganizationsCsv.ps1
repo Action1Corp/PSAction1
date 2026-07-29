@@ -88,10 +88,10 @@ function Export-Action1OrganizationsCsv {
     )
 
     $exportColumns = @(
-        'OrgId',
+        'Id',
         'Name',
         'Description',
-        'Type',
+        'EntityType',
         'EnterpriseId',
         'Region',
         'ExportedAt'
@@ -123,10 +123,10 @@ function Export-Action1OrganizationsCsv {
         $exportedAt = (Get-Date).ToUniversalTime().ToString('yyyy-MM-dd_HH-mm-ss')
 
         $csvRow = [PSCustomObject][ordered]@{
-            OrgId        = $organization.Org_ID
+            Id           = $organization.Org_ID
             Name         = $organization.Org_Name
             Description  = $organization.Description
-            Type         = $organization.Type
+            EntityType   = $organization.Type
             EnterpriseId = $organization.EnterpriseId
             Region       = $region
             ExportedAt   = $exportedAt

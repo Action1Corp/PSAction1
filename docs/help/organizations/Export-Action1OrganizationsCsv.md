@@ -39,10 +39,10 @@ and exports the selected organizations to a CSV file.
 The command writes a fixed header row and then appends one CSV row for each
 selected organization. The CSV file contains these columns in this order:
 
-* `OrgId`
+* `Id`
 * `Name`
 * `Description`
-* `Type`
+* `EntityType`
 * `EnterpriseId`
 * `Region`
 * `ExportedAt`
@@ -88,7 +88,7 @@ Export-Action1OrganizationsCsv `
     -OrgIds '88c8b425-871e-4ff6-9afc-00df8592c6db'
 ```
 
-Exports only organizations whose `OrgId` value matches one of the specified
+Exports only organizations whose `Id` value matches one of the specified
 organization IDs.
 
 ### Example 4: Export organizations by name
@@ -223,5 +223,6 @@ Requires permission to view organizations in Action1.
 [Get-Action1Organizations](../configuration/Get-Action1Organizations.md)
 [Get-Action1Organization](Get-Action1Organization.md)
 [New-Action1Organization](New-Action1Organization.md)
+[Import-Action1OrganizationsCsv](Import-Action1OrganizationsCsv.md)
 [Update-Action1Organization](Update-Action1Organization.md)
 [Remove-Action1Organization](Remove-Action1Organization.md)
