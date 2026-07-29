@@ -11,8 +11,11 @@ function Get-Action1Endpoint {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            $parsedGuid = [guid]::Empty
-            [guid]::TryParseExact($_, 'D', [ref]$parsedGuid)
+            if (-not (Test-Guid $_)) {
+                throw 'EndpointId must use the standard GUID format.'
+            }
+
+            $true
         })]
         [string]$EndpointId
     )

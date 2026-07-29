@@ -42,9 +42,8 @@ function New-Action1EndpointIdentity {
     $endpointLabel = New-Action1EndpointLabel `
         -EndpointId $resolvedEndpointId `
         -EndpointName $resolvedEndpointName
-    $parsedGuid = [guid]::Empty
 
-    if (-not [guid]::TryParseExact($resolvedEndpointId, 'D', [ref]$parsedGuid)) {
+    if (-not (Test-Guid $resolvedEndpointId)) {
         $errorMessage = (
             "Endpoint ID '$resolvedEndpointId' must use the standard GUID format."
         )

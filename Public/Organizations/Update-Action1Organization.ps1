@@ -18,9 +18,7 @@ function Update-Action1Organization {
         )]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            $parsedGuid = [guid]::Empty
-
-            if (-not [guid]::TryParseExact($_, 'D', [ref]$parsedGuid)) {
+            if (-not (Test-Guid $_)) {
                 throw 'OrgID must use the standard GUID format.'
             }
 

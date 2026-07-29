@@ -14,9 +14,7 @@ function Export-Action1OrganizationsCsv {
 
         [Parameter(Mandatory = $false, ParameterSetName = 'ByOrgIds')]
         [ValidateScript({
-            $parsedGuid = [guid]::Empty
-
-            if (-not [guid]::TryParseExact($_, 'D', [ref]$parsedGuid)) {
+            if (-not (Test-Guid $_)) {
                 throw 'OrgID must use the standard GUID format.'
             }
 

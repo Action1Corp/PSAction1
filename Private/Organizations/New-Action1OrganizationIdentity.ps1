@@ -40,9 +40,8 @@ function New-Action1OrganizationIdentity {
     $organizationLabel = New-Action1OrganizationLabel `
         -Org_ID $resolvedOrgId `
         -Org_Name $resolvedOrgName
-    $parsedGuid = [guid]::Empty
 
-    if (-not [guid]::TryParseExact($resolvedOrgId, 'D', [ref]$parsedGuid)) {
+    if (-not (Test-Guid $resolvedOrgId)) {
         $errorMessage = (
             "Organization ID '$resolvedOrgId' must use the standard GUID format."
         )
