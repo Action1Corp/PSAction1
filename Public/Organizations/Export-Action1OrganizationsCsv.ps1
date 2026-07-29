@@ -58,6 +58,8 @@ function Export-Action1OrganizationsCsv {
         Write-Error 'No Action1 organizations were returned for CSV export.' -ErrorAction Stop
     }
 
+    $region = Get-Action1Region
+
     $organizationsToExport = @(
         $organizationList |
             Where-Object {
@@ -90,7 +92,9 @@ function Export-Action1OrganizationsCsv {
         'Name',
         'Description',
         'Type',
-        'EnterpriseId'
+        'EnterpriseId',
+        'Region',
+        'ExportedAt'
     )
     $header = $exportColumns -join ','
 
@@ -116,12 +120,16 @@ function Export-Action1OrganizationsCsv {
     $totalRowsExported = 0
 
     foreach ($organization in $organizationsToExport) {
+        $exportedAt = (Get-Date).ToUniversalTime().ToString('yyyy-MM-dd_HH-mm-ss')
+
         $csvRow = [PSCustomObject][ordered]@{
             OrgId        = $organization.Org_ID
             Name         = $organization.Org_Name
             Description  = $organization.Description
             Type         = $organization.Type
             EnterpriseId = $organization.EnterpriseId
+            Region       = $region
+            ExportedAt   = $exportedAt
         }
 
         $csvFields = foreach ($column in $exportColumns) {

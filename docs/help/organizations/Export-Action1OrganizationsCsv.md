@@ -44,6 +44,12 @@ selected organization. The CSV file contains these columns in this order:
 * `Description`
 * `Type`
 * `EnterpriseId`
+* `Region`
+* `ExportedAt`
+
+The **Region** column is populated from `Get-Action1Region`. The
+**ExportedAt** column contains the per-organization UTC export timestamp in the
+`yyyy-MM-dd_HH-mm-ss` format.
 
 Use either **OrgIds** or **OrgNames** to filter the export. These parameters are
 mutually exclusive and cannot be used in the same command.
