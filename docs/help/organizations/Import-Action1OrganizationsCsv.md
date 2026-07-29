@@ -15,8 +15,8 @@ organization map.
 ## SYNTAX
 
 ```
-Import-Action1OrganizationsCsv [-Path] <String> [-MapPath <String>]
- [-ConflictAction <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Import-Action1OrganizationsCsv [-Path] <String> [-MapPath <String>] [-ConflictAction <String>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -144,6 +144,22 @@ or writing the map file.
 
 ## PARAMETERS
 
+### -Confirm
+
+Prompts you for confirmation before creating a target organization.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ConflictAction
 
 Specifies how the command handles a target organization with the same name as
@@ -214,22 +230,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Confirm
-
-Prompts you for confirmation before creating a target organization.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -WhatIf
 
 Shows what would happen if the command runs. The command does not create target
@@ -248,10 +248,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
--InformationAction, -InformationVariable, -OutVariable, -OutBuffer,
--PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more
-information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

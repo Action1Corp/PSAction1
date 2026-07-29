@@ -20,14 +20,12 @@ Export-Action1OrganizationsCsv [[-Path] <String>] [-Force] [<CommonParameters>]
 
 ### ByOrgIds
 ```
-Export-Action1OrganizationsCsv [[-Path] <String>] [-OrgIds <String[]>] [-Force]
- [<CommonParameters>]
+Export-Action1OrganizationsCsv [[-Path] <String>] [-OrgIds <String[]>] [-Force] [<CommonParameters>]
 ```
 
 ### ByOrgNames
 ```
-Export-Action1OrganizationsCsv [[-Path] <String>] [-OrgNames <String[]>] [-Force]
- [<CommonParameters>]
+Export-Action1OrganizationsCsv [[-Path] <String>] [-OrgNames <String[]>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

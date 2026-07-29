@@ -14,8 +14,7 @@ Creates an Action1 organization.
 ## SYNTAX
 
 ```
-New-Action1Organization [-Name] <String> [-Description <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+New-Action1Organization [-Name] <String> [-Description <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -63,6 +62,22 @@ Creates an organization and sends an empty string in the **description** field.
 
 ## PARAMETERS
 
+### -Confirm
+
+Prompts you for confirmation before running the command.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Description
 
 Specifies the organization description.
@@ -94,22 +109,6 @@ Aliases:
 Required: True
 Position: 0
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Confirm
-
-Prompts you for confirmation before running the command.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

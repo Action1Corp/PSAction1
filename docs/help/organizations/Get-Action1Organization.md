@@ -95,7 +95,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-None. This command does not accept pipeline input.
+### None
+
+This command does not accept pipeline input.
 
 ## OUTPUTS
 

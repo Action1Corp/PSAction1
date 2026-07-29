@@ -15,14 +15,14 @@ Updates the name or description of one Action1 organization.
 
 ### ByOrgId (Default)
 ```
-Update-Action1Organization [-OrgID] <String> [-Name <String>]
- [-Description <String>] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-Action1Organization [-OrgID] <String> [-Name <String>] [-Description <String>] [-Force] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### ByOrganizationObject
 ```
-Update-Action1Organization -OrganizationObject <Object> [-Name <String>]
- [-Description <String>] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-Action1Organization -OrganizationObject <Object> [-Name <String>] [-Description <String>] [-Force]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -102,6 +102,22 @@ Update-Action1Organization `
 Updates the organization description without prompting for confirmation.
 
 ## PARAMETERS
+
+### -Confirm
+
+Prompts you for confirmation before running the command.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Description
 
@@ -190,22 +206,6 @@ Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
-### -Confirm
-
-Prompts you for confirmation before running the command.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
