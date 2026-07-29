@@ -198,7 +198,7 @@ True</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>`Get-Action1Organizations` calls the Action1 organizations endpoint and returns a sorted object list containing organization names and IDs.</maml:para>
+      <maml:para>`Get-Action1Organizations` calls the Action1 organizations endpoint and returns a sorted object list containing organization names, IDs, descriptions, types, and enterprise IDs.</maml:para>
       <maml:para>Results are sorted by organization name, then organization ID.</maml:para>
     </maml:description>
     <command:syntax>
@@ -214,7 +214,7 @@ True</dev:code>
           <maml:name>PSCustomObject</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>Each object contains `Org_Name` and `Org_ID` properties.</maml:para>
+          <maml:para>Each object contains `Org_Name`, `Org_ID`, `Description`, `Type`, and `EnterpriseId` properties.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -228,7 +228,7 @@ True</dev:code>
         <maml:title>---------------- Example 1: List organizations ----------------</maml:title>
         <dev:code>PS C:\&gt; Get-Action1Organizations</dev:code>
         <dev:remarks>
-          <maml:para>Returns organization names and IDs available to the current account.</maml:para>
+          <maml:para>Returns organization details available to the current account.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -4008,6 +4008,1480 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Export-Action1OrganizationsCsv</command:name>
+      <command:verb>Export</command:verb>
+      <command:noun>Action1OrganizationsCsv</command:noun>
+      <maml:description>
+        <maml:para>Exports Action1 organizations to a CSV file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Export-Action1OrganizationsCsv` calls `Get-Action1Organizations`, optionally filters the returned organization list by organization ID or organization name, and exports the selected organizations to a CSV file.</maml:para>
+      <maml:para>The command writes a fixed header row and then appends one CSV row for each selected organization. The CSV file contains these columns in this order:</maml:para>
+      <maml:para>* `Id`</maml:para>
+      <maml:para>* `Name`</maml:para>
+      <maml:para>* `Description`</maml:para>
+      <maml:para>* `EntityType`</maml:para>
+      <maml:para>* `EnterpriseId`</maml:para>
+      <maml:para>* `Region`</maml:para>
+      <maml:para>* `ExportedAt`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The Region column is populated from `Get-Action1Region`. The ExportedAt column contains the per-organization UTC export timestamp in the `yyyy-MM-dd_HH-mm-ss` format.</maml:para>
+      <maml:para>Use either OrgIds or OrgNames to filter the export. These parameters are mutually exclusive and cannot be used in the same command.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites the target CSV file if it already exists.</maml:para>
+      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-Action1OrganizationsCsv</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the CSV file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_Organizations_yyMMdd_HHmm.csv` naming format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OrgIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more organization IDs to export.</maml:para>
+            <maml:para>Each value must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Export-Action1OrganizationsCsv</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the CSV file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_Organizations_yyMMdd_HHmm.csv` naming format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OrgNames</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more organization names to export.</maml:para>
+            <maml:para>Name matching is case-insensitive. Empty or whitespace-only values are ignored.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>OrgIds</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more organization IDs to export.</maml:para>
+          <maml:para>Each value must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>OrgNames</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more organization names to export.</maml:para>
+          <maml:para>Name matching is case-insensitive. Empty or whitespace-only values are ignored.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the CSV file to create.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_Organizations_yyMMdd_HHmm.csv` naming format.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not return pipeline output. It creates or overwrites a CSV file at the specified path.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to view organizations in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>- Example 1: Export all organizations to the default CSV file -</maml:title>
+        <dev:code>Export-Action1OrganizationsCsv</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all organizations returned by `Get-Action1Organizations` to a timestamped CSV file in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 2: Export all organizations to a specific file ----</maml:title>
+        <dev:code>Export-Action1OrganizationsCsv -Path 'C:\Reports\Organizations.csv'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all organizations to the specified CSV file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------ Example 3: Export organizations by ID ------------</maml:title>
+        <dev:code>Export-Action1OrganizationsCsv `
+    -Path 'C:\Reports\SelectedOrganizations.csv' `
+    -OrgIds '88c8b425-871e-4ff6-9afc-00df8592c6db'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports only organizations whose `Id` value matches one of the specified organization IDs.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 4: Export organizations by name -----------</maml:title>
+        <dev:code>Export-Action1OrganizationsCsv `
+    -Path 'C:\Reports\AccountingOrganizations.csv' `
+    -OrgNames 'Accounting'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports only organizations whose `Name` value matches one of the specified organization names.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 5: Export to a read-only or hidden CSV file -----</maml:title>
+        <dev:code>Export-Action1OrganizationsCsv -Path 'C:\Reports\Organizations.csv' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Exports organizations and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Import-Action1OrganizationsCsv</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Organization</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Organization</command:noun>
+      <maml:description>
+        <maml:para>Gets one Action1 organization by organization ID or organization name.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1Organization` calls the Action1 organizations API for a specific organization and returns the organization object returned by Action1.</maml:para>
+      <maml:para>The command accepts an organization ID in standard GUID format, or an organization name. When -OrgName is used, the command resolves the name with the same lookup behavior as `Set-Action1DefaultOrg -Org_Name`.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Organization</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="Org_ID">
+          <maml:name>OrgID</maml:name>
+          <maml:description>
+            <maml:para>Specifies the organization ID.</maml:para>
+            <maml:para>The organization ID must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Organization</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Org_Name">
+          <maml:name>OrgName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the organization name.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1OrganizationByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="Org_ID">
+        <maml:name>OrgID</maml:name>
+        <maml:description>
+          <maml:para>Specifies the organization ID.</maml:para>
+          <maml:para>The organization ID must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Org_Name">
+        <maml:name>OrgName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the organization name.</maml:para>
+          <maml:para>The command resolves the name by calling `Resolve-Action1OrganizationByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not accept pipeline input.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the organization object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The requested GET endpoint was implemented as `/organizations/{orgId}`.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------------- Example 1: Get an organization ----------------</maml:title>
+        <dev:code>Get-Action1Organization -OrgID '88c8b425-871e-4ff6-9afc-00df8592c6db'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the specified organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------ Example 2: Get an organization by name ------------</maml:title>
+        <dev:code>Get-Action1Organization -OrgName 'Accounting'</dev:code>
+        <dev:remarks>
+          <maml:para>Resolves the organization named Accounting and gets that organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Import-Action1OrganizationsCsv</command:name>
+      <command:verb>Import</command:verb>
+      <command:noun>Action1OrganizationsCsv</command:noun>
+      <maml:description>
+        <maml:para>Imports Action1 organizations from a CSV file and writes a source-to-target organization map.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Import-Action1OrganizationsCsv` reads an organization source CSV file exported from another Action1 region or enterprise, creates or matches organizations in the currently configured Action1 target session, and writes a migration map CSV.</maml:para>
+      <maml:para>Run this command after configuring PSAction1 for the target region and target credentials with `Set-Action1Region` and `Set-Action1Credentials`.</maml:para>
+      <maml:para>The source CSV file must contain these columns:</maml:para>
+      <maml:para>* `Id`</maml:para>
+      <maml:para>* `Name`</maml:para>
+      <maml:para>* `Description`</maml:para>
+      <maml:para>* `EntityType`</maml:para>
+      <maml:para>* `EnterpriseId`</maml:para>
+      <maml:para>* `Region`</maml:para>
+      <maml:para>* `ExportedAt`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The map CSV file contains these columns:</maml:para>
+      <maml:para>* `EntityType`</maml:para>
+      <maml:para>* `SourceId`</maml:para>
+      <maml:para>* `SourceName`</maml:para>
+      <maml:para>* `SourceRegion`</maml:para>
+      <maml:para>* `SourceEnterpriseId`</maml:para>
+      <maml:para>* `TargetRegion`</maml:para>
+      <maml:para>* `TargetEnterpriseId`</maml:para>
+      <maml:para>* `TargetId`</maml:para>
+      <maml:para>* `TargetName`</maml:para>
+      <maml:para>* `Status`</maml:para>
+      <maml:para>* `ImportedAt`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The Status value is one of:</maml:para>
+      <maml:para>* `Created`</maml:para>
+      <maml:para>* `MatchedExisting`</maml:para>
+      <maml:para>* `Skipped`</maml:para>
+      <maml:para>* `Failed`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>If MapPath points to an existing map file, the command validates and reads that map before importing. Rows that already contain TargetId are not imported again. Rows with an empty TargetId and Status set to `Skipped` or `Failed` are retried and updated in the existing map.</maml:para>
+      <maml:para>When a target organization with the same name already exists, ConflictAction controls the behavior. The default is `Skip`.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Import-Action1OrganizationsCsv</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the source organization CSV file to import.</maml:para>
+            <maml:para>The source file must exist and must contain the required source columns described in the command description. The command stops before making Action1 API changes when the source file is missing required columns, contains no organization rows, contains duplicate Id values, or contains malformed source organization IDs.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before creating a target organization.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ConflictAction</maml:name>
+          <maml:description>
+            <maml:para>Specifies how the command handles a target organization with the same name as the source organization.</maml:para>
+            <maml:para>Valid values are:</maml:para>
+            <maml:para>* `CreateNew` - Creates a new target organization with the same name.</maml:para>
+            <maml:para>* `MatchExisting` - Creates nothing and maps to the existing target organization.</maml:para>
+            <maml:para>* `Skip` - Creates nothing and records the source organization as skipped.</maml:para>
+            <maml:para></maml:para>
+            <maml:para>The default value is `Skip`.</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">CreateNew</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MatchExisting</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Skip</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Skip</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MapPath</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the organization migration map CSV file.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command validates and updates it.</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped map file in the current location using the `Action1_Organizations_map_yyMMdd_HHmm.csv` naming format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command does not create target organizations or write the map file.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before creating a target organization.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ConflictAction</maml:name>
+        <maml:description>
+          <maml:para>Specifies how the command handles a target organization with the same name as the source organization.</maml:para>
+          <maml:para>Valid values are:</maml:para>
+          <maml:para>* `CreateNew` - Creates a new target organization with the same name.</maml:para>
+          <maml:para>* `MatchExisting` - Creates nothing and maps to the existing target organization.</maml:para>
+          <maml:para>* `Skip` - Creates nothing and records the source organization as skipped.</maml:para>
+          <maml:para></maml:para>
+          <maml:para>The default value is `Skip`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>Skip</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MapPath</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the organization migration map CSV file.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command validates and updates it.</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped map file in the current location using the `Action1_Organizations_map_yyMMdd_HHmm.csv` naming format.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the source organization CSV file to import.</maml:para>
+          <maml:para>The source file must exist and must contain the required source columns described in the command description. The command stops before making Action1 API changes when the source file is missing required columns, contains no organization rows, contains duplicate Id values, or contains malformed source organization IDs.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command does not create target organizations or write the map file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns one result object for each source organization row. The result object contains the map fields plus a Message property with row-specific details.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to view and create organizations in the target Action1 enterprise.</maml:para>
+        <maml:para>Use the generated organization map as input for later organization-scoped object migration steps, such as endpoint groups, automations, policies, and scripts.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>Example 1: Import organizations and create the default map file</maml:title>
+        <dev:code>Import-Action1OrganizationsCsv `
+    -Path 'D:\Action1\Migration\OrgA\organization.source.csv'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports organizations from the source CSV file. If a target organization with the same name already exists, the source organization is skipped. The command creates a map file in the current location using the `Action1_Organizations_map_yyMMdd_HHmm.csv` naming format.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title> Example 2: Import organizations and write a specific map file </maml:title>
+        <dev:code>Import-Action1OrganizationsCsv `
+    -Path 'D:\Action1\Migration\OrgA\organization.source.csv' `
+    -MapPath 'D:\Action1\Migration\OrgA\organization.map.csv'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports organizations and writes the source-to-target organization mapping to the specified map CSV file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 3: Match an existing target organization by name ---</maml:title>
+        <dev:code>Import-Action1OrganizationsCsv `
+    -Path 'D:\Action1\Migration\OrgA\organization.source.csv' `
+    -MapPath 'D:\Action1\Migration\OrgA\organization.map.csv' `
+    -ConflictAction MatchExisting</dev:code>
+        <dev:remarks>
+          <maml:para>When a target organization with the same name exists, the command creates no new organization and records the existing target organization ID in the map file. If multiple target organizations have the same name, the row is marked `Failed`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 4: Create a duplicate target organization name ----</maml:title>
+        <dev:code>Import-Action1OrganizationsCsv `
+    -Path 'D:\Action1\Migration\OrgA\organization.source.csv' `
+    -MapPath 'D:\Action1\Migration\OrgA\organization.map.csv' `
+    -ConflictAction CreateNew</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a new target organization even when a target organization with the same name already exists.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------ Example 5: Retry previously skipped or failed rows ------</maml:title>
+        <dev:code>Import-Action1OrganizationsCsv `
+    -Path 'D:\Action1\Migration\OrgA\organization.source.csv' `
+    -MapPath 'D:\Action1\Migration\OrgA\organization.map.csv' `
+    -ConflictAction MatchExisting</dev:code>
+        <dev:remarks>
+          <maml:para>Reads the existing map file and retries only source rows where TargetId is empty and Status is `Skipped` or `Failed`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 6: Preview organization creation -----------</maml:title>
+        <dev:code>Import-Action1OrganizationsCsv `
+    -Path 'D:\Action1\Migration\OrgA\organization.source.csv' `
+    -MapPath 'D:\Action1\Migration\OrgA\organization.map.csv' `
+    -ConflictAction CreateNew `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows which organizations would be created without creating target organizations or writing the map file.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1OrganizationsCsv</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Region</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>New-Action1Organization</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>Action1Organization</command:noun>
+      <maml:description>
+        <maml:para>Creates an Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`New-Action1Organization` calls the Action1 organizations API and creates a new organization with the specified name and description.</maml:para>
+      <maml:para>The -Description parameter is optional and defaults to an empty string. The API body always includes the description property.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the operation without sending the POST request. Use -Confirm to prompt for confirmation before sending the POST request.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-Action1Organization</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Specifies the organization name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Description</maml:name>
+          <maml:description>
+            <maml:para>Specifies the organization description.</maml:para>
+            <maml:para>This parameter is optional and defaults to an empty string. When omitted, the command still sends the description field in the request body.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>''</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Description</maml:name>
+        <maml:description>
+          <maml:para>Specifies the organization description.</maml:para>
+          <maml:para>This parameter is optional and defaults to an empty string. When omitted, the command still sends the description field in the request body.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>''</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>Specifies the organization name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the organization object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage organizations in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------- Example 1: Create an organization --------------</maml:title>
+        <dev:code>New-Action1Organization `
+    -Name 'My Organization' `
+    -Description 'This is my organization description example text'</dev:code>
+        <dev:remarks>
+          <maml:para>Creates an organization and returns the organization object returned by Action1.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 2: Preview organization creation -----------</maml:title>
+        <dev:code>New-Action1Organization `
+    -Name 'My Organization' `
+    -Description 'This is my organization description example text' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be created without sending the POST request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 3: Create an organization with the default empty description</maml:title>
+        <dev:code>New-Action1Organization -Name 'My Organization'</dev:code>
+        <dev:remarks>
+          <maml:para>Creates an organization and sends an empty string in the description field.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1Organization</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1Organization</command:noun>
+      <maml:description>
+        <maml:para>Removes one Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Remove-Action1Organization` calls the Action1 organizations API and removes an organization by ID.</maml:para>
+      <maml:para>The command accepts an organization ID in standard GUID format or an organization object with an id , OrgID , or Org_ID property. When the organization object includes name , OrgName , or Org_Name , the name is included in confirmation, debug, and error information.</maml:para>
+      <maml:para>The API fails when the specified organization still contains endpoints or when it is the last organization in the enterprise.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation without sending the DELETE request. Use -Confirm to prompt before sending the DELETE request. Use -Force to bypass confirmation prompts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1Organization</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="Org_ID">
+          <maml:name>OrgID</maml:name>
+          <maml:description>
+            <maml:para>Specifies the organization ID.</maml:para>
+            <maml:para>The organization ID must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1Organization</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>OrganizationObject</maml:name>
+          <maml:description>
+            <maml:para>Specifies an organization object. The object must include an id or OrgID or Org_ID property.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="Org_ID">
+        <maml:name>OrgID</maml:name>
+        <maml:description>
+          <maml:para>Specifies the organization ID.</maml:para>
+          <maml:para>The organization ID must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>OrganizationObject</maml:name>
+        <maml:description>
+          <maml:para>Specifies an organization object. The object must include an id or OrgID or Org_ID property.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You can pipe organization objects with an id , OrgID , or Org_ID property to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns an object containing Org_ID , Org_Name , Status , and Response .</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage organizations in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------- Example 1: Remove an organization --------------</maml:title>
+        <dev:code>Remove-Action1Organization -OrgID '88c8b425-871e-4ff6-9afc-00df8592c6db'</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation and removes the specified organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 2: Preview organization removal -----------</maml:title>
+        <dev:code>Remove-Action1Organization `
+    -OrgID '88c8b425-871e-4ff6-9afc-00df8592c6db' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be removed without sending the DELETE request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 3: Remove an organization from the pipeline -----</maml:title>
+        <dev:code>Get-Action1Organizations |
+    Where-Object Org_Name -eq 'Test Lab' |
+    Remove-Action1Organization -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Removes an organization by using the Org_ID property from the piped object.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Update-Action1Organization</command:name>
+      <command:verb>Update</command:verb>
+      <command:noun>Action1Organization</command:noun>
+      <maml:description>
+        <maml:para>Updates the name or description of one Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Update-Action1Organization` calls the Action1 organizations API and updates settings for a specific organization.</maml:para>
+      <maml:para>The command accepts an organization ID in standard GUID format or an organization object with an id , OrgID , or Org_ID property. When the organization object includes name , OrgName , or Org_Name , the name is included in confirmation, debug, and error information.</maml:para>
+      <maml:para>Specify at least one value to update: -Name or -Description . You can specify both parameters in the same command.</maml:para>
+      <maml:para>The PATCH request body includes only the update parameters that you specify. For example, when you specify only -Name , the request body contains only name . When you specify both -Name and -Description , the request body contains both name and description .</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the update without sending the PATCH request. Use -Confirm to prompt before sending the PATCH request. Use -Force to bypass confirmation prompts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-Action1Organization</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="Org_ID">
+          <maml:name>OrgID</maml:name>
+          <maml:description>
+            <maml:para>Specifies the organization ID.</maml:para>
+            <maml:para>The organization ID must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Description</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new organization description.</maml:para>
+            <maml:para>Specify -Description , -Name , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new organization name.</maml:para>
+            <maml:para>Specify -Name , -Description , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Update-Action1Organization</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Description</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new organization description.</maml:para>
+            <maml:para>Specify -Description , -Name , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new organization name.</maml:para>
+            <maml:para>Specify -Name , -Description , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>OrganizationObject</maml:name>
+          <maml:description>
+            <maml:para>Specifies an organization object. The object must include an id or OrgID or Org_ID property.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Description</maml:name>
+        <maml:description>
+          <maml:para>Specifies the new organization description.</maml:para>
+          <maml:para>Specify -Description , -Name , or both. The command writes an error when neither parameter is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>Specifies the new organization name.</maml:para>
+          <maml:para>Specify -Name , -Description , or both. The command writes an error when neither parameter is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="Org_ID">
+        <maml:name>OrgID</maml:name>
+        <maml:description>
+          <maml:para>Specifies the organization ID.</maml:para>
+          <maml:para>The organization ID must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>OrganizationObject</maml:name>
+        <maml:description>
+          <maml:para>Specifies an organization object. The object must include an id or OrgID or Org_ID property.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You can pipe organization objects with an id , OrgID , or Org_ID property to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the updated organization object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage organizations in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------ Example 1: Update an organization name ------------</maml:title>
+        <dev:code>Update-Action1Organization `
+    -OrgID '88c8b425-871e-4ff6-9afc-00df8592c6db' `
+    -Name 'My Organization'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the name of the specified organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 2: Update an organization description --------</maml:title>
+        <dev:code>Update-Action1Organization `
+    -OrgID '88c8b425-871e-4ff6-9afc-00df8592c6db' `
+    -Description 'This is my organization description example text'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the description of the specified organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-- Example 3: Update an organization object from the pipeline --</maml:title>
+        <dev:code>Get-Action1Organizations |
+    Where-Object Org_Name -eq 'Accounting' |
+    Update-Action1Organization -Description 'Accounting department'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates an organization by using the Org_ID property from the piped object.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 4: Preview an organization update ----------</maml:title>
+        <dev:code>Update-Action1Organization `
+    -OrgID '88c8b425-871e-4ff6-9afc-00df8592c6db' `
+    -Name 'My Organization' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be updated without sending the PATCH request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 5: Update an organization without prompting -----</maml:title>
+        <dev:code>Update-Action1Organization `
+    -OrgID '88c8b425-871e-4ff6-9afc-00df8592c6db' `
+    -Description 'This is my organization description example text' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the organization description without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Organization</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
