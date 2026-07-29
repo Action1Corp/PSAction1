@@ -190,65 +190,6 @@ True</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Get-Action1Organizations</command:name>
-      <command:verb>Get</command:verb>
-      <command:noun>Action1Organizations</command:noun>
-      <maml:description>
-        <maml:para>Gets Action1 organizations available to the current account.</maml:para>
-      </maml:description>
-    </command:details>
-    <maml:description>
-      <maml:para>`Get-Action1Organizations` calls the Action1 organizations endpoint and returns a sorted object list containing organization names, IDs, descriptions, types, and enterprise IDs.</maml:para>
-      <maml:para>Results are sorted by organization name, then organization ID.</maml:para>
-    </maml:description>
-    <command:syntax>
-      <command:syntaxItem>
-        <maml:name>Get-Action1Organizations</maml:name>
-      </command:syntaxItem>
-    </command:syntax>
-    <command:parameters />
-    <command:inputTypes />
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>PSCustomObject</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para>Each object contains `Org_Name`, `Org_ID`, `Description`, `Type`, and `EnterpriseId` properties.</maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
-    <maml:alertSet>
-      <maml:alert>
-        <maml:para></maml:para>
-      </maml:alert>
-    </maml:alertSet>
-    <command:examples>
-      <command:example>
-        <maml:title>---------------- Example 1: List organizations ----------------</maml:title>
-        <dev:code>PS C:\&gt; Get-Action1Organizations</dev:code>
-        <dev:remarks>
-          <maml:para>Returns organization details available to the current account.</maml:para>
-        </dev:remarks>
-      </command:example>
-    </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
-        <maml:linkText>Get-Action1DefaultOrgName</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
-  </command:command>
-  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
-    <command:details>
       <command:name>Get-Action1Region</command:name>
       <command:verb>Get</command:verb>
       <command:noun>Action1Region</command:noun>
@@ -4405,6 +4346,65 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Remove-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Organizations</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Organizations</command:noun>
+      <maml:description>
+        <maml:para>Gets Action1 organizations available to the current account.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1Organizations` calls the Action1 organizations endpoint and returns a sorted object list containing organization names, IDs, descriptions, types, and enterprise IDs.</maml:para>
+      <maml:para>Results are sorted by organization name, then organization ID.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Organizations</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Each object contains `Org_Name`, `Org_ID`, `Description`, `Type`, and `EnterpriseId` properties.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------------- Example 1: List organizations ----------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Action1Organizations</dev:code>
+        <dev:remarks>
+          <maml:para>Returns organization details available to the current account.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgName</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
