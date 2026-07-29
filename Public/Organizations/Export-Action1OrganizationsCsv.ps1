@@ -85,16 +85,7 @@ function Export-Action1OrganizationsCsv {
             }
     )
 
-    $exportColumns = @(
-        'Id',
-        'Name',
-        'Description',
-        'EntityType',
-        'EnterpriseId',
-        'Region',
-        'ExportedAt'
-    )
-    $header = $exportColumns -join ','
+    $header = $Script:Action1_OrganizationExportCsvColumns -join ','
 
     $setContentParams = @{
         LiteralPath = $resolvedPath
@@ -130,7 +121,7 @@ function Export-Action1OrganizationsCsv {
             ExportedAt   = $exportedAt
         }
 
-        $csvFields = foreach ($column in $exportColumns) {
+        $csvFields = foreach ($column in $Script:Action1_OrganizationExportCsvColumns) {
             $value = $csvRow.$column
 
             if ($null -eq $value) {

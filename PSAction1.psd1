@@ -92,6 +92,7 @@
         'Update-Action1Organization'
         'Remove-Action1Organization'
         'Export-Action1OrganizationsCsv'
+        'Import-Action1OrganizationsCsv'
 
         # Endpoints
         'Get-Action1Endpoints'
