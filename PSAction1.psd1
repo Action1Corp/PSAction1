@@ -92,6 +92,7 @@
         'Update-Action1Organization'
         'Remove-Action1Organization'
         'Export-Action1OrganizationsCsv'
+        'Export-Action1OrganizationsJson'
         'Import-Action1OrganizationsCsv'
 
         # Endpoints
@@ -178,6 +179,8 @@
         Update-Action1Endpoint
         Remove-Action1Endpoint
         Remove-Action1Endpoints
+    Organizations:
+        Export-Action1OrganizationsJson
 2. Support retry_timeout field handling in 429 HTTP error code response.
 '@
 

@@ -4217,6 +4217,277 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Export-Action1OrganizationsJson</command:name>
+      <command:verb>Export</command:verb>
+      <command:noun>Action1OrganizationsJson</command:noun>
+      <maml:description>
+        <maml:para>Exports Action1 organizations to a JSON file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Export-Action1OrganizationsJson` calls `Get-Action1Organizations`, optionally filters the returned organization list by organization ID or organization name, and exports the selected organizations to a JSON file.</maml:para>
+      <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `organizations`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The datetime property contains the UTC export timestamp in the `yyyy-MM-dd_HH-mm-ss` format. The region property is populated from `Get-Action1Region`.</maml:para>
+      <maml:para>Each item in the organizations array contains these properties in this order:</maml:para>
+      <maml:para>* `id`</maml:para>
+      <maml:para>* `type`</maml:para>
+      <maml:para>* `self`</maml:para>
+      <maml:para>* `name`</maml:para>
+      <maml:para>* `description`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The self value is built from the configured Action1 API base URI and the organization ID.</maml:para>
+      <maml:para>Use either OrgIds or OrgNames to filter the export. These parameters are mutually exclusive and cannot be used in the same command.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
+      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-Action1OrganizationsJson</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmm.json` naming format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OrgIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more organization IDs to export.</maml:para>
+            <maml:para>Each value must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Export-Action1OrganizationsJson</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmm.json` naming format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OrgNames</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more organization names to export.</maml:para>
+            <maml:para>Name matching is case-insensitive. Empty or whitespace-only values are ignored.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>OrgIds</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more organization IDs to export.</maml:para>
+          <maml:para>Each value must use the standard GUID format, such as `88c8b425-871e-4ff6-9afc-00df8592c6db`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>OrgNames</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more organization names to export.</maml:para>
+          <maml:para>Name matching is case-insensitive. Empty or whitespace-only values are ignored.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the JSON file to create.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmm.json` naming format.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to view organizations in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>- Example 1: Export all organizations to the default JSON file -</maml:title>
+        <dev:code>Export-Action1OrganizationsJson</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all organizations returned by `Get-Action1Organizations` to a timestamped JSON file in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 2: Export all organizations to a specific file ----</maml:title>
+        <dev:code>Export-Action1OrganizationsJson -Path 'C:\Reports\Organizations.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all organizations to the specified JSON file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------ Example 3: Export organizations by ID ------------</maml:title>
+        <dev:code>Export-Action1OrganizationsJson `
+    -Path 'C:\Reports\SelectedOrganizations.json' `
+    -OrgIds '88c8b425-871e-4ff6-9afc-00df8592c6db'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports only organizations whose `id` value matches one of the specified organization IDs.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 4: Export organizations by name -----------</maml:title>
+        <dev:code>Export-Action1OrganizationsJson `
+    -Path 'C:\Reports\AccountingOrganizations.json' `
+    -OrgNames 'Accounting'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports only organizations whose `name` value matches one of the specified organization names.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <dev:code>Export-Action1OrganizationsJson -Path 'C:\Reports\Organizations.json' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Exports organizations and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1OrganizationsCsv</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Import-Action1OrganizationsCsv</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-Action1Organization</command:name>
       <command:verb>Get</command:verb>
       <command:noun>Action1Organization</command:noun>
