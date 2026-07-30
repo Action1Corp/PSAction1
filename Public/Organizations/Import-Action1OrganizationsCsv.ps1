@@ -6,7 +6,7 @@
 # © Action1 Corporation
 
 function Import-Action1OrganizationsCsv {
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
@@ -18,7 +18,10 @@ function Import-Action1OrganizationsCsv {
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('CreateNew', 'MatchExisting', 'Skip')]
-        [string]$ConflictAction = 'Skip'
+        [string]$ConflictAction = 'Skip',
+
+        [Parameter(Mandatory = $false)]
+        [switch]$Force
     )
 
     $newMapRow = {
@@ -84,6 +87,22 @@ function Import-Action1OrganizationsCsv {
 
         $csvLines = @($rowsToWrite | ConvertTo-Csv -NoTypeInformation)
         Set-Content -LiteralPath $resolvedMapPath -Value $csvLines -Encoding UTF8 -ErrorAction Stop
+    }
+
+    $confirmImportAction = {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]$Target,
+
+            [Parameter(Mandatory = $true)]
+            [string]$Action
+        )
+
+        if ($Force.IsPresent -and -not $WhatIfPreference) {
+            return $true
+        }
+
+        return $PSCmdlet.ShouldProcess($Target, $Action)
     }
 
     $resolvedSourcePath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path)
@@ -423,6 +442,26 @@ function Import-Action1OrganizationsCsv {
                         $targetEnterpriseId = $targetEnterpriseIdFallback
                     }
 
+                    $targetLabel = (
+                        "source organization '$sourceName' to target " +
+                        "organization '$targetId' in '$resolvedMapPath'"
+                    )
+
+                    if (-not (& $confirmImportAction `
+                        -Target $targetLabel `
+                        -Action 'Map source organization to existing target organization')) {
+                        $mapRow.TargetId = ''
+                        $mapRow.Status = 'Skipped'
+                        $skippedOrganizations++
+
+                        Write-Action1Debug "Skipped mapping source organization '$sourceName'."
+
+                        & $newResultObject `
+                            -MapRow $mapRow `
+                            -Message 'Organization mapping was skipped.'
+                        continue
+                    }
+
                     $mapRow.TargetId = $targetId
                     $mapRow.TargetEnterpriseId = $targetEnterpriseId
                     $mapRow.Status = 'MatchedExisting'
@@ -443,7 +482,9 @@ function Import-Action1OrganizationsCsv {
 
             $targetLabel = "Action1 organization '$sourceName'"
 
-            if (-not $PSCmdlet.ShouldProcess($targetLabel, 'Create organization in target enterprise')) {
+            if (-not (& $confirmImportAction `
+                -Target $targetLabel `
+                -Action 'Create organization in target enterprise and write organization mapping')) {
                 $mapRow.TargetId = ''
                 $mapRow.Status = 'Skipped'
                 $skippedOrganizations++

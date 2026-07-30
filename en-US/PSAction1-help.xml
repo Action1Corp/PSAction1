@@ -4451,6 +4451,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para></maml:para>
       <maml:para>If MapPath points to an existing map file, the command validates and reads that map before importing. Rows that already contain TargetId are not imported again. Rows with an empty TargetId and Status set to `Skipped` or `Failed` are retried and updated in the existing map.</maml:para>
       <maml:para>When a target organization with the same name already exists, ConflictAction controls the behavior. The default is `Skip`.</maml:para>
+      <maml:para>This command prompts for confirmation before creating a target organization and before recording a source-to-existing-target organization mapping. Use Force to run those actions without confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4471,7 +4472,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
           <maml:name>Confirm</maml:name>
           <maml:description>
-            <maml:para>Prompts you for confirmation before creating a target organization.</maml:para>
+            <maml:para>Controls the standard PowerShell confirmation prompt for creating a target organization or recording a source-to-existing-target organization mapping.</maml:para>
+            <maml:para>This command has high confirmation impact and prompts by default for those actions. Use Force to run without confirmation prompts.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -4501,6 +4503,18 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
             <maml:uri />
           </dev:type>
           <dev:defaultValue>Skip</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts for target organization creation and organization mapping actions.</maml:para>
+            <maml:para>This parameter does not bypass WhatIf . When WhatIf is specified, the command previews the action and does not create organizations or write map rows.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>MapPath</maml:name>
@@ -4533,7 +4547,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
         <maml:name>Confirm</maml:name>
         <maml:description>
-          <maml:para>Prompts you for confirmation before creating a target organization.</maml:para>
+          <maml:para>Controls the standard PowerShell confirmation prompt for creating a target organization or recording a source-to-existing-target organization mapping.</maml:para>
+          <maml:para>This command has high confirmation impact and prompts by default for those actions. Use Force to run without confirmation prompts.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -4559,6 +4574,19 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:uri />
         </dev:type>
         <dev:defaultValue>Skip</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts for target organization creation and organization mapping actions.</maml:para>
+          <maml:para>This parameter does not bypass WhatIf . When WhatIf is specified, the command previews the action and does not create organizations or write map rows.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>MapPath</maml:name>
@@ -4683,6 +4711,17 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     -WhatIf</dev:code>
         <dev:remarks>
           <maml:para>Shows which organizations would be created without creating target organizations or writing the map file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>- Example 7: Import organizations without confirmation prompts -</maml:title>
+        <dev:code>Import-Action1OrganizationsCsv `
+    -Path 'D:\Action1\Migration\OrgA\organization.source.csv' `
+    -MapPath 'D:\Action1\Migration\OrgA\organization.map.csv' `
+    -ConflictAction CreateNew `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Creates target organizations and writes organization mappings without prompting for confirmation.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

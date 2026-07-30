@@ -15,8 +15,8 @@ organization map.
 ## SYNTAX
 
 ```
-Import-Action1OrganizationsCsv [-Path] <String> [-MapPath <String>] [-ConflictAction <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+Import-Action1OrganizationsCsv [-Path] <String> [-MapPath <String>] [-ConflictAction <String>] [-Force]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -66,6 +66,10 @@ or `Failed` are retried and updated in the existing map.
 
 When a target organization with the same name already exists, **ConflictAction**
 controls the behavior. The default is `Skip`.
+
+This command prompts for confirmation before creating a target organization and
+before recording a source-to-existing-target organization mapping. Use **Force**
+to run those actions without confirmation prompts.
 
 ## EXAMPLES
 
@@ -142,11 +146,28 @@ Import-Action1OrganizationsCsv `
 Shows which organizations would be created without creating target organizations
 or writing the map file.
 
+### Example 7: Import organizations without confirmation prompts
+
+```powershell
+Import-Action1OrganizationsCsv `
+    -Path 'D:\Action1\Migration\OrgA\organization.source.csv' `
+    -MapPath 'D:\Action1\Migration\OrgA\organization.map.csv' `
+    -ConflictAction CreateNew `
+    -Force
+```
+
+Creates target organizations and writes organization mappings without prompting
+for confirmation.
+
 ## PARAMETERS
 
 ### -Confirm
 
-Prompts you for confirmation before creating a target organization.
+Controls the standard PowerShell confirmation prompt for creating a target
+organization or recording a source-to-existing-target organization mapping.
+
+This command has high confirmation impact and prompts by default for those
+actions. Use **Force** to run without confirmation prompts.
 
 ```yaml
 Type: SwitchParameter
@@ -182,6 +203,26 @@ Accepted values: CreateNew, MatchExisting, Skip
 Required: False
 Position: Named
 Default value: Skip
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Bypasses confirmation prompts for target organization creation and organization
+mapping actions.
+
+This parameter does not bypass **WhatIf**. When **WhatIf** is specified, the
+command previews the action and does not create organizations or write map rows.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
