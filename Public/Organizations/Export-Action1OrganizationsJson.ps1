@@ -61,6 +61,7 @@ function Export-Action1OrganizationsJson {
     }
 
     $region = Get-Action1Region
+    $enterpriseId = Get-Action1EnterpriseId -ErrorAction Stop
 
     $organizationsToExport = @(
         $organizationList |
@@ -107,7 +108,7 @@ function Export-Action1OrganizationsJson {
                 $organizationType = 'Organization'
             }
 
-            $enterpriseId = [string]$organization.EnterpriseId
+            $organizationEnterpriseId = [string]$organization.EnterpriseId
             $selfUri = ''
 
             if (
@@ -123,7 +124,7 @@ function Export-Action1OrganizationsJson {
                 self          = $selfUri
                 name          = $organizationName
                 description   = $organizationDescription
-                enterprise_id = $enterpriseId
+                enterprise_id = $organizationEnterpriseId
             }
         }
     )
@@ -131,6 +132,7 @@ function Export-Action1OrganizationsJson {
     $jsonExport = [PSCustomObject][ordered]@{
         datetime      = Get-UtcTimestamp
         region        = $region
+        enterprise_id = $enterpriseId
         organizations = $jsonOrganizations
     }
 

@@ -87,6 +87,7 @@
 
         # Enterprise
         'Get-Action1Enterprise'
+        'Get-Action1EnterpriseId'
         'Update-Action1Enterprise'
 
         # Organizations
@@ -177,6 +178,7 @@
         Get-Action1Debug
     Enterprise:
         Get-Action1Enterprise
+        Get-Action1EnterpriseId
         Update-Action1Enterprise
     Endpoints:
         Remove-Action1DisconnectedEndpoints

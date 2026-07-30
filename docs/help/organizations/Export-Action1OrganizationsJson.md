@@ -39,11 +39,13 @@ properties:
 
 * `datetime`
 * `region`
+* `enterprise_id`
 * `organizations`
 
 The **datetime** property contains the UTC export timestamp in the
 `yyyy-MM-dd_HH-mm-ss` format. The **region** property is populated from
-`Get-Action1Region`.
+`Get-Action1Region`. The **enterprise_id** property is populated from
+`Get-Action1EnterpriseId`.
 
 Each item in the **organizations** array contains these properties in this
 order:
@@ -223,12 +225,14 @@ file at the specified path.
 
 ## NOTES
 
-Requires permission to view organizations in Action1.
+Requires permission to view enterprise settings and organizations in Action1.
 
 ## RELATED LINKS
 
 [Get-Action1Organizations](Get-Action1Organizations.md)
 [Get-Action1Organization](Get-Action1Organization.md)
+[Get-Action1EnterpriseId](../enterprise/Get-Action1EnterpriseId.md)
+[Get-Action1Enterprise](../enterprise/Get-Action1Enterprise.md)
 [Export-Action1OrganizationsCsv](Export-Action1OrganizationsCsv.md)
 [Import-Action1OrganizationsCsv](Import-Action1OrganizationsCsv.md)
 [New-Action1Organization](New-Action1Organization.md)

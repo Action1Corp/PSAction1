@@ -2438,6 +2438,350 @@ Update-Action1Endpoint -EndpointObject $endpoint -Comment 'Assigned to accountin
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-Action1Enterprise</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Enterprise</command:noun>
+      <maml:description>
+        <maml:para>Gets settings for the current Action1 enterprise.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1Enterprise` calls the Action1 enterprise API and returns settings for the current enterprise. Action1 returns only the enterprise that the current credentials can access.</maml:para>
+      <maml:para>The requested GET endpoint is `/enterprise`.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Enterprise</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not accept pipeline input.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the enterprise object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Action1 can return an access denied error when the caller does not have access to view enterprise settings.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------- Example 1: Get current enterprise settings ----------</maml:title>
+        <dev:code>Get-Action1Enterprise</dev:code>
+        <dev:remarks>
+          <maml:para>Gets settings for the current Action1 enterprise.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1Enterprise</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1EnterpriseId</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1EnterpriseId</command:noun>
+      <maml:description>
+        <maml:para>Gets the ID of the current Action1 enterprise.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1EnterpriseId` calls `Get-Action1Enterprise`, extracts the id property from the returned enterprise object, validates that the value uses the standard GUID format, and returns the ID as a string.</maml:para>
+      <maml:para>Action1 returns only the enterprise that the current credentials can access.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1EnterpriseId</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not accept pipeline input.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the current Action1 enterprise ID.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to view enterprise settings in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----------- Example 1: Get the current enterprise ID -----------</maml:title>
+        <dev:code>Get-Action1EnterpriseId</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the ID of the current Action1 enterprise.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Enterprise</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Update-Action1Enterprise</command:name>
+      <command:verb>Update</command:verb>
+      <command:noun>Action1Enterprise</command:noun>
+      <maml:description>
+        <maml:para>Updates the name or description of the current Action1 enterprise.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Update-Action1Enterprise` calls the Action1 enterprise API and updates settings for the current enterprise. Action1 allows access only to the current enterprise.</maml:para>
+      <maml:para>Specify at least one value to update: -Name or -Description . You can specify both parameters in the same command.</maml:para>
+      <maml:para>The PATCH request body includes only the update parameters that you specify. For example, when you specify only -Name , the request body contains only name . When you specify both -Name and -Description , the request body contains both name and description .</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the update without sending the PATCH request. Use -Confirm to prompt before sending the PATCH request. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The requested PATCH endpoint is `/enterprise`.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-Action1Enterprise</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Description</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new enterprise description.</maml:para>
+            <maml:para>Specify -Description , -Name , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Specifies the new enterprise name.</maml:para>
+            <maml:para>Specify -Name , -Description , or both. The command writes an error when neither parameter is specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Description</maml:name>
+        <maml:description>
+          <maml:para>Specifies the new enterprise description.</maml:para>
+          <maml:para>Specify -Description , -Name , or both. The command writes an error when neither parameter is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>Specifies the new enterprise name.</maml:para>
+          <maml:para>Specify -Name , -Description , or both. The command writes an error when neither parameter is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not accept pipeline input.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the updated enterprise object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage enterprise settings in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------ Example 1: Update the enterprise name ------------</maml:title>
+        <dev:code>Update-Action1Enterprise -Name 'My Enterprise'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the name of the current Action1 enterprise.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2: Update the enterprise description ---------</maml:title>
+        <dev:code>Update-Action1Enterprise -Description 'Description for my enterprise'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the description of the current Action1 enterprise.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 3: Update the enterprise name and description ----</maml:title>
+        <dev:code>Update-Action1Enterprise `
+    -Name 'My Enterprise' `
+    -Description 'Description for my enterprise'</dev:code>
+        <dev:remarks>
+          <maml:para>Updates both the name and description of the current Action1 enterprise.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 4: Preview an enterprise update -----------</maml:title>
+        <dev:code>Update-Action1Enterprise `
+    -Name 'My Enterprise' `
+    -Description 'Description for my enterprise' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be updated without sending the PATCH request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 5: Update enterprise settings without prompting ---</maml:title>
+        <dev:code>Update-Action1Enterprise `
+    -Description 'Description for my enterprise' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the enterprise description without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Enterprise</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-Action1</command:name>
       <command:verb>Get</command:verb>
       <command:noun>Action1</command:noun>
@@ -4229,9 +4573,10 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
       <maml:para>* `datetime`</maml:para>
       <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
       <maml:para>* `organizations`</maml:para>
       <maml:para></maml:para>
-      <maml:para>The datetime property contains the UTC export timestamp in the `yyyy-MM-dd_HH-mm-ss` format. The region property is populated from `Get-Action1Region`.</maml:para>
+      <maml:para>The datetime property contains the UTC export timestamp in the `yyyy-MM-dd_HH-mm-ss` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`.</maml:para>
       <maml:para>Each item in the organizations array contains these properties in this order:</maml:para>
       <maml:para>* `id`</maml:para>
       <maml:para>* `type`</maml:para>
@@ -4411,7 +4756,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
-        <maml:para>Requires permission to view organizations in Action1.</maml:para>
+        <maml:para>Requires permission to view enterprise settings and organizations in Action1.</maml:para>
       </maml:alert>
     </maml:alertSet>
     <command:examples>
@@ -4462,6 +4807,14 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Enterprise</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>

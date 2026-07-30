@@ -59,4 +59,5 @@ to view enterprise settings.
 
 ## RELATED LINKS
 
+[Get-Action1EnterpriseId](Get-Action1EnterpriseId.md)
 [Update-Action1Enterprise](Update-Action1Enterprise.md)
