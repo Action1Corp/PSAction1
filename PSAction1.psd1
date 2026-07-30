@@ -85,6 +85,10 @@
         'Set-Action1Debug'
         'Get-Action1Debug'
 
+        # Enterprise
+        'Get-Action1Enterprise'
+        'Update-Action1Enterprise'
+
         # Organizations
         'Get-Action1Organization'
         'Get-Action1Organizations'
@@ -171,6 +175,9 @@
         Get-Action1DefaultOrgId
         Get-Action1Region
         Get-Action1Debug
+    Enterprise:
+        Get-Action1Enterprise
+        Update-Action1Enterprise
     Endpoints:
         Remove-Action1DisconnectedEndpoints
         Remove-Action1DuplicateEndpoints

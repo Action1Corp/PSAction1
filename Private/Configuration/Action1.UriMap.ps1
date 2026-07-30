@@ -11,6 +11,10 @@ $Script:Action1_UriMap = @{
     G_Logs                 = { param($Org_ID) "/logs/$Org_ID" }
     G_Me                   = { "/Me" }
 
+    # Enterprise
+    G_Enterprise           = { "/enterprise" }
+    U_Enterprise           = { "/enterprise" }
+
     # Organizations
     G_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
     G_Organizations        = { "/organizations" }
