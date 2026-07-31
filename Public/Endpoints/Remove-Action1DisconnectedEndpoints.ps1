@@ -18,7 +18,7 @@ function Remove-Action1DisconnectedEndpoints {
         [int]$DaysDisconnected = 90
     )
 
-    $currentTime = Get-Date
+    $currentTime = (Get-Date).ToUniversalTime()
     $filterTime = $currentTime.AddDays(-$DaysDisconnected)
     $filterTimeText = $filterTime.ToString('yyyy-MM-dd HH:mm:ss')
 
@@ -32,7 +32,6 @@ function Remove-Action1DisconnectedEndpoints {
         "Retrieved $($disconnectedEndpoints.Count) disconnected endpoint record(s)."
     )
 
-    $dateFormat = $Script:Action1_UtcTimestampTemplate
     $requiredProperties = @('id', 'name', 'last_seen')
     $endpointsToRemove = New-Object System.Collections.ArrayList
     $invalidEndpoints = 0
@@ -73,7 +72,9 @@ function Remove-Action1DisconnectedEndpoints {
         }
 
         try {
-            $lastSeen = [datetime]::ParseExact($lastSeenText, $dateFormat, $null)
+            $lastSeen = ConvertFrom-UtcTimestamp `
+                -Timestamp $lastSeenText `
+                -Template $Script:Action1_ApiTimestampTemplate
         }
         catch {
             Write-Action1Debug (
@@ -81,7 +82,7 @@ function Remove-Action1DisconnectedEndpoints {
                 $endpointId,
                 $endpointName,
                 $lastSeenText,
-                $dateFormat
+                $Script:Action1_ApiTimestampTemplate
             )
             $invalidEndpoints++
             continue

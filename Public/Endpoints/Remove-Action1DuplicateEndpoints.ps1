@@ -20,7 +20,6 @@ function Remove-Action1DuplicateEndpoints {
 
     Write-Action1Debug "Retrieved $($endpoints.Count) endpoint record(s)."
 
-    $dateFormat = $Script:Action1_UtcTimestampTemplate
     $requiredProperties = @('id', 'name', 'MAC', 'last_seen')
     $newestEndpointByMacAddress = @{}
     $duplicateEndpointsToRemove = New-Object System.Collections.ArrayList
@@ -73,7 +72,9 @@ function Remove-Action1DuplicateEndpoints {
         }
 
         try {
-            $lastSeen = [datetime]::ParseExact($lastSeenText, $dateFormat, $null)
+            $lastSeen = ConvertFrom-UtcTimestamp `
+                -Timestamp $lastSeenText `
+                -Template $Script:Action1_ApiTimestampTemplate
         }
         catch {
             Write-Action1Debug (
@@ -81,7 +82,7 @@ function Remove-Action1DuplicateEndpoints {
                 $endpointId,
                 $endpointName,
                 $lastSeenText,
-                $dateFormat
+                $Script:Action1_ApiTimestampTemplate
             )
             $invalidEndpoints++
             continue

@@ -20,5 +20,8 @@ function Get-UtcTimestamp {
         [string]$Template = $Script:Action1_UtcTimestampTemplate
     )
 
-    return (Get-Date).ToUniversalTime().ToString($Template)
+    $utcNow = (Get-Date).ToUniversalTime()
+    $culture = [System.Globalization.CultureInfo]::InvariantCulture
+
+    return $utcNow.ToString($Template, $culture)
 }

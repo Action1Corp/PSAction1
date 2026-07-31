@@ -43,7 +43,7 @@ properties:
 * `organizations`
 
 The **datetime** property contains the UTC export timestamp in the
-`yyyy-MM-dd_HH-mm-ss` format. The **region** property is populated from
+`yyyy-MM-dd'T'HH:mm:ss'Z'` format. The **region** property is populated from
 `Get-Action1Region`. The **enterprise_id** property is populated from
 `Get-Action1EnterpriseId`.
 

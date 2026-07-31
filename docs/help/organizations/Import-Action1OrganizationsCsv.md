@@ -52,6 +52,9 @@ The map CSV file contains these columns:
 * `Status`
 * `ImportedAt`
 
+The **ImportedAt** value is written as a UTC timestamp in the
+`yyyy-MM-dd'T'HH:mm:ss'Z'` format.
+
 The **Status** value is one of:
 
 * `Created`
