@@ -133,7 +133,8 @@ function Export-Action1OrganizationsJson {
         datetime      = Get-UtcTimestamp
         region        = $region
         enterprise_id = $enterpriseId
-        organizations = $jsonOrganizations
+        type          = 'Organization'
+        items         = $jsonOrganizations
     }
 
     $jsonContent = $jsonExport | ConvertTo-Json -Depth 5

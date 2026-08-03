@@ -40,15 +40,15 @@ properties:
 * `datetime`
 * `region`
 * `enterprise_id`
-* `organizations`
+* `type`
+* `items`
 
 The **datetime** property contains the UTC export timestamp in the
 `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The **region** property is populated from
 `Get-Action1Region`. The **enterprise_id** property is populated from
-`Get-Action1EnterpriseId`.
+`Get-Action1EnterpriseId`. The **type** property is set to `Organization`.
 
-Each item in the **organizations** array contains these properties in this
-order:
+Each item in the **items** array contains these properties in this order:
 
 * `id`
 * `type`
