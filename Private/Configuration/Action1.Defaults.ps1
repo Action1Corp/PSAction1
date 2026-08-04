@@ -9,4 +9,3 @@ $Script:Action1_429RetryBaseTimeoutSeconds = 2
 $Script:Action1_UtcTimestampTemplate = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 $Script:Action1_ApiTimestampTemplate = 'yyyy-MM-dd_HH-mm-ss'
 $Script:Action1_OrganizationJsonSchema = 'PSAction1.Organization.v1'
-$Script:Action1_OrganizationMigrationMapJsonSchema = 'PSAction1.OrganizationMigrationMap.v1'

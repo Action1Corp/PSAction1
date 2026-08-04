@@ -235,8 +235,6 @@ Requires permission to view enterprise settings and organizations in Action1.
 [Get-Action1Organization](Get-Action1Organization.md)
 [Get-Action1EnterpriseId](../enterprise/Get-Action1EnterpriseId.md)
 [Get-Action1Enterprise](../enterprise/Get-Action1Enterprise.md)
-[Export-Action1OrganizationsCsv](Export-Action1OrganizationsCsv.md)
-[Import-Action1OrganizationsCsv](Import-Action1OrganizationsCsv.md)
 [New-Action1Organization](New-Action1Organization.md)
 [Update-Action1Organization](Update-Action1Organization.md)
 [Remove-Action1Organization](Remove-Action1Organization.md)
