@@ -99,6 +99,7 @@
         'Export-Action1OrganizationsCsv'
         'Export-Action1OrganizationsJson'
         'Import-Action1OrganizationsCsv'
+        'Import-Action1OrganizationsJson'
 
         # Endpoints
         'Get-Action1Endpoints'
