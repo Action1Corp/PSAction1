@@ -37,13 +37,15 @@ organization name, and exports the selected organizations to a JSON file.
 The command writes a single JSON object with the following top-level
 properties:
 
+* `schema`
 * `datetime`
 * `region`
 * `enterprise_id`
 * `type`
 * `items`
 
-The **datetime** property contains the UTC export timestamp in the
+The **schema** property is set to `PSAction1.Organization.v1`. The
+**datetime** property contains the UTC export timestamp in the
 `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The **region** property is populated from
 `Get-Action1Region`. The **enterprise_id** property is populated from
 `Get-Action1EnterpriseId`. The **type** property is set to `Organization`.

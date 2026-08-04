@@ -130,6 +130,7 @@ function Export-Action1OrganizationsJson {
     )
 
     $jsonExport = [PSCustomObject][ordered]@{
+        schema        = $Script:Action1_OrganizationJsonSchema
         datetime      = Get-UtcTimestamp
         region        = $region
         enterprise_id = $enterpriseId
