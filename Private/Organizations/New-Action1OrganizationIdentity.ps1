@@ -5,6 +5,12 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
+# Builds the normalized identity record used by existing Organization commands.
+# The identity record trims and validates the Organization ID, preserves the
+# optional Organization name for user-facing messages, and carries the derived
+# OrgLabel plus an ErrorMessage so callers can handle invalid input consistently.
+# Create operations should use New-Action1OrganizationLabel directly because a
+# new Organization has no Action1-assigned ID before the POST request.
 function New-Action1OrganizationIdentity {
     [CmdletBinding()]
     param(

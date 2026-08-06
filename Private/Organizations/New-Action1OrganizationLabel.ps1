@@ -5,6 +5,10 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
+# Builds the human-readable Organization label used in ShouldProcess prompts,
+# debug messages, API labels, and errors. Existing Organization operations pass
+# the ID and optional name; create operations pass only the name because Action1
+# has not assigned an Organization ID before the POST request.
 function New-Action1OrganizationLabel {
     [CmdletBinding()]
     param(
