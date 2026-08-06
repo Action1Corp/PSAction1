@@ -30,8 +30,9 @@ function Export-Action1OrganizationsJson {
     )
 
     if (-not $PSBoundParameters.ContainsKey('Path')) {
-        $timestamp = Get-UtcTimestamp -Template 'yyMMdd_HHmm'
-        $fileName = 'Action1_Organizations_{0}.json' -f $timestamp
+        $fileName = New-ExportFileName `
+            -FileNameFormat $Script:Action1_OrgExportFileNameTemplate `
+            -TimestampTemplate $Script:Action1_ExportFileNameTimestampTemplate
         $Path = Join-Path -Path (Get-Location) -ChildPath $fileName
     }
 

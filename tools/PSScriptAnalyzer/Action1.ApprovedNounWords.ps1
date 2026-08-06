@@ -66,6 +66,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Errors'
     'Event'
     'Events'
+    'Export'
     'Exe'
     'Extension'
     'File'
