@@ -8,7 +8,7 @@
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
 $Script:Action1_UtcTimestampTemplate = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 $Script:Action1_ApiTimestampTemplate = 'yyyy-MM-dd_HH-mm-ss'
-$Script:Action1_ExportFileNameTimestampTemplate = 'yyMMdd_HHmm'
+$Script:Action1_ExportFileNameTimestampTemplate = "yyMMdd_HHmmss'Z'"
 $Script:Action1_OrgExportFileNameTemplate = 'Action1_Organizations_{0}.json'
 $Script:Action1_VulnerabilitiesEndpointsExportFileNameTemplate =
     'Action1_{0}_VulnerabilitiesEndpoints_{1}.csv'

@@ -194,8 +194,8 @@ If the existing target file has read-only or hidden file attributes, use
 **Force**.
 
 If this parameter is not specified, the command creates a timestamped JSON file
-in the current location using the `Action1_Organizations_yyMMdd_HHmm.json`
-naming format.
+in the current location using the `Action1_Organizations_yyMMdd_HHmmssZ.json`
+naming format. The `Z` suffix marks the timestamp as UTC.
 
 ```yaml
 Type: String

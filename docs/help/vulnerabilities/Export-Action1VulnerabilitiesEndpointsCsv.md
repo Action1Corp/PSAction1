@@ -146,7 +146,7 @@ If the path contains a directory that does not exist, the command creates the di
 
 If the existing target file has read-only or hidden file attributes, use **Force**.
 
-If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyMMdd_HHmm.csv` naming format. The organization name is normalized to Latin letters and digits while preserving capitalization.
+If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyMMdd_HHmmssZ.csv` naming format. The `Z` suffix marks the timestamp as UTC. The organization name is normalized to Latin letters and digits while preserving capitalization.
 
 ```yaml
 Type: String
