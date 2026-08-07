@@ -80,11 +80,23 @@
         'Set-Action1DefaultOrg'
         'Get-Action1DefaultOrgId'
         'Get-Action1DefaultOrgName'
-        'Get-Action1Organizations'
         'Set-Action1Region'
         'Get-Action1Region'
         'Set-Action1Debug'
         'Get-Action1Debug'
+
+        # Enterprise
+        'Get-Action1Enterprise'
+        'Get-Action1EnterpriseId'
+        'Update-Action1Enterprise'
+
+        # Organizations
+        'Get-Action1Organization'
+        'Get-Action1Organizations'
+        'New-Action1Organization'
+        'Update-Action1Organization'
+        'Remove-Action1Organization'
+        'Export-Action1OrganizationsJson'
 
         # Endpoints
         'Get-Action1Endpoints'
@@ -158,11 +170,14 @@
         Export-Action1VulnerabilitiesEndpointsCsv
         Get-Action1VulnerabilityEndpoints
     Configuration:
-        Get-Action1Organizations
         Get-Action1DefaultOrgName
         Get-Action1DefaultOrgId
         Get-Action1Region
         Get-Action1Debug
+    Enterprise:
+        Get-Action1Enterprise
+        Get-Action1EnterpriseId
+        Update-Action1Enterprise
     Endpoints:
         Remove-Action1DisconnectedEndpoints
         Remove-Action1DuplicateEndpoints
@@ -171,6 +186,8 @@
         Update-Action1Endpoint
         Remove-Action1Endpoint
         Remove-Action1Endpoints
+    Organizations:
+        Export-Action1OrganizationsJson
 2. Support retry_timeout field handling in 429 HTTP error code response.
 '@
 

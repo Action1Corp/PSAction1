@@ -19,7 +19,9 @@ Get-Action1Organizations [<CommonParameters>]
 
 ## DESCRIPTION
 
-`Get-Action1Organizations` calls the Action1 organizations endpoint and returns a sorted object list containing organization names and IDs.
+`Get-Action1Organizations` calls the Action1 organizations endpoint and returns
+a sorted object list containing organization names, IDs, descriptions, types,
+and enterprise IDs.
 
 Results are sorted by organization name, then organization ID.
 
@@ -31,7 +33,7 @@ Results are sorted by organization name, then organization ID.
 PS C:\> Get-Action1Organizations
 ```
 
-Returns organization names and IDs available to the current account.
+Returns organization details available to the current account.
 
 ## PARAMETERS
 
@@ -40,11 +42,16 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
+### None
+
+You cannot pipe input to this command.
+
 ## OUTPUTS
 
 ### PSCustomObject
 
-Each object contains `Org_Name` and `Org_ID` properties.
+Each object contains `Org_Name`, `Org_ID`, `Description`, `Type`, and
+`EnterpriseId` properties.
 
 ## NOTES
 

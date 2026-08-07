@@ -5,4 +5,18 @@
 # Review and test before production deployment
 # © Action1 Corporation
 
+# Basic params
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
+
+# Timestamp templates
+$Script:Action1_UtcTimestampTemplate = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+$Script:Action1_ApiTimestampTemplate = 'yyyy-MM-dd_HH-mm-ss'
+$Script:Action1_ExportFileNameTimestampTemplate = "yyMMdd_HHmmss'Z'"
+
+# File name templates
+$Script:Action1_OrgExportFileNameTemplate = 'Action1_Organizations_{0}.json'
+$Script:Action1_VulnerabilitiesEndpointsExportFileNameTemplate =
+    'Action1_{0}_VulnerabilitiesEndpoints_{1}.csv'
+
+# JSON schema for export/import files    
+$Script:Action1_OrganizationJsonSchema = 'PSAction1.Organization.v1'

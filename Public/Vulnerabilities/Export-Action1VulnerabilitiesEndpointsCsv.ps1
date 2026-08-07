@@ -53,9 +53,11 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
             $normalizedOrgName = $orgId
         }
 
-        $timestamp = Get-Date -Format 'yyMMdd_HHmm'
-        $fileNameFormat = 'Action1_{0}_VulnerabilitiesEndpoints_{1}.csv'
-        $fileName = $fileNameFormat -f $normalizedOrgName, $timestamp
+        $fileNameFormat = $Script:Action1_VulnerabilitiesEndpointsExportFileNameTemplate `
+         -f $normalizedOrgName, '{0}'
+        $fileName = New-ExportFileName `
+            -FileNameFormat $fileNameFormat `
+            -TimestampTemplate $Script:Action1_ExportFileNameTimestampTemplate
         $Path = Join-Path -Path (Get-Location) -ChildPath $fileName
     }
 

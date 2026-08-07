@@ -29,6 +29,8 @@ configured cutoff date, then removes matching endpoints by using
 
 Endpoints missing **id**, **name**, or **last_seen**, or endpoints with an
 unparseable **last_seen** value, are skipped and counted as invalid.
+The **last_seen** value must use the Action1 endpoint API UTC
+`yyyy-MM-dd_HH-mm-ss` format.
 
 The command uses the module default organization configured by
 **Set-Action1DefaultOrg**.
