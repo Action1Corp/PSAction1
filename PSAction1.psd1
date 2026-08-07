@@ -17,7 +17,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.8.12'
+    ModuleVersion     = '1.9.13'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -165,30 +165,18 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
-1. New cmdlets:
-    Vulnerabilities:
-        Export-Action1VulnerabilitiesEndpointsCsv
-        Get-Action1VulnerabilityEndpoints
-    Configuration:
-        Get-Action1DefaultOrgName
-        Get-Action1DefaultOrgId
-        Get-Action1Region
-        Get-Action1Debug
+New cmdlets:
     Enterprise:
         Get-Action1Enterprise
         Get-Action1EnterpriseId
         Update-Action1Enterprise
-    Endpoints:
-        Remove-Action1DisconnectedEndpoints
-        Remove-Action1DuplicateEndpoints
-        Get-Action1Endpoints
-        Get-Action1Endpoint
-        Update-Action1Endpoint
-        Remove-Action1Endpoint
-        Remove-Action1Endpoints
     Organizations:
+        Get-Action1Organization
+        New-Action1Organization
+        Update-Action1Organization
+        Remove-Action1Organization
         Export-Action1OrganizationsJson
-2. Support retry_timeout field handling in 429 HTTP error code response.
+Support retry_timeout field handling in 429 HTTP error code response.
 '@
 
         } # End of PSData hashtable
