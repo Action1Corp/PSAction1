@@ -108,6 +108,7 @@
         'Remove-Action1DuplicateEndpoints'
 
         # Groups
+        'Get-Action1EndpointGroup'
         'Get-Action1EndpointGroups'
 
         # Vulnerabilities
