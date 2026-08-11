@@ -110,6 +110,7 @@
         # Groups
         'Get-Action1EndpointGroup'
         'Get-Action1EndpointGroups'
+        'Export-Action1EndpointGroupsJson'
 
         # Vulnerabilities
         'Get-Action1Vulnerabilities'

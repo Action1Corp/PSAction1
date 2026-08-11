@@ -15,8 +15,11 @@ $Script:Action1_ExportFileNameTimestampTemplate = "yyMMdd_HHmmss'Z'"
 
 # File name templates
 $Script:Action1_OrgExportFileNameTemplate = 'Action1_Organizations_{0}.json'
+$Script:Action1_EndpointGroupsExportFileNameTemplate =
+    'Action1_EndpointGroups_{0}.json'
 $Script:Action1_VulnerabilitiesEndpointsExportFileNameTemplate =
     'Action1_{0}_VulnerabilitiesEndpoints_{1}.csv'
 
 # JSON schema for export/import files    
 $Script:Action1_OrganizationJsonSchema = 'PSAction1.Organization.v1'
+$Script:Action1_EndpointGroupJsonSchema = 'PSAction1.EndpointGroup.v1'
