@@ -6,23 +6,43 @@
 # (c) Action1 Corporation
 
 function Get-Action1EndpointGroup {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'ByGroupId')]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(
+            Mandatory = $true,
+            ParameterSetName = 'ByGroupId',
+            Position = 0
+        )]
         [ValidateNotNullOrEmpty()]
-        [string]$GroupId
+        [string]$GroupId,
+
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByGroupName')]
+        [ValidateNotNullOrEmpty()]
+        [string]$GroupName
     )
 
     if (Initialize-Action1DefaultOrg) {
         $orgId = Get-Action1DefaultOrgId
     }
 
+    if ($PSCmdlet.ParameterSetName -eq 'ByGroupName') {
+        $endpointGroup = Resolve-Action1EndpointGroupByName -GroupName $GroupName
+    }
+    else {
+        $endpointGroup = Resolve-Action1EndpointGroupById -GroupId $GroupId
+    }
+
+    $resolvedGroupId = $endpointGroup.id
+
     $uriPathBuilder = Get-UriMapValue -Key 'G_EndpointGroup'
 
-    $uri = & $uriPathBuilder $orgId $GroupId
+    $uri = & $uriPathBuilder $orgId $resolvedGroupId
     $path = "$Script:Action1_BaseURI{0}" -f $uri
 
-    Write-Action1Debug "Getting endpoint group '$GroupId'."
+    Write-Action1Debug "Getting endpoint group '$resolvedGroupId'."
 
-    Invoke-Action1ApiRequest -Method GET -Path $path -Label "Endpoint group '$GroupId'"
+    Invoke-Action1ApiRequest `
+        -Method GET `
+        -Path $path `
+        -Label "Endpoint group '$resolvedGroupId'"
 }
