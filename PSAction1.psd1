@@ -109,6 +109,7 @@
 
         # Groups
         'Get-Action1EndpointGroup'
+        'Get-Action1GroupEndpoints'
         'Get-Action1EndpointGroups'
         'Export-Action1EndpointGroupsJson'
 
