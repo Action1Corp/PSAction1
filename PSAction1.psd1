@@ -108,6 +108,7 @@
         'Remove-Action1DuplicateEndpoints'
 
         # Groups
+        'Add-Action1EndpointGroupMembers'
         'Get-Action1EndpointGroup'
         'Get-Action1GroupEndpoints'
         'Get-Action1EndpointGroups'
