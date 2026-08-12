@@ -23,8 +23,19 @@ function Export-Action1EndpointGroupsJson {
     )
 
     if (-not $PSBoundParameters.ContainsKey('Path')) {
+        $orgName = Get-Action1DefaultOrgName
+        $orgId = Get-Action1DefaultOrgId
+        $normalizedOrgName = ConvertTo-LatinAlphaNumericString -InputString $orgName
+
+        if ([string]::IsNullOrWhiteSpace($normalizedOrgName)) {
+            Write-Action1Debug 'Default organization name is empty after normalization.'
+            $normalizedOrgName = $orgId
+        }
+
+        $fileNameFormat = $Script:Action1_EndpointGroupsExportFileNameTemplate `
+            -f $normalizedOrgName, '{0}'
         $fileName = New-ExportFileName `
-            -FileNameFormat $Script:Action1_EndpointGroupsExportFileNameTemplate `
+            -FileNameFormat $fileNameFormat `
             -TimestampTemplate $Script:Action1_ExportFileNameTimestampTemplate
         $Path = Join-Path -Path (Get-Location) -ChildPath $fileName
     }

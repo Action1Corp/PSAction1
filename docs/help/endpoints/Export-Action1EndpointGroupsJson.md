@@ -191,8 +191,11 @@ If the existing target file has read-only or hidden file attributes, use
 
 If this parameter is not specified, the command creates a timestamped JSON file
 in the current location using the
-`Action1_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix
-marks the timestamp as UTC.
+`Action1_<OrgName>_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The
+organization name is read from `Get-Action1DefaultOrgName` and normalized with
+`ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value,
+the default organization ID is used instead. The `Z` suffix marks the timestamp
+as UTC.
 
 ```yaml
 Type: String
@@ -239,4 +242,5 @@ Action1.
 [Get-Action1EndpointGroup](Get-Action1EndpointGroup.md)
 [Get-Action1EnterpriseId](../enterprise/Get-Action1EnterpriseId.md)
 [Get-Action1DefaultOrgId](../configuration/Get-Action1DefaultOrgId.md)
+[Get-Action1DefaultOrgName](../configuration/Get-Action1DefaultOrgName.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)

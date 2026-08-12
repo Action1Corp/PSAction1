@@ -16,7 +16,7 @@ $Script:Action1_ExportFileNameTimestampTemplate = "yyMMdd_HHmmss'Z'"
 # File name templates
 $Script:Action1_OrgExportFileNameTemplate = 'Action1_Organizations_{0}.json'
 $Script:Action1_EndpointGroupsExportFileNameTemplate =
-    'Action1_EndpointGroups_{0}.json'
+    'Action1_{0}_EndpointGroups_{1}.json'
 $Script:Action1_VulnerabilitiesEndpointsExportFileNameTemplate =
     'Action1_{0}_VulnerabilitiesEndpoints_{1}.csv'
 
