@@ -106,13 +106,14 @@
         'Remove-Action1Endpoints'
         'Remove-Action1DisconnectedEndpoints'
         'Remove-Action1DuplicateEndpoints'
+        'Export-Action1EndpointsJson'
 
         # Groups
-        'Add-Action1EndpointGroupMembers'
-        'Remove-Action1EndpointGroupMembers'
         'Get-Action1EndpointGroup'
         'Get-Action1GroupEndpoints'
         'Get-Action1EndpointGroups'
+        'Add-Action1EndpointGroupMembers'
+        'Remove-Action1EndpointGroupMembers'
         'Export-Action1EndpointGroupsJson'
         'Export-Action1EndpointGroupMembersJson'
 

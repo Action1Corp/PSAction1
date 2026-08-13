@@ -15,6 +15,8 @@ $Script:Action1_ExportFileNameTimestampTemplate = "yyMMdd_HHmmss'Z'"
 
 # File name templates
 $Script:Action1_OrgExportFileNameTemplate = 'Action1_Organizations_{0}.json'
+$Script:Action1_EndpointsExportFileNameTemplate =
+    'Action1_{0}_Endpoints_{1}.json'
 $Script:Action1_EndpointGroupsExportFileNameTemplate =
     'Action1_{0}_EndpointGroups_{1}.json'
 $Script:Action1_EndpointGroupMembersExportFileNameTemplate =
