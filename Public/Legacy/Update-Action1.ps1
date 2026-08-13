@@ -50,7 +50,7 @@ function Update-Action1 {
         'ModifyMembers' {
             switch ($Type) {
                 'EndpointGroup' { 
-                    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["U_GroupMembers"] -Org_ID $Org_ID -Object_ID $id)
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["U_EndpointGroupMembers"] -Org_ID $Org_ID -Object_ID $id)
                     return Invoke-Action1ApiRequest -Method POST -Path $Path -Body $Data -Label "$Action=>$Type"
                 }
                 default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
@@ -74,7 +74,7 @@ function Update-Action1 {
                     return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type" 
                 }
                 'EndpointGroup' { 
-                    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["U_GroupModify"] -Org_ID $Org_ID -Object_Id $Id)
+                    $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["U_EndpointGroup"] -Org_ID $Org_ID -Object_Id $Id)
                     return Invoke-Action1ApiRequest -Method PATCH -Path $Path -Body $Data -Label "$Action=>$Type"
                 }
                 default { Write-Error "Invalid request of $Type for query $Action." ; return $null }
@@ -85,7 +85,7 @@ function Update-Action1 {
             switch ($Type) {
                 'EndpointGroup' { 
                     if ($force -or ((Read-Host "Are you sure you want to $Action $Type [$id]?`n[Y]es to confirm, any other key to cancel.") -eq 'Y')) {
-                        $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["U_GroupModify"] -Org_ID $Org_ID -Object_Id $Id)
+                        $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["U_EndpointGroup"] -Org_ID $Org_ID -Object_Id $Id)
                         return Invoke-Action1ApiRequest -Method DELETE -Path $Path -Label "$Action=>$Type"
                     }
                 }

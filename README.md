@@ -794,13 +794,13 @@ Remove-Action1CompensatingControlRemediations -RemediationStatus 'Control_applie
 
 Dedicated help files:
 
-* [Get-Action1Vulnerabilities](docs/help/vulnerabilities/Get-Action1Vulnerabilities.md)
-* [Get-Action1Vulnerability](docs/help/vulnerabilities/Get-Action1Vulnerability.md)
-* [Get-Action1VulnerabilityRemediations](docs/help/vulnerabilities/Get-Action1VulnerabilityRemediations.md)
-* [New-Action1CompensatingControlRemediation](docs/help/vulnerabilities/New-Action1CompensatingControlRemediation.md)
-* [Update-Action1CompensatingControlRemediation](docs/help/vulnerabilities/Update-Action1CompensatingControlRemediation.md)
-* [Remove-Action1CompensatingControlRemediation](docs/help/vulnerabilities/Remove-Action1CompensatingControlRemediation.md)
-* [Remove-Action1CompensatingControlRemediations](docs/help/vulnerabilities/Remove-Action1CompensatingControlRemediations.md)
+* [Get-Action1Vulnerabilities](docs/help/vulnerability/Get-Action1Vulnerabilities.md)
+* [Get-Action1Vulnerability](docs/help/vulnerability/Get-Action1Vulnerability.md)
+* [Get-Action1VulnerabilityRemediations](docs/help/vulnerability/Get-Action1VulnerabilityRemediations.md)
+* [New-Action1CompensatingControlRemediation](docs/help/vulnerability/New-Action1CompensatingControlRemediation.md)
+* [Update-Action1CompensatingControlRemediation](docs/help/vulnerability/Update-Action1CompensatingControlRemediation.md)
+* [Remove-Action1CompensatingControlRemediation](docs/help/vulnerability/Remove-Action1CompensatingControlRemediation.md)
+* [Remove-Action1CompensatingControlRemediations](docs/help/vulnerability/Remove-Action1CompensatingControlRemediations.md)
 
 
 ### Deploying patches and software packages
