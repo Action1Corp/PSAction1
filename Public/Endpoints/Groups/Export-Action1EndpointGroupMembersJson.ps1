@@ -117,7 +117,7 @@ function Export-Action1EndpointGroupMembersJson {
         $null = New-Item -Path $parentPath -ItemType Directory -Force
     }
 
-    $getGroupEndpointsParams = @{
+    $getGroupMembersParams = @{
         Status         = $Status
         RebootRequired = $RebootRequired
         OS             = $OS
@@ -125,16 +125,16 @@ function Export-Action1EndpointGroupMembersJson {
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'ByGroupName') {
-        $getGroupEndpointsParams.GroupName = $GroupName
+        $getGroupMembersParams.GroupName = $GroupName
     }
     else {
-        $getGroupEndpointsParams.GroupId = $GroupId
+        $getGroupMembersParams.GroupId = $GroupId
     }
 
     Write-Action1Debug "Getting endpoints in endpoint group '$resolvedGroupId'."
 
     $endpointMembers = @(
-        Get-Action1GroupEndpoints @getGroupEndpointsParams |
+        Get-Action1EndpointGroupMembers @getGroupMembersParams |
             Where-Object { $null -ne $_ }
     )
 

@@ -193,5 +193,5 @@ The command sends a POST request to the endpoint group contents API path:
 [Add-Action1EndpointGroupMembers](Add-Action1EndpointGroupMembers.md)
 [Get-Action1EndpointGroup](Get-Action1EndpointGroup.md)
 [Get-Action1EndpointGroups](Get-Action1EndpointGroups.md)
-[Get-Action1GroupEndpoints](Get-Action1GroupEndpoints.md)
+[Get-Action1EndpointGroupMembers](Get-Action1EndpointGroupMembers.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)

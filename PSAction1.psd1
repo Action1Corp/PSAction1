@@ -110,7 +110,7 @@
 
         # Groups
         'Get-Action1EndpointGroup'
-        'Get-Action1GroupEndpoints'
+        'Get-Action1EndpointGroupMembers'
         'Get-Action1EndpointGroups'
         'Add-Action1EndpointGroupMembers'
         'Remove-Action1EndpointGroupMembers'

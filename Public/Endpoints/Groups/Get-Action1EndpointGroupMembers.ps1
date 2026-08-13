@@ -5,7 +5,7 @@
 # Review and test before production deployment
 # (c) Action1 Corporation
 
-function Get-Action1GroupEndpoints {
+function Get-Action1EndpointGroupMembers {
     [CmdletBinding(DefaultParameterSetName = 'ByGroupId')]
     param(
         [Parameter(

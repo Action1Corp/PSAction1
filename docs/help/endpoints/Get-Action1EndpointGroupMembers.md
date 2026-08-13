@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-Action1GroupEndpoints
+# Get-Action1EndpointGroupMembers
 
 ## SYNOPSIS
 
@@ -15,12 +15,12 @@ Gets endpoints from an endpoint group in the current Action1 organization.
 
 ### ByGroupId (Default)
 ```
-Get-Action1GroupEndpoints [-GroupId] <String> [-Status <String>] [-RebootRequired <String>] [-OS <String>] [<CommonParameters>]
+Get-Action1EndpointGroupMembers [-GroupId] <String> [-Status <String>] [-RebootRequired <String>] [-OS <String>] [<CommonParameters>]
 ```
 
 ### ByGroupName
 ```
-Get-Action1GroupEndpoints -GroupName <String> [-Status <String>] [-RebootRequired <String>] [-OS <String>] [<CommonParameters>]
+Get-Action1EndpointGroupMembers -GroupName <String> [-Status <String>] [-RebootRequired <String>] [-OS <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -49,7 +49,7 @@ The command uses the module default organization configured by
 ### Example 1: Get endpoints from an endpoint group by ID
 
 ```powershell
-Get-Action1GroupEndpoints -GroupId 'Service_1696554367754'
+Get-Action1EndpointGroupMembers -GroupId 'Service_1696554367754'
 ```
 
 Gets all endpoints included in the specified endpoint group in the current
@@ -58,7 +58,7 @@ organization.
 ### Example 2: Get connected endpoints from an endpoint group
 
 ```powershell
-Get-Action1GroupEndpoints -GroupId 'Service_1696554367754' -Status Connected
+Get-Action1EndpointGroupMembers -GroupId 'Service_1696554367754' -Status Connected
 ```
 
 Gets connected endpoints included in the specified endpoint group.
@@ -66,7 +66,7 @@ Gets connected endpoints included in the specified endpoint group.
 ### Example 3: Get endpoints from an endpoint group by name
 
 ```powershell
-Get-Action1GroupEndpoints -GroupName 'Service'
+Get-Action1EndpointGroupMembers -GroupName 'Service'
 ```
 
 Resolves the endpoint group named Service and gets endpoints included in that
@@ -75,7 +75,7 @@ group.
 ### Example 4: Get Windows 11 endpoints that require reboot
 
 ```powershell
-Get-Action1GroupEndpoints `
+Get-Action1EndpointGroupMembers `
     -GroupName 'Workstations' `
     -Status All `
     -RebootRequired Yes `
@@ -88,7 +88,7 @@ named Workstations.
 ### Example 5: Review selected endpoint fields
 
 ```powershell
-Get-Action1GroupEndpoints -GroupName 'Workstations' |
+Get-Action1EndpointGroupMembers -GroupName 'Workstations' |
     Select-Object id, name, status, reboot_required, OS, added_via
 ```
 

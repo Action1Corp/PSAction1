@@ -26,7 +26,7 @@ Export-Action1EndpointGroupMembersJson -GroupName <String> [-Status <String>] [-
 ## DESCRIPTION
 
 `Export-Action1EndpointGroupMembersJson` resolves one endpoint group by ID or
-name, calls `Get-Action1GroupEndpoints` with the selected endpoint filters, and
+name, calls `Get-Action1EndpointGroupMembers` with the selected endpoint filters, and
 exports the returned endpoint records to a JSON file.
 
 The command writes a single JSON object with the following top-level
@@ -50,11 +50,11 @@ property contains the UTC export timestamp in the
 resolved endpoint group ID. The **type** property is set to `Endpoint`.
 
 The **items** array contains the endpoint objects returned by
-`Get-Action1GroupEndpoints`. Item fields are not remapped, so all fields
+`Get-Action1EndpointGroupMembers`. Item fields are not remapped, so all fields
 returned by the source command are preserved in the JSON output.
 
 Use **Status**, **RebootRequired**, and **OS** to pass endpoint filters through
-to `Get-Action1GroupEndpoints`. Specify `All` for a filter parameter to skip
+to `Get-Action1EndpointGroupMembers`. Specify `All` for a filter parameter to skip
 that filter.
 
 The command creates the target directory when it does not already exist and
@@ -321,7 +321,7 @@ endpoint group contents in Action1.
 
 ## RELATED LINKS
 
-[Get-Action1GroupEndpoints](Get-Action1GroupEndpoints.md)
+[Get-Action1EndpointGroupMembers](Get-Action1EndpointGroupMembers.md)
 [Get-Action1EndpointGroup](Get-Action1EndpointGroup.md)
 [Get-Action1EndpointGroups](Get-Action1EndpointGroups.md)
 [Get-Action1EnterpriseId](../enterprise/Get-Action1EnterpriseId.md)
