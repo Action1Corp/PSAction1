@@ -90,7 +90,7 @@
         'Get-Action1EnterpriseId'
         'Update-Action1Enterprise'
 
-        # Organizations
+        # Organization
         'Get-Action1Organization'
         'Get-Action1Organizations'
         'New-Action1Organization'
@@ -98,7 +98,7 @@
         'Remove-Action1Organization'
         'Export-Action1OrganizationsJson'
 
-        # Endpoints
+        # Endpoint
         'Get-Action1Endpoints'
         'Get-Action1Endpoint'
         'Update-Action1Endpoint'
@@ -108,7 +108,7 @@
         'Remove-Action1DuplicateEndpoints'
         'Export-Action1EndpointsJson'
 
-        # Groups
+        # EndpointGroup
         'Get-Action1EndpointGroup'
         'Get-Action1EndpointGroupMembers'
         'Get-Action1EndpointGroups'
@@ -117,7 +117,7 @@
         'Export-Action1EndpointGroupsJson'
         'Export-Action1EndpointGroupMembersJson'
 
-        # Vulnerabilities
+        # Vulnerability
         'Get-Action1Vulnerabilities'
         'Get-Action1Vulnerability'
         'Get-Action1VulnerabilityRemediations'
