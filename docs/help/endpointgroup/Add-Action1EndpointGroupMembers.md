@@ -233,7 +233,7 @@ error.
 
 ```yaml
 Type: String
-Parameter Sets: ByGroupNameEndpointIds, ByGroupNameEndpointObjects
+Parameter Sets: ByGroupNameEndpointObjects, ByGroupNameEndpointIds
 Aliases:
 
 Required: True

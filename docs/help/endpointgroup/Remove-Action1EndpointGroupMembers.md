@@ -21,14 +21,14 @@ Remove-Action1EndpointGroupMembers [-GroupId] <String> -EndpointIds <String[]> [
 
 ### ByGroupIdEndpointObjects
 ```
-Remove-Action1EndpointGroupMembers [-GroupId] <String> -EndpointObjects <Object[]> [-Force] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Remove-Action1EndpointGroupMembers [-GroupId] <String> -EndpointObjects <Object[]> [-Force] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### ByGroupNameEndpointObjects
 ```
-Remove-Action1EndpointGroupMembers -GroupName <String> -EndpointObjects <Object[]> [-Force] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Remove-Action1EndpointGroupMembers -GroupName <String> -EndpointObjects <Object[]> [-Force] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### ByGroupNameEndpointIds
@@ -236,7 +236,7 @@ error.
 
 ```yaml
 Type: String
-Parameter Sets: ByGroupNameEndpointIds, ByGroupNameEndpointObjects
+Parameter Sets: ByGroupNameEndpointObjects, ByGroupNameEndpointIds
 Aliases:
 
 Required: True
