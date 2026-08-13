@@ -30,12 +30,12 @@ $Script:Action1_UriMap = @{
     D_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
 
     # EndpointGroup
-    G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
     G_EndpointGroup        = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
     G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
     N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    N_EndpointGroupMembers = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
     U_EndpointGroup        = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
+    G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
+    N_EndpointGroupMembers = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
     U_EndpointGroupMembers = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
     D_EndpointGroupMembers = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
 
