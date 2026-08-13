@@ -55,7 +55,7 @@ function Add-Action1EndpointGroupMembers {
         }
     )
 
-    $uriPathBuilder = Get-UriMapValue -Key 'U_GroupMembers'
+    $uriPathBuilder = Get-UriMapValue -Key 'N_EndpointGroupMembers'
 
     $uri = & $uriPathBuilder $orgId $resolvedGroupId
     $path = "$Script:Action1_BaseURI{0}" -f $uri
