@@ -99,7 +99,8 @@ function Export-Action1EndpointGroupsJson {
         items           = $endpointGroupsToExport
     }
 
-    $jsonContent = $jsonExport | ConvertTo-Json -Depth 10
+    $jsonContent = $jsonExport |
+        ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
 
     $setContentParams = @{
         LiteralPath = $resolvedPath

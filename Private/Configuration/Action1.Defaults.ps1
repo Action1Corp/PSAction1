@@ -7,13 +7,14 @@
 
 # Basic params
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
+$Script:Action1_JsonObjectConversionDepth = 10
 
-# Timestamp templates
+# Timestamp template
 $Script:Action1_UtcTimestampTemplate = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 $Script:Action1_ApiTimestampTemplate = 'yyyy-MM-dd_HH-mm-ss'
 $Script:Action1_ExportFileNameTimestampTemplate = "yyMMdd_HHmmss'Z'"
 
-# File name templates
+# JSON export file name template
 $Script:Action1_OrgExportFileNameTemplate = 'Action1_Organizations_{0}.json'
 $Script:Action1_EndpointsExportFileNameTemplate =
     'Action1_{0}_Endpoints_{1}.json'

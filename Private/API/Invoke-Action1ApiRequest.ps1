@@ -59,7 +59,9 @@ function Invoke-Action1ApiRequest {
             Write-Action1Debug "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
         }
         else {
-            $requestBody = ConvertTo-Json -InputObject $Body -Depth 10
+            $requestBody = ConvertTo-Json `
+                -InputObject $Body `
+                -Depth $Script:Action1_JsonObjectConversionDepth
             Write-Action1Debug "JSON Data to be sent:`n$requestBody"  
         }
     }

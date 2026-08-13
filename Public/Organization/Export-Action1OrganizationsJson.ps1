@@ -139,7 +139,8 @@ function Export-Action1OrganizationsJson {
         items         = $jsonOrganizations
     }
 
-    $jsonContent = $jsonExport | ConvertTo-Json -Depth 5
+    $jsonContent = $jsonExport |
+        ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
 
     $setContentParams = @{
         LiteralPath = $resolvedPath

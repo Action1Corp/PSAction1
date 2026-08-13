@@ -149,7 +149,8 @@ function Export-Action1EndpointGroupMembersJson {
         items            = $endpointMembers
     }
 
-    $jsonContent = $jsonExport | ConvertTo-Json -Depth 10
+    $jsonContent = $jsonExport |
+        ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
 
     $setContentParams = @{
         LiteralPath = $resolvedPath
