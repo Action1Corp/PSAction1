@@ -15,12 +15,14 @@ Exports endpoints from an Action1 endpoint group to a JSON file.
 
 ### ByGroupId (Default)
 ```
-Export-Action1EndpointGroupMembersJson [-GroupId] <String> [-Status <String>] [-RebootRequired <String>] [-OS <String>] [-Path <String>] [-Force] [<CommonParameters>]
+Export-Action1EndpointGroupMembersJson [-GroupId] <String> [-Status <String>] [-RebootRequired <String>]
+ [-OS <String>] [-Path <String>] [-Force] [<CommonParameters>]
 ```
 
 ### ByGroupName
 ```
-Export-Action1EndpointGroupMembersJson -GroupName <String> [-Status <String>] [-RebootRequired <String>] [-OS <String>] [-Path <String>] [-Force] [<CommonParameters>]
+Export-Action1EndpointGroupMembersJson -GroupName <String> [-Status <String>] [-RebootRequired <String>]
+ [-OS <String>] [-Path <String>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -293,12 +295,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
-This cmdlet supports the common parameters: -Debug, -ErrorAction,
--ErrorVariable, -InformationAction, -InformationVariable, -OutVariable,
--OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see
-[about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

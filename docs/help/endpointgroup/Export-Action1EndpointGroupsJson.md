@@ -20,12 +20,14 @@ Export-Action1EndpointGroupsJson [[-Path] <String>] [-Force] [<CommonParameters>
 
 ### ByEndpointGroupIds
 ```
-Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupIds <String[]>] [-Force] [<CommonParameters>]
+Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupIds <String[]>] [-Force]
+ [<CommonParameters>]
 ```
 
 ### ByEndpointGroupNames
 ```
-Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupNames <String[]>] [-Force] [<CommonParameters>]
+Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupNames <String[]>] [-Force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -210,12 +212,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
-This cmdlet supports the common parameters: -Debug, -ErrorAction,
--ErrorVariable, -InformationAction, -InformationVariable, -OutVariable,
--OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see
-[about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

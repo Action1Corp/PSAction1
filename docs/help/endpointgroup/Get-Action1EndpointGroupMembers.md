@@ -15,12 +15,14 @@ Gets endpoints from an endpoint group in the current Action1 organization.
 
 ### ByGroupId (Default)
 ```
-Get-Action1EndpointGroupMembers [-GroupId] <String> [-Status <String>] [-RebootRequired <String>] [-OS <String>] [<CommonParameters>]
+Get-Action1EndpointGroupMembers [-GroupId] <String> [-Status <String>] [-RebootRequired <String>]
+ [-OS <String>] [<CommonParameters>]
 ```
 
 ### ByGroupName
 ```
-Get-Action1EndpointGroupMembers -GroupName <String> [-Status <String>] [-RebootRequired <String>] [-OS <String>] [<CommonParameters>]
+Get-Action1EndpointGroupMembers -GroupName <String> [-Status <String>] [-RebootRequired <String>]
+ [-OS <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -154,7 +156,7 @@ Aliases:
 Accepted values: Windows 11, Windows 10, Windows Server, macOS, linux, All
 
 Required: False
-Position: 3
+Position: Named
 Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -179,7 +181,7 @@ Aliases:
 Accepted values: Yes, No, All
 
 Required: False
-Position: 2
+Position: Named
 Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -205,19 +207,14 @@ Aliases:
 Accepted values: Connected, Disconnected, Pending Uninstall, All
 
 Required: False
-Position: 1
+Position: Named
 Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
-This cmdlet supports the common parameters: -Debug, -ErrorAction,
--ErrorVariable, -InformationAction, -InformationVariable, -OutVariable,
--OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see
-[about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

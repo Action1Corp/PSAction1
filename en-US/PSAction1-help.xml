@@ -873,6 +873,313 @@ Europe</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Export-Action1EndpointsJson</command:name>
+      <command:verb>Export</command:verb>
+      <command:noun>Action1EndpointsJson</command:noun>
+      <maml:description>
+        <maml:para>Exports managed Action1 endpoints to a JSON file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Export-Action1EndpointsJson` calls `Get-Action1Endpoints` with the selected endpoint filters and exports the returned endpoint records to a JSON file.</maml:para>
+      <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para>* `organization_id`</maml:para>
+      <maml:para>* `type`</maml:para>
+      <maml:para>* `items`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The schema property is set to `PSAction1.Endpoint.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The type property is set to `Endpoint`.</maml:para>
+      <maml:para>The items array contains the endpoint objects returned by `Get-Action1Endpoints`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
+      <maml:para>Use Status , RebootRequired , and OS to pass endpoint filters through to `Get-Action1Endpoints`. Specify `All` for a filter parameter to skip that filter.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
+      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-Action1EndpointsJson</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Status</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by endpoint status.</maml:para>
+            <maml:para>Specify `All` to disable status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Connected`</maml:para>
+            <maml:para>* `Disconnected`</maml:para>
+            <maml:para>* `Pending Uninstall`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>RebootRequired</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by reboot requirement.</maml:para>
+            <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Yes`</maml:para>
+            <maml:para>* `No`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">No</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>OS</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by operating system family.</maml:para>
+            <maml:para>Specify `All` to disable OS filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Windows 11`</maml:para>
+            <maml:para>* `Windows 10`</maml:para>
+            <maml:para>* `Windows Server`</maml:para>
+            <maml:para>* `macOS`</maml:para>
+            <maml:para>* `linux`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Windows 11</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows 10</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows Server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">macOS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">linux</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_Endpoints_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>OS</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by operating system family.</maml:para>
+          <maml:para>Specify `All` to disable OS filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Windows 11`</maml:para>
+          <maml:para>* `Windows 10`</maml:para>
+          <maml:para>* `Windows Server`</maml:para>
+          <maml:para>* `macOS`</maml:para>
+          <maml:para>* `linux`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the JSON file to create.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_Endpoints_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>RebootRequired</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by reboot requirement.</maml:para>
+          <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Yes`</maml:para>
+          <maml:para>* `No`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Status</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by endpoint status.</maml:para>
+          <maml:para>Specify `All` to disable status filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Connected`</maml:para>
+          <maml:para>* `Disconnected`</maml:para>
+          <maml:para>* `Pending Uninstall`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg and requires permission to view managed endpoints in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------------- Example 1: Export all endpoints ---------------</maml:title>
+        <dev:code>Export-Action1EndpointsJson</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all managed endpoints in the current organization to a timestamped JSON file in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------ Example 2: Export connected endpoints ------------</maml:title>
+        <dev:code>Export-Action1EndpointsJson -Status Connected</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoints where the status is `Connected`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-- Example 3: Export Windows 11 endpoints that require reboot --</maml:title>
+        <dev:code>Export-Action1EndpointsJson `
+    -Status All `
+    -RebootRequired Yes `
+    -OS 'Windows 11'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports managed Windows 11 endpoints that require reboot.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 4: Export endpoints to a specific file --------</maml:title>
+        <dev:code>Export-Action1EndpointsJson -Path 'C:\Reports\Endpoints.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all managed endpoints to the specified JSON file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <dev:code>Export-Action1EndpointsJson `
+    -Path 'C:\Reports\Endpoints.json' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoints and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgName</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-Action1Endpoint</command:name>
       <command:verb>Get</command:verb>
       <command:noun>Action1Endpoint</command:noun>
@@ -2446,6 +2753,1925 @@ Update-Action1Endpoint -EndpointObject $endpoint -Comment 'Assigned to accountin
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Remove-Action1Endpoint</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Add-Action1EndpointGroupMembers</command:name>
+      <command:verb>Add</command:verb>
+      <command:noun>Action1EndpointGroupMembers</command:noun>
+      <maml:description>
+        <maml:para>Adds multiple endpoints to an endpoint group in the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Adds managed endpoints to a specific endpoint group by calling the Action1 endpoint group contents API once with one operation object per endpoint.</maml:para>
+      <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the endpoint group contents API path with the resolved ID.</maml:para>
+      <maml:para>Each -EndpointIds value must use the standard GUID format. The command sends an Action1 group-member operation for each endpoint ID with `method` set to `POST`, `type` set to `Endpoint`, and `endpoint_id` set to the supplied endpoint ID.</maml:para>
+      <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group that receives the endpoints.</maml:para>
+            <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndpointIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies the IDs of the endpoints to add to the endpoint group.</maml:para>
+            <maml:para>Each value must use the standard GUID format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Add-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndpointIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies the IDs of the endpoints to add to the endpoint group.</maml:para>
+            <maml:para>Each value must use the standard GUID format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group that receives the endpoints.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>EndpointIds</maml:name>
+        <maml:description>
+          <maml:para>Specifies the IDs of the endpoints to add to the endpoint group.</maml:para>
+          <maml:para>Each value must use the standard GUID format.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>GroupId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the endpoint group that receives the endpoints.</maml:para>
+          <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>GroupName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the name of the endpoint group that receives the endpoints.</maml:para>
+          <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the Action1 API response.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command sends a POST request to the endpoint group contents API path: `/endpoints/groups/:orgId/:groupId/contents`.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------- Example 1: Add endpoints to a group by ID ----------</maml:title>
+        <dev:code>$endpointIds = @(
+    '5e79941d-e4cc-40f3-899b-0cff63836d46'
+    '79e8ad16-70ec-42fe-8676-cfc1a47a5bc6'
+)
+
+Add-Action1EndpointGroupMembers `
+    -GroupId 'Service_1696554367754' `
+    -EndpointIds $endpointIds</dev:code>
+        <dev:remarks>
+          <maml:para>Adds the endpoints to the specified endpoint group in the current organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2: Add endpoints to a group by name ---------</maml:title>
+        <dev:code>Add-Action1EndpointGroupMembers `
+    -GroupName 'Workstations' `
+    -EndpointIds @(
+        '5e79941d-e4cc-40f3-899b-0cff63836d46'
+        '79e8ad16-70ec-42fe-8676-cfc1a47a5bc6'
+    )</dev:code>
+        <dev:remarks>
+          <maml:para>Resolves the endpoint group named Workstations and adds the endpoints to that group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 3: Preview the request ----------------</maml:title>
+        <dev:code>Add-Action1EndpointGroupMembers `
+    -GroupId 'Service_1696554367754' `
+    -EndpointIds $endpointIds `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows the add operation without sending the API request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroupMembers</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Export-Action1EndpointGroupMembersJson</command:name>
+      <command:verb>Export</command:verb>
+      <command:noun>Action1EndpointGroupMembersJson</command:noun>
+      <maml:description>
+        <maml:para>Exports endpoints from an Action1 endpoint group to a JSON file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Export-Action1EndpointGroupMembersJson` resolves one endpoint group by ID or name, calls `Get-Action1EndpointGroupMembers` with the selected endpoint filters, and exports the returned endpoint records to a JSON file.</maml:para>
+      <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para>* `organization_id`</maml:para>
+      <maml:para>* `endpointgroup_id`</maml:para>
+      <maml:para>* `type`</maml:para>
+      <maml:para>* `items`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The schema property is set to `PSAction1.Endpoint.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The endpointgroup_id property contains the resolved endpoint group ID. The type property is set to `Endpoint`.</maml:para>
+      <maml:para>The items array contains the endpoint objects returned by `Get-Action1EndpointGroupMembers`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
+      <maml:para>Use Status , RebootRequired , and OS to pass endpoint filters through to `Get-Action1EndpointGroupMembers`. Specify `All` for a filter parameter to skip that filter.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
+      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-Action1EndpointGroupMembersJson</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group whose endpoints are exported.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OS</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by operating system family.</maml:para>
+            <maml:para>Specify `All` to disable OS filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Windows 11`</maml:para>
+            <maml:para>* `Windows 10`</maml:para>
+            <maml:para>* `Windows Server`</maml:para>
+            <maml:para>* `macOS`</maml:para>
+            <maml:para>* `linux`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Windows 11</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows 10</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows Server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">macOS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">linux</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>RebootRequired</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by reboot requirement.</maml:para>
+            <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Yes`</maml:para>
+            <maml:para>* `No`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">No</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Status</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by endpoint status.</maml:para>
+            <maml:para>Specify `All` to disable status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Connected`</maml:para>
+            <maml:para>* `Disconnected`</maml:para>
+            <maml:para>* `Pending Uninstall`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Export-Action1EndpointGroupMembersJson</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group whose endpoints are exported.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OS</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by operating system family.</maml:para>
+            <maml:para>Specify `All` to disable OS filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Windows 11`</maml:para>
+            <maml:para>* `Windows 10`</maml:para>
+            <maml:para>* `Windows Server`</maml:para>
+            <maml:para>* `macOS`</maml:para>
+            <maml:para>* `linux`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Windows 11</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows 10</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows Server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">macOS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">linux</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>RebootRequired</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by reboot requirement.</maml:para>
+            <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Yes`</maml:para>
+            <maml:para>* `No`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">No</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Status</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by endpoint status.</maml:para>
+            <maml:para>Specify `All` to disable status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Connected`</maml:para>
+            <maml:para>* `Disconnected`</maml:para>
+            <maml:para>* `Pending Uninstall`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>GroupId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the endpoint group whose endpoints are exported.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>GroupName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the name of the endpoint group whose endpoints are exported.</maml:para>
+          <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>OS</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by operating system family.</maml:para>
+          <maml:para>Specify `All` to disable OS filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Windows 11`</maml:para>
+          <maml:para>* `Windows 10`</maml:para>
+          <maml:para>* `Windows Server`</maml:para>
+          <maml:para>* `macOS`</maml:para>
+          <maml:para>* `linux`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the JSON file to create.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>RebootRequired</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by reboot requirement.</maml:para>
+          <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Yes`</maml:para>
+          <maml:para>* `No`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Status</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by endpoint status.</maml:para>
+          <maml:para>Specify `All` to disable status filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Connected`</maml:para>
+          <maml:para>* `Disconnected`</maml:para>
+          <maml:para>* `Pending Uninstall`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg and requires permission to view endpoint groups and endpoint group contents in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--- Example 1: Export endpoints from an endpoint group by ID ---</maml:title>
+        <dev:code>Export-Action1EndpointGroupMembersJson -GroupId 'Service_1696554367754'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all endpoints from the specified endpoint group to a timestamped JSON file in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 2: Export endpoints from an endpoint group to a specific file</maml:title>
+        <dev:code>Export-Action1EndpointGroupMembersJson `
+    -GroupId 'Service_1696554367754' `
+    -Path 'C:\Reports\ServiceEndpointGroupMembers.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoints from the specified endpoint group to the specified JSON file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>- Example 3: Export connected endpoints by endpoint group name -</maml:title>
+        <dev:code>Export-Action1EndpointGroupMembersJson `
+    -GroupName 'Service' `
+    -Status Connected</dev:code>
+        <dev:remarks>
+          <maml:para>Resolves the endpoint group named Service and exports only connected endpoints from that group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-- Example 4: Export Windows 11 endpoints that require reboot --</maml:title>
+        <dev:code>Export-Action1EndpointGroupMembersJson `
+    -GroupName 'Workstations' `
+    -Status All `
+    -RebootRequired Yes `
+    -OS 'Windows 11'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports managed Windows 11 endpoints that require reboot from the endpoint group named Workstations.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <dev:code>Export-Action1EndpointGroupMembersJson `
+    -GroupId 'Service_1696554367754' `
+    -Path 'C:\Reports\ServiceEndpointGroupMembers.json' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoint group members and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroupMembers</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgName</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Export-Action1EndpointGroupsJson</command:name>
+      <command:verb>Export</command:verb>
+      <command:noun>Action1EndpointGroupsJson</command:noun>
+      <maml:description>
+        <maml:para>Exports Action1 endpoint groups to a JSON file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Export-Action1EndpointGroupsJson` calls `Get-Action1EndpointGroups`, optionally filters the returned endpoint group list by endpoint group ID or endpoint group name, and exports the selected endpoint groups to a JSON file.</maml:para>
+      <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para>* `organization_id`</maml:para>
+      <maml:para>* `type`</maml:para>
+      <maml:para>* `items`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The schema property is set to `PSAction1.EndpointGroup.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The type property is set to `EndpointGroup`.</maml:para>
+      <maml:para>The items array contains the endpoint group objects returned by `Get-Action1EndpointGroups`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
+      <maml:para>Use either EndpointGroupIds or EndpointGroupNames to filter the export. These parameters are mutually exclusive and cannot be used in the same command. Endpoint group IDs are strings and are not validated as GUIDs.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
+      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-Action1EndpointGroupsJson</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndpointGroupIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more endpoint group IDs to export.</maml:para>
+            <maml:para>Endpoint group IDs are strings, such as `Service_1696554367754`, and are not required to use GUID format. Matching is case-insensitive. Empty or whitespace-only values are ignored.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Export-Action1EndpointGroupsJson</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndpointGroupNames</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more endpoint group names to export.</maml:para>
+            <maml:para>Name matching is case-insensitive. Empty or whitespace-only values are ignored.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>EndpointGroupIds</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more endpoint group IDs to export.</maml:para>
+          <maml:para>Endpoint group IDs are strings, such as `Service_1696554367754`, and are not required to use GUID format. Matching is case-insensitive. Empty or whitespace-only values are ignored.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>EndpointGroupNames</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more endpoint group names to export.</maml:para>
+          <maml:para>Name matching is case-insensitive. Empty or whitespace-only values are ignored.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the JSON file to create.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg and requires permission to view endpoint groups in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>Example 1: Export all endpoint groups to the default JSON file</maml:title>
+        <dev:code>Export-Action1EndpointGroupsJson</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all endpoint groups returned by `Get-Action1EndpointGroups` to a timestamped JSON file in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 2: Export all endpoint groups to a specific file ---</maml:title>
+        <dev:code>Export-Action1EndpointGroupsJson -Path 'C:\Reports\EndpointGroups.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all endpoint groups to the specified JSON file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 3: Export endpoint groups by ID -----------</maml:title>
+        <dev:code>Export-Action1EndpointGroupsJson `
+    -Path 'C:\Reports\SelectedEndpointGroups.json' `
+    -EndpointGroupIds 'Service_1696554367754'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports only endpoint groups whose `id` value matches one of the specified endpoint group IDs.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 4: Export endpoint groups by name ----------</maml:title>
+        <dev:code>Export-Action1EndpointGroupsJson `
+    -Path 'C:\Reports\ServiceEndpointGroups.json' `
+    -EndpointGroupNames 'Service'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports only endpoint groups whose `name` value matches one of the specified endpoint group names.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <dev:code>Export-Action1EndpointGroupsJson -Path 'C:\Reports\EndpointGroups.json' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoint groups and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgName</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1EndpointGroup</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1EndpointGroup</command:noun>
+      <maml:description>
+        <maml:para>Gets one endpoint group by endpoint group ID or endpoint group name.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets detailed information about a specific endpoint group by using the Action1 endpoint groups API.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the single endpoint group API path with the resolved ID.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1EndpointGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group to retrieve.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-Action1EndpointGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group to retrieve.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>GroupId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the endpoint group to retrieve.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>GroupName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the name of the endpoint group to retrieve.</maml:para>
+          <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the endpoint group object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>After resolving the endpoint group identity, this command calls the single endpoint group API path without pagination.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------ Example 1: Get an endpoint group by ID ------------</maml:title>
+        <dev:code>Get-Action1EndpointGroup -GroupId 'Service_1696554367754'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets details for the specified endpoint group in the current Action1 organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 2: Get an endpoint group by name -----------</maml:title>
+        <dev:code>Get-Action1EndpointGroup -GroupName 'Service'</dev:code>
+        <dev:remarks>
+          <maml:para>Resolves the endpoint group named Service and gets that endpoint group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 3: Display endpoint group details ----------</maml:title>
+        <dev:code>Get-Action1EndpointGroup -GroupId 'Service_1696554367754' |
+    Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the endpoint group and displays all returned fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1EndpointGroupMembers</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1EndpointGroupMembers</command:noun>
+      <maml:description>
+        <maml:para>Gets endpoints from an endpoint group in the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets endpoint records included in a specific endpoint group by using the Action1 endpoint groups API.</maml:para>
+      <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the endpoint group contents API path with the resolved ID.</maml:para>
+      <maml:para>Use Status to filter endpoints by connection or uninstall status.</maml:para>
+      <maml:para>Use RebootRequired to filter endpoints by reboot requirement.</maml:para>
+      <maml:para>Use OS to filter endpoints by operating system family.</maml:para>
+      <maml:para>Specify `All` for a filter parameter to skip that filter.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group whose endpoints are retrieved.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OS</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by operating system family.</maml:para>
+            <maml:para>Specify `All` to disable OS filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Windows 11`</maml:para>
+            <maml:para>* `Windows 10`</maml:para>
+            <maml:para>* `Windows Server`</maml:para>
+            <maml:para>* `macOS`</maml:para>
+            <maml:para>* `linux`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Windows 11</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows 10</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows Server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">macOS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">linux</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>RebootRequired</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by reboot requirement.</maml:para>
+            <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Yes`</maml:para>
+            <maml:para>* `No`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">No</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Status</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by endpoint status.</maml:para>
+            <maml:para>Specify `All` to disable status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Connected`</maml:para>
+            <maml:para>* `Disconnected`</maml:para>
+            <maml:para>* `Pending Uninstall`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group whose endpoints are retrieved.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OS</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by operating system family.</maml:para>
+            <maml:para>Specify `All` to disable OS filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Windows 11`</maml:para>
+            <maml:para>* `Windows 10`</maml:para>
+            <maml:para>* `Windows Server`</maml:para>
+            <maml:para>* `macOS`</maml:para>
+            <maml:para>* `linux`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Windows 11</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows 10</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Windows Server</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">macOS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">linux</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>RebootRequired</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by reboot requirement.</maml:para>
+            <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Yes`</maml:para>
+            <maml:para>* `No`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">No</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Status</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by endpoint status.</maml:para>
+            <maml:para>Specify `All` to disable status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Connected`</maml:para>
+            <maml:para>* `Disconnected`</maml:para>
+            <maml:para>* `Pending Uninstall`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>GroupId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the endpoint group whose endpoints are retrieved.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>GroupName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the name of the endpoint group whose endpoints are retrieved.</maml:para>
+          <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>OS</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by operating system family.</maml:para>
+          <maml:para>Specify `All` to disable OS filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Windows 11`</maml:para>
+          <maml:para>* `Windows 10`</maml:para>
+          <maml:para>* `Windows Server`</maml:para>
+          <maml:para>* `macOS`</maml:para>
+          <maml:para>* `linux`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>RebootRequired</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by reboot requirement.</maml:para>
+          <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Yes`</maml:para>
+          <maml:para>* `No`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Status</maml:name>
+        <maml:description>
+          <maml:para>Filters endpoints by endpoint status.</maml:para>
+          <maml:para>Specify `All` to disable status filtering.</maml:para>
+          <maml:para>Accepted values:</maml:para>
+          <maml:para>* `Connected`</maml:para>
+          <maml:para>* `Disconnected`</maml:para>
+          <maml:para>* `Pending Uninstall`</maml:para>
+          <maml:para>* `All`</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>All</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns endpoint objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command retrieves paged results from the Action1 API and returns endpoint objects to the pipeline. Action1 may include an `added_via` attribute on each endpoint to indicate how the endpoint came to this group.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---- Example 1: Get endpoints from an endpoint group by ID ----</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers -GroupId 'Service_1696554367754'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets all endpoints included in the specified endpoint group in the current organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-- Example 2: Get connected endpoints from an endpoint group --</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers -GroupId 'Service_1696554367754' -Status Connected</dev:code>
+        <dev:remarks>
+          <maml:para>Gets connected endpoints included in the specified endpoint group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 3: Get endpoints from an endpoint group by name ---</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers -GroupName 'Service'</dev:code>
+        <dev:remarks>
+          <maml:para>Resolves the endpoint group named Service and gets endpoints included in that group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 4: Get Windows 11 endpoints that require reboot ---</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers `
+    -GroupName 'Workstations' `
+    -Status All `
+    -RebootRequired Yes `
+    -OS 'Windows 11'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets managed Windows 11 endpoints that require reboot from the endpoint group named Workstations.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 5: Review selected endpoint fields ----------</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers -GroupName 'Workstations' |
+    Select-Object id, name, status, reboot_required, OS, added_via</dev:code>
+        <dev:remarks>
+          <maml:para>Gets endpoints from the endpoint group and selects key fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1EndpointGroups</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1EndpointGroups</command:noun>
+      <maml:description>
+        <maml:para>Gets endpoint groups for the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets endpoint group records from the current Action1 organization by using the Action1 endpoint groups API.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1EndpointGroups</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns endpoint group objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command retrieves paged results from the Action1 API and returns endpoint group objects to the pipeline.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------- Example 1: Get all endpoint groups --------------</maml:title>
+        <dev:code>Get-Action1EndpointGroups</dev:code>
+        <dev:remarks>
+          <maml:para>Gets all endpoint groups in the current organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 2: Review selected endpoint group fields -------</maml:title>
+        <dev:code>Get-Action1EndpointGroups |
+    Select-Object id, name, description</dev:code>
+        <dev:remarks>
+          <maml:para>Gets endpoint groups and selects key fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1EndpointGroupMembers</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1EndpointGroupMembers</command:noun>
+      <maml:description>
+        <maml:para>Removes multiple endpoints from an endpoint group in the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Removes managed endpoints from a specific endpoint group by calling the Action1 endpoint group contents API once with one operation object per endpoint.</maml:para>
+      <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the endpoint group contents API path with the resolved ID.</maml:para>
+      <maml:para>Each -EndpointIds value must use the standard GUID format. The command sends an Action1 group-member operation for each endpoint ID with `method` set to `DELETE` and `endpoint_id` set to the supplied endpoint ID.</maml:para>
+      <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group that contains the endpoints.</maml:para>
+            <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndpointIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies the IDs of the endpoints to remove from the endpoint group.</maml:para>
+            <maml:para>Each value must use the standard GUID format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndpointIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies the IDs of the endpoints to remove from the endpoint group.</maml:para>
+            <maml:para>Each value must use the standard GUID format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group that contains the endpoints.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>EndpointIds</maml:name>
+        <maml:description>
+          <maml:para>Specifies the IDs of the endpoints to remove from the endpoint group.</maml:para>
+          <maml:para>Each value must use the standard GUID format.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>GroupId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the endpoint group that contains the endpoints.</maml:para>
+          <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>GroupName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the name of the endpoint group that contains the endpoints.</maml:para>
+          <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the Action1 API response.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command sends a POST request to the endpoint group contents API path: `/endpoints/groups/:orgId/:groupId/contents`.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------- Example 1: Remove endpoints from a group by ID --------</maml:title>
+        <dev:code>$endpointIds = @(
+    '5e79941d-e4cc-40f3-899b-0cff63836d46'
+    '79e8ad16-70ec-42fe-8676-cfc1a47a5bc6'
+)
+
+Remove-Action1EndpointGroupMembers `
+    -GroupId 'Service_1696554367754' `
+    -EndpointIds $endpointIds</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the endpoints from the specified endpoint group in the current organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 2: Remove endpoints from a group by name -------</maml:title>
+        <dev:code>Remove-Action1EndpointGroupMembers `
+    -GroupName 'Workstations' `
+    -EndpointIds @(
+        '5e79941d-e4cc-40f3-899b-0cff63836d46'
+        '79e8ad16-70ec-42fe-8676-cfc1a47a5bc6'
+    )</dev:code>
+        <dev:remarks>
+          <maml:para>Resolves the endpoint group named Workstations and removes the endpoints from that group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 3: Preview the request ----------------</maml:title>
+        <dev:code>Remove-Action1EndpointGroupMembers `
+    -GroupId 'Service_1696554367754' `
+    -EndpointIds $endpointIds `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows the remove operation without sending the API request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Add-Action1EndpointGroupMembers</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroupMembers</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>

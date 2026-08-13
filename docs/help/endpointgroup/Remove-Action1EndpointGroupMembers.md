@@ -15,12 +15,14 @@ Removes multiple endpoints from an endpoint group in the current Action1 organiz
 
 ### ByGroupId (Default)
 ```
-Remove-Action1EndpointGroupMembers [-GroupId] <String> -EndpointIds <String[]> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-Action1EndpointGroupMembers [-GroupId] <String> -EndpointIds <String[]> [-Force] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### ByGroupName
 ```
-Remove-Action1EndpointGroupMembers -GroupName <String> -EndpointIds <String[]> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-Action1EndpointGroupMembers -GroupName <String> -EndpointIds <String[]> [-Force] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -87,6 +89,21 @@ Remove-Action1EndpointGroupMembers `
 Shows the remove operation without sending the API request.
 
 ## PARAMETERS
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -EndpointIds
 
@@ -160,13 +177,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
+### -WhatIf
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
 
-This cmdlet supports the common parameters: -Debug, -ErrorAction,
--ErrorVariable, -InformationAction, -InformationVariable, -OutVariable,
--OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see
-[about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

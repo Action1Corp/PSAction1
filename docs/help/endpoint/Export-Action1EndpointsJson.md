@@ -14,7 +14,8 @@ Exports managed Action1 endpoints to a JSON file.
 ## SYNTAX
 
 ```
-Export-Action1EndpointsJson [[-Status] <String>] [[-RebootRequired] <String>] [[-OS] <String>] [-Path <String>] [-Force] [<CommonParameters>]
+Export-Action1EndpointsJson [[-Status] <String>] [[-RebootRequired] <String>] [[-OS] <String>] [-Path <String>]
+ [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -238,12 +239,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
-This cmdlet supports the common parameters: -Debug, -ErrorAction,
--ErrorVariable, -InformationAction, -InformationVariable, -OutVariable,
--OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see
-[about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
