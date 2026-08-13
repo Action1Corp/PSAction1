@@ -8,22 +8,29 @@
 function Remove-Action1EndpointGroupMembers {
     [CmdletBinding(
         SupportsShouldProcess = $true,
-        DefaultParameterSetName = 'ByGroupId'
+        DefaultParameterSetName = 'ByGroupIdEndpointIds'
     )]
     param(
         [Parameter(
             Mandatory = $true,
-            ParameterSetName = 'ByGroupId',
+            ParameterSetName = 'ByGroupIdEndpointIds',
+            Position = 0
+        )]
+        [Parameter(
+            Mandatory = $true,
+            ParameterSetName = 'ByGroupIdEndpointObjects',
             Position = 0
         )]
         [ValidateNotNullOrEmpty()]
         [string]$GroupId,
 
-        [Parameter(Mandatory = $true, ParameterSetName = 'ByGroupName')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByGroupNameEndpointIds')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByGroupNameEndpointObjects')]
         [ValidateNotNullOrEmpty()]
         [string]$GroupName,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByGroupIdEndpointIds')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByGroupNameEndpointIds')]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
             if (-not (Test-Guid $_)) {
@@ -34,66 +41,112 @@ function Remove-Action1EndpointGroupMembers {
         })]
         [string[]]$EndpointIds,
 
+        [Parameter(
+            Mandatory = $true,
+            ParameterSetName = 'ByGroupIdEndpointObjects',
+            ValueFromPipeline = $true
+        )]
+        [Parameter(
+            Mandatory = $true,
+            ParameterSetName = 'ByGroupNameEndpointObjects',
+            ValueFromPipeline = $true
+        )]
+        [AllowNull()]
+        [object[]]$EndpointObjects,
+
         [switch]$Force
     )
 
-    if (Initialize-Action1DefaultOrg) {
-        $orgId = Get-Action1DefaultOrgId
-    }
+    begin {
+        $endpointIdValues = New-Object System.Collections.ArrayList
 
-    if ($PSCmdlet.ParameterSetName -eq 'ByGroupName') {
-        $endpointGroup = Resolve-Action1EndpointGroupByName -GroupName $GroupName
-    }
-    else {
-        $endpointGroup = Resolve-Action1EndpointGroupById -GroupId $GroupId
-    }
-
-    $resolvedGroupId = $endpointGroup.id
-    $endpointIdValues = @(
-        foreach ($endpointId in $EndpointIds) {
-            $endpointId.Trim()
+        if ($Force) {
+            $ConfirmPreference = 'None'
         }
-    )
+    }
 
-    $uriPathBuilder = Get-UriMapValue -Key 'D_EndpointGroupMembers'
+    process {
+        if ($PSCmdlet.ParameterSetName -like '*EndpointObjects') {
+            foreach ($endpointObject in $EndpointObjects) {
+                $endpointIdentity = Get-Action1EndpointIdentityFromObject `
+                    -EndpointObject $endpointObject
 
-    $uri = & $uriPathBuilder $orgId $resolvedGroupId
-    $path = "$Script:Action1_BaseURI{0}" -f $uri
-    $endpointCount = $endpointIdValues.Count
-    $groupLabel = "endpoint group '$resolvedGroupId'"
+                if (-not $endpointIdentity.IsValid) {
+                    Write-Action1Debug $endpointIdentity.ErrorMessage
+                    Write-Error $endpointIdentity.ErrorMessage
+                    continue
+                }
 
-    $body = @(
-        foreach ($endpointIdValue in $endpointIdValues) {
-            [ordered]@{
-                method      = 'DELETE'
-                endpoint_id = $endpointIdValue
+                [void]$endpointIdValues.Add($endpointIdentity.EndpointId)
             }
         }
-    )
-
-    if ($Force) {
-        $ConfirmPreference = 'None'
+        else {
+            foreach ($endpointId in $EndpointIds) {
+                [void]$endpointIdValues.Add($endpointId.Trim())
+            }
+        }
     }
 
-    if (-not $PSCmdlet.ShouldProcess($groupLabel, "Remove $endpointCount endpoints")) {
-        Write-Action1Debug "Skipped removing $endpointCount endpoints from $groupLabel."
-        return
+    end {
+        $endpointCount = $endpointIdValues.Count
+
+        if ($endpointCount -eq 0) {
+            Write-Error 'No valid endpoint IDs were supplied.'
+            return
+        }
+
+        if (Initialize-Action1DefaultOrg) {
+            $orgId = Get-Action1DefaultOrgId
+        }
+
+        if ($PSCmdlet.ParameterSetName -like 'ByGroupName*') {
+            $endpointGroup = Resolve-Action1EndpointGroupByName -GroupName $GroupName
+        }
+        else {
+            $endpointGroup = Resolve-Action1EndpointGroupById -GroupId $GroupId
+        }
+
+        $resolvedGroupId = $endpointGroup.id
+
+        $uriPathBuilder = Get-UriMapValue -Key 'D_EndpointGroupMembers'
+
+        $uri = & $uriPathBuilder $orgId $resolvedGroupId
+        $path = "$Script:Action1_BaseURI{0}" -f $uri
+        $groupLabel = "endpoint group '$resolvedGroupId'"
+
+        $body = @(
+            foreach ($endpointIdValue in $endpointIdValues) {
+                [ordered]@{
+                    method      = 'DELETE'
+                    endpoint_id = $endpointIdValue
+                }
+            }
+        )
+
+        $operation = "Remove $endpointCount endpoints"
+
+        if (-not $PSCmdlet.ShouldProcess($groupLabel, $operation)) {
+            Write-Action1Debug (
+                "Skipped removing $endpointCount endpoints from $groupLabel."
+            )
+            return
+        }
+
+        Write-Action1Debug "Removing $endpointCount endpoints from $groupLabel."
+
+        $response = Invoke-Action1ApiRequest `
+            -Method POST `
+            -Path $path `
+            -Label "Remove endpoints from $groupLabel" `
+            -Body $body
+
+        if ($null -eq $response) {
+            Write-Error "Failed to remove $endpointCount endpoints from $groupLabel."
+            return
+        }
+
+        Write-Action1Debug "Removed $endpointCount endpoints from $groupLabel."
+
+        $response
     }
-
-    Write-Action1Debug "Removing $endpointCount endpoints from $groupLabel."
-
-    $response = Invoke-Action1ApiRequest `
-        -Method POST `
-        -Path $path `
-        -Label "Remove endpoints from $groupLabel" `
-        -Body $body
-
-    if ($null -eq $response) {
-        Write-Error "Failed to remove $endpointCount endpoints from $groupLabel."
-        return
-    }
-
-    Write-Action1Debug "Removed $endpointCount endpoints from $groupLabel."
-
-    $response
 }

@@ -84,6 +84,36 @@ Get-Action1Endpoints -Status Connected |
 
 Gets connected endpoints and selects key fields.
 
+### Example 7: Add filtered endpoints to an endpoint group
+
+```powershell
+Get-Action1Endpoints `
+    -Status Connected `
+    -RebootRequired No `
+    -OS 'Windows 11' |
+    Add-Action1EndpointGroupMembers -GroupName 'Windows 11 Workstations'
+```
+
+Gets connected Windows 11 endpoints that do not require reboot, then pipes the
+endpoint objects to **Add-Action1EndpointGroupMembers**. The receiving command
+collects the endpoint IDs and sends one bulk API request to add them to the
+endpoint group.
+
+### Example 8: Preview adding filtered endpoints to an endpoint group
+
+```powershell
+Get-Action1Endpoints `
+    -Status Connected `
+    -RebootRequired Yes `
+    -OS 'Windows Server' |
+    Add-Action1EndpointGroupMembers `
+        -GroupName 'Servers Pending Reboot' `
+        -WhatIf
+```
+
+Gets connected Windows Server endpoints that require reboot, then previews the
+endpoint group membership update without sending the add request.
+
 ## PARAMETERS
 
 ### -OS
@@ -178,7 +208,9 @@ You cannot pipe input to this command.
 
 ### System.Object
 
-Returns managed endpoint objects from Action1.
+Returns managed endpoint objects from Action1. The objects include an `id`
+property and can be piped to commands that accept endpoint objects, such as
+**Add-Action1EndpointGroupMembers**.
 
 ## NOTES
 
@@ -189,3 +221,5 @@ The command retrieves paged results from the Action1 API and returns endpoint ob
 ## RELATED LINKS
 
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
+[Add-Action1EndpointGroupMembers](../endpointgroup/Add-Action1EndpointGroupMembers.md)
+[Get-Action1EndpointGroupMembers](../endpointgroup/Get-Action1EndpointGroupMembers.md)

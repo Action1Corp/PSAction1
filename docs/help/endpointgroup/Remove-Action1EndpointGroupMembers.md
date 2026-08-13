@@ -13,13 +13,25 @@ Removes multiple endpoints from an endpoint group in the current Action1 organiz
 
 ## SYNTAX
 
-### ByGroupId (Default)
+### ByGroupIdEndpointIds (Default)
 ```
 Remove-Action1EndpointGroupMembers [-GroupId] <String> -EndpointIds <String[]> [-Force] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
-### ByGroupName
+### ByGroupIdEndpointObjects
+```
+Remove-Action1EndpointGroupMembers [-GroupId] <String> -EndpointObjects <Object[]> [-Force] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
+```
+
+### ByGroupNameEndpointObjects
+```
+Remove-Action1EndpointGroupMembers -GroupName <String> -EndpointObjects <Object[]> [-Force] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
+```
+
+### ByGroupNameEndpointIds
 ```
 Remove-Action1EndpointGroupMembers -GroupName <String> -EndpointIds <String[]> [-Force] [-WhatIf] [-Confirm]
  [<CommonParameters>]
@@ -38,6 +50,12 @@ API path with the resolved ID.
 Each **-EndpointIds** value must use the standard GUID format. The command sends
 an Action1 group-member operation for each endpoint ID with `method` set to
 `DELETE` and `endpoint_id` set to the supplied endpoint ID.
+
+You can also pipe endpoint objects to the command. Piped endpoint objects must
+include an `id` property that contains the endpoint GUID. The command collects
+valid endpoint IDs from all pipeline input before sending a single API request.
+Invalid piped objects are reported and skipped. If no valid endpoint IDs are
+supplied, the command does not call the API.
 
 Use **-WhatIf** to preview the operation. Use **-Force** to bypass confirmation
 prompts.
@@ -77,7 +95,38 @@ Remove-Action1EndpointGroupMembers `
 Resolves the endpoint group named Workstations and removes the endpoints from
 that group.
 
-### Example 3: Preview the request
+### Example 3: Remove piped members from a group
+
+```powershell
+Get-Action1EndpointGroupMembers `
+    -GroupName 'Retired Workstations' `
+    -Status Disconnected `
+    -RebootRequired All `
+    -OS 'Windows 10' |
+    Remove-Action1EndpointGroupMembers -GroupName 'Retired Workstations'
+```
+
+Gets disconnected Windows 10 endpoints from the Retired Workstations endpoint
+group, collects their endpoint IDs, and removes those endpoints from the same
+endpoint group with one API request.
+
+### Example 4: Preview removing filtered group members
+
+```powershell
+Get-Action1EndpointGroupMembers `
+    -GroupName 'Workstations' `
+    -Status Connected `
+    -RebootRequired Yes `
+    -OS 'Windows 11' |
+    Remove-Action1EndpointGroupMembers `
+        -GroupName 'Workstations' `
+        -WhatIf
+```
+
+Gets connected Windows 11 endpoints that require reboot from the Workstations
+endpoint group, then previews removing those endpoints from the group.
+
+### Example 5: Preview the request
 
 ```powershell
 Remove-Action1EndpointGroupMembers `
@@ -113,13 +162,33 @@ Each value must use the standard GUID format.
 
 ```yaml
 Type: String[]
-Parameter Sets: (All)
+Parameter Sets: ByGroupIdEndpointIds, ByGroupNameEndpointIds
 Aliases:
 
 Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -EndpointObjects
+
+Specifies endpoint objects to remove from the endpoint group. The command
+accepts these objects from the pipeline.
+
+Each object must include an `id` property that contains a standard endpoint
+GUID. Invalid objects are reported and skipped.
+
+```yaml
+Type: Object[]
+Parameter Sets: ByGroupIdEndpointObjects, ByGroupNameEndpointObjects
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -147,7 +216,7 @@ Endpoint group IDs are opaque strings, not GUIDs.
 
 ```yaml
 Type: String
-Parameter Sets: ByGroupId
+Parameter Sets: ByGroupIdEndpointIds, ByGroupIdEndpointObjects
 Aliases:
 
 Required: True
@@ -167,7 +236,7 @@ error.
 
 ```yaml
 Type: String
-Parameter Sets: ByGroupName
+Parameter Sets: ByGroupNameEndpointIds, ByGroupNameEndpointObjects
 Aliases:
 
 Required: True
@@ -197,9 +266,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
+### System.Object
 
-You cannot pipe input to this command.
+You can pipe endpoint objects with an `id` property to this command.
 
 ## OUTPUTS
 
@@ -221,4 +290,5 @@ The command sends a POST request to the endpoint group contents API path:
 [Get-Action1EndpointGroup](Get-Action1EndpointGroup.md)
 [Get-Action1EndpointGroups](Get-Action1EndpointGroups.md)
 [Get-Action1EndpointGroupMembers](Get-Action1EndpointGroupMembers.md)
+[Get-Action1Endpoints](../endpoint/Get-Action1Endpoints.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
