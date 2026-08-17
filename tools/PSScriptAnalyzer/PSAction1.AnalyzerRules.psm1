@@ -181,6 +181,7 @@ function Measure-PSAction1Header {
     try {
         $headerLines = Get-Content `
             -LiteralPath $scriptPath `
+            -Encoding UTF8 `
             -TotalCount $script:PSAction1HeaderSearchLineCount `
             -ErrorAction Stop
     }

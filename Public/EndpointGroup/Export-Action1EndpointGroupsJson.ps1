@@ -3,7 +3,7 @@
 # Provided AS IS
 # Use at your own risk
 # Review and test before production deployment
-# (c) Action1 Corporation
+# © Action1 Corporation
 
 function Export-Action1EndpointGroupsJson {
     [CmdletBinding(DefaultParameterSetName = 'AllEndpointGroups')]

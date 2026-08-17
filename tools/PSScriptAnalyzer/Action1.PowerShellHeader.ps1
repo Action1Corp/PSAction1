@@ -11,5 +11,5 @@ $Script:PSAction1RequiredHeaderLines = @(
     '# Provided AS IS'
     '# Use at your own risk'
     '# Review and test before production deployment'
-    '# © Action1 Corporation'
+    "# $([char]0x00A9) Action1 Corporation"
 )
