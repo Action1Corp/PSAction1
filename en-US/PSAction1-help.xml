@@ -1446,7 +1446,7 @@ Europe</dev:code>
           <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>Returns managed endpoint objects from Action1.</maml:para>
+          <maml:para>Returns managed endpoint objects from Action1. The objects include an `id` property and can be piped to commands that accept endpoint objects, such as Add-Action1EndpointGroupMembers .</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -1501,10 +1501,42 @@ Europe</dev:code>
           <maml:para>Gets connected endpoints and selects key fields.</maml:para>
         </dev:remarks>
       </command:example>
+      <command:example>
+        <maml:title>---- Example 7: Add filtered endpoints to an endpoint group ----</maml:title>
+        <dev:code>Get-Action1Endpoints `
+    -Status Connected `
+    -RebootRequired No `
+    -OS 'Windows 11' |
+    Add-Action1EndpointGroupMembers -GroupName 'Windows 11 Workstations'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets connected Windows 11 endpoints that do not require reboot, then pipes the endpoint objects to Add-Action1EndpointGroupMembers . The receiving command collects the endpoint IDs and sends one bulk API request to add them to the endpoint group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 8: Preview adding filtered endpoints to an endpoint group</maml:title>
+        <dev:code>Get-Action1Endpoints `
+    -Status Connected `
+    -RebootRequired Yes `
+    -OS 'Windows Server' |
+    Add-Action1EndpointGroupMembers `
+        -GroupName 'Servers Pending Reboot' `
+        -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Gets connected Windows Server endpoints that require reboot, then previews the endpoint group membership update without sending the add request.</maml:para>
+        </dev:remarks>
+      </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Add-Action1EndpointGroupMembers</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroupMembers</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2774,6 +2806,7 @@ Update-Action1Endpoint -EndpointObject $endpoint -Comment 'Assigned to accountin
       <maml:para>Adds managed endpoints to a specific endpoint group by calling the Action1 endpoint group contents API once with one operation object per endpoint.</maml:para>
       <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the endpoint group contents API path with the resolved ID.</maml:para>
       <maml:para>Each -EndpointIds value must use the standard GUID format. The command sends an Action1 group-member operation for each endpoint ID with `method` set to `POST`, `type` set to `Endpoint`, and `endpoint_id` set to the supplied endpoint ID.</maml:para>
+      <maml:para>You can also pipe endpoint objects to the command. Piped endpoint objects must include an `id` property that contains the endpoint GUID. The command collects valid endpoint IDs from all pipeline input before sending a single API request. Invalid piped objects are reported and skipped. If no valid endpoint IDs are supplied, the command does not call the API.</maml:para>
       <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
@@ -2902,6 +2935,130 @@ Update-Action1Endpoint -EndpointObject $endpoint -Comment 'Assigned to accountin
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Add-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group that receives the endpoints.</maml:para>
+            <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>EndpointObjects</maml:name>
+          <maml:description>
+            <maml:para>Specifies endpoint objects to add to the endpoint group. The command accepts these objects from the pipeline.</maml:para>
+            <maml:para>Each object must include an `id` property that contains a standard endpoint GUID. Invalid objects are reported and skipped.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+          <dev:type>
+            <maml:name>Object[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Add-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>EndpointObjects</maml:name>
+          <maml:description>
+            <maml:para>Specifies endpoint objects to add to the endpoint group. The command accepts these objects from the pipeline.</maml:para>
+            <maml:para>Each object must include an `id` property that contains a standard endpoint GUID. Invalid objects are reported and skipped.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+          <dev:type>
+            <maml:name>Object[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group that receives the endpoints.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
@@ -2925,6 +3082,19 @@ Update-Action1Endpoint -EndpointObject $endpoint -Comment 'Assigned to accountin
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>EndpointObjects</maml:name>
+        <maml:description>
+          <maml:para>Specifies endpoint objects to add to the endpoint group. The command accepts these objects from the pipeline.</maml:para>
+          <maml:para>Each object must include an `id` property that contains a standard endpoint GUID. Invalid objects are reported and skipped.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+        <dev:type>
+          <maml:name>Object[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -2983,10 +3153,10 @@ Update-Action1Endpoint -EndpointObject $endpoint -Comment 'Assigned to accountin
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>None</maml:name>
+          <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
+          <maml:para>You can pipe endpoint objects with an `id` property to this command.</maml:para>
         </maml:description>
       </command:inputType>
     </command:inputTypes>
@@ -3034,7 +3204,30 @@ Add-Action1EndpointGroupMembers `
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>---------------- Example 3: Preview the request ----------------</maml:title>
+        <maml:title>----- Example 3: Add piped group members to another group -----</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers `
+    -GroupName 'Pilot Workstations' `
+    -Status Connected `
+    -RebootRequired No `
+    -OS 'Windows 11' |
+    Add-Action1EndpointGroupMembers -GroupName 'Production Workstations'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets connected Windows 11 endpoints that do not require reboot from the Pilot Workstations endpoint group, collects their endpoint IDs, and adds them to the Production Workstations endpoint group with one API request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 4: Add filtered endpoints from the organization endpoint list</maml:title>
+        <dev:code>Get-Action1Endpoints `
+    -Status Connected `
+    -RebootRequired Yes `
+    -OS 'Windows Server' |
+    Add-Action1EndpointGroupMembers -GroupName 'Servers Pending Reboot'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets connected Windows Server endpoints that require reboot from the current organization and adds them to the Servers Pending Reboot endpoint group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 5: Preview the request ----------------</maml:title>
         <dev:code>Add-Action1EndpointGroupMembers `
     -GroupId 'Service_1696554367754' `
     -EndpointIds $endpointIds `
@@ -3055,6 +3248,10 @@ Add-Action1EndpointGroupMembers `
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-Action1EndpointGroupMembers</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
@@ -4234,7 +4431,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>Returns endpoint objects from Action1.</maml:para>
+          <maml:para>Returns endpoint objects from Action1. The objects include an `id` property and can be piped to Add-Action1EndpointGroupMembers or Remove-Action1EndpointGroupMembers .</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -4285,6 +4482,32 @@ Add-Action1EndpointGroupMembers `
           <maml:para>Gets endpoints from the endpoint group and selects key fields.</maml:para>
         </dev:remarks>
       </command:example>
+      <command:example>
+        <maml:title>Example 6: Add filtered group members to another endpoint group</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers `
+    -GroupName 'Pilot Workstations' `
+    -Status Connected `
+    -RebootRequired No `
+    -OS 'Windows 11' |
+    Add-Action1EndpointGroupMembers -GroupName 'Production Workstations'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets connected Windows 11 endpoints that do not require reboot from the Pilot Workstations endpoint group, then pipes them to Add-Action1EndpointGroupMembers . The add command collects the endpoint IDs and sends one bulk API request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------ Example 7: Preview removing filtered group members ------</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers `
+    -GroupName 'Retired Workstations' `
+    -Status Disconnected `
+    -RebootRequired All `
+    -OS 'Windows 10' |
+    Remove-Action1EndpointGroupMembers `
+        -GroupName 'Retired Workstations' `
+        -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Gets disconnected Windows 10 endpoints from the Retired Workstations endpoint group, then previews removing those endpoints from the same group.</maml:para>
+        </dev:remarks>
+      </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
@@ -4297,6 +4520,14 @@ Add-Action1EndpointGroupMembers `
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Add-Action1EndpointGroupMembers</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1EndpointGroupMembers</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
@@ -4387,6 +4618,7 @@ Add-Action1EndpointGroupMembers `
       <maml:para>Removes managed endpoints from a specific endpoint group by calling the Action1 endpoint group contents API once with one operation object per endpoint.</maml:para>
       <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the endpoint group contents API path with the resolved ID.</maml:para>
       <maml:para>Each -EndpointIds value must use the standard GUID format. The command sends an Action1 group-member operation for each endpoint ID with `method` set to `DELETE` and `endpoint_id` set to the supplied endpoint ID.</maml:para>
+      <maml:para>You can also pipe endpoint objects to the command. Piped endpoint objects must include an `id` property that contains the endpoint GUID. The command collects valid endpoint IDs from all pipeline input before sending a single API request. Invalid piped objects are reported and skipped. If no valid endpoint IDs are supplied, the command does not call the API.</maml:para>
       <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
@@ -4515,6 +4747,130 @@ Add-Action1EndpointGroupMembers `
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group that contains the endpoints.</maml:para>
+            <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>EndpointObjects</maml:name>
+          <maml:description>
+            <maml:para>Specifies endpoint objects to remove from the endpoint group. The command accepts these objects from the pipeline.</maml:para>
+            <maml:para>Each object must include an `id` property that contains a standard endpoint GUID. Invalid objects are reported and skipped.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+          <dev:type>
+            <maml:name>Object[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1EndpointGroupMembers</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>EndpointObjects</maml:name>
+          <maml:description>
+            <maml:para>Specifies endpoint objects to remove from the endpoint group. The command accepts these objects from the pipeline.</maml:para>
+            <maml:para>Each object must include an `id` property that contains a standard endpoint GUID. Invalid objects are reported and skipped.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+          <dev:type>
+            <maml:name>Object[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group that contains the endpoints.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
@@ -4538,6 +4894,19 @@ Add-Action1EndpointGroupMembers `
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>EndpointObjects</maml:name>
+        <maml:description>
+          <maml:para>Specifies endpoint objects to remove from the endpoint group. The command accepts these objects from the pipeline.</maml:para>
+          <maml:para>Each object must include an `id` property that contains a standard endpoint GUID. Invalid objects are reported and skipped.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object[]</command:parameterValue>
+        <dev:type>
+          <maml:name>Object[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4596,10 +4965,10 @@ Add-Action1EndpointGroupMembers `
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>None</maml:name>
+          <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>You cannot pipe input to this command.</maml:para>
+          <maml:para>You can pipe endpoint objects with an `id` property to this command.</maml:para>
         </maml:description>
       </command:inputType>
     </command:inputTypes>
@@ -4647,7 +5016,33 @@ Remove-Action1EndpointGroupMembers `
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>---------------- Example 3: Preview the request ----------------</maml:title>
+        <maml:title>--------- Example 3: Remove piped members from a group ---------</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers `
+    -GroupName 'Retired Workstations' `
+    -Status Disconnected `
+    -RebootRequired All `
+    -OS 'Windows 10' |
+    Remove-Action1EndpointGroupMembers -GroupName 'Retired Workstations'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets disconnected Windows 10 endpoints from the Retired Workstations endpoint group, collects their endpoint IDs, and removes those endpoints from the same endpoint group with one API request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------ Example 4: Preview removing filtered group members ------</maml:title>
+        <dev:code>Get-Action1EndpointGroupMembers `
+    -GroupName 'Workstations' `
+    -Status Connected `
+    -RebootRequired Yes `
+    -OS 'Windows 11' |
+    Remove-Action1EndpointGroupMembers `
+        -GroupName 'Workstations' `
+        -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Gets connected Windows 11 endpoints that require reboot from the Workstations endpoint group, then previews removing those endpoints from the group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 5: Preview the request ----------------</maml:title>
         <dev:code>Remove-Action1EndpointGroupMembers `
     -GroupId 'Service_1696554367754' `
     -EndpointIds $endpointIds `
@@ -4672,6 +5067,10 @@ Remove-Action1EndpointGroupMembers `
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-Action1EndpointGroupMembers</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Endpoints</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>

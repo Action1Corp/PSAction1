@@ -96,6 +96,38 @@ Get-Action1EndpointGroupMembers -GroupName 'Workstations' |
 
 Gets endpoints from the endpoint group and selects key fields.
 
+### Example 6: Add filtered group members to another endpoint group
+
+```powershell
+Get-Action1EndpointGroupMembers `
+    -GroupName 'Pilot Workstations' `
+    -Status Connected `
+    -RebootRequired No `
+    -OS 'Windows 11' |
+    Add-Action1EndpointGroupMembers -GroupName 'Production Workstations'
+```
+
+Gets connected Windows 11 endpoints that do not require reboot from the Pilot
+Workstations endpoint group, then pipes them to
+**Add-Action1EndpointGroupMembers**. The add command collects the endpoint IDs
+and sends one bulk API request.
+
+### Example 7: Preview removing filtered group members
+
+```powershell
+Get-Action1EndpointGroupMembers `
+    -GroupName 'Retired Workstations' `
+    -Status Disconnected `
+    -RebootRequired All `
+    -OS 'Windows 10' |
+    Remove-Action1EndpointGroupMembers `
+        -GroupName 'Retired Workstations' `
+        -WhatIf
+```
+
+Gets disconnected Windows 10 endpoints from the Retired Workstations endpoint
+group, then previews removing those endpoints from the same group.
+
 ## PARAMETERS
 
 ### -GroupId
@@ -226,7 +258,9 @@ You cannot pipe input to this command.
 
 ### System.Object
 
-Returns endpoint objects from Action1.
+Returns endpoint objects from Action1. The objects include an `id` property and
+can be piped to **Add-Action1EndpointGroupMembers** or
+**Remove-Action1EndpointGroupMembers**.
 
 ## NOTES
 
@@ -241,5 +275,7 @@ endpoint to indicate how the endpoint came to this group.
 
 [Get-Action1EndpointGroup](Get-Action1EndpointGroup.md)
 [Get-Action1EndpointGroups](Get-Action1EndpointGroups.md)
-[Get-Action1Endpoints](Get-Action1Endpoints.md)
+[Get-Action1Endpoints](../endpoint/Get-Action1Endpoints.md)
+[Add-Action1EndpointGroupMembers](Add-Action1EndpointGroupMembers.md)
+[Remove-Action1EndpointGroupMembers](Remove-Action1EndpointGroupMembers.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
