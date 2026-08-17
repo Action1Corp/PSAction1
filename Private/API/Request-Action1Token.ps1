@@ -20,6 +20,7 @@ function Request-Action1Token {
             } 
         }
         try {
+            $tokenRequestErrors = @()
             $token = Invoke-Action1ApiRequest `
                 -Method POST `
                 -Path "$Script:Action1_BaseURI/oauth2/token" `
@@ -28,9 +29,25 @@ function Request-Action1Token {
                     client_id     = $Script:Action1_APIKey
                     client_secret = $Script:Action1_Secret
                 } `
-                -SkipAuthenticationCheck
+                -SkipAuthenticationCheck `
+                -ErrorVariable tokenRequestErrors
             if ($null -eq $token) {
-                Write-Error "Error fetching auth token: token request failed with the error above."
+                $hasTokenRequestError = $false
+
+                foreach ($tokenRequestError in @($tokenRequestErrors)) {
+                    if (
+                        $tokenRequestError.FullyQualifiedErrorId -match
+                        '^Action1ApiRequestHttp(400|401),'
+                    ) {
+                        $hasTokenRequestError = $true
+                        break
+                    }
+                }
+
+                if (-not $hasTokenRequestError) {
+                    Write-Error "Error fetching auth token: token request failed."
+                }
+
                 return $null
             }
 
