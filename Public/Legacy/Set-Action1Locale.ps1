@@ -3,7 +3,7 @@
 # Provided AS IS
 # Use at your own risk
 # Review and test before production deployment
-# © Action1 Corporation
+# (c) Action1 Corporation
 
 function Set-Action1Locale {
     [Obsolete("Please use Set-Action1Region instead.")]
