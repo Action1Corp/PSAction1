@@ -3,7 +3,7 @@
 # Provided AS IS
 # Use at your own risk
 # Review and test before production deployment
-# © Action1 Corporation
+# (c) Action1 Corporation
 
 # Builds the human-readable Organization label used in ShouldProcess prompts,
 # debug messages, API labels, and errors. Existing Organization operations pass

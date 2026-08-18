@@ -3,7 +3,7 @@
 # Provided AS IS
 # Use at your own risk
 # Review and test before production deployment
-# © Action1 Corporation
+# (c) Action1 Corporation
 
 function Invoke-Action1ApiRequest {
     [CmdletBinding()]
@@ -121,9 +121,52 @@ function Invoke-Action1ApiRequest {
                     ErrorRecord = $_
             }
             $responseContent = Trace-WebResponseContent @responseContentParams
+            $responseStatus = Get-JsonPropertyValue `
+                -JsonContent $responseContent `
+                -PropertyName 'status'
+
+            if ($null -eq $statusCode) {
+                $parsedStatusCode = 0
+                $hasParsedStatusCode = [int]::TryParse(
+                    [string]$responseStatus,
+                    [ref]$parsedStatusCode
+                )
+
+                if ($hasParsedStatusCode) {
+                    $statusCode = $parsedStatusCode
+                }
+            }
+
             $errorDetails = Get-JsonPropertyValue `
                 -JsonContent $responseContent `
                 -PropertyName 'details'
+            $userMessage = Get-JsonPropertyValue `
+                -JsonContent $responseContent `
+                -PropertyName 'user_message'
+            $developerMessage = $null
+
+            if ([string]::IsNullOrWhiteSpace($userMessage)) {
+                $developerMessage = Get-JsonPropertyValue `
+                    -JsonContent $responseContent `
+                    -PropertyName 'developer_message'
+            }
+
+            $apiErrorMessage = $userMessage
+
+            if ([string]::IsNullOrWhiteSpace($apiErrorMessage)) {
+                $apiErrorMessage = $developerMessage
+            }
+
+            if (
+                $SkipAuthenticationCheck -and
+                $statusCode -eq 401 -and
+                [string]::IsNullOrWhiteSpace($apiErrorMessage)
+            ) {
+                $apiErrorMessage = (
+                    'Authentication failed. Please check your Action1 API key and secret.'
+                )
+            }
+
             if ([string]::IsNullOrWhiteSpace($responseContent)) {
                 $responseContent = '<empty response content>'
             }
@@ -162,6 +205,31 @@ function Invoke-Action1ApiRequest {
 
                 Start-Sleep -Seconds $retryTimeout
                 continue
+            }
+
+            if ($statusCode -eq 400 -or $statusCode -eq 401) {
+                if ([string]::IsNullOrWhiteSpace($apiErrorMessage)) {
+                    $apiErrorMessage = $_.Exception.Message
+                }
+
+                $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidOperation
+
+                if ($statusCode -eq 400) {
+                    $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidArgument
+                }
+                elseif ($statusCode -eq 401) {
+                    $errorCategory = [System.Management.Automation.ErrorCategory]::AuthenticationError
+                }
+
+                $errorMessage = "Error processing {0}: HTTP status code {1}. {2}" -f
+                    $Label, $statusCode, $apiErrorMessage
+                $errorId = 'Action1ApiRequestHttp{0}' -f $statusCode
+
+                Write-Error `
+                    -Message $errorMessage `
+                    -ErrorId $errorId `
+                    -Category $errorCategory
+                return $null
             }
 
             Write-Action1Debug "Error processing $($Label): $($_.Exception.Message)"

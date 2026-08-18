@@ -3,7 +3,7 @@
 # Provided AS IS
 # Use at your own risk
 # Review and test before production deployment
-# © Action1 Corporation
+# (c) Action1 Corporation
 
 Set-StrictMode -Version 2.0
 
@@ -181,6 +181,7 @@ function Measure-PSAction1Header {
     try {
         $headerLines = Get-Content `
             -LiteralPath $scriptPath `
+            -Encoding UTF8 `
             -TotalCount $script:PSAction1HeaderSearchLineCount `
             -ErrorAction Stop
     }

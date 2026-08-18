@@ -3,7 +3,7 @@
 # Provided AS IS
 # Use at your own risk
 # Review and test before production deployment
-# © Action1 Corporation
+# (c) Action1 Corporation
 
 # Builds the normalized identity record used by existing Organization commands.
 # The identity record trims and validates the Organization ID, preserves the

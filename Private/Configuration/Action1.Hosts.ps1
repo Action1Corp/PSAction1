@@ -3,7 +3,7 @@
 # Provided AS IS
 # Use at your own risk
 # Review and test before production deployment
-# © Action1 Corporation
+# (c) Action1 Corporation
 
 $script:Action1_Hosts = [ordered]@{
     'NorthAmerica' = 'https://app.action1.com/api/3.0';

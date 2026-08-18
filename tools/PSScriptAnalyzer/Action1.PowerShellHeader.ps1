@@ -3,7 +3,7 @@
 # Provided AS IS
 # Use at your own risk
 # Review and test before production deployment
-# © Action1 Corporation
+# (c) Action1 Corporation
 
 $Script:PSAction1RequiredHeaderLines = @(
     '# Action1 Public Repository Material'
@@ -11,5 +11,5 @@ $Script:PSAction1RequiredHeaderLines = @(
     '# Provided AS IS'
     '# Use at your own risk'
     '# Review and test before production deployment'
-    '# © Action1 Corporation'
+    '# (c) Action1 Corporation'
 )
