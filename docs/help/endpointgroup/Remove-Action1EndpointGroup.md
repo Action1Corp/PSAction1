@@ -15,14 +15,12 @@ Removes an endpoint group from the current Action1 organization.
 
 ### ByGroupId (Default)
 ```
-Remove-Action1EndpointGroup [-GroupId] <String> [-Force] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Remove-Action1EndpointGroup [-GroupId] <String> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### ByGroupName
 ```
-Remove-Action1EndpointGroup -GroupName <String> [-Force] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Remove-Action1EndpointGroup -GroupName <String> [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -166,11 +164,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction,
--ErrorVariable, -InformationAction, -InformationVariable, -OutVariable,
--OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see
-[about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

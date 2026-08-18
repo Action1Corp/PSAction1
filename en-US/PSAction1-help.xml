@@ -4607,6 +4607,519 @@ Add-Action1EndpointGroupMembers `
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>New-Action1EndpointGroup</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>Action1EndpointGroup</command:noun>
+      <maml:description>
+        <maml:para>Creates an endpoint group in the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Creates an endpoint group in the current Action1 organization by calling the Action1 endpoint groups API.</maml:para>
+      <maml:para>The -EndpointGroupDefinition value is sent as the endpoint group definition without local conversion. Supply the request definition expected by the Action1 API, for example an endpoint group object without response-only fields such as `id`, `type`, `self`, and `contents`.</maml:para>
+      <maml:para>The command does not validate the endpoint group definition schema locally; API validation errors are returned by the Action1 request helper.</maml:para>
+      <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-Action1EndpointGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>EndpointGroupDefinition</maml:name>
+          <maml:description>
+            <maml:para>Specifies the endpoint group definition to create.</maml:para>
+            <maml:para>The command passes this object directly as the Action1 request body.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>EndpointGroupDefinition</maml:name>
+        <maml:description>
+          <maml:para>Specifies the endpoint group definition to create.</maml:para>
+          <maml:para>The command passes this object directly as the Action1 request body.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the Action1 API response for the created endpoint group.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command sends a POST request to the endpoint groups API path: `/endpoints/groups/:orgId`.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------ Example 1: Create an endpoint group from an object ------</maml:title>
+        <dev:code>$endpointGroupDefinition = [pscustomobject][ordered]@{
+    name                 = 'My Endpoint Group'
+    description          = 'Windows endpoints online within the last 30 days.'
+    include_filter       = @(
+        [pscustomobject][ordered]@{
+            field_name  = 'OS'
+            field_value = 'Windows 11'
+            mode        = 'include'
+        }
+        [pscustomobject][ordered]@{
+            field_name  = 'OS'
+            field_value = 'Windows 10'
+            mode        = 'include'
+        }
+        [pscustomobject][ordered]@{
+            field_name  = 'last_seen'
+            field_value = '-43200'
+            mode        = 'include'
+        }
+    )
+    include_filter_logic = '(1 OR 2) AND 3'
+    exclude_filter       = @(
+        [pscustomobject][ordered]@{
+            field_name  = 'address'
+            field_value = '192.168.1.0/24'
+            mode        = 'include'
+        }
+        [pscustomobject][ordered]@{
+            field_name  = 'address'
+            field_value = '10.0.10.50-10.0.10.100'
+            mode        = 'include'
+        }
+    )
+    exclude_filter_logic = '1 OR 2'
+    uptime_alerts        = [pscustomobject][ordered]@{
+        offline_alerts_enabled  = 'yes'
+        offline_alerts_delay    = 20160
+        online_alerts_enabled   = 'yes'
+        user_ids_for_notification = @(
+            '387a511f-8aac-4ec3-a8f2-47f2869e9500'
+        )
+    }
+}
+
+New-Action1EndpointGroup -EndpointGroupDefinition $endpointGroupDefinition</dev:code>
+        <dev:remarks>
+          <maml:para>Creates the endpoint group in the current organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>- Example 2: Create a group from an existing group definition -</maml:title>
+        <dev:code>$sourceGroup = Get-Action1EndpointGroup -GroupName 'Windows 10'
+$endpointGroupDefinition = $sourceGroup |
+    Select-Object `
+        name,
+        description,
+        include_filter,
+        include_filter_logic,
+        exclude_filter,
+        exclude_filter_logic,
+        uptime_alerts
+
+$endpointGroupDefinition.name = 'Windows 10 Copy'
+$endpointGroupDefinition.description = 'Copied and adjusted Windows 10 group.'
+
+New-Action1EndpointGroup -EndpointGroupDefinition $endpointGroupDefinition -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a new endpoint group from selected definition fields. The copied definition fields can be updated before creating the new endpoint group.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 3: Create another endpoint group definition -----</maml:title>
+        <dev:code>New-Action1EndpointGroup `
+    -EndpointGroupDefinition $anotherEndpointGroupDefinition `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Creates another endpoint group without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 4: Preview endpoint group creation ----------</maml:title>
+        <dev:code>New-Action1EndpointGroup `
+    -EndpointGroupDefinition $endpointGroupDefinition `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows the create operation without sending the API request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1EndpointGroup</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1EndpointGroup</command:noun>
+      <maml:description>
+        <maml:para>Removes an endpoint group from the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Removes an endpoint group from the current Action1 organization by calling the Action1 endpoint group API.</maml:para>
+      <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the endpoint group API path with the resolved ID.</maml:para>
+      <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1EndpointGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group to remove.</maml:para>
+            <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1EndpointGroup</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group to remove.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>GroupId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the endpoint group to remove.</maml:para>
+          <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>GroupName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the name of the endpoint group to remove.</maml:para>
+          <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns an object with `GroupId`, `GroupName`, `Status`, and `Response`.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command sends a DELETE request to the endpoint group API path: `/endpoints/groups/:orgId/:groupId`.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------- Example 1: Remove an endpoint group by ID ----------</maml:title>
+        <dev:code>Remove-Action1EndpointGroup -GroupId 'Win10_1765215211802'</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the specified endpoint group from the current Action1 organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2: Remove an endpoint group by name ---------</maml:title>
+        <dev:code>Remove-Action1EndpointGroup -GroupName 'Windows 10'</dev:code>
+        <dev:remarks>
+          <maml:para>Resolves the endpoint group named Windows 10 and removes it.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 3: Remove an endpoint group without prompting ----</maml:title>
+        <dev:code>Remove-Action1EndpointGroup `
+    -GroupId 'Win10_1765215211802' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the endpoint group without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 4: Preview endpoint group removal ----------</maml:title>
+        <dev:code>Remove-Action1EndpointGroup `
+    -GroupName 'Windows 10' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows the remove operation without sending the DELETE request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Remove-Action1EndpointGroupMembers</command:name>
       <command:verb>Remove</command:verb>
       <command:noun>Action1EndpointGroupMembers</command:noun>
@@ -5071,6 +5584,380 @@ Remove-Action1EndpointGroupMembers `
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-Action1Endpoints</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Update-Action1EndpointGroup</command:name>
+      <command:verb>Update</command:verb>
+      <command:noun>Action1EndpointGroup</command:noun>
+      <maml:description>
+        <maml:para>Updates an endpoint group in the current Action1 organization.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Updates an endpoint group in the current Action1 organization by calling the Action1 endpoint group API.</maml:para>
+      <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the endpoint group API path with the resolved ID.</maml:para>
+      <maml:para>The -EndpointGroupDefinition value is sent as the request body without local conversion. Supply the complete endpoint group definition expected by the Action1 API. Endpoint group PATCH behaves as a replacement-style update, so omitted definition fields can remove or reset those settings in Action1.</maml:para>
+      <maml:para>The command does not validate the endpoint group definition schema locally; API validation errors are returned by the Action1 request helper.</maml:para>
+      <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-Action1EndpointGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>GroupId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the endpoint group to update.</maml:para>
+            <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndpointGroupDefinition</maml:name>
+          <maml:description>
+            <maml:para>Specifies the endpoint group definition to send as the PATCH request body.</maml:para>
+            <maml:para>The command passes this object directly as the Action1 request body.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Update-Action1EndpointGroup</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>EndpointGroupDefinition</maml:name>
+          <maml:description>
+            <maml:para>Specifies the endpoint group definition to send as the PATCH request body.</maml:para>
+            <maml:para>The command passes this object directly as the Action1 request body.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>GroupName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the endpoint group to update.</maml:para>
+            <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>EndpointGroupDefinition</maml:name>
+        <maml:description>
+          <maml:para>Specifies the endpoint group definition to send as the PATCH request body.</maml:para>
+          <maml:para>The command passes this object directly as the Action1 request body.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Suppresses confirmation prompts. This parameter does not override -WhatIf .</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>GroupId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the endpoint group to update.</maml:para>
+          <maml:para>Endpoint group IDs are opaque strings, not GUIDs.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>GroupName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the name of the endpoint group to update.</maml:para>
+          <maml:para>The command resolves the name by calling `Resolve-Action1EndpointGroupByName`. If the name is not found or is not unique, the command writes a terminating error.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the Action1 API response for the updated endpoint group.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg .</maml:para>
+        <maml:para>The command sends a PATCH request to the endpoint group API path: `/endpoints/groups/:orgId/:groupId`.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------- Example 1: Update an endpoint group by ID ----------</maml:title>
+        <dev:code>$endpointGroupDefinition = [pscustomobject][ordered]@{
+    name                 = 'My Endpoint Group'
+    description          = 'Windows endpoints online within the last 30 days.'
+    include_filter       = @(
+        [pscustomobject][ordered]@{
+            field_name  = 'OS'
+            field_value = 'Windows 11'
+            mode        = 'include'
+        }
+        [pscustomobject][ordered]@{
+            field_name  = 'OS'
+            field_value = 'Windows 10'
+            mode        = 'include'
+        }
+        [pscustomobject][ordered]@{
+            field_name  = 'last_seen'
+            field_value = '-43200'
+            mode        = 'include'
+        }
+    )
+    include_filter_logic = '(1 OR 2) AND 3'
+    exclude_filter       = @(
+        [pscustomobject][ordered]@{
+            field_name  = 'address'
+            field_value = '192.168.1.0/24'
+            mode        = 'include'
+        }
+        [pscustomobject][ordered]@{
+            field_name  = 'address'
+            field_value = '10.0.10.50-10.0.10.100'
+            mode        = 'include'
+        }
+    )
+    exclude_filter_logic = '1 OR 2'
+    uptime_alerts        = [pscustomobject][ordered]@{
+        offline_alerts_enabled    = 'yes'
+        offline_alerts_delay      = 20160
+        online_alerts_enabled     = 'yes'
+        user_ids_for_notification = @(
+            '387a511f-8aac-4ec3-a8f2-47f2869e9500'
+        )
+    }
+}
+
+Update-Action1EndpointGroup `
+    -GroupId 'Win10_1765215211802' `
+    -EndpointGroupDefinition $endpointGroupDefinition</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the endpoint group with the supplied request body.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2: Update an endpoint group by name ---------</maml:title>
+        <dev:code>Update-Action1EndpointGroup `
+    -GroupName 'Windows Workstations' `
+    -EndpointGroupDefinition $endpointGroupDefinition `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Resolves the endpoint group named Windows Workstations and updates it.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>- Example 3: Update a group from an existing group definition -</maml:title>
+        <dev:code>$sourceGroup = Get-Action1EndpointGroup -GroupName 'Windows 10'
+$endpointGroupDefinition = $sourceGroup |
+    Select-Object `
+        name,
+        description,
+        include_filter,
+        include_filter_logic,
+        exclude_filter,
+        exclude_filter_logic,
+        uptime_alerts
+
+$endpointGroupDefinition.name = 'Windows 11 Workstations'
+$endpointGroupDefinition.description = 'Adjusted group definition for Windows 11.'
+
+Update-Action1EndpointGroup `
+    -GroupId 'Win11_1765215211802' `
+    -EndpointGroupDefinition $endpointGroupDefinition `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the selected endpoint group from definition fields copied from another endpoint group. The copied definition fields can be updated before calling Update-Action1EndpointGroup .</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>- Example 4: Update with a prepared endpoint group definition -</maml:title>
+        <dev:code>Update-Action1EndpointGroup `
+    -GroupId 'Win10_1765215211802' `
+    -EndpointGroupDefinition $endpointGroupDefinition `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Passes the prepared endpoint group definition directly as the PATCH request body.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 5: Preview an endpoint group update ---------</maml:title>
+        <dev:code>Update-Action1EndpointGroup `
+    -GroupId 'Win10_1765215211802' `
+    -EndpointGroupDefinition $endpointGroupDefinition `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows the update operation without sending the API request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1EndpointGroup</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
