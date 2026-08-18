@@ -114,6 +114,7 @@
         'Get-Action1EndpointGroups'
         'New-Action1EndpointGroup'
         'Update-Action1EndpointGroup'
+        'Remove-Action1EndpointGroup'
         'Add-Action1EndpointGroupMembers'
         'Remove-Action1EndpointGroupMembers'
         'Export-Action1EndpointGroupsJson'
