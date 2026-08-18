@@ -163,7 +163,7 @@ function Invoke-Action1ApiRequest {
                 [string]::IsNullOrWhiteSpace($apiErrorMessage)
             ) {
                 $apiErrorMessage = (
-                    'Incorrect authentication data. Check the Action1 API key and secret.'
+                    'Authentication failed. Please check your Action1 API key and secret.'
                 )
             }
 
