@@ -67,5 +67,8 @@ The command retrieves paged results from the Action1 API.
 
 ## RELATED LINKS
 
+[Get-Action1User](Get-Action1User.md)
+[Get-Action1UserRoles](Get-Action1UserRoles.md)
+[Remove-Action1User](Remove-Action1User.md)
 [Set-Action1Credentials](../configuration/Set-Action1Credentials.md)
 [Get-Action1Enterprise](../enterprise/Get-Action1Enterprise.md)

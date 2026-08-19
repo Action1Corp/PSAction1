@@ -102,6 +102,7 @@
         'Get-Action1User'
         'Get-Action1UserRoles'
         'Get-Action1Users'
+        'Remove-Action1User'
 
         # Endpoint
         'Get-Action1Endpoints'
