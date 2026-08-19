@@ -24,6 +24,7 @@ $Script:Action1_UriMap = @{
 
     # User
     G_User                 = { param($UserId) "/users/$UserId" }
+    G_UserRoles            = { param($UserId) "/users/$UserId/roles" }
     G_Users                = { "/users" }
 
     # Endpoint

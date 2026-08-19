@@ -100,6 +100,7 @@
 
         # User
         'Get-Action1User'
+        'Get-Action1UserRoles'
         'Get-Action1Users'
 
         # Endpoint
