@@ -90,9 +90,6 @@
         'Get-Action1EnterpriseId'
         'Update-Action1Enterprise'
 
-        # User
-        'Get-Action1Users'
-
         # Organization
         'Get-Action1Organization'
         'Get-Action1Organizations'
@@ -100,6 +97,10 @@
         'Update-Action1Organization'
         'Remove-Action1Organization'
         'Export-Action1OrganizationsJson'
+
+        # User
+        'Get-Action1User'
+        'Get-Action1Users'
 
         # Endpoint
         'Get-Action1Endpoints'

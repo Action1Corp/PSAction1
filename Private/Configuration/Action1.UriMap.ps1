@@ -15,15 +15,16 @@ $Script:Action1_UriMap = @{
     G_Enterprise           = { "/enterprise" }
     U_Enterprise           = { "/enterprise" }
 
-    # User
-    G_Users                = { "/users" }
-
     # Organization
     G_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
     G_Organizations        = { "/organizations" }
     N_Organization         = { "/organizations" }
     U_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
     D_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
+
+    # User
+    G_User                 = { param($UserId) "/users/$UserId" }
+    G_Users                = { "/users" }
 
     # Endpoint
     G_AgentDeployment      = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
