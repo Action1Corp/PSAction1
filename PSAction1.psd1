@@ -90,6 +90,9 @@
         'Get-Action1EnterpriseId'
         'Update-Action1Enterprise'
 
+        # User
+        'Get-Action1Users'
+
         # Organization
         'Get-Action1Organization'
         'Get-Action1Organizations'
