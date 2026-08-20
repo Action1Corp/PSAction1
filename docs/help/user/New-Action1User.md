@@ -14,9 +14,9 @@ Creates an Action1 user.
 ## SYNTAX
 
 ```
-New-Action1User -FirstName <String> -LastName <String> -Email <String>
-    -Password <String> [-Phone <String>] [-Timezone <String>] [-Enabled <String>]
-    [-SessionTimeout <Int32>] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+New-Action1User -FirstName <String> -LastName <String> -Email <String> -Password <String> [-Phone <String>]
+ [-Timezone <String>] [-Enabled <String>] [-SessionTimeout <Int32>] [-Force] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -125,6 +125,7 @@ When omitted, the command does not send the `enabled` field.
 Type: String
 Parameter Sets: (All)
 Aliases:
+Accepted values: yes, no
 
 Required: False
 Position: Named

@@ -14,9 +14,9 @@ Updates one Action1 user by user ID.
 ## SYNTAX
 
 ```
-Update-Action1User [-UserId] <String> [-FirstName <String>] [-LastName <String>]
-    [-Email <String>] [-Phone <String>] [-Timezone <String>] [-Enabled <String>]
-    [-SessionTimeout <Int32>] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-Action1User [-UserId] <String> [-FirstName <String>] [-LastName <String>] [-Email <String>]
+ [-Phone <String>] [-Timezone <String>] [-Enabled <String>] [-SessionTimeout <Int32>] [-Force] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -123,6 +123,7 @@ in `Get-Action1Users` results and can be retrieved only by ID with
 Type: String
 Parameter Sets: (All)
 Aliases:
+Accepted values: yes, no
 
 Required: False
 Position: Named

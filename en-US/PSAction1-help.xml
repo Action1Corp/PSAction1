@@ -8316,7 +8316,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     <maml:description>
       <maml:para>`New-Action1Organization` calls the Action1 organizations API and creates a new organization with the specified name and description.</maml:para>
       <maml:para>The -Description parameter is optional and defaults to an empty string. The API body always includes the description property.</maml:para>
-      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the operation without sending the POST request. Use -Confirm to prompt for confirmation before sending the POST request.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the operation without sending the POST request. Use -Confirm to prompt for confirmation before sending the POST request. Use -Force to bypass confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8357,6 +8357,17 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           </dev:type>
           <dev:defaultValue>''</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
           <maml:name>WhatIf</maml:name>
           <maml:description>
@@ -8395,6 +8406,18 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:uri />
         </dev:type>
         <dev:defaultValue>''</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Name</maml:name>
@@ -8471,6 +8494,16 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <dev:code>New-Action1Organization -Name 'My Organization'</dev:code>
         <dev:remarks>
           <maml:para>Creates an organization and sends an empty string in the description field.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 4: Create an organization without prompting -----</maml:title>
+        <dev:code>New-Action1Organization `
+    -Name 'My Organization' `
+    -Description 'This is my organization description example text' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Creates an organization without prompting for confirmation.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -9086,6 +9119,1524 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Remove-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Export-Action1UsersJson</command:name>
+      <command:verb>Export</command:verb>
+      <command:noun>Action1UsersJson</command:noun>
+      <maml:description>
+        <maml:para>Exports Action1 users to a JSON file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Export-Action1UsersJson` calls `Get-Action1Users`, optionally filters the returned user list by user ID, and exports the selected users to a JSON file.</maml:para>
+      <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para>* `organization_id`</maml:para>
+      <maml:para>* `type`</maml:para>
+      <maml:para>* `items`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The schema property is set to `PSAction1.User.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The type property is set to `User`.</maml:para>
+      <maml:para>The items array contains the user objects returned by `Get-Action1Users`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
+      <maml:para>Use UserIds to export only users whose `id` value matches one of the specified IDs.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
+      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-Action1UsersJson</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Users_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>UserIds</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more user IDs to export.</maml:para>
+            <maml:para>Each value must use the standard GUID format, such as `387a511f-8aac-4ec3-a8f2-47f2869e9500`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the JSON file to create.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Users_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>UserIds</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more user IDs to export.</maml:para>
+          <maml:para>Each value must use the standard GUID format, such as `387a511f-8aac-4ec3-a8f2-47f2869e9500`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to view enterprise settings and users in Action1. The default Action1 organization must be configured because the export schema includes the current organization ID.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----- Example 1: Export all users to the default JSON file -----</maml:title>
+        <dev:code>Export-Action1UsersJson</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all users returned by `Get-Action1Users` to a timestamped JSON file in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 2: Export all users to a specific file --------</maml:title>
+        <dev:code>Export-Action1UsersJson -Path 'C:\Reports\Users.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports all users to the specified JSON file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 3: Export users by ID ----------------</maml:title>
+        <dev:code>Export-Action1UsersJson `
+    -Path 'C:\Reports\SelectedUsers.json' `
+    -UserIds '387a511f-8aac-4ec3-a8f2-47f2869e9500'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports only users whose `id` value matches one of the specified user IDs.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 4: Export to a read-only or hidden JSON file -----</maml:title>
+        <dev:code>Export-Action1UsersJson -Path 'C:\Reports\Users.json' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Exports users and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Users</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1UserRoles</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1User</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1User</command:noun>
+      <maml:description>
+        <maml:para>Gets one Action1 user by user ID.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1User` validates the supplied user ID as a GUID and calls the single-user Action1 API endpoint.</maml:para>
+      <maml:para>The requested GET endpoint is `/users/:userId`. This command calls the single-user endpoint without pagination and returns the user object from Action1 without reshaping it.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1User</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>UserId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the Action1 user to retrieve.</maml:para>
+            <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>UserId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the Action1 user to retrieve.</maml:para>
+          <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the user object returned by Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The command calls the single-user API path without pagination. Action1 returns an API error when the user ID does not identify an accessible user.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>----------------- Example 1: Get a user by ID -----------------</maml:title>
+        <dev:code>Get-Action1User -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the user with the specified ID.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------------- Example 2: Display user details ---------------</maml:title>
+        <dev:code>Get-Action1User -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Format-List</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the user and displays all returned fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Users</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1UserRoles</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UsersJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1UserRoles</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1UserRoles</command:noun>
+      <maml:description>
+        <maml:para>Gets Action1 roles assigned to one user.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1UserRoles` validates the supplied user ID as a GUID and calls the Action1 user roles API endpoint.</maml:para>
+      <maml:para>The requested GET endpoint is `/users/:userId/roles`. The command uses the module paging helper and returns the role objects from Action1 without reshaping them.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1UserRoles</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>UserId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the Action1 user whose roles are retrieved.</maml:para>
+            <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>UserId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the Action1 user whose roles are retrieved.</maml:para>
+          <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns user role objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The command retrieves paged role results from the Action1 API. Action1 returns an API error when the user ID does not identify an accessible user.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------------- Example 1: Get roles for a user ---------------</maml:title>
+        <dev:code>Get-Action1UserRoles -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46'</dev:code>
+        <dev:remarks>
+          <maml:para>Gets roles assigned to the specified user.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 2: Select role fields ----------------</maml:title>
+        <dev:code>Get-Action1UserRoles -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' |
+    Select-Object id, name</dev:code>
+        <dev:remarks>
+          <maml:para>Gets roles for the user and selects common role identity fields when those properties are present in the API response.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Users</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UsersJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-Action1Users</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>Action1Users</command:noun>
+      <maml:description>
+        <maml:para>Gets Action1 users available to the current account.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-Action1Users` calls the Action1 users API and returns enabled user records visible to the current credentials.</maml:para>
+      <maml:para>The requested GET endpoint is `/users`. The command uses the module paging helper and returns the enabled user objects from Action1 without reshaping them. Disabled users are not included. To retrieve a disabled user, call `Get-Action1User` with the user's ID.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Action1Users</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns enabled user objects from Action1.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The command retrieves paged enabled-user results from the Action1 API. Disabled users are available only through `Get-Action1User` by user ID.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------- Example 1: List users --------------------</maml:title>
+        <dev:code>Get-Action1Users</dev:code>
+        <dev:remarks>
+          <maml:para>Gets enabled user records available to the current account.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 2: Select user fields ----------------</maml:title>
+        <dev:code>Get-Action1Users | Select-Object id, name, email</dev:code>
+        <dev:remarks>
+          <maml:para>Gets enabled users and selects common identity fields when those properties are present in the API response.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1UserRoles</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UsersJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Enterprise</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>New-Action1User</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>Action1User</command:noun>
+      <maml:description>
+        <maml:para>Creates an Action1 user.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`New-Action1User` calls the Action1 users API and creates a user with the specified profile and sign-in values.</maml:para>
+      <maml:para>The requested POST endpoint is `/users`.</maml:para>
+      <maml:para>The command always sends `first_name`, `last_name`, `email`, and `password`. Optional fields are added to the request body only when their parameters are specified. -SessionTimeout accepts a value in minutes and sends the API `session_timeout` field in seconds. -Enabled accepts `yes` or `no`.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the create operation without sending the POST request. Use -Confirm to prompt for confirmation before sending the POST request. Use -Force to bypass confirmation prompts.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-Action1User</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Email</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's email address. The value must use a valid email format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Enabled</maml:name>
+          <maml:description>
+            <maml:para>Specifies whether the user is enabled. Accepted values are `yes` and `no`.</maml:para>
+            <maml:para>When omitted, the command does not send the `enabled` field.</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">no</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>FirstName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's first name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>LastName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's last name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Password</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's password.</maml:para>
+            <maml:para>The password must be at least 12 characters long, contain at least one number, and contain upper and lower case letters.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Phone</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's phone number.</maml:para>
+            <maml:para>The value can optionally start with `+` and must then contain 6 to 13 digits.</maml:para>
+            <maml:para>When omitted, the command does not send the `phone` field.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SessionTimeout</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user session timeout value in minutes.</maml:para>
+            <maml:para>Enter a timeout value between 5 and 1440 minutes. The command multiplies the value by 60 and sends it to the API as the `session_timeout` body field in seconds. When omitted, the command does not send the `session_timeout` field.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Timezone</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's time zone using the region/location form, such as `America/Los_Angeles`.</maml:para>
+            <maml:para>When omitted, the command does not send the `timezone` field.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Email</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's email address. The value must use a valid email format.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Enabled</maml:name>
+        <maml:description>
+          <maml:para>Specifies whether the user is enabled. Accepted values are `yes` and `no`.</maml:para>
+          <maml:para>When omitted, the command does not send the `enabled` field.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>FirstName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's first name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>LastName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's last name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Password</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's password.</maml:para>
+          <maml:para>The password must be at least 12 characters long, contain at least one number, and contain upper and lower case letters.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Phone</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's phone number.</maml:para>
+          <maml:para>The value can optionally start with `+` and must then contain 6 to 13 digits.</maml:para>
+          <maml:para>When omitted, the command does not send the `phone` field.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SessionTimeout</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user session timeout value in minutes.</maml:para>
+          <maml:para>Enter a timeout value between 5 and 1440 minutes. The command multiplies the value by 60 and sends it to the API as the `session_timeout` body field in seconds. When omitted, the command does not send the `session_timeout` field.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Timezone</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's time zone using the region/location form, such as `America/Los_Angeles`.</maml:para>
+          <maml:para>When omitted, the command does not send the `timezone` field.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the Action1 API response for the POST request.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage users in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------------- Example 1: Create a user -------------------</maml:title>
+        <dev:code>New-Action1User `
+    -FirstName 'Piotr' `
+    -LastName 'Cyra' `
+    -Email 'piotrivanov9@example.com' `
+    -Password 'Madeira2025A' `
+    -Phone '555666777' `
+    -Timezone 'America/Los_Angeles' `
+    -Enabled yes `
+    -SessionTimeout 30</dev:code>
+        <dev:remarks>
+          <maml:para>Creates the user and returns the Action1 API response. The session timeout is sent to the API as `1800` seconds.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 2: Create a user with only mandatory values -----</maml:title>
+        <dev:code>New-Action1User `
+    -FirstName 'Piotr' `
+    -LastName 'Cyra' `
+    -Email 'piotrivanov9@example.com' `
+    -Password 'Madeira2025A'</dev:code>
+        <dev:remarks>
+          <maml:para>Creates the user without sending optional `phone`, `timezone`, `enabled`, or `session_timeout` fields.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------------- Example 3: Preview user creation ---------------</maml:title>
+        <dev:code>New-Action1User `
+    -FirstName 'Piotr' `
+    -LastName 'Cyra' `
+    -Email 'piotrivanov9@example.com' `
+    -Password 'Madeira2025A' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be created without sending the POST request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Users</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1UserRoles</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UsersJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Remove-Action1User</command:name>
+      <command:verb>Remove</command:verb>
+      <command:noun>Action1User</command:noun>
+      <maml:description>
+        <maml:para>Soft-deletes one Action1 user by user ID.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Remove-Action1User` validates the supplied user ID as a GUID and calls the single-user Action1 API endpoint with the DELETE method.</maml:para>
+      <maml:para>The requested DELETE endpoint is `/users/:userId`.</maml:para>
+      <maml:para>Action1 handles this request as a soft-delete operation. The user becomes disabled, the user's `enabled` value becomes `no`, and Action1 prefixes the email address with `Deleted`. The user record remains accessible by ID with `Get-Action1User`, but is no longer returned by `Get-Action1Users`.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-Action1User</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>UserId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the Action1 user to soft-delete.</maml:para>
+            <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>UserId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the Action1 user to soft-delete.</maml:para>
+          <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns a status object with UserId, Status, and Response. The Response value contains the raw response body returned by the DELETE request. Status can be Removed, Skipped, or Failed.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage users in Action1. Removing a user is a soft-delete: the user is disabled, the user's email address receives a `Deleted` prefix, and the user remains accessible by ID with `Get-Action1User`.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------------- Example 1: Delete a user -------------------</maml:title>
+        <dev:code>Remove-Action1User -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46'</dev:code>
+        <dev:remarks>
+          <maml:para>Prompts for confirmation, then soft-deletes the specified user.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------------- Example 2: Preview user deletion ---------------</maml:title>
+        <dev:code>Remove-Action1User -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be soft-deleted without sending the DELETE request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------- Example 3: Delete without prompting -------------</maml:title>
+        <dev:code>Remove-Action1User -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Soft-deletes the user without prompting for confirmation.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Users</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1UserRoles</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Update-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UsersJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Update-Action1User</command:name>
+      <command:verb>Update</command:verb>
+      <command:noun>Action1User</command:noun>
+      <maml:description>
+        <maml:para>Updates one Action1 user by user ID.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Update-Action1User` validates the supplied user ID as a GUID and calls the single-user Action1 API endpoint with the PATCH method.</maml:para>
+      <maml:para>The requested PATCH endpoint is `/users/:userId`.</maml:para>
+      <maml:para>The command sends only fields whose parameters are specified. -SessionTimeout accepts a value in minutes and sends the API `session_timeout` field in seconds. -Enabled accepts `yes` or `no`.</maml:para>
+      <maml:para>When -Enabled is set to `no`, the user is disabled and is no longer returned by `Get-Action1Users`. Disabled users remain accessible by ID with `Get-Action1User`.</maml:para>
+      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the update operation. Use -Force to bypass the confirmation prompt.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-Action1User</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>UserId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the Action1 user to update.</maml:para>
+            <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the command.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Email</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's email address. The value must use a valid email format.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Enabled</maml:name>
+          <maml:description>
+            <maml:para>Specifies whether the user is enabled. Accepted values are `yes` and `no`.</maml:para>
+            <maml:para>Setting this parameter to `no` disables the user. Disabled users are not visible in `Get-Action1Users` results and can be retrieved only by ID with `Get-Action1User`.</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">no</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>FirstName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's first name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>LastName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's last name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Phone</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's phone number.</maml:para>
+            <maml:para>The value can optionally start with `+` and must then contain 6 to 13 digits.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SessionTimeout</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user session timeout value in minutes.</maml:para>
+            <maml:para>Enter a timeout value between 5 and 1440 minutes. The command multiplies the value by 60 and sends it to the API as the `session_timeout` body field in seconds.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Timezone</maml:name>
+          <maml:description>
+            <maml:para>Specifies the user's time zone using the region/location form, such as `America/Los_Angeles`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Email</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's email address. The value must use a valid email format.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Enabled</maml:name>
+        <maml:description>
+          <maml:para>Specifies whether the user is enabled. Accepted values are `yes` and `no`.</maml:para>
+          <maml:para>Setting this parameter to `no` disables the user. Disabled users are not visible in `Get-Action1Users` results and can be retrieved only by ID with `Get-Action1User`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>FirstName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's first name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses the confirmation prompt. -WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>LastName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's last name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Phone</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's phone number.</maml:para>
+          <maml:para>The value can optionally start with `+` and must then contain 6 to 13 digits.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SessionTimeout</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user session timeout value in minutes.</maml:para>
+          <maml:para>Enter a timeout value between 5 and 1440 minutes. The command multiplies the value by 60 and sends it to the API as the `session_timeout` body field in seconds.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Timezone</maml:name>
+        <maml:description>
+          <maml:para>Specifies the user's time zone using the region/location form, such as `America/Los_Angeles`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>UserId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the Action1 user to update.</maml:para>
+          <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns the Action1 API response for the PATCH request.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to manage users in Action1. Disabled users are not returned by `Get-Action1Users`; use `Get-Action1User` with the user ID to retrieve them.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---------- Example 1: Update a user's profile fields ----------</maml:title>
+        <dev:code>Update-Action1User `
+    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -FirstName 'Ivan' `
+    -LastName 'Ivanov' `
+    -Email 'ivanivanov2@example.com' `
+    -Phone '555666777' `
+    -Timezone 'America/Los_Angeles' `
+    -Enabled no `
+    -SessionTimeout 45</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the specified user and returns the Action1 API response.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------------------ Example 2: Disable a user ------------------</maml:title>
+        <dev:code>Update-Action1User `
+    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Enabled no</dev:code>
+        <dev:remarks>
+          <maml:para>Sends `enabled` as `no`. The disabled user will no longer be returned by `Get-Action1Users`, but can still be retrieved by ID with `Get-Action1User`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--------------- Example 3: Preview a user update ---------------</maml:title>
+        <dev:code>Update-Action1User `
+    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Email 'ivanivanov2@example.com' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows what would be updated without sending the PATCH request.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Users</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1UserRoles</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Remove-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UsersJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1Credentials</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
