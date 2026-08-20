@@ -12,7 +12,7 @@ function Get-Action1User {
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
             if (-not (Test-Guid $_)) {
-                throw 'UserId must use the standard GUID format.'
+                throw 'UserId must be in the standard GUID format.'
             }
 
             $true
