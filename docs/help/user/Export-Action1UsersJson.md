@@ -194,6 +194,7 @@ includes the current organization ID.
 [Get-Action1Users](Get-Action1Users.md)
 [Get-Action1User](Get-Action1User.md)
 [Get-Action1UserRoles](Get-Action1UserRoles.md)
+[Update-Action1User](Update-Action1User.md)
 [Remove-Action1User](Remove-Action1User.md)
 [Get-Action1EnterpriseId](../enterprise/Get-Action1EnterpriseId.md)
 [Get-Action1DefaultOrgId](../configuration/Get-Action1DefaultOrgId.md)

@@ -91,5 +91,6 @@ an API error when the user ID does not identify an accessible user.
 
 [Get-Action1User](Get-Action1User.md)
 [Get-Action1Users](Get-Action1Users.md)
+[Update-Action1User](Update-Action1User.md)
 [Remove-Action1User](Remove-Action1User.md)
 [Export-Action1UsersJson](Export-Action1UsersJson.md)

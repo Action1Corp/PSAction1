@@ -102,6 +102,7 @@
         'Get-Action1User'
         'Get-Action1UserRoles'
         'Get-Action1Users'
+        'Update-Action1User'
         'Remove-Action1User'
         'Export-Action1UsersJson'
 
