@@ -42,7 +42,10 @@ function Update-Action1User {
         [ValidatePattern('^[A-Za-z][A-Za-z0-9_+-]*/[A-Za-z0-9_+-]+(?:/[A-Za-z0-9_+-]+)*$')]
         [string]$Timezone,
 
-        [Parameter(Mandatory = $false)]
+        [Parameter(
+            Mandatory = $false,
+            HelpMessage = 'Disabled users are not returned by Get-Action1Users. Retrieve disabled users by ID with Get-Action1User.'
+        )]
         [ValidateSet('yes', 'no')]
         [string]$Enabled,
 

@@ -30,6 +30,10 @@ The command sends only fields whose parameters are specified. **-SessionTimeout*
 accepts a value in minutes and sends the API `session_timeout` field in seconds.
 **-Enabled** accepts `yes` or `no`.
 
+When **-Enabled** is set to `no`, the user is disabled and is no longer returned
+by `Get-Action1Users`. Disabled users remain accessible by ID with
+`Get-Action1User`.
+
 This command supports PowerShell confirmation. Use **-WhatIf** to preview the
 update operation. Use **-Force** to bypass the confirmation prompt.
 
@@ -59,7 +63,8 @@ Update-Action1User `
     -Enabled no
 ```
 
-Sends `enabled` as `no`.
+Sends `enabled` as `no`. The disabled user will no longer be returned by
+`Get-Action1Users`, but can still be retrieved by ID with `Get-Action1User`.
 
 ### Example 3: Preview a user update
 
@@ -109,6 +114,10 @@ Accept wildcard characters: False
 ### -Enabled
 
 Specifies whether the user is enabled. Accepted values are `yes` and `no`.
+
+Setting this parameter to `no` disables the user. Disabled users are not visible
+in `Get-Action1Users` results and can be retrieved only by ID with
+`Get-Action1User`.
 
 ```yaml
 Type: String
@@ -277,7 +286,8 @@ Returns the Action1 API response for the PATCH request.
 
 ## NOTES
 
-Requires permission to manage users in Action1.
+Requires permission to manage users in Action1. Disabled users are not returned
+by `Get-Action1Users`; use `Get-Action1User` with the user ID to retrieve them.
 
 ## RELATED LINKS
 

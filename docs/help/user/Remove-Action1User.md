@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Deletes one Action1 user by user ID.
+Soft-deletes one Action1 user by user ID.
 
 ## SYNTAX
 
@@ -24,6 +24,11 @@ single-user Action1 API endpoint with the DELETE method.
 
 The requested DELETE endpoint is `/users/:userId`.
 
+Action1 handles this request as a soft-delete operation. The user becomes
+disabled, the user's `enabled` value becomes `no`, and Action1 prefixes the
+email address with `Deleted`. The user record remains accessible by ID with
+`Get-Action1User`, but is no longer returned by `Get-Action1Users`.
+
 This command supports PowerShell confirmation. Use **-WhatIf** to preview the
 delete operation. Use **-Force** to bypass the confirmation prompt.
 
@@ -35,7 +40,7 @@ delete operation. Use **-Force** to bypass the confirmation prompt.
 Remove-Action1User -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46'
 ```
 
-Prompts for confirmation, then deletes the specified user.
+Prompts for confirmation, then soft-deletes the specified user.
 
 ### Example 2: Preview user deletion
 
@@ -43,7 +48,7 @@ Prompts for confirmation, then deletes the specified user.
 Remove-Action1User -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' -WhatIf
 ```
 
-Shows what would be deleted without sending the DELETE request.
+Shows what would be soft-deleted without sending the DELETE request.
 
 ### Example 3: Delete without prompting
 
@@ -51,7 +56,7 @@ Shows what would be deleted without sending the DELETE request.
 Remove-Action1User -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' -Force
 ```
 
-Deletes the user without prompting for confirmation.
+Soft-deletes the user without prompting for confirmation.
 
 ## PARAMETERS
 
@@ -89,7 +94,7 @@ Accept wildcard characters: False
 
 ### -UserId
 
-Specifies the ID of the Action1 user to delete.
+Specifies the ID of the Action1 user to soft-delete.
 
 The user ID must use the standard GUID format, such as
 `5e79941d-e4cc-40f3-899b-0cff63836d46`.
@@ -141,7 +146,9 @@ Removed, Skipped, or Failed.
 
 ## NOTES
 
-Requires permission to manage users in Action1.
+Requires permission to manage users in Action1. Removing a user is a soft-delete:
+the user is disabled, the user's email address receives a `Deleted` prefix, and
+the user remains accessible by ID with `Get-Action1User`.
 
 ## RELATED LINKS
 

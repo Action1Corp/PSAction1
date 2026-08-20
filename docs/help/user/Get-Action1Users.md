@@ -19,11 +19,13 @@ Get-Action1Users [<CommonParameters>]
 
 ## DESCRIPTION
 
-`Get-Action1Users` calls the Action1 users API and returns user records visible
-to the current credentials.
+`Get-Action1Users` calls the Action1 users API and returns enabled user records
+visible to the current credentials.
 
 The requested GET endpoint is `/users`. The command uses the module paging
-helper and returns the user objects from Action1 without reshaping them.
+helper and returns the enabled user objects from Action1 without reshaping them.
+Disabled users are not included. To retrieve a disabled user, call
+`Get-Action1User` with the user's ID.
 
 ## EXAMPLES
 
@@ -33,7 +35,7 @@ helper and returns the user objects from Action1 without reshaping them.
 Get-Action1Users
 ```
 
-Gets user records available to the current account.
+Gets enabled user records available to the current account.
 
 ### Example 2: Select user fields
 
@@ -41,8 +43,8 @@ Gets user records available to the current account.
 Get-Action1Users | Select-Object id, name, email
 ```
 
-Gets users and selects common identity fields when those properties are present
-in the API response.
+Gets enabled users and selects common identity fields when those properties are
+present in the API response.
 
 ## PARAMETERS
 
@@ -59,11 +61,12 @@ You cannot pipe input to this command.
 
 ### System.Object
 
-Returns user objects from Action1.
+Returns enabled user objects from Action1.
 
 ## NOTES
 
-The command retrieves paged results from the Action1 API.
+The command retrieves paged enabled-user results from the Action1 API. Disabled
+users are available only through `Get-Action1User` by user ID.
 
 ## RELATED LINKS
 
