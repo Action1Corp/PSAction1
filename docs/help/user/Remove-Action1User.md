@@ -148,6 +148,7 @@ Requires permission to manage users in Action1.
 [Get-Action1User](Get-Action1User.md)
 [Get-Action1Users](Get-Action1Users.md)
 [Get-Action1UserRoles](Get-Action1UserRoles.md)
+[New-Action1User](New-Action1User.md)
 [Update-Action1User](Update-Action1User.md)
 [Export-Action1UsersJson](Export-Action1UsersJson.md)
 [Set-Action1Credentials](../configuration/Set-Action1Credentials.md)

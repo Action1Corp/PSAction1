@@ -5,72 +5,81 @@ online version:
 schema: 2.0.0
 ---
 
-# Update-Action1User
+# New-Action1User
 
 ## SYNOPSIS
 
-Updates one Action1 user by user ID.
+Creates an Action1 user.
 
 ## SYNTAX
 
 ```
-Update-Action1User [-UserId] <String> [-FirstName <String>] [-LastName <String>]
-    [-Email <String>] [-Phone <String>] [-Timezone <String>] [-Enabled <String>]
+New-Action1User -FirstName <String> -LastName <String> -Email <String>
+    -Password <String> [-Phone <String>] [-Timezone <String>] [-Enabled <String>]
     [-SessionTimeout <Int32>] [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-`Update-Action1User` validates the supplied user ID as a GUID and calls the
-single-user Action1 API endpoint with the PATCH method.
+`New-Action1User` calls the Action1 users API and creates a user with the
+specified profile and sign-in values.
 
-The requested PATCH endpoint is `/users/:userId`.
+The requested POST endpoint is `/users`.
 
-The command sends only fields whose parameters are specified. **-SessionTimeout**
-accepts a value in minutes and sends the API `session_timeout` field in seconds.
-**-Enabled** accepts `yes` or `no`.
+The command always sends `first_name`, `last_name`, `email`, and `password`.
+Optional fields are added to the request body only when their parameters are
+specified. **-SessionTimeout** accepts a value in minutes and sends the API
+`session_timeout` field in seconds. **-Enabled** accepts `yes` or `no`.
 
 This command supports PowerShell confirmation. Use **-WhatIf** to preview the
-update operation. Use **-Force** to bypass the confirmation prompt.
+create operation without sending the POST request. Use **-Confirm** to prompt
+for confirmation before sending the POST request. Use **-Force** to bypass
+confirmation prompts.
 
 ## EXAMPLES
 
-### Example 1: Update a user's profile fields
+### Example 1: Create a user
 
 ```powershell
-Update-Action1User `
-    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
-    -FirstName 'Ivan' `
-    -LastName 'Ivanov' `
-    -Email 'ivanivanov2@example.com' `
+New-Action1User `
+    -FirstName 'Piotr' `
+    -LastName 'Cyra' `
+    -Email 'piotrivanov9@example.com' `
+    -Password 'Madeira2025A' `
     -Phone '555666777' `
     -Timezone 'America/Los_Angeles' `
-    -Enabled no `
-    -SessionTimeout 45
+    -Enabled yes `
+    -SessionTimeout 30
 ```
 
-Updates the specified user and returns the Action1 API response.
+Creates the user and returns the Action1 API response. The session timeout is
+sent to the API as `1800` seconds.
 
-### Example 2: Disable a user
+### Example 2: Create a user with only mandatory values
 
 ```powershell
-Update-Action1User `
-    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
-    -Enabled no
+New-Action1User `
+    -FirstName 'Piotr' `
+    -LastName 'Cyra' `
+    -Email 'piotrivanov9@example.com' `
+    -Password 'Madeira2025A'
 ```
 
-Sends `enabled` as `no`.
+Creates the user without sending optional `phone`, `timezone`, `enabled`, or
+`session_timeout` fields.
 
-### Example 3: Preview a user update
+### Example 3: Preview user creation
 
 ```powershell
-Update-Action1User `
-    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
-    -Email 'ivanivanov2@example.com' `
+New-Action1User `
+    -FirstName 'Piotr' `
+    -LastName 'Cyra' `
+    -Email 'piotrivanov9@example.com' `
+    -Password 'Madeira2025A' `
     -WhatIf
 ```
 
-Shows what would be updated without sending the PATCH request.
+Shows what would be created without sending the POST request.
 
 ## PARAMETERS
 
@@ -99,7 +108,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -109,6 +118,8 @@ Accept wildcard characters: False
 ### -Enabled
 
 Specifies whether the user is enabled. Accepted values are `yes` and `no`.
+
+When omitted, the command does not send the `enabled` field.
 
 ```yaml
 Type: String
@@ -131,7 +142,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -140,7 +151,7 @@ Accept wildcard characters: False
 
 ### -Force
 
-Bypasses the confirmation prompt. **-WhatIf** is still honored when it is specified.
+Bypasses confirmation prompts. **-WhatIf** is still honored when it is specified.
 
 ```yaml
 Type: SwitchParameter
@@ -163,7 +174,26 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Password
+
+Specifies the user's password.
+
+The password must be at least 12 characters long, contain at least one number,
+and contain upper and lower case letters.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -175,6 +205,8 @@ Accept wildcard characters: False
 Specifies the user's phone number.
 
 The value can optionally start with `+` and must then contain 6 to 13 digits.
+
+When omitted, the command does not send the `phone` field.
 
 ```yaml
 Type: String
@@ -194,7 +226,7 @@ Specifies the user session timeout value in minutes.
 
 Enter a timeout value between 5 and 1440 minutes. The command multiplies the
 value by 60 and sends it to the API as the `session_timeout` body field in
-seconds.
+seconds. When omitted, the command does not send the `session_timeout` field.
 
 ```yaml
 Type: Int32
@@ -213,6 +245,8 @@ Accept wildcard characters: False
 Specifies the user's time zone using the region/location form, such as
 `America/Los_Angeles`.
 
+When omitted, the command does not send the `timezone` field.
+
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -220,25 +254,6 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -UserId
-
-Specifies the ID of the Action1 user to update.
-
-The user ID must use the standard GUID format, such as
-`5e79941d-e4cc-40f3-899b-0cff63836d46`.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -273,7 +288,7 @@ You cannot pipe input to this command.
 
 ### System.Object
 
-Returns the Action1 API response for the PATCH request.
+Returns the Action1 API response for the POST request.
 
 ## NOTES
 
@@ -284,7 +299,7 @@ Requires permission to manage users in Action1.
 [Get-Action1User](Get-Action1User.md)
 [Get-Action1Users](Get-Action1Users.md)
 [Get-Action1UserRoles](Get-Action1UserRoles.md)
-[New-Action1User](New-Action1User.md)
+[Update-Action1User](Update-Action1User.md)
 [Remove-Action1User](Remove-Action1User.md)
 [Export-Action1UsersJson](Export-Action1UsersJson.md)
 [Set-Action1Credentials](../configuration/Set-Action1Credentials.md)
