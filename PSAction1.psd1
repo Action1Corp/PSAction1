@@ -105,6 +105,7 @@
         'New-Action1User'
         'Update-Action1User'
         'Remove-Action1User'
+        'Export-Action1UserRolesJson'
         'Export-Action1UsersJson'
 
         # Endpoint

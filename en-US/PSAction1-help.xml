@@ -9125,6 +9125,204 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Export-Action1UserRolesJson</command:name>
+      <command:verb>Export</command:verb>
+      <command:noun>Action1UserRolesJson</command:noun>
+      <maml:description>
+        <maml:para>Exports Action1 roles assigned to one user to a JSON file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Export-Action1UserRolesJson` calls `Get-Action1UserRoles` for the specified user ID and exports the returned role list to a JSON file.</maml:para>
+      <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para>* `organization_id`</maml:para>
+      <maml:para>* `user_id`</maml:para>
+      <maml:para>* `type`</maml:para>
+      <maml:para>* `items`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The schema property is set to `PSAction1.Role.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The user_id property is set to the supplied user ID. The type property is set to `Role`.</maml:para>
+      <maml:para>The items array contains the role objects returned by `Get-Action1UserRoles`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
+      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-Action1UserRolesJson</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>UserId</maml:name>
+          <maml:description>
+            <maml:para>Specifies the ID of the Action1 user whose roles are exported.</maml:para>
+            <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the JSON file to create.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+            <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_UserRoles_UserId_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the JSON file to create.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
+          <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_UserRoles_UserId_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>UserId</maml:name>
+        <maml:description>
+          <maml:para>Specifies the ID of the Action1 user whose roles are exported.</maml:para>
+          <maml:para>The user ID must use the standard GUID format, such as `5e79941d-e4cc-40f3-899b-0cff63836d46`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to view enterprise settings, the selected user, and user roles in Action1. The default Action1 organization must be configured because the export schema includes the current organization ID.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---- Example 1: Export user roles to the default JSON file ----</maml:title>
+        <dev:code>Export-Action1UserRolesJson -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports roles assigned to the specified user to a timestamped JSON file in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 2: Export user roles to a specific file -------</maml:title>
+        <dev:code>Export-Action1UserRolesJson `
+    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Path 'C:\Reports\UserRoles.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Exports roles assigned to the specified user to the specified JSON file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 3: Export to a read-only or hidden JSON file -----</maml:title>
+        <dev:code>Export-Action1UserRolesJson `
+    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Path 'C:\Reports\UserRoles.json' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Exports user roles and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1UserRoles</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Users</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UsersJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Set-Action1DefaultOrg</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Export-Action1UsersJson</command:name>
       <command:verb>Export</command:verb>
       <command:noun>Action1UsersJson</command:noun>
@@ -9317,6 +9515,10 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Remove-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UserRolesJson</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
@@ -9559,6 +9761,10 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Remove-Action1User</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1UserRolesJson</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>

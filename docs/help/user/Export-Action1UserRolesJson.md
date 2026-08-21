@@ -5,28 +5,22 @@ online version:
 schema: 2.0.0
 ---
 
-# Export-Action1UsersJson
+# Export-Action1UserRolesJson
 
 ## SYNOPSIS
 
-Exports Action1 users to a JSON file.
+Exports Action1 roles assigned to one user to a JSON file.
 
 ## SYNTAX
 
-### AllUsers (Default)
 ```
-Export-Action1UsersJson [[-Path] <String>] [-Force] [<CommonParameters>]
-```
-
-### ByUserIds
-```
-Export-Action1UsersJson [[-Path] <String>] [-UserIds <String[]>] [-Force] [<CommonParameters>]
+Export-Action1UserRolesJson [-UserId] <String> [[-Path] <String>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-`Export-Action1UsersJson` calls `Get-Action1Users`, optionally filters the
-returned user list by user ID, and exports the selected users to a JSON file.
+`Export-Action1UserRolesJson` calls `Get-Action1UserRoles` for the specified user
+ID and exports the returned role list to a JSON file.
 
 The command writes a single JSON object with the following top-level
 properties:
@@ -36,22 +30,21 @@ properties:
 * `region`
 * `enterprise_id`
 * `organization_id`
+* `user_id`
 * `type`
 * `items`
 
-The **schema** property is set to `PSAction1.User.v1`. The **datetime**
+The **schema** property is set to `PSAction1.Role.v1`. The **datetime**
 property contains the UTC export timestamp in the
 `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The **region** property is populated from
 `Get-Action1Region`. The **enterprise_id** property is populated from
 `Get-Action1EnterpriseId`. The **organization_id** property is populated from
-`Get-Action1DefaultOrgId`. The **type** property is set to `User`.
+`Get-Action1DefaultOrgId`. The **user_id** property is set to the supplied
+user ID. The **type** property is set to `Role`.
 
-The **items** array contains the user objects returned by `Get-Action1Users`.
-Item fields are not remapped, so all fields returned by the source command are
-preserved in the JSON output.
-
-Use **UserIds** to export only users whose `id` value matches one of the
-specified IDs.
+The **items** array contains the role objects returned by
+`Get-Action1UserRoles`. Item fields are not remapped, so all fields returned
+by the source command are preserved in the JSON output.
 
 The command creates the target directory when it does not already exist and
 overwrites the target JSON file if it already exists.
@@ -62,40 +55,35 @@ override file locks or insufficient file system permissions.
 
 ## EXAMPLES
 
-### Example 1: Export all users to the default JSON file
+### Example 1: Export user roles to the default JSON file
 
 ```powershell
-Export-Action1UsersJson
+Export-Action1UserRolesJson -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46'
 ```
 
-Exports all users returned by `Get-Action1Users` to a timestamped JSON file in
-the current location.
+Exports roles assigned to the specified user to a timestamped JSON file in the
+current location.
 
-### Example 2: Export all users to a specific file
+### Example 2: Export user roles to a specific file
 
 ```powershell
-Export-Action1UsersJson -Path 'C:\Reports\Users.json'
+Export-Action1UserRolesJson `
+    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Path 'C:\Reports\UserRoles.json'
 ```
 
-Exports all users to the specified JSON file.
+Exports roles assigned to the specified user to the specified JSON file.
 
-### Example 3: Export users by ID
+### Example 3: Export to a read-only or hidden JSON file
 
 ```powershell
-Export-Action1UsersJson `
-    -Path 'C:\Reports\SelectedUsers.json' `
-    -UserIds '387a511f-8aac-4ec3-a8f2-47f2869e9500'
+Export-Action1UserRolesJson `
+    -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
+    -Path 'C:\Reports\UserRoles.json' `
+    -Force
 ```
 
-Exports only users whose `id` value matches one of the specified user IDs.
-
-### Example 4: Export to a read-only or hidden JSON file
-
-```powershell
-Export-Action1UsersJson -Path 'C:\Reports\Users.json' -Force
-```
-
-Exports users and attempts to write to the target file even when file
+Exports user roles and attempts to write to the target file even when file
 attributes, such as read-only or hidden, would otherwise prevent writing.
 
 ## PARAMETERS
@@ -133,8 +121,9 @@ If the existing target file has read-only or hidden file attributes, use
 **Force**.
 
 If this parameter is not specified, the command creates a timestamped JSON file
-in the current location using the `Action1_Users_yyMMdd_HHmmssZ.json` naming
-format. The `Z` suffix marks the timestamp as UTC.
+in the current location using the
+`Action1_UserRoles_UserId_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix
+marks the timestamp as UTC.
 
 ```yaml
 Type: String
@@ -142,26 +131,26 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -UserIds
+### -UserId
 
-Specifies one or more user IDs to export.
+Specifies the ID of the Action1 user whose roles are exported.
 
-Each value must use the standard GUID format, such as
-`387a511f-8aac-4ec3-a8f2-47f2869e9500`.
+The user ID must use the standard GUID format, such as
+`5e79941d-e4cc-40f3-899b-0cff63836d46`.
 
 ```yaml
-Type: String[]
-Parameter Sets: ByUserIds
+Type: String
+Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: Named
+Required: True
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -185,19 +174,16 @@ file at the specified path.
 
 ## NOTES
 
-Requires permission to view enterprise settings and users in Action1. The
-default Action1 organization must be configured because the export schema
-includes the current organization ID.
+Requires permission to view enterprise settings, the selected user, and user
+roles in Action1. The default Action1 organization must be configured because
+the export schema includes the current organization ID.
 
 ## RELATED LINKS
 
-[Get-Action1Users](Get-Action1Users.md)
-[Get-Action1User](Get-Action1User.md)
 [Get-Action1UserRoles](Get-Action1UserRoles.md)
-[New-Action1User](New-Action1User.md)
-[Update-Action1User](Update-Action1User.md)
-[Remove-Action1User](Remove-Action1User.md)
-[Export-Action1UserRolesJson](Export-Action1UserRolesJson.md)
+[Get-Action1User](Get-Action1User.md)
+[Get-Action1Users](Get-Action1Users.md)
+[Export-Action1UsersJson](Export-Action1UsersJson.md)
 [Get-Action1EnterpriseId](../enterprise/Get-Action1EnterpriseId.md)
 [Get-Action1DefaultOrgId](../configuration/Get-Action1DefaultOrgId.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
