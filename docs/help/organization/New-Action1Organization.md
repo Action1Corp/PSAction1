@@ -14,7 +14,8 @@ Creates an Action1 organization.
 ## SYNTAX
 
 ```
-New-Action1Organization [-Name] <String> [-Description <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+New-Action1Organization [-Name] <String> [-Description <String>] [-Force] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -27,7 +28,8 @@ API body always includes the **description** property.
 
 This command supports PowerShell confirmation. Use **-WhatIf** to preview the
 operation without sending the POST request. Use **-Confirm** to prompt for
-confirmation before sending the POST request.
+confirmation before sending the POST request. Use **-Force** to bypass
+confirmation prompts.
 
 ## EXAMPLES
 
@@ -59,6 +61,17 @@ New-Action1Organization -Name 'My Organization'
 ```
 
 Creates an organization and sends an empty string in the **description** field.
+
+### Example 4: Create an organization without prompting
+
+```powershell
+New-Action1Organization `
+    -Name 'My Organization' `
+    -Description 'This is my organization description example text' `
+    -Force
+```
+
+Creates an organization without prompting for confirmation.
 
 ## PARAMETERS
 
@@ -93,6 +106,22 @@ Aliases:
 Required: False
 Position: Named
 Default value: ''
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Bypasses confirmation prompts. **-WhatIf** is still honored when it is specified.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

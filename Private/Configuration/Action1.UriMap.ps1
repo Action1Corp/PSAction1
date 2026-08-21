@@ -22,6 +22,14 @@ $Script:Action1_UriMap = @{
     U_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
     D_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
 
+    # User
+    G_User                 = { param($UserId) "/users/$UserId" }
+    G_UserRoles            = { param($UserId) "/users/$UserId/roles" }
+    G_Users                = { "/users" }
+    N_User                 = { "/users" }
+    U_User                 = { param($UserId) "/users/$UserId" }
+    D_User                 = { param($UserId) "/users/$UserId" }
+
     # Endpoint
     G_AgentDeployment      = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
     G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }

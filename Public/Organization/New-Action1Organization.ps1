@@ -21,10 +21,16 @@ function New-Action1Organization {
 
         [Parameter(Mandatory = $false)]
         [AllowEmptyString()]
-        [string]$Description = ''
+        [string]$Description = '',
+
+        [switch]$Force
     )
 
     $organizationLabel = New-Action1OrganizationLabel -Org_Name $Name
+
+    if ($Force) {
+        $ConfirmPreference = 'None'
+    }
 
     if (-not $PSCmdlet.ShouldProcess($organizationLabel, 'Create organization')) {
         Write-Action1Debug "Skipped creating $organizationLabel."
