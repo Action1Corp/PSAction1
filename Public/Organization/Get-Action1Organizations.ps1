@@ -6,8 +6,15 @@
 # (c) Action1 Corporation
 
 function Get-Action1Organizations {
-    [CmdletBinding()]
-    param()
+    [CmdletBinding(DefaultParameterSetName = 'AllOrganizations')]
+    param(
+        [Parameter(Mandatory = $false, ParameterSetName = 'AsPage')]
+        [switch]$AsPage,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$Limit = $Script:Action1_PagedGetRequestDefaultLimit
+    )
 
     Write-Action1Debug 'Getting Action1 organizations.'
 
@@ -16,9 +23,60 @@ function Get-Action1Organizations {
     $uri = & $uriPathBuilder
     $path = "$Script:Action1_BaseURI{0}" -f $uri
     $requestParams = @{
-        Path  = $path
-        Label = 'Organizations'
+        Path              = $path
+        Label             = 'Organizations'
+        Limit             = $Limit
+        OmitInitialOffset = $true
     }
+
+    if ($AsPage.IsPresent) {
+        $requestParams.AsPage = $true
+    }
+
+    $convertToOrganizationObject = {
+        param(
+            [object]$Organization
+        )
+
+        [PSCustomObject][ordered]@{
+            Org_Name     = $Organization.name
+            Org_ID       = $Organization.id
+            Description  = $Organization.description
+            Type         = $Organization.type
+            EnterpriseId = $Organization.enterprise_id
+        }
+    }
+
+    if ($AsPage.IsPresent) {
+        $pageCount = 0
+
+        Invoke-Action1PagedGetRequest @requestParams |
+            Where-Object { $null -ne $_ } |
+            ForEach-Object {
+                $pageCount++
+                $organizationList = @(
+                    $_.Items |
+                        Where-Object { $null -ne $_ } |
+                        ForEach-Object { & $convertToOrganizationObject $_ }
+                )
+
+                [PSCustomObject][ordered]@{
+                    Items      = $organizationList
+                    PageNumber = $_.PageNumber
+                    From       = $_.From
+                    Limit      = $_.Limit
+                    TotalItems = $_.TotalItems
+                    NextPage   = $_.NextPage
+                }
+            }
+
+        if ($pageCount -eq 0) {
+            Write-Error 'Unable to get Action1 organizations.' -ErrorAction Stop
+        }
+
+        return
+    }
+
     $response = @(
         Invoke-Action1PagedGetRequest @requestParams |
             Where-Object { $null -ne $_ }
@@ -55,14 +113,6 @@ function Get-Action1Organizations {
     }
 
     $organizationList |
-        ForEach-Object {
-            [PSCustomObject][ordered]@{
-                Org_Name     = $_.name
-                Org_ID       = $_.id
-                Description  = $_.description
-                Type         = $_.type
-                EnterpriseId = $_.enterprise_id
-            }
-        } |
+        ForEach-Object { & $convertToOrganizationObject $_ } |
         Sort-Object -Property Org_Name, Org_ID
 }

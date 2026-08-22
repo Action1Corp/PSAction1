@@ -6,8 +6,15 @@
 # (c) Action1 Corporation
 
 function Get-Action1EndpointGroups {
-    [CmdletBinding()]
-    param()
+    [CmdletBinding(DefaultParameterSetName = 'AllEndpointGroups')]
+    param(
+        [Parameter(Mandatory = $false, ParameterSetName = 'AsPage')]
+        [switch]$AsPage,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$Limit = $Script:Action1_PagedGetRequestDefaultLimit
+    )
 
     if (Initialize-Action1DefaultOrg) {
         $orgId = Get-Action1DefaultOrgId
@@ -20,5 +27,19 @@ function Get-Action1EndpointGroups {
 
     Write-Action1Debug 'Listing endpoint groups.'
 
-    Invoke-Action1PagedGetRequest -Path $path -Label 'Endpoint groups'
+    $requestParams = @{
+        Path  = $path
+        Label = 'Endpoint groups'
+        Limit = $Limit
+    }
+
+    if ($AsPage.IsPresent) {
+        $requestParams.AsPage = $true
+    }
+
+    if ($Limit -eq 1) {
+        $requestParams.OmitInitialOffset = $true
+    }
+
+    Invoke-Action1PagedGetRequest @requestParams
 }

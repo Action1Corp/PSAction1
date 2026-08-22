@@ -26,6 +26,10 @@ function Export-Action1OrganizationsJson {
         [string[]]$OrgNames,
 
         [Parameter(Mandatory = $false)]
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$PageSize = [int]$Script:Action1_ExportPageSize,
+
+        [Parameter(Mandatory = $false)]
         [switch]$Force
     )
 
@@ -49,120 +53,132 @@ function Export-Action1OrganizationsJson {
         $null = New-Item -Path $parentPath -ItemType Directory -Force
     }
 
-    $organizations = @(Get-Action1Organizations -ErrorAction Stop)
+    $region = Get-Action1Region
+    $enterpriseId = Get-Action1EnterpriseId -ErrorAction Stop
 
-    $organizationList = @(
-        $organizations |
-            Where-Object { $null -ne $_ }
+    $orgIdsToMatch = @(
+        if ($PSCmdlet.ParameterSetName -eq 'ByOrgIds') {
+            $OrgIds |
+                Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+                ForEach-Object { ([string]$_).Trim() }
+        }
     )
 
-    if ($organizationList.Count -eq 0) {
+    $orgNamesToMatch = @(
+        if ($PSCmdlet.ParameterSetName -eq 'ByOrgNames') {
+            $OrgNames |
+                Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+                ForEach-Object { ([string]$_).Trim() }
+        }
+    )
+
+    $jsonContentParams = @{
+        Path = $resolvedPath
+    }
+
+    if ($Force.IsPresent) {
+        $jsonContentParams.Force = $true
+    }
+
+    $testOrganizationFilter = {
+        param(
+            [object]$Organization
+        )
+
+        if ($PSCmdlet.ParameterSetName -eq 'ByOrgIds') {
+            $organizationId = ([string]$Organization.Org_ID).Trim()
+            return ($orgIdsToMatch -icontains $organizationId)
+        }
+
+        if ($PSCmdlet.ParameterSetName -eq 'ByOrgNames') {
+            $organizationName = ([string]$Organization.Org_Name).Trim()
+            return ($orgNamesToMatch -icontains $organizationName)
+        }
+
+        return $true
+    }
+
+    $headerLines = @(
+        '{',
+        ('  "schema": {0},' -f (ConvertTo-JsonValue $Script:Action1_OrganizationJsonSchema)),
+        ('  "datetime": {0},' -f (ConvertTo-JsonValue (Get-UtcTimestamp))),
+        ('  "region": {0},' -f (ConvertTo-JsonValue $region)),
+        ('  "enterprise_id": {0},' -f (ConvertTo-JsonValue $enterpriseId)),
+        '  "type": "Organization",',
+        '  "items": ['
+    )
+
+    Write-TextFileContent @jsonContentParams -Content $headerLines
+
+    $organizationCount = 0
+    $exportedCount = 0
+    $exportedOrganizationIds = @{}
+    $pendingJsonLines = $null
+
+    foreach (
+        $page in Get-Action1Organizations -AsPage -Limit $PageSize -ErrorAction Stop
+    ) {
+        $organizationsToExport = @(
+            $page.Items |
+                Where-Object { $null -ne $_ } |
+                ForEach-Object {
+                    $organizationCount++
+                    $_
+                } |
+                Where-Object { & $testOrganizationFilter $_ }
+        )
+
+        foreach ($organization in $organizationsToExport) {
+            $organizationId = ([string]$organization.Org_ID).Trim()
+
+            if (-not [string]::IsNullOrWhiteSpace($organizationId)) {
+                if ($exportedOrganizationIds.ContainsKey($organizationId)) {
+                    Write-Action1Debug "Skipping duplicate organization '$organizationId'."
+                    continue
+                }
+
+                $exportedOrganizationIds[$organizationId] = $true
+            }
+
+            $organizationItem = ConvertTo-Action1OrganizationItem `
+                -Organization $organization
+            $jsonItem = $organizationItem |
+                ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
+            $jsonLines = @($jsonItem -split "`r?`n")
+
+            $indentedJsonLines = @(
+                $jsonLines |
+                    ForEach-Object { '    {0}' -f $_ }
+            )
+
+            if ($null -ne $pendingJsonLines) {
+                $previousJsonLines = @($pendingJsonLines)
+                $previousJsonLines[$previousJsonLines.Count - 1] += ','
+                Write-TextFileContent @jsonContentParams -Content $previousJsonLines -Append
+            }
+
+            $pendingJsonLines = $indentedJsonLines
+            $exportedCount++
+        }
+    }
+
+    if ($null -ne $pendingJsonLines) {
+        Write-TextFileContent @jsonContentParams -Content $pendingJsonLines -Append
+    }
+
+    $footerLines = @(
+        '  ]',
+        '}'
+    )
+
+    Write-TextFileContent @jsonContentParams -Content $footerLines -Append
+
+    if ($organizationCount -eq 0) {
         $message = 'No Action1 organizations were returned for JSON export.'
         Write-Error $message -ErrorAction Stop
     }
 
-    $region = Get-Action1Region
-    $enterpriseId = Get-Action1EnterpriseId -ErrorAction Stop
-
-    $organizationsToExport = @(
-        $organizationList |
-            Where-Object {
-                if ($PSCmdlet.ParameterSetName -eq 'ByOrgIds') {
-                    $orgIdsToMatch = @(
-                        $OrgIds |
-                            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
-                            ForEach-Object { ([string]$_).Trim() }
-                    )
-                    $organizationId = ([string]$_.Org_ID).Trim()
-                    $orgIdsToMatch -icontains $organizationId
-                }
-                elseif ($PSCmdlet.ParameterSetName -eq 'ByOrgNames') {
-                    $orgNamesToMatch = @(
-                        $OrgNames |
-                            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
-                            ForEach-Object { ([string]$_).Trim() }
-                    )
-                    $organizationName = ([string]$_.Org_Name).Trim()
-                    $orgNamesToMatch -icontains $organizationName
-                }
-                else {
-                    $true
-                }
-            }
-    )
-
-    $baseUri = ([string]$Script:Action1_BaseURI).TrimEnd('/')
-
-    $jsonOrganizations = @(
-        foreach ($organization in $organizationsToExport) {
-            $organizationId = ([string]$organization.Org_ID).Trim()
-            $organizationName = [string]$organization.Org_Name
-            $organizationDescription = ''
-
-            if ($null -ne $organization.Description) {
-                $organizationDescription = [string]$organization.Description
-            }
-
-            $organizationType = [string]$organization.Type
-
-            if ([string]::IsNullOrWhiteSpace($organizationType)) {
-                $organizationType = 'Organization'
-            }
-
-            $organizationEnterpriseId = [string]$organization.EnterpriseId
-            $selfUri = ''
-
-            if (
-                -not [string]::IsNullOrWhiteSpace($baseUri) -and
-                -not [string]::IsNullOrWhiteSpace($organizationId)
-            ) {
-                $selfUri = '{0}/organizations/{1}' -f $baseUri, $organizationId
-            }
-
-            [PSCustomObject][ordered]@{
-                id            = $organizationId
-                type          = $organizationType
-                self          = $selfUri
-                name          = $organizationName
-                description   = $organizationDescription
-                enterprise_id = $organizationEnterpriseId
-            }
-        }
-    )
-
-    $jsonExport = [PSCustomObject][ordered]@{
-        schema        = $Script:Action1_OrganizationJsonSchema
-        datetime      = Get-UtcTimestamp
-        region        = $region
-        enterprise_id = $enterpriseId
-        type          = 'Organization'
-        items         = $jsonOrganizations
-    }
-
-    $jsonContent = $jsonExport |
-        ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
-
-    $setContentParams = @{
-        LiteralPath = $resolvedPath
-        Value       = $jsonContent
-        Encoding    = 'UTF8'
-    }
-
-    if ($Force.IsPresent) {
-        $setContentParams.Force = $true
-    }
-
-    try {
-        Set-Content @setContentParams -ErrorAction Stop
-    }
-    catch {
-        $message = "Unable to write JSON file '$resolvedPath'. Close the file if it is "
-        $message += 'open in another application, verify write permissions, or use '
-        $message += "-Force for read-only/hidden files. Error: $($_.Exception.Message)"
-        throw $message
-    }
-
-    $message = "Exported $($jsonOrganizations.Count) organization record(s) "
+    $message = "Exported $exportedCount organization record(s) "
     $message += "to '$resolvedPath'."
     Write-Action1Debug $message
 }
