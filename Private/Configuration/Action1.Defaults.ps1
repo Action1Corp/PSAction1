@@ -7,7 +7,10 @@
 
 # Basic params
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
+$Script:Action1_ExportPageSize = 200
 $Script:Action1_JsonObjectConversionDepth = 10
+$Script:Action1_PagedGetRequestDefaultLimit = 200
+$Script:Action1_PagedGetRequestDefaultOffset = 0
 
 # Timestamp template
 $Script:Action1_UtcTimestampTemplate = "yyyy-MM-dd'T'HH:mm:ss'Z'"

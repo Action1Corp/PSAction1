@@ -15,24 +15,24 @@ Exports Action1 organizations to a JSON file.
 
 ### AllOrganizations (Default)
 ```
-Export-Action1OrganizationsJson [[-Path] <String>] [-Force] [<CommonParameters>]
+Export-Action1OrganizationsJson [[-Path] <String>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ### ByOrgIds
 ```
-Export-Action1OrganizationsJson [[-Path] <String>] [-OrgIds <String[]>] [-Force] [<CommonParameters>]
+Export-Action1OrganizationsJson [[-Path] <String>] [-OrgIds <String[]>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ### ByOrgNames
 ```
-Export-Action1OrganizationsJson [[-Path] <String>] [-OrgNames <String[]>] [-Force] [<CommonParameters>]
+Export-Action1OrganizationsJson [[-Path] <String>] [-OrgNames <String[]>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-`Export-Action1OrganizationsJson` calls `Get-Action1Organizations`,
-optionally filters the returned organization list by organization ID or
-organization name, and exports the selected organizations to a JSON file.
+`Export-Action1OrganizationsJson` calls `Get-Action1Organizations` in page
+mode, optionally filters each returned page by organization ID or organization
+name, and exports the selected organizations to a JSON file.
 
 The command writes a single JSON object with the following top-level
 properties:
@@ -65,6 +65,16 @@ organization ID.
 Use either **OrgIds** or **OrgNames** to filter the export. These parameters are
 mutually exclusive and cannot be used in the same command.
 
+Filtering is applied to each API page as it is returned. Pages that do not
+contain matching organizations are skipped, and later pages are still requested
+until pagination is complete.
+
+If a paged API response overlaps an earlier page, an organization ID is written
+only once.
+
+Use **PageSize** to control how many organizations are requested per API page.
+The default page size is 200.
+
 The command creates the target directory when it does not already exist and
 overwrites the target JSON file if it already exists.
 
@@ -80,8 +90,8 @@ override file locks or insufficient file system permissions.
 Export-Action1OrganizationsJson
 ```
 
-Exports all organizations returned by `Get-Action1Organizations` to a
-timestamped JSON file in the current location.
+Exports all organizations returned by `Get-Action1Organizations` page by page
+to a timestamped JSON file in the current location.
 
 ### Example 2: Export all organizations to a specific file
 
@@ -205,6 +215,25 @@ Aliases:
 Required: False
 Position: 0
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PageSize
+
+Specifies how many organizations to request from Action1 per API page during
+the JSON export.
+
+The value must be from 1 through 2147483647. The default value is 200.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

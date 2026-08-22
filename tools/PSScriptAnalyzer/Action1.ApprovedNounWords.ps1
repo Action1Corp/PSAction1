@@ -8,6 +8,7 @@
 $Script:PSAction1ApprovedNounWords = @{}
 
 @(
+    '64'
     'Account'
     'Action'
     'Action1'
@@ -85,7 +86,9 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Installed'
     'Instance'
     'Instances'
+    'Int'
     'Interactive'
+    'Item'
     'Json'
     'Label'
     'Latin'
@@ -111,6 +114,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Organizations'
     'Package'
     'Packages'
+    'Parameters'
     'Paged'
     'Permission'
     'Permissions'
@@ -157,6 +161,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Subscriptions'
     'Template'
     'Templates'
+    'Text'
     'Token'
     'Trial'
     'Type'

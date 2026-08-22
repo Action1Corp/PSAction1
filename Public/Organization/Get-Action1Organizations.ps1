@@ -23,9 +23,10 @@ function Get-Action1Organizations {
     $uri = & $uriPathBuilder
     $path = "$Script:Action1_BaseURI{0}" -f $uri
     $requestParams = @{
-        Path  = $path
-        Label = 'Organizations'
-        Limit = $Limit
+        Path              = $path
+        Label             = 'Organizations'
+        Limit             = $Limit
+        OmitInitialOffset = $true
     }
 
     if ($AsPage.IsPresent) {
