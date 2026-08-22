@@ -13,8 +13,14 @@ Gets endpoint groups for the current Action1 organization.
 
 ## SYNTAX
 
+### AllEndpointGroups (Default)
 ```
-Get-Action1EndpointGroups [<CommonParameters>]
+Get-Action1EndpointGroups [-Limit <Int32>] [<CommonParameters>]
+```
+
+### AsPage
+```
+Get-Action1EndpointGroups [-AsPage] [-Limit <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -24,6 +30,10 @@ Action1 endpoint groups API.
 
 The command uses the module default organization configured by
 **Set-Action1DefaultOrg**.
+
+Use **AsPage** to return one object per API page. Page mode is intended for
+export commands and other callers that need to process endpoint groups page by
+page without materializing the whole collection first.
 
 ## EXAMPLES
 
@@ -46,6 +56,42 @@ Gets endpoint groups and selects key fields.
 
 ## PARAMETERS
 
+### -AsPage
+
+Returns page envelope objects instead of individual endpoint group objects.
+Each page object contains `Items`, `PageNumber`, `From`, `Limit`,
+`TotalItems`, and `NextPage`.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: AsPage
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Limit
+
+Specifies how many endpoint groups to request from Action1 per API page.
+
+The value must be from 1 through 2147483647. The default value is 200.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -60,6 +106,9 @@ You cannot pipe input to this command.
 ### System.Object
 
 Returns endpoint group objects from Action1.
+
+When **AsPage** is used, each page object contains `Items`, `PageNumber`,
+`From`, `Limit`, `TotalItems`, and `NextPage`.
 
 ## NOTES
 
