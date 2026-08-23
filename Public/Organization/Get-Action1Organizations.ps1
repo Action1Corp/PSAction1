@@ -12,7 +12,12 @@ function Get-Action1Organizations {
         [switch]$AsPage,
 
         [Parameter(Mandatory = $false)]
-        [ValidateRange(1, [int]::MaxValue)]
+        [ValidateScript({
+            Test-Action1PageSize `
+                -Value $_ `
+                -Maximum $Script:Action1_PagedGetRequestDefaultLimit `
+                -ParameterName 'Limit'
+        })]
         [int]$Limit = $Script:Action1_PagedGetRequestDefaultLimit
     )
 

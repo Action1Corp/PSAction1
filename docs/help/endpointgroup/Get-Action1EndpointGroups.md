@@ -78,7 +78,7 @@ Accept wildcard characters: False
 
 Specifies how many endpoint groups to request from Action1 per API page.
 
-The value must be from 1 through 2147483647. The default value is 200.
+The value must be from 1 through 200. The default value is 200.
 
 ```yaml
 Type: Int32

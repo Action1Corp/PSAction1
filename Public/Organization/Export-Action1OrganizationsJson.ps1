@@ -26,7 +26,12 @@ function Export-Action1OrganizationsJson {
         [string[]]$OrgNames,
 
         [Parameter(Mandatory = $false)]
-        [ValidateRange(1, [int]::MaxValue)]
+        [ValidateScript({
+            Test-Action1PageSize `
+                -Value $_ `
+                -Maximum $Script:Action1_ExportPageSize `
+                -ParameterName 'PageSize'
+        })]
         [int]$PageSize = [int]$Script:Action1_ExportPageSize,
 
         [Parameter(Mandatory = $false)]

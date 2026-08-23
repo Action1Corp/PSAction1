@@ -72,6 +72,8 @@ Accept wildcard characters: False
 
 Specifies the page size used for paged API requests.
 
+The value must be from 1 through 200. The default value is 200.
+
 The command still retrieves all available pages unless **AsPage** is used by a
 caller that processes each page incrementally.
 

@@ -73,7 +73,7 @@ If a paged API response overlaps an earlier page, an organization ID is written
 only once.
 
 Use **PageSize** to control how many organizations are requested per API page.
-The default page size is 200.
+The value must be from 1 through 200. The default page size is 200.
 
 The command creates the target directory when it does not already exist and
 overwrites the target JSON file if it already exists.
@@ -224,7 +224,7 @@ Accept wildcard characters: False
 Specifies how many organizations to request from Action1 per API page during
 the JSON export.
 
-The value must be from 1 through 2147483647. The default value is 200.
+The value must be from 1 through 200. The default value is 200.
 
 ```yaml
 Type: Int32

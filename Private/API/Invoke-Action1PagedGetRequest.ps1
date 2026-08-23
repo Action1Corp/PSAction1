@@ -15,7 +15,12 @@ function Invoke-Action1PagedGetRequest {
         [string]$AddArgs,
         [ValidateRange(0, [int]::MaxValue)]
         [int]$Offset = $Script:Action1_PagedGetRequestDefaultOffset,
-        [ValidateRange(1, [int]::MaxValue)]
+        [ValidateScript({
+            Test-Action1PageSize `
+                -Value $_ `
+                -Maximum $Script:Action1_PagedGetRequestDefaultLimit `
+                -ParameterName 'Limit'
+        })]
         [int]$Limit = $Script:Action1_PagedGetRequestDefaultLimit,
         [switch]$OmitInitialOffset,
         [switch]$AsPage
