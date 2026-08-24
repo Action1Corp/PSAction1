@@ -1134,7 +1134,7 @@ Europe</dev:code>
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -3382,8 +3382,8 @@ Add-Action1EndpointGroupMembers `
       <maml:para>The schema property is set to `PSAction1.Endpoint.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The endpointgroup_id property contains the resolved endpoint group ID. The type property is set to `Endpoint`.</maml:para>
       <maml:para>The items array contains the endpoint objects returned by `Get-Action1EndpointGroupMembers`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
       <maml:para>Use Status , RebootRequired , and OS to pass endpoint filters through to `Get-Action1EndpointGroupMembers`. Specify `All` for a filter parameter to skip that filter.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3403,7 +3403,8 @@ Add-Action1EndpointGroupMembers `
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -3444,7 +3445,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -3507,7 +3508,8 @@ Add-Action1EndpointGroupMembers `
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -3561,7 +3563,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -3624,7 +3626,8 @@ Add-Action1EndpointGroupMembers `
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -3683,7 +3686,7 @@ Add-Action1EndpointGroupMembers `
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -3746,7 +3749,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -3793,13 +3796,13 @@ Add-Action1EndpointGroupMembers `
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 5: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1EndpointGroupMembersJson `
     -GroupId 'Service_1696554367754' `
     -Path 'C:\Reports\ServiceEndpointGroupMembers.json' `
     -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports endpoint group members and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports endpoint group members and overwrites the target file if it already exists.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3860,8 +3863,8 @@ Add-Action1EndpointGroupMembers `
       <maml:para>Filtering is applied to each API page as it is returned. Pages that do not contain matching endpoint groups are skipped, and later pages are still requested until pagination is complete.</maml:para>
       <maml:para>If a paged API response overlaps an earlier page, an endpoint group ID is written only once.</maml:para>
       <maml:para>Use PageSize to control how many endpoint groups are requested per API page. The value must be from 1 through 200. The default page size is 200.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3870,7 +3873,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -3897,7 +3900,8 @@ Add-Action1EndpointGroupMembers `
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -3926,7 +3930,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -3953,7 +3957,8 @@ Add-Action1EndpointGroupMembers `
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -4007,7 +4012,8 @@ Add-Action1EndpointGroupMembers `
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -4034,7 +4040,7 @@ Add-Action1EndpointGroupMembers `
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -4062,7 +4068,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -4105,10 +4111,10 @@ Add-Action1EndpointGroupMembers `
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 5: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1EndpointGroupsJson -Path 'C:\Reports\EndpointGroups.json' -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports endpoint groups and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports endpoint groups and overwrites the target file if it already exists.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8052,8 +8058,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>Filtering is applied to each API page as it is returned. Pages that do not contain matching organizations are skipped, and later pages are still requested until pagination is complete.</maml:para>
       <maml:para>If a paged API response overlaps an earlier page, an organization ID is written only once.</maml:para>
       <maml:para>Use PageSize to control how many organizations are requested per API page. The value must be from 1 through 200. The default page size is 200.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8062,7 +8068,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -8076,7 +8082,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -8118,7 +8125,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -8132,7 +8139,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -8173,7 +8181,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -8226,7 +8235,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -8254,7 +8263,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -8297,10 +8306,10 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 5: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1OrganizationsJson -Path 'C:\Reports\Organizations.json' -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports organizations and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports organizations and overwrites the target file if it already exists.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -9436,8 +9445,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para></maml:para>
       <maml:para>The schema property is set to `PSAction1.Role.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The user_id property is set to the supplied user ID. The type property is set to `Role`.</maml:para>
       <maml:para>The items array contains the role objects returned by `Get-Action1UserRoles`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -9459,7 +9468,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_UserRoles_UserId_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -9473,7 +9482,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -9488,7 +9498,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -9502,7 +9513,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_UserRoles_UserId_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -9543,7 +9554,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -9570,13 +9581,13 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 3: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 3: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1UserRolesJson `
     -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
     -Path 'C:\Reports\UserRoles.json' `
     -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports user roles and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports user roles and overwrites the target file if it already exists.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -11249,8 +11260,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>* `InstalledVersion`</maml:para>
       <maml:para>* `AvailableUpdate`</maml:para>
       <maml:para></maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target CSV file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist. If the target CSV file already exists, the command stops before writing. Use Force to overwrite an existing target CSV file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden. Force does not override file locks or insufficient file system permissions.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
     <command:syntax>
@@ -11260,7 +11270,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the CSV file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyMMdd_HHmmssZ.csv` naming format. The `Z` suffix marks the timestamp as UTC. The organization name is normalized to Latin letters and digits while preserving capitalization.</maml:para>
           </maml:description>
@@ -11288,7 +11298,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target CSV file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -11373,7 +11384,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target CSV file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -11387,7 +11399,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the CSV file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyMMdd_HHmmssZ.csv` naming format. The `Z` suffix marks the timestamp as UTC. The organization name is normalized to Latin letters and digits while preserving capitalization.</maml:para>
         </maml:description>
@@ -11455,7 +11467,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a CSV file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a CSV file at the specified path and overwrites an existing file only when Force is specified.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -11506,10 +11518,10 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 6: Export to a read-only or hidden CSV file -----</maml:title>
+        <maml:title>----- Example 6: Export and overwrite an existing CSV file -----</maml:title>
         <dev:code>Export-Action1VulnerabilitiesEndpointsCsv -Path 'C:\Reports\VulnerabilityEndpoints.csv' -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports vulnerability endpoint records and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports vulnerability endpoint records and overwrites the target file if it already exists. The command also attempts to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
