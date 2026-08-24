@@ -34,7 +34,7 @@ function Update-Action1User {
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        [ValidatePattern('^\+?\d{6,13}$')]
+        [ValidateLength(1, 30)]
         [string]$Phone,
 
         [Parameter(Mandatory = $false)]

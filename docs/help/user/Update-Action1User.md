@@ -184,7 +184,7 @@ Accept wildcard characters: False
 
 Specifies the user's phone number.
 
-The value can optionally start with `+` and must then contain 6 to 13 digits.
+The value must be 30 characters or fewer.
 
 ```yaml
 Type: String
