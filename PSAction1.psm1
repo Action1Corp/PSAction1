@@ -20,6 +20,7 @@ $BootstrapFilesToLoadFirst = @(
     'Private\Initialization\Initialize-Action1ModuleState.ps1'
     'Private\Templates\RemediationTemplate.ps1'
     'Private\Templates\PackageDeployTemplate.ps1'
+    'Private\Data\Test-Guid.ps1'
 )
 
 foreach ($RelativePath in $BootstrapFilesToLoadFirst) {

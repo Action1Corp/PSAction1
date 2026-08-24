@@ -98,6 +98,16 @@
         'Remove-Action1Organization'
         'Export-Action1OrganizationsJson'
 
+        # User
+        'Get-Action1User'
+        'Get-Action1UserRoles'
+        'Get-Action1Users'
+        'New-Action1User'
+        'Update-Action1User'
+        'Remove-Action1User'
+        'Export-Action1UserRolesJson'
+        'Export-Action1UsersJson'
+
         # Endpoint
         'Get-Action1Endpoints'
         'Get-Action1Endpoint'

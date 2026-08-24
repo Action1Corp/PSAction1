@@ -11,13 +11,28 @@ function Test-Guid {
         [Parameter(Mandatory = $true, Position = 0)]
         [AllowNull()]
         [AllowEmptyString()]
-        [string]$Guid
+        [string]$Guid,
+
+        [Parameter(Mandatory = $false)]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]$Label
     )
 
-    if ([string]::IsNullOrWhiteSpace($Guid)) {
-        return $false
+    $isValid = $false
+
+    if (-not [string]::IsNullOrWhiteSpace($Guid)) {
+        $parsedGuid = [guid]::Empty
+        $isValid = [guid]::TryParseExact($Guid.Trim(), 'D', [ref]$parsedGuid)
     }
 
-    $parsedGuid = [guid]::Empty
-    return [guid]::TryParseExact($Guid.Trim(), 'D', [ref]$parsedGuid)
+    if (
+        -not $isValid -and
+        $PSBoundParameters.ContainsKey('Label') -and
+        -not [string]::IsNullOrWhiteSpace($Label)
+    ) {
+        throw "$Label must be in the standard GUID format."
+    }
+
+    return $isValid
 }

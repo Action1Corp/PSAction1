@@ -19,11 +19,7 @@ function Remove-Action1Organization {
         )]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            if (-not (Test-Guid $_)) {
-                throw 'OrgID must use the standard GUID format.'
-            }
-
-            $true
+            Test-Guid -Guid $_ -Label 'OrgID'
         })]
         [Alias('Org_ID')]
         [string]$OrgID,

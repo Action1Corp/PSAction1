@@ -11,11 +11,7 @@ function Get-Action1Endpoint {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            if (-not (Test-Guid $_)) {
-                throw 'EndpointId must use the standard GUID format.'
-            }
-
-            $true
+            Test-Guid -Guid $_ -Label 'EndpointId'
         })]
         [string]$EndpointId
     )

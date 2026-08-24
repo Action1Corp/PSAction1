@@ -47,11 +47,13 @@ function New-Action1OrganizationIdentity {
         -Org_ID $resolvedOrgId `
         -Org_Name $resolvedOrgName
 
-    if (-not (Test-Guid $resolvedOrgId)) {
-        $errorMessage = (
-            "Organization ID '$resolvedOrgId' must use the standard GUID format."
-        )
-
+    try {
+        [void](Test-Guid `
+            -Guid $resolvedOrgId `
+            -Label "Organization ID '$resolvedOrgId'")
+    }
+    catch {
+        $errorMessage = $_.Exception.Message
         return [pscustomobject]@{
             IsValid      = $false
             Org_ID       = $resolvedOrgId
