@@ -100,6 +100,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Map'
     'Match'
     'Matching'
+    'Message'
     'Member'
     'Members'
     'Method'
@@ -186,6 +187,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Vulnerable'
     'Web'
     'Windows'
+    'Write'
 ) | ForEach-Object {
     $Script:PSAction1ApprovedNounWords[$_] = $true
 }

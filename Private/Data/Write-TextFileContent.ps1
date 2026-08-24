@@ -44,9 +44,11 @@ function Write-TextFileContent {
         }
     }
     catch {
-        $message = "Unable to write file '$Path'. Close the file if it is "
-        $message += 'open in another application, verify write permissions, or use '
-        $message += "-Force for read-only/hidden files. Error: $($_.Exception.Message)"
+        $message = New-TextFileWriteErrorMessage `
+            -Operation 'write file' `
+            -Path $Path `
+            -ErrorMessage $_.Exception.Message
+
         throw $message
     }
 }
