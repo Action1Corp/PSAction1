@@ -15,26 +15,27 @@ Exports Action1 endpoint groups to a JSON file.
 
 ### AllEndpointGroups (Default)
 ```
-Export-Action1EndpointGroupsJson [[-Path] <String>] [-Force] [<CommonParameters>]
+Export-Action1EndpointGroupsJson [[-Path] <String>] [-PageSize <Int32>] [-Force]
+ [<CommonParameters>]
 ```
 
 ### ByEndpointGroupIds
 ```
-Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupIds <String[]>] [-Force]
- [<CommonParameters>]
+Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupIds <String[]>]
+ [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ### ByEndpointGroupNames
 ```
-Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupNames <String[]>] [-Force]
- [<CommonParameters>]
+Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupNames <String[]>]
+ [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-`Export-Action1EndpointGroupsJson` calls `Get-Action1EndpointGroups`,
-optionally filters the returned endpoint group list by endpoint group ID or
-endpoint group name, and exports the selected endpoint groups to a JSON file.
+`Export-Action1EndpointGroupsJson` calls `Get-Action1EndpointGroups` in page
+mode, optionally filters each returned page by endpoint group ID or endpoint
+group name, and exports the selected endpoint groups to a JSON file.
 
 The command writes a single JSON object with the following top-level
 properties:
@@ -62,6 +63,16 @@ Use either **EndpointGroupIds** or **EndpointGroupNames** to filter the export.
 These parameters are mutually exclusive and cannot be used in the same command.
 Endpoint group IDs are strings and are not validated as GUIDs.
 
+Filtering is applied to each API page as it is returned. Pages that do not
+contain matching endpoint groups are skipped, and later pages are still
+requested until pagination is complete.
+
+If a paged API response overlaps an earlier page, an endpoint group ID is
+written only once.
+
+Use **PageSize** to control how many endpoint groups are requested per API page.
+The value must be from 1 through 200. The default page size is 200.
+
 The command creates the target directory when it does not already exist and
 overwrites the target JSON file if it already exists.
 
@@ -77,8 +88,8 @@ override file locks or insufficient file system permissions.
 Export-Action1EndpointGroupsJson
 ```
 
-Exports all endpoint groups returned by `Get-Action1EndpointGroups` to a
-timestamped JSON file in the current location.
+Exports all endpoint groups returned by `Get-Action1EndpointGroups` page by
+page to a timestamped JSON file in the current location.
 
 ### Example 2: Export all endpoint groups to a specific file
 
@@ -207,6 +218,25 @@ Aliases:
 Required: False
 Position: 0
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PageSize
+
+Specifies how many endpoint groups to request from Action1 per API page during
+the JSON export.
+
+The value must be from 1 through 200. The default value is 200.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

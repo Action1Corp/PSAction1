@@ -15,6 +15,7 @@ $Script:ModuleRoot = $PSScriptRoot
 
 $BootstrapFilesToLoadFirst = @(
     'Private\Configuration\Action1.Defaults.ps1'
+    'Private\API\Test-Action1PageSize.ps1'
     'Private\Configuration\Action1.Hosts.ps1'
     'Private\Configuration\Action1.UriMap.ps1'
     'Private\Initialization\Initialize-Action1ModuleState.ps1'

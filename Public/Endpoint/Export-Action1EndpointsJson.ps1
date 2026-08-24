@@ -118,9 +118,11 @@ function Export-Action1EndpointsJson {
         Set-Content @setContentParams -ErrorAction Stop
     }
     catch {
-        $message = "Unable to write JSON file '$resolvedPath'. Close the file if it is "
-        $message += 'open in another application, verify write permissions, or use '
-        $message += "-Force for read-only/hidden files. Error: $($_.Exception.Message)"
+        $message = New-TextFileWriteErrorMessage `
+            -Operation 'write JSON file' `
+            -Path $resolvedPath `
+            -ErrorMessage $_.Exception.Message
+
         throw $message
     }
 

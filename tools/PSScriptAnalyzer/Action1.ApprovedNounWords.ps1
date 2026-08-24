@@ -8,6 +8,7 @@
 $Script:PSAction1ApprovedNounWords = @{}
 
 @(
+    '64'
     'Account'
     'Action'
     'Action1'
@@ -85,7 +86,9 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Installed'
     'Instance'
     'Instances'
+    'Int'
     'Interactive'
+    'Item'
     'Json'
     'Label'
     'Latin'
@@ -97,6 +100,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Map'
     'Match'
     'Matching'
+    'Message'
     'Member'
     'Members'
     'Method'
@@ -111,6 +115,8 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Organizations'
     'Package'
     'Packages'
+    'Page'
+    'Parameters'
     'Paged'
     'Permission'
     'Permissions'
@@ -146,6 +152,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Sessions'
     'Setting'
     'Settings'
+    'Size'
     'Software'
     'Source'
     'Sources'
@@ -157,6 +164,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Subscriptions'
     'Template'
     'Templates'
+    'Text'
     'Token'
     'Trial'
     'Type'
@@ -179,6 +187,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Vulnerable'
     'Web'
     'Windows'
+    'Write'
 ) | ForEach-Object {
     $Script:PSAction1ApprovedNounWords[$_] = $true
 }
