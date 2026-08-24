@@ -80,14 +80,10 @@ function Export-Action1EndpointsJson {
     $resolvedPath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path)
     $parentPath = Split-Path -Path $resolvedPath -Parent
 
-    if (
-        (Test-Path -LiteralPath $resolvedPath -PathType Leaf) -and
-        -not $Force.IsPresent
-    ) {
-        $message = "The JSON export file '$resolvedPath' already exists. "
-        $message += 'Use -Force to overwrite it.'
-        throw $message
-    }
+    $null = Test-Action1ExportFile `
+        -Path $resolvedPath `
+        -FileType 'JSON' `
+        -Force:$Force.IsPresent
 
     if (
         -not [string]::IsNullOrWhiteSpace($parentPath) -and

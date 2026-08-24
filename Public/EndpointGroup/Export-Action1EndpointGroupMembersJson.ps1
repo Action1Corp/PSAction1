@@ -109,6 +109,11 @@ function Export-Action1EndpointGroupMembersJson {
     $resolvedPath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path)
     $parentPath = Split-Path -Path $resolvedPath -Parent
 
+    $null = Test-Action1ExportFile `
+        -Path $resolvedPath `
+        -FileType 'JSON' `
+        -Force:$Force.IsPresent
+
     if (
         -not [string]::IsNullOrWhiteSpace($parentPath) -and
         -not (Test-Path -LiteralPath $parentPath)

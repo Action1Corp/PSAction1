@@ -290,8 +290,8 @@ You cannot pipe input to this command.
 
 ### None
 
-This command does not return pipeline output. It creates or overwrites a JSON
-file at the specified path.
+This command does not return pipeline output. It creates a JSON file at the
+specified path.
 
 ## NOTES
 
