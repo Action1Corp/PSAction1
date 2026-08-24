@@ -15,12 +15,12 @@ Exports Action1 users to a JSON file.
 
 ### AllUsers (Default)
 ```
-Export-Action1UsersJson [[-Path] <String>] [-Force] [<CommonParameters>]
+Export-Action1UsersJson [[-Path] <String>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ### ByUserIds
 ```
-Export-Action1UsersJson [[-Path] <String>] [-UserIds <String[]>] [-Force] [<CommonParameters>]
+Export-Action1UsersJson [[-Path] <String>] [-UserIds <String[]>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -53,12 +53,15 @@ preserved in the JSON output.
 Use **UserIds** to export only users whose `id` value matches one of the
 specified IDs.
 
-The command creates the target directory when it does not already exist and
-overwrites the target JSON file if it already exists.
+Use **PageSize** to control how many users are requested per API page. The
+command writes the JSON export incrementally as pages are returned.
 
-Use **Force** to write to the target file when file attributes, such as
-read-only or hidden, would otherwise prevent writing. **Force** does not
-override file locks or insufficient file system permissions.
+The command creates the target directory when it does not already exist and
+overwrites an existing target JSON file only when **Force** is specified.
+
+Use **Force** to overwrite an existing target JSON file and to write when file
+attributes, such as read-only or hidden, would otherwise prevent writing.
+**Force** does not override file locks or insufficient file system permissions.
 
 ## EXAMPLES
 
@@ -95,15 +98,27 @@ Exports only users whose `id` value matches one of the specified user IDs.
 Export-Action1UsersJson -Path 'C:\Reports\Users.json' -Force
 ```
 
-Exports users and attempts to write to the target file even when file
-attributes, such as read-only or hidden, would otherwise prevent writing.
+Exports users and overwrites the target file if it already exists. The command
+also attempts to write when file attributes, such as read-only or hidden, would
+otherwise prevent writing.
+
+### Example 5: Export users with a smaller API page size
+
+```powershell
+Export-Action1UsersJson -Path 'C:\Reports\Users.json' -PageSize 50 -Force
+```
+
+Requests users in pages of 50 records and writes the selected users to the JSON
+file incrementally.
 
 ## PARAMETERS
 
 ### -Force
 
-Forces the command to write to the target JSON file when file attributes, such
-as read-only or hidden, would otherwise prevent writing.
+Forces the command to overwrite the target JSON file if it already exists.
+
+This parameter also attempts to write when file attributes, such as read-only
+or hidden, would otherwise prevent writing.
 
 This parameter does not override file locks or insufficient file system
 permissions. Close the file if it is open in another application, such as
@@ -122,12 +137,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -PageSize
+
+Specifies the maximum number of users to request per API page.
+
+The value must be from 1 through the module export page-size maximum.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Path
 
 Specifies the path to the JSON file to create.
 
 If the path contains a directory that does not exist, the command creates the
-directory. If the file already exists, the command overwrites it.
+directory. If the file already exists, use **Force** to overwrite it.
 
 If the existing target file has read-only or hidden file attributes, use
 **Force**.
@@ -180,8 +213,8 @@ You cannot pipe input to this command.
 
 ### None
 
-This command does not return pipeline output. It creates or overwrites a JSON
-file at the specified path.
+This command does not return pipeline output. It creates a JSON file at the
+specified path and overwrites an existing file only when **Force** is specified.
 
 ## NOTES
 

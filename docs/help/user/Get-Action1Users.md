@@ -13,8 +13,14 @@ Gets Action1 users available to the current account.
 
 ## SYNTAX
 
+### AllUsers (Default)
 ```
-Get-Action1Users [<CommonParameters>]
+Get-Action1Users [-Limit <Int32>] [<CommonParameters>]
+```
+
+### AsPage
+```
+Get-Action1Users [-AsPage] [-Limit <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -26,6 +32,12 @@ The requested GET endpoint is `/users`. The command uses the module paging
 helper and returns the enabled user objects from Action1 without reshaping them.
 Disabled users are not included. To retrieve a disabled user, call
 `Get-Action1User` with the user's ID.
+
+Use **AsPage** to return page envelopes that contain an **Items** array and
+page metadata. This mode is intended for paged export workflows.
+
+Use **Limit** to control how many users are requested per API page. The value
+must be from 1 through the module paging maximum.
 
 ## EXAMPLES
 
@@ -48,6 +60,42 @@ present in the API response.
 
 ## PARAMETERS
 
+### -AsPage
+
+Returns page envelope objects instead of writing each user object directly to
+the pipeline. Each page contains **Items**, **PageNumber**, **From**, **Limit**,
+**TotalItems**, and **NextPage** properties.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: AsPage
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Limit
+
+Specifies the maximum number of users to request per API page.
+
+The value must be from 1 through the module paging maximum.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -61,7 +109,8 @@ You cannot pipe input to this command.
 
 ### System.Object
 
-Returns enabled user objects from Action1.
+Returns enabled user objects from Action1. With **AsPage**, returns page
+envelope objects containing enabled user objects and page metadata.
 
 ## NOTES
 

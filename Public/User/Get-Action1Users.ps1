@@ -6,8 +6,20 @@
 # (c) Action1 Corporation
 
 function Get-Action1Users {
-    [CmdletBinding()]
-    param()
+    [CmdletBinding(DefaultParameterSetName = 'AllUsers')]
+    param(
+        [Parameter(Mandatory = $false, ParameterSetName = 'AsPage')]
+        [switch]$AsPage,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({
+            Test-Action1PageSize `
+                -Value $_ `
+                -Maximum $Script:Action1_PagedGetRequestDefaultLimit `
+                -ParameterName 'Limit'
+        })]
+        [int]$Limit = $Script:Action1_PagedGetRequestDefaultLimit
+    )
 
     $uriPathBuilder = Get-UriMapValue -Key 'G_Users'
 
@@ -16,6 +28,38 @@ function Get-Action1Users {
 
     Write-Action1Debug 'Listing Action1 users.'
 
-    Invoke-Action1PagedGetRequest -Path $path -Label 'Users'
+    $requestParams = @{
+        Path  = $path
+        Label = 'Users'
+        Limit = $Limit
+    }
+
+    if ($AsPage.IsPresent) {
+        $requestParams.AsPage = $true
+    }
+
+    if ($AsPage.IsPresent) {
+        Invoke-Action1PagedGetRequest @requestParams |
+            Where-Object { $null -ne $_ } |
+            ForEach-Object {
+                $userList = @(
+                    $_.Items |
+                        Where-Object { $null -ne $_ }
+                )
+
+                [PSCustomObject][ordered]@{
+                    Items      = $userList
+                    PageNumber = $_.PageNumber
+                    From       = $_.From
+                    Limit      = $_.Limit
+                    TotalItems = $_.TotalItems
+                    NextPage   = $_.NextPage
+                }
+            }
+
+        return
+    }
+
+    Invoke-Action1PagedGetRequest @requestParams
 }
 

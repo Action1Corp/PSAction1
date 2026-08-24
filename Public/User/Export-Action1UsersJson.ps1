@@ -19,6 +19,15 @@ function Export-Action1UsersJson {
         [string[]]$UserIds,
 
         [Parameter(Mandatory = $false)]
+        [ValidateScript({
+            Test-Action1PageSize `
+                -Value $_ `
+                -Maximum $Script:Action1_ExportPageSize `
+                -ParameterName 'PageSize'
+        })]
+        [int]$PageSize = [int]$Script:Action1_ExportPageSize,
+
+        [Parameter(Mandatory = $false)]
         [switch]$Force
     )
 
@@ -42,6 +51,15 @@ function Export-Action1UsersJson {
     $parentPath = Split-Path -Path $resolvedPath -Parent
 
     if (
+        (Test-Path -LiteralPath $resolvedPath -PathType Leaf) -and
+        -not $Force.IsPresent
+    ) {
+        $message = "The JSON export file '$resolvedPath' already exists. "
+        $message += 'Use -Force to overwrite it.'
+        throw $message
+    }
+
+    if (
         -not [string]::IsNullOrWhiteSpace($parentPath) -and
         -not (Test-Path -LiteralPath $parentPath)
     ) {
@@ -49,63 +67,103 @@ function Export-Action1UsersJson {
         $null = New-Item -Path $parentPath -ItemType Directory -Force
     }
 
-    $userList = @(
-        Get-Action1Users -ErrorAction Stop |
-            Where-Object { $null -ne $_ }
+    $userIdsToMatch = @(
+        if ($PSCmdlet.ParameterSetName -eq 'ByUserIds') {
+            $UserIds |
+                Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+                ForEach-Object { ([string]$_).Trim() }
+        }
     )
 
-    $usersToExport = @(
-        $userList |
-            Where-Object {
-                if ($PSCmdlet.ParameterSetName -eq 'ByUserIds') {
-                    $userIdsToMatch = @(
-                        $UserIds |
-                            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
-                            ForEach-Object { ([string]$_).Trim() }
-                    )
-                    $userId = ([string]$_.id).Trim()
-                    $userIdsToMatch -icontains $userId
-                }
-                else {
-                    $true
-                }
-            }
-    )
-
-    $jsonExport = [PSCustomObject][ordered]@{
-        schema          = $Script:Action1_UserJsonSchema
-        datetime        = Get-UtcTimestamp
-        region          = $region
-        enterprise_id   = $enterpriseId
-        organization_id = $organizationId
-        type            = 'User'
-        items           = $usersToExport
-    }
-
-    $jsonContent = $jsonExport |
-        ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
-
-    $setContentParams = @{
-        LiteralPath = $resolvedPath
-        Value       = $jsonContent
-        Encoding    = 'UTF8'
+    $jsonContentParams = @{
+        Path = $resolvedPath
     }
 
     if ($Force.IsPresent) {
-        $setContentParams.Force = $true
+        $jsonContentParams.Force = $true
     }
 
-    try {
-        Set-Content @setContentParams -ErrorAction Stop
-    }
-    catch {
-        $message = "Unable to write JSON file '$resolvedPath'. Close the file if it is "
-        $message += 'open in another application, verify write permissions, or use '
-        $message += "-Force for read-only/hidden files. Error: $($_.Exception.Message)"
-        throw $message
+    $testUserFilter = {
+        param(
+            [object]$User
+        )
+
+        if ($PSCmdlet.ParameterSetName -eq 'ByUserIds') {
+            $userId = ([string]$User.id).Trim()
+            return ($userIdsToMatch -icontains $userId)
+        }
+
+        return $true
     }
 
-    $message = "Exported $($usersToExport.Count) user record(s) "
+    $headerLines = @(
+        '{',
+        ('  "schema": {0},' -f (ConvertTo-JsonValue $Script:Action1_UserJsonSchema)),
+        ('  "datetime": {0},' -f (ConvertTo-JsonValue (Get-UtcTimestamp))),
+        ('  "region": {0},' -f (ConvertTo-JsonValue $region)),
+        ('  "enterprise_id": {0},' -f (ConvertTo-JsonValue $enterpriseId)),
+        ('  "organization_id": {0},' -f (ConvertTo-JsonValue $organizationId)),
+        '  "type": "User",',
+        '  "items": ['
+    )
+
+    Write-TextFileContent @jsonContentParams -Content $headerLines
+
+    $exportedCount = 0
+    $exportedUserIds = @{}
+    $pendingJsonLines = $null
+
+    foreach ($page in Get-Action1Users -AsPage -Limit $PageSize -ErrorAction Stop) {
+        $usersToExport = @(
+            $page.Items |
+                Where-Object { $null -ne $_ } |
+                Where-Object { & $testUserFilter $_ }
+        )
+
+        foreach ($user in $usersToExport) {
+            $userId = ([string]$user.id).Trim()
+
+            if (-not [string]::IsNullOrWhiteSpace($userId)) {
+                if ($exportedUserIds.ContainsKey($userId)) {
+                    Write-Action1Debug "Skipping duplicate user '$userId'."
+                    continue
+                }
+
+                $exportedUserIds[$userId] = $true
+            }
+
+            $jsonItem = $user |
+                ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
+            $jsonLines = @($jsonItem -split "`r?`n")
+
+            $indentedJsonLines = @(
+                $jsonLines |
+                    ForEach-Object { '    {0}' -f $_ }
+            )
+
+            if ($null -ne $pendingJsonLines) {
+                $previousJsonLines = @($pendingJsonLines)
+                $previousJsonLines[$previousJsonLines.Count - 1] += ','
+                Write-TextFileContent @jsonContentParams -Content $previousJsonLines -Append
+            }
+
+            $pendingJsonLines = $indentedJsonLines
+            $exportedCount++
+        }
+    }
+
+    if ($null -ne $pendingJsonLines) {
+        Write-TextFileContent @jsonContentParams -Content $pendingJsonLines -Append
+    }
+
+    $footerLines = @(
+        '  ]',
+        '}'
+    )
+
+    Write-TextFileContent @jsonContentParams -Content $footerLines -Append
+
+    $message = "Exported $exportedCount user record(s) "
     $message += "to '$resolvedPath'."
     Write-Action1Debug $message
 }
