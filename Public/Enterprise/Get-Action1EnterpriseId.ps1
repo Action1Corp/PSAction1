@@ -22,10 +22,13 @@ function Get-Action1EnterpriseId {
         -InputObject $enterprise `
         -PropertyName @('id')
 
-    if (-not (Test-Guid $enterpriseId)) {
-        $message = "Action1 enterprise ID '$enterpriseId' must use the "
-        $message += 'standard GUID format.'
-        Write-Error $message -ErrorAction Stop
+    try {
+        [void](Test-Guid `
+            -Guid $enterpriseId `
+            -Label "Action1 enterprise ID '$enterpriseId'")
+    }
+    catch {
+        Write-Error $_.Exception.Message -ErrorAction Stop
     }
 
     return $enterpriseId

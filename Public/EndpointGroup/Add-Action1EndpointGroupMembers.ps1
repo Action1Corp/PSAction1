@@ -33,11 +33,7 @@ function Add-Action1EndpointGroupMembers {
         [Parameter(Mandatory = $true, ParameterSetName = 'ByGroupNameEndpointIds')]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            if (-not (Test-Guid $_)) {
-                throw 'Each EndpointIds value must use the standard GUID format.'
-            }
-
-            $true
+            Test-Guid -Guid $_ -Label 'Each EndpointIds value'
         })]
         [string[]]$EndpointIds,
 

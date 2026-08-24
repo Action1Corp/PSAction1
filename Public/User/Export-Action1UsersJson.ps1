@@ -14,11 +14,7 @@ function Export-Action1UsersJson {
 
         [Parameter(Mandatory = $false, ParameterSetName = 'ByUserIds')]
         [ValidateScript({
-            if (-not (Test-Guid $_)) {
-                throw 'UserId must be in the standard GUID format.'
-            }
-
-            $true
+            Test-Guid -Guid $_ -Label 'UserId'
         })]
         [string[]]$UserIds,
 

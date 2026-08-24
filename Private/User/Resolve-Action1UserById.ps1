@@ -11,11 +11,7 @@ function Resolve-Action1UserById {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            if (-not (Test-Guid $_)) {
-                throw 'UserId must be in the standard GUID format.'
-            }
-
-            $true
+            Test-Guid -Guid $_ -Label 'UserId'
         })]
         [string]$UserId
     )

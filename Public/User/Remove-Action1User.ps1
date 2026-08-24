@@ -11,11 +11,7 @@ function Remove-Action1User {
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            if (-not (Test-Guid $_)) {
-                throw 'UserId must be in the standard GUID format.'
-            }
-
-            $true
+            Test-Guid -Guid $_ -Label 'UserId'
         })]
         [string]$UserId,
 

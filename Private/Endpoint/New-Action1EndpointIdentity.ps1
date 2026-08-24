@@ -43,11 +43,13 @@ function New-Action1EndpointIdentity {
         -EndpointId $resolvedEndpointId `
         -EndpointName $resolvedEndpointName
 
-    if (-not (Test-Guid $resolvedEndpointId)) {
-        $errorMessage = (
-            "Endpoint ID '$resolvedEndpointId' must use the standard GUID format."
-        )
-
+    try {
+        [void](Test-Guid `
+            -Guid $resolvedEndpointId `
+            -Label "Endpoint ID '$resolvedEndpointId'")
+    }
+    catch {
+        $errorMessage = $_.Exception.Message
         return [pscustomobject]@{
             IsValid       = $false
             EndpointId    = $resolvedEndpointId
