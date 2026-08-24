@@ -32,6 +32,15 @@ function Export-Action1EndpointsJson {
         [string]$Path,
 
         [Parameter(Mandatory = $false)]
+        [ValidateScript({
+            Test-Action1PageSize `
+                -Value $_ `
+                -Maximum $Script:Action1_ExportPageSize `
+                -ParameterName 'PageSize'
+        })]
+        [int]$PageSize = [int]$Script:Action1_ExportPageSize,
+
+        [Parameter(Mandatory = $false)]
         [switch]$Force
     )
 
@@ -72,6 +81,15 @@ function Export-Action1EndpointsJson {
     $parentPath = Split-Path -Path $resolvedPath -Parent
 
     if (
+        (Test-Path -LiteralPath $resolvedPath -PathType Leaf) -and
+        -not $Force.IsPresent
+    ) {
+        $message = "The JSON export file '$resolvedPath' already exists. "
+        $message += 'Use -Force to overwrite it.'
+        throw $message
+    }
+
+    if (
         -not [string]::IsNullOrWhiteSpace($parentPath) -and
         -not (Test-Path -LiteralPath $parentPath)
     ) {
@@ -83,50 +101,86 @@ function Export-Action1EndpointsJson {
         Status         = $Status
         RebootRequired = $RebootRequired
         OS             = $OS
+        AsPage         = $true
+        Limit          = $PageSize
         ErrorAction    = 'Stop'
     }
 
-    $endpoints = @(
-        Get-Action1Endpoints @getEndpointsParams |
-            Where-Object { $null -ne $_ }
-    )
-
-    $jsonExport = [PSCustomObject][ordered]@{
-        schema          = $Script:Action1_EndpointJsonSchema
-        datetime        = Get-UtcTimestamp
-        region          = $region
-        enterprise_id   = $enterpriseId
-        organization_id = $organizationId
-        type            = 'Endpoint'
-        items           = $endpoints
-    }
-
-    $jsonContent = $jsonExport |
-        ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
-
-    $setContentParams = @{
-        LiteralPath = $resolvedPath
-        Value       = $jsonContent
-        Encoding    = 'UTF8'
+    $jsonContentParams = @{
+        Path = $resolvedPath
     }
 
     if ($Force.IsPresent) {
-        $setContentParams.Force = $true
+        $jsonContentParams.Force = $true
     }
 
-    try {
-        Set-Content @setContentParams -ErrorAction Stop
-    }
-    catch {
-        $message = New-TextFileWriteErrorMessage `
-            -Operation 'write JSON file' `
-            -Path $resolvedPath `
-            -ErrorMessage $_.Exception.Message
+    $headerLines = @(
+        '{',
+        ('  "schema": {0},' -f (ConvertTo-JsonValue $Script:Action1_EndpointJsonSchema)),
+        ('  "datetime": {0},' -f (ConvertTo-JsonValue (Get-UtcTimestamp))),
+        ('  "region": {0},' -f (ConvertTo-JsonValue $region)),
+        ('  "enterprise_id": {0},' -f (ConvertTo-JsonValue $enterpriseId)),
+        ('  "organization_id": {0},' -f (ConvertTo-JsonValue $organizationId)),
+        '  "type": "Endpoint",',
+        '  "items": ['
+    )
 
-        throw $message
+    Write-TextFileContent @jsonContentParams -Content $headerLines
+
+    $exportedCount = 0
+    $exportedEndpointIds = @{}
+    $pendingJsonLines = $null
+
+    foreach ($page in Get-Action1Endpoints @getEndpointsParams) {
+        $endpointsToExport = @(
+            $page.Items |
+                Where-Object { $null -ne $_ }
+        )
+
+        foreach ($endpoint in $endpointsToExport) {
+            $endpointId = ([string]$endpoint.id).Trim()
+
+            if (-not [string]::IsNullOrWhiteSpace($endpointId)) {
+                if ($exportedEndpointIds.ContainsKey($endpointId)) {
+                    Write-Action1Debug "Skipping duplicate endpoint '$endpointId'."
+                    continue
+                }
+
+                $exportedEndpointIds[$endpointId] = $true
+            }
+
+            $jsonItem = $endpoint |
+                ConvertTo-Json -Depth $Script:Action1_JsonObjectConversionDepth
+            $jsonLines = @($jsonItem -split "`r?`n")
+
+            $indentedJsonLines = @(
+                $jsonLines |
+                    ForEach-Object { '    {0}' -f $_ }
+            )
+
+            if ($null -ne $pendingJsonLines) {
+                $previousJsonLines = @($pendingJsonLines)
+                $previousJsonLines[$previousJsonLines.Count - 1] += ','
+                Write-TextFileContent @jsonContentParams -Content $previousJsonLines -Append
+            }
+
+            $pendingJsonLines = $indentedJsonLines
+            $exportedCount++
+        }
     }
 
-    $message = "Exported $($endpoints.Count) endpoint record(s) "
+    if ($null -ne $pendingJsonLines) {
+        Write-TextFileContent @jsonContentParams -Content $pendingJsonLines -Append
+    }
+
+    $footerLines = @(
+        '  ]',
+        '}'
+    )
+
+    Write-TextFileContent @jsonContentParams -Content $footerLines -Append
+
+    $message = "Exported $exportedCount endpoint record(s) "
     $message += "to '$resolvedPath'."
     Write-Action1Debug $message
 }
