@@ -12,7 +12,7 @@ function New-Action1User {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSAvoidUsingPlainTextForPassword',
         'Password',
-        Justification = 'The Action1 users API requires a password value in the POST body.'
+        Justification = 'The Action1 users API requires an initial password value in the POST body.'
     )]
     [CmdletBinding(SupportsShouldProcess = $true, PositionalBinding = $false)]
     param(
@@ -38,7 +38,7 @@ function New-Action1User {
                 $_ -cnotmatch '[A-Z]' -or
                 $_ -cnotmatch '[a-z]'
             ) {
-                $message = 'The password must be at least 12 characters long, '
+                $message = 'The initial password must be at least 12 characters long, '
                 $message += 'contain at least one number, and contain upper '
                 $message += 'and lower case letters.'
                 throw $message

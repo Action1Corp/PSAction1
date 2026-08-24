@@ -22,11 +22,13 @@ New-Action1User -FirstName <String> -LastName <String> -Email <String> -Password
 ## DESCRIPTION
 
 `New-Action1User` calls the Action1 users API and creates a user with the
-specified profile and sign-in values.
+specified profile and initial sign-in values.
 
 The requested POST endpoint is `/users`.
 
 The command always sends `first_name`, `last_name`, `email`, and `password`.
+The `password` value sets the user's initial password and is expected to be
+changed by the user later.
 Optional fields are added to the request body only when their parameters are
 specified. **-SessionTimeout** accepts a value in minutes and sends the API
 `session_timeout` field in seconds. **-Enabled** accepts `yes` or `no`.
@@ -52,8 +54,9 @@ New-Action1User `
     -SessionTimeout 30
 ```
 
-Creates the user and returns the Action1 API response. The session timeout is
-sent to the API as `1800` seconds.
+Creates the user and returns the Action1 API response. The password sets the
+user's initial password, which the user is expected to change later. The session
+timeout is sent to the API as `1800` seconds.
 
 ### Example 2: Create a user with only mandatory values
 
@@ -65,8 +68,8 @@ New-Action1User `
     -Password 'Madeira2025A'
 ```
 
-Creates the user without sending optional `phone`, `timezone`, `enabled`, or
-`session_timeout` fields.
+Creates the user with the specified initial password and without sending
+optional `phone`, `timezone`, `enabled`, or `session_timeout` fields.
 
 ### Example 3: Preview user creation
 
@@ -184,10 +187,11 @@ Accept wildcard characters: False
 
 ### -Password
 
-Specifies the user's password.
+Specifies the user's initial password.
 
-The password must be at least 12 characters long, contain at least one number,
-and contain upper and lower case letters.
+This value is expected to be changed by the user later. The initial password
+must be at least 12 characters long, contain at least one number, and contain
+upper and lower case letters.
 
 ```yaml
 Type: String
