@@ -15,14 +15,14 @@ Gets managed endpoints for the current Action1 organization.
 
 ### AllEndpoints (Default)
 ```
-Get-Action1Endpoints [-Status <String>] [-RebootRequired <String>] [-OS <String>]
- [-Limit <Int32>] [<CommonParameters>]
+Get-Action1Endpoints [-Status <String>] [-RebootRequired <String>] [-OS <String>] [-Limit <Int32>]
+ [<CommonParameters>]
 ```
 
 ### AsPage
 ```
-Get-Action1Endpoints [-AsPage] [-Status <String>] [-RebootRequired <String>] [-OS <String>]
- [-Limit <Int32>] [<CommonParameters>]
+Get-Action1Endpoints [-AsPage] [-Status <String>] [-RebootRequired <String>] [-OS <String>] [-Limit <Int32>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

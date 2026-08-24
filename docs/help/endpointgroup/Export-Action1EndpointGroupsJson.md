@@ -15,20 +15,19 @@ Exports Action1 endpoint groups to a JSON file.
 
 ### AllEndpointGroups (Default)
 ```
-Export-Action1EndpointGroupsJson [[-Path] <String>] [-PageSize <Int32>] [-Force]
- [<CommonParameters>]
+Export-Action1EndpointGroupsJson [[-Path] <String>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ### ByEndpointGroupIds
 ```
-Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupIds <String[]>]
- [-PageSize <Int32>] [-Force] [<CommonParameters>]
+Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupIds <String[]>] [-PageSize <Int32>] [-Force]
+ [<CommonParameters>]
 ```
 
 ### ByEndpointGroupNames
 ```
-Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupNames <String[]>]
- [-PageSize <Int32>] [-Force] [<CommonParameters>]
+Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupNames <String[]>] [-PageSize <Int32>]
+ [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -192,6 +191,25 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -PageSize
+
+Specifies how many endpoint groups to request from Action1 per API page during
+the JSON export.
+
+The value must be from 1 through 200. The default value is 200.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Path
 
 Specifies the path to the JSON file to create.
@@ -218,25 +236,6 @@ Aliases:
 Required: False
 Position: 0
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PageSize
-
-Specifies how many endpoint groups to request from Action1 per API page during
-the JSON export.
-
-The value must be from 1 through 200. The default value is 200.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: 200
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

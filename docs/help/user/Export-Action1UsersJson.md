@@ -20,7 +20,8 @@ Export-Action1UsersJson [[-Path] <String>] [-PageSize <Int32>] [-Force] [<Common
 
 ### ByUserIds
 ```
-Export-Action1UsersJson [[-Path] <String>] [-UserIds <String[]>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
+Export-Action1UsersJson [[-Path] <String>] [-UserIds <String[]>] [-PageSize <Int32>] [-Force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

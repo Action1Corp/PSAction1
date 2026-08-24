@@ -20,12 +20,14 @@ Export-Action1OrganizationsJson [[-Path] <String>] [-PageSize <Int32>] [-Force] 
 
 ### ByOrgIds
 ```
-Export-Action1OrganizationsJson [[-Path] <String>] [-OrgIds <String[]>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
+Export-Action1OrganizationsJson [[-Path] <String>] [-OrgIds <String[]>] [-PageSize <Int32>] [-Force]
+ [<CommonParameters>]
 ```
 
 ### ByOrgNames
 ```
-Export-Action1OrganizationsJson [[-Path] <String>] [-OrgNames <String[]>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
+Export-Action1OrganizationsJson [[-Path] <String>] [-OrgNames <String[]>] [-PageSize <Int32>] [-Force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -193,6 +195,25 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -PageSize
+
+Specifies how many organizations to request from Action1 per API page during
+the JSON export.
+
+The value must be from 1 through 200. The default value is 200.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Path
 
 Specifies the path to the JSON file to create.
@@ -215,25 +236,6 @@ Aliases:
 Required: False
 Position: 0
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PageSize
-
-Specifies how many organizations to request from Action1 per API page during
-the JSON export.
-
-The value must be from 1 through 200. The default value is 200.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: 200
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
