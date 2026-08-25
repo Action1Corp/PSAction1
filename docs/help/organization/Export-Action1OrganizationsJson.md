@@ -20,12 +20,14 @@ Export-Action1OrganizationsJson [[-Path] <String>] [-PageSize <Int32>] [-Force] 
 
 ### ByOrgIds
 ```
-Export-Action1OrganizationsJson [[-Path] <String>] [-OrgIds <String[]>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
+Export-Action1OrganizationsJson [[-Path] <String>] [-OrgIds <String[]>] [-PageSize <Int32>] [-Force]
+ [<CommonParameters>]
 ```
 
 ### ByOrgNames
 ```
-Export-Action1OrganizationsJson [[-Path] <String>] [-OrgNames <String[]>] [-PageSize <Int32>] [-Force] [<CommonParameters>]
+Export-Action1OrganizationsJson [[-Path] <String>] [-OrgNames <String[]>] [-PageSize <Int32>] [-Force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -75,12 +77,14 @@ only once.
 Use **PageSize** to control how many organizations are requested per API page.
 The value must be from 1 through 200. The default page size is 200.
 
-The command creates the target directory when it does not already exist and
-overwrites the target JSON file if it already exists.
+The command creates the target directory when it does not already exist.
 
-Use **Force** to write to the target file when file attributes, such as
-read-only or hidden, would otherwise prevent writing. **Force** does not
-override file locks or insufficient file system permissions.
+If the target JSON file already exists, the command stops before writing. Use
+**Force** to overwrite an existing target JSON file.
+
+**Force** also passes through to the underlying file write operation for file
+attributes, such as read-only or hidden, that would otherwise prevent writing.
+**Force** does not override file locks or insufficient file system permissions.
 
 ## EXAMPLES
 
@@ -123,21 +127,23 @@ Export-Action1OrganizationsJson `
 Exports only organizations whose `name` value matches one of the specified
 organization names.
 
-### Example 5: Export to a read-only or hidden JSON file
+### Example 5: Overwrite an existing JSON file
 
 ```powershell
 Export-Action1OrganizationsJson -Path 'C:\Reports\Organizations.json' -Force
 ```
 
-Exports organizations and attempts to write to the target file even when file
-attributes, such as read-only or hidden, would otherwise prevent writing.
+Exports organizations and overwrites the target file if it already exists.
 
 ## PARAMETERS
 
 ### -Force
 
-Forces the command to write to the target JSON file when file attributes, such
-as read-only or hidden, would otherwise prevent writing.
+Forces the command to overwrite the target JSON file when it already exists.
+
+This parameter also passes through to the underlying file write operation for
+file attributes, such as read-only or hidden, that would otherwise prevent
+writing.
 
 This parameter does not override file locks or insufficient file system
 permissions. Close the file if it is open in another application, such as
@@ -193,12 +199,32 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -PageSize
+
+Specifies how many organizations to request from Action1 per API page during
+the JSON export.
+
+The value must be from 1 through 200. The default value is 200.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Path
 
 Specifies the path to the JSON file to create.
 
 If the path contains a directory that does not exist, the command creates the
-directory. If the file already exists, the command overwrites it.
+directory. If the file already exists, the command stops before writing. Use
+**Force** to overwrite an existing file.
 
 If the existing target file has read-only or hidden file attributes, use
 **Force**.
@@ -219,25 +245,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PageSize
-
-Specifies how many organizations to request from Action1 per API page during
-the JSON export.
-
-The value must be from 1 through 200. The default value is 200.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: 200
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -251,8 +258,8 @@ You cannot pipe input to this command.
 
 ### None
 
-This command does not return pipeline output. It creates or overwrites a JSON
-file at the specified path.
+This command does not return pipeline output. It creates a JSON file at the
+specified path.
 
 ## NOTES
 

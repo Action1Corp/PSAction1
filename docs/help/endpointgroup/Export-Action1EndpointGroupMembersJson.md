@@ -59,12 +59,14 @@ Use **Status**, **RebootRequired**, and **OS** to pass endpoint filters through
 to `Get-Action1EndpointGroupMembers`. Specify `All` for a filter parameter to skip
 that filter.
 
-The command creates the target directory when it does not already exist and
-overwrites the target JSON file if it already exists.
+The command creates the target directory when it does not already exist.
 
-Use **Force** to write to the target file when file attributes, such as
-read-only or hidden, would otherwise prevent writing. **Force** does not
-override file locks or insufficient file system permissions.
+If the target JSON file already exists, the command stops before writing. Use
+**Force** to overwrite an existing target JSON file.
+
+**Force** also passes through to the underlying file write operation for file
+attributes, such as read-only or hidden, that would otherwise prevent writing.
+**Force** does not override file locks or insufficient file system permissions.
 
 ## EXAMPLES
 
@@ -111,7 +113,7 @@ Export-Action1EndpointGroupMembersJson `
 Exports managed Windows 11 endpoints that require reboot from the endpoint
 group named Workstations.
 
-### Example 5: Export to a read-only or hidden JSON file
+### Example 5: Overwrite an existing JSON file
 
 ```powershell
 Export-Action1EndpointGroupMembersJson `
@@ -120,16 +122,18 @@ Export-Action1EndpointGroupMembersJson `
     -Force
 ```
 
-Exports endpoint group members and attempts to write to the target file even
-when file attributes, such as read-only or hidden, would otherwise prevent
-writing.
+Exports endpoint group members and overwrites the target file if it already
+exists.
 
 ## PARAMETERS
 
 ### -Force
 
-Forces the command to write to the target JSON file when file attributes, such
-as read-only or hidden, would otherwise prevent writing.
+Forces the command to overwrite the target JSON file when it already exists.
+
+This parameter also passes through to the underlying file write operation for
+file attributes, such as read-only or hidden, that would otherwise prevent
+writing.
 
 This parameter does not override file locks or insufficient file system
 permissions. Close the file if it is open in another application, such as
@@ -217,7 +221,8 @@ Accept wildcard characters: False
 Specifies the path to the JSON file to create.
 
 If the path contains a directory that does not exist, the command creates the
-directory. If the file already exists, the command overwrites it.
+directory. If the file already exists, the command stops before writing. Use
+**Force** to overwrite an existing file.
 
 If the existing target file has read-only or hidden file attributes, use
 **Force**.
@@ -307,8 +312,8 @@ You cannot pipe input to this command.
 
 ### None
 
-This command does not return pipeline output. It creates or overwrites a JSON
-file at the specified path.
+This command does not return pipeline output. It creates a JSON file at the
+specified path.
 
 ## NOTES
 

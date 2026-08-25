@@ -45,6 +45,11 @@ function Export-Action1UserRolesJson {
     $resolvedPath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path)
     $parentPath = Split-Path -Path $resolvedPath -Parent
 
+    $null = Test-Action1ExportFile `
+        -Path $resolvedPath `
+        -FileType 'JSON' `
+        -Force:$Force.IsPresent
+
     if (
         -not [string]::IsNullOrWhiteSpace($parentPath) -and
         -not (Test-Path -LiteralPath $parentPath)
@@ -88,7 +93,8 @@ function Export-Action1UserRolesJson {
     catch {
         $message = "Unable to write JSON file '$resolvedPath'. Close the file if it is "
         $message += 'open in another application, verify write permissions, or use '
-        $message += "-Force for read-only/hidden files. Error: $($_.Exception.Message)"
+        $message += "-Force to overwrite existing or read-only/hidden files. "
+        $message += "Error: $($_.Exception.Message)"
         throw $message
     }
 

@@ -6,17 +6,31 @@
 # (c) Action1 Corporation
 
 function Get-Action1Endpoints {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'AllEndpoints')]
     param(
+        [Parameter(Mandatory = $false, ParameterSetName = 'AsPage')]
+        [switch]$AsPage,
+
         [Parameter(Mandatory = $false)]
         [ValidateSet('Connected', 'Disconnected', 'Pending Uninstall', 'All')]
         [string]$Status = 'All',
+
         [Parameter(Mandatory = $false)]
         [ValidateSet('Yes', 'No', 'All')]
         [string]$RebootRequired = 'All',
+
         [Parameter(Mandatory = $false)]
         [ValidateSet('Windows 11', 'Windows 10', 'Windows Server', 'macOS', 'linux', 'All')]
-        [string]$OS = 'All'
+        [string]$OS = 'All',
+
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({
+            Test-Action1PageSize `
+                -Value $_ `
+                -Maximum $Script:Action1_PagedGetRequestDefaultLimit `
+                -ParameterName 'Limit'
+        })]
+        [int]$Limit = $Script:Action1_PagedGetRequestDefaultLimit
     )
 
     if (Initialize-Action1DefaultOrg) {
@@ -59,5 +73,16 @@ function Get-Action1Endpoints {
 
     Write-Action1Debug "$debugMessage."
 
-    Invoke-Action1PagedGetRequest -Path $path -Label 'Endpoints' -AddArgs $addArgs
+    $requestParams = @{
+        Path    = $path
+        Label   = 'Endpoints'
+        AddArgs = $addArgs
+        Limit   = $Limit
+    }
+
+    if ($AsPage.IsPresent) {
+        $requestParams.AsPage = $true
+    }
+
+    Invoke-Action1PagedGetRequest @requestParams
 }

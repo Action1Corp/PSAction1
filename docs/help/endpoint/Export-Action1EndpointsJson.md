@@ -15,13 +15,14 @@ Exports managed Action1 endpoints to a JSON file.
 
 ```
 Export-Action1EndpointsJson [[-Status] <String>] [[-RebootRequired] <String>] [[-OS] <String>] [-Path <String>]
- [-Force] [<CommonParameters>]
+ [-PageSize <Int32>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-`Export-Action1EndpointsJson` calls `Get-Action1Endpoints` with the selected
-endpoint filters and exports the returned endpoint records to a JSON file.
+`Export-Action1EndpointsJson` calls `Get-Action1Endpoints` in page mode with
+the selected endpoint filters and exports the returned endpoint records to a
+JSON file.
 
 The command writes a single JSON object with the following top-level
 properties:
@@ -49,12 +50,20 @@ Use **Status**, **RebootRequired**, and **OS** to pass endpoint filters through
 to `Get-Action1Endpoints`. Specify `All` for a filter parameter to skip that
 filter.
 
-The command creates the target directory when it does not already exist and
-overwrites the target JSON file if it already exists.
+Endpoints are written page by page. If a paged API response overlaps an earlier
+page, an endpoint ID is written only once.
 
-Use **Force** to write to the target file when file attributes, such as
-read-only or hidden, would otherwise prevent writing. **Force** does not
-override file locks or insufficient file system permissions.
+Use **PageSize** to control how many endpoints are requested per API page. The
+value must be from 1 through 200. The default page size is 200.
+
+The command creates the target directory when it does not already exist.
+
+If the target JSON file already exists, the command stops before writing. Use
+**Force** to overwrite an existing target JSON file.
+
+**Force** also passes through to the underlying file write operation for file
+attributes, such as read-only or hidden, that would otherwise prevent writing.
+**Force** does not override file locks or insufficient file system permissions.
 
 ## EXAMPLES
 
@@ -94,7 +103,7 @@ Export-Action1EndpointsJson -Path 'C:\Reports\Endpoints.json'
 
 Exports all managed endpoints to the specified JSON file.
 
-### Example 5: Export to a read-only or hidden JSON file
+### Example 5: Overwrite an existing JSON file
 
 ```powershell
 Export-Action1EndpointsJson `
@@ -102,15 +111,25 @@ Export-Action1EndpointsJson `
     -Force
 ```
 
-Exports endpoints and attempts to write to the target file even when file
-attributes, such as read-only or hidden, would otherwise prevent writing.
+Exports endpoints and overwrites the target file if it already exists.
+
+### Example 6: Export endpoints with a smaller API page size
+
+```powershell
+Export-Action1EndpointsJson -PageSize 50
+```
+
+Exports endpoints by requesting up to 50 endpoint records per API page.
 
 ## PARAMETERS
 
 ### -Force
 
-Forces the command to write to the target JSON file when file attributes, such
-as read-only or hidden, would otherwise prevent writing.
+Forces the command to overwrite the target JSON file when it already exists.
+
+This parameter also passes through to the underlying file write operation for
+file attributes, such as read-only or hidden, that would otherwise prevent
+writing.
 
 This parameter does not override file locks or insufficient file system
 permissions. Close the file if it is open in another application, such as
@@ -157,12 +176,32 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -PageSize
+
+Specifies how many endpoints to request from Action1 per API page during the
+JSON export.
+
+The value must be from 1 through 200. The default value is 200.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 200
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Path
 
 Specifies the path to the JSON file to create.
 
 If the path contains a directory that does not exist, the command creates the
-directory. If the file already exists, the command overwrites it.
+directory. If the file already exists, the command stops before writing. Use
+**Force** to overwrite an existing file.
 
 If the existing target file has read-only or hidden file attributes, use
 **Force**.
@@ -251,8 +290,8 @@ You cannot pipe input to this command.
 
 ### None
 
-This command does not return pipeline output. It creates or overwrites a JSON
-file at the specified path.
+This command does not return pipeline output. It creates a JSON file at the
+specified path.
 
 ## NOTES
 

@@ -881,7 +881,7 @@ Europe</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>`Export-Action1EndpointsJson` calls `Get-Action1Endpoints` with the selected endpoint filters and exports the returned endpoint records to a JSON file.</maml:para>
+      <maml:para>`Export-Action1EndpointsJson` calls `Get-Action1Endpoints` in page mode with the selected endpoint filters and exports the returned endpoint records to a JSON file.</maml:para>
       <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
       <maml:para>* `schema`</maml:para>
       <maml:para>* `datetime`</maml:para>
@@ -894,8 +894,10 @@ Europe</dev:code>
       <maml:para>The schema property is set to `PSAction1.Endpoint.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The type property is set to `Endpoint`.</maml:para>
       <maml:para>The items array contains the endpoint objects returned by `Get-Action1Endpoints`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
       <maml:para>Use Status , RebootRequired , and OS to pass endpoint filters through to `Get-Action1Endpoints`. Specify `All` for a filter parameter to skip that filter.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>Endpoints are written page by page. If a paged API response overlaps an earlier page, an endpoint ID is written only once.</maml:para>
+      <maml:para>Use PageSize to control how many endpoints are requested per API page. The value must be from 1 through 200. The default page size is 200.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -977,7 +979,8 @@ Europe</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -987,10 +990,23 @@ Europe</dev:code>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PageSize</maml:name>
+          <maml:description>
+            <maml:para>Specifies how many endpoints to request from Action1 per API page during the JSON export.</maml:para>
+            <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_Endpoints_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -1007,7 +1023,8 @@ Europe</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -1038,10 +1055,23 @@ Europe</dev:code>
         <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>PageSize</maml:name>
+        <maml:description>
+          <maml:para>Specifies how many endpoints to request from Action1 per API page during the JSON export.</maml:para>
+          <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>200</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_Endpoints_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -1104,7 +1134,7 @@ Europe</dev:code>
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -1146,12 +1176,19 @@ Europe</dev:code>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 5: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1EndpointsJson `
     -Path 'C:\Reports\Endpoints.json' `
     -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports endpoints and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports endpoints and overwrites the target file if it already exists.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 6: Export endpoints with a smaller API page size ---</maml:title>
+        <dev:code>Export-Action1EndpointsJson -PageSize 50</dev:code>
+        <dev:remarks>
+          <maml:para>Exports endpoints by requesting up to 50 endpoint records per API page.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1293,57 +1330,38 @@ Europe</dev:code>
       <maml:para>Use OS to filter endpoints by operating system family.</maml:para>
       <maml:para>Specify `All` for a filter parameter to skip that filter.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>Use AsPage to return page envelope objects instead of individual endpoint objects. Page mode is intended for export workflows that need to process one API page at a time.</maml:para>
+      <maml:para>Use Limit to control how many endpoints are requested per API page. The value must be from 1 through 200. The default value is 200.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-Action1Endpoints</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>Status</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>AsPage</maml:name>
           <maml:description>
-            <maml:para>Filters endpoints by endpoint status.</maml:para>
-            <maml:para>Specify `All` to disable status filtering.</maml:para>
-            <maml:para>Accepted values:</maml:para>
-            <maml:para>* `Connected`</maml:para>
-            <maml:para>* `Disconnected`</maml:para>
-            <maml:para>* `Pending Uninstall`</maml:para>
-            <maml:para>* `All`</maml:para>
+            <maml:para>Returns page envelope objects instead of individual endpoint objects.</maml:para>
+            <maml:para>Each page envelope includes Items , PageNumber , From , Limit , TotalItems , and NextPage properties. The Items property contains endpoint objects returned for that API page.</maml:para>
           </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>String</maml:name>
+            <maml:name>SwitchParameter</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>All</dev:defaultValue>
+          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>RebootRequired</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Limit</maml:name>
           <maml:description>
-            <maml:para>Filters endpoints by reboot requirement.</maml:para>
-            <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
-            <maml:para>Accepted values:</maml:para>
-            <maml:para>* `Yes`</maml:para>
-            <maml:para>* `No`</maml:para>
-            <maml:para>* `All`</maml:para>
+            <maml:para>Specifies how many endpoints to request from Action1 per API page.</maml:para>
+            <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
           </maml:description>
-          <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">Yes</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">No</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
-          </command:parameterValueGroup>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
-            <maml:name>String</maml:name>
+            <maml:name>Int32</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>All</dev:defaultValue>
+          <dev:defaultValue>200</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>OS</maml:name>
           <maml:description>
             <maml:para>Filters endpoints by operating system family.</maml:para>
@@ -1371,10 +1389,82 @@ Europe</dev:code>
           </dev:type>
           <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>RebootRequired</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by reboot requirement.</maml:para>
+            <maml:para>Specify `All` to disable reboot requirement filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Yes`</maml:para>
+            <maml:para>* `No`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Yes</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">No</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Status</maml:name>
+          <maml:description>
+            <maml:para>Filters endpoints by endpoint status.</maml:para>
+            <maml:para>Specify `All` to disable status filtering.</maml:para>
+            <maml:para>Accepted values:</maml:para>
+            <maml:para>* `Connected`</maml:para>
+            <maml:para>* `Disconnected`</maml:para>
+            <maml:para>* `Pending Uninstall`</maml:para>
+            <maml:para>* `All`</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Connected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Disconnected</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Pending Uninstall</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>All</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>AsPage</maml:name>
+        <maml:description>
+          <maml:para>Returns page envelope objects instead of individual endpoint objects.</maml:para>
+          <maml:para>Each page envelope includes Items , PageNumber , From , Limit , TotalItems , and NextPage properties. The Items property contains endpoint objects returned for that API page.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Limit</maml:name>
+        <maml:description>
+          <maml:para>Specifies how many endpoints to request from Action1 per API page.</maml:para>
+          <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>200</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>OS</maml:name>
         <maml:description>
           <maml:para>Filters endpoints by operating system family.</maml:para>
@@ -1394,7 +1484,7 @@ Europe</dev:code>
         </dev:type>
         <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>RebootRequired</maml:name>
         <maml:description>
           <maml:para>Filters endpoints by reboot requirement.</maml:para>
@@ -1411,7 +1501,7 @@ Europe</dev:code>
         </dev:type>
         <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Status</maml:name>
         <maml:description>
           <maml:para>Filters endpoints by endpoint status.</maml:para>
@@ -1446,7 +1536,8 @@ Europe</dev:code>
           <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>Returns managed endpoint objects from Action1. The objects include an `id` property and can be piped to commands that accept endpoint objects, such as Add-Action1EndpointGroupMembers .</maml:para>
+          <maml:para>By default, returns managed endpoint objects from Action1. The objects include an `id` property and can be piped to commands that accept endpoint objects, such as Add-Action1EndpointGroupMembers .</maml:para>
+          <maml:para>When AsPage is specified, returns page envelope objects whose Items property contains endpoint objects.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -1523,6 +1614,13 @@ Europe</dev:code>
         -WhatIf</dev:code>
         <dev:remarks>
           <maml:para>Gets connected Windows Server endpoints that require reboot, then previews the endpoint group membership update without sending the add request.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------------- Example 9: Get endpoint pages ----------------</maml:title>
+        <dev:code>Get-Action1Endpoints -AsPage -Limit 50</dev:code>
+        <dev:remarks>
+          <maml:para>Gets managed endpoints as page envelope objects, requesting up to 50 endpoint records per API page.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3284,8 +3382,8 @@ Add-Action1EndpointGroupMembers `
       <maml:para>The schema property is set to `PSAction1.Endpoint.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The endpointgroup_id property contains the resolved endpoint group ID. The type property is set to `Endpoint`.</maml:para>
       <maml:para>The items array contains the endpoint objects returned by `Get-Action1EndpointGroupMembers`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
       <maml:para>Use Status , RebootRequired , and OS to pass endpoint filters through to `Get-Action1EndpointGroupMembers`. Specify `All` for a filter parameter to skip that filter.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3305,7 +3403,8 @@ Add-Action1EndpointGroupMembers `
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -3346,7 +3445,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -3409,7 +3508,8 @@ Add-Action1EndpointGroupMembers `
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -3463,7 +3563,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -3526,7 +3626,8 @@ Add-Action1EndpointGroupMembers `
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -3585,7 +3686,7 @@ Add-Action1EndpointGroupMembers `
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt; EndpointGroupMembers &lt;EndpointGroupId&gt;_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The endpoint group ID is included in the file name after removing characters that are invalid in Windows file names. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -3648,7 +3749,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -3695,13 +3796,13 @@ Add-Action1EndpointGroupMembers `
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 5: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1EndpointGroupMembersJson `
     -GroupId 'Service_1696554367754' `
     -Path 'C:\Reports\ServiceEndpointGroupMembers.json' `
     -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports endpoint group members and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports endpoint group members and overwrites the target file if it already exists.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -3746,7 +3847,7 @@ Add-Action1EndpointGroupMembers `
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>`Export-Action1EndpointGroupsJson` calls `Get-Action1EndpointGroups`, optionally filters the returned endpoint group list by endpoint group ID or endpoint group name, and exports the selected endpoint groups to a JSON file.</maml:para>
+      <maml:para>`Export-Action1EndpointGroupsJson` calls `Get-Action1EndpointGroups` in page mode, optionally filters each returned page by endpoint group ID or endpoint group name, and exports the selected endpoint groups to a JSON file.</maml:para>
       <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
       <maml:para>* `schema`</maml:para>
       <maml:para>* `datetime`</maml:para>
@@ -3759,8 +3860,11 @@ Add-Action1EndpointGroupMembers `
       <maml:para>The schema property is set to `PSAction1.EndpointGroup.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The type property is set to `EndpointGroup`.</maml:para>
       <maml:para>The items array contains the endpoint group objects returned by `Get-Action1EndpointGroups`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
       <maml:para>Use either EndpointGroupIds or EndpointGroupNames to filter the export. These parameters are mutually exclusive and cannot be used in the same command. Endpoint group IDs are strings and are not validated as GUIDs.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>Filtering is applied to each API page as it is returned. Pages that do not contain matching endpoint groups are skipped, and later pages are still requested until pagination is complete.</maml:para>
+      <maml:para>If a paged API response overlaps an earlier page, an endpoint group ID is written only once.</maml:para>
+      <maml:para>Use PageSize to control how many endpoint groups are requested per API page. The value must be from 1 through 200. The default page size is 200.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3769,7 +3873,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -3796,7 +3900,8 @@ Add-Action1EndpointGroupMembers `
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -3805,6 +3910,19 @@ Add-Action1EndpointGroupMembers `
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PageSize</maml:name>
+          <maml:description>
+            <maml:para>Specifies how many endpoint groups to request from Action1 per API page during the JSON export.</maml:para>
+            <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Export-Action1EndpointGroupsJson</maml:name>
@@ -3812,7 +3930,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -3839,7 +3957,8 @@ Add-Action1EndpointGroupMembers `
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -3847,6 +3966,19 @@ Add-Action1EndpointGroupMembers `
             <maml:uri />
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PageSize</maml:name>
+          <maml:description>
+            <maml:para>Specifies how many endpoint groups to request from Action1 per API page during the JSON export.</maml:para>
+            <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -3880,7 +4012,8 @@ Add-Action1EndpointGroupMembers `
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -3890,11 +4023,24 @@ Add-Action1EndpointGroupMembers `
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>PageSize</maml:name>
+        <maml:description>
+          <maml:para>Specifies how many endpoint groups to request from Action1 per API page during the JSON export.</maml:para>
+          <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>200</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_&lt;OrgName&gt;_EndpointGroups_yyMMdd_HHmmssZ.json` naming format. The organization name is read from `Get-Action1DefaultOrgName` and normalized with `ConvertTo-LatinAlphaNumericString`. If normalization produces an empty value, the default organization ID is used instead. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -3922,7 +4068,7 @@ Add-Action1EndpointGroupMembers `
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -3936,7 +4082,7 @@ Add-Action1EndpointGroupMembers `
         <maml:title>Example 1: Export all endpoint groups to the default JSON file</maml:title>
         <dev:code>Export-Action1EndpointGroupsJson</dev:code>
         <dev:remarks>
-          <maml:para>Exports all endpoint groups returned by `Get-Action1EndpointGroups` to a timestamped JSON file in the current location.</maml:para>
+          <maml:para>Exports all endpoint groups returned by `Get-Action1EndpointGroups` page by page to a timestamped JSON file in the current location.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -3965,10 +4111,10 @@ Add-Action1EndpointGroupMembers `
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 5: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1EndpointGroupsJson -Path 'C:\Reports\EndpointGroups.json' -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports endpoint groups and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports endpoint groups and overwrites the target file if it already exists.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -4548,13 +4694,64 @@ Add-Action1EndpointGroupMembers `
     <maml:description>
       <maml:para>Gets endpoint group records from the current Action1 organization by using the Action1 endpoint groups API.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
+      <maml:para>Use AsPage to return one object per API page. Page mode is intended for export commands and other callers that need to process endpoint groups page by page without materializing the whole collection first.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-Action1EndpointGroups</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>AsPage</maml:name>
+          <maml:description>
+            <maml:para>Returns page envelope objects instead of individual endpoint group objects. Each page object contains `Items`, `PageNumber`, `From`, `Limit`, `TotalItems`, and `NextPage`.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Limit</maml:name>
+          <maml:description>
+            <maml:para>Specifies how many endpoint groups to request from Action1 per API page.</maml:para>
+            <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
-    <command:parameters />
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>AsPage</maml:name>
+        <maml:description>
+          <maml:para>Returns page envelope objects instead of individual endpoint group objects. Each page object contains `Items`, `PageNumber`, `From`, `Limit`, `TotalItems`, and `NextPage`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Limit</maml:name>
+        <maml:description>
+          <maml:para>Specifies how many endpoint groups to request from Action1 per API page.</maml:para>
+          <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>200</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
     <command:inputTypes>
       <command:inputType>
         <dev:type>
@@ -4572,6 +4769,7 @@ Add-Action1EndpointGroupMembers `
         </dev:type>
         <maml:description>
           <maml:para>Returns endpoint group objects from Action1.</maml:para>
+          <maml:para>When AsPage is used, each page object contains `Items`, `PageNumber`, `From`, `Limit`, `TotalItems`, and `NextPage`.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -7837,7 +8035,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>`Export-Action1OrganizationsJson` calls `Get-Action1Organizations`, optionally filters the returned organization list by organization ID or organization name, and exports the selected organizations to a JSON file.</maml:para>
+      <maml:para>`Export-Action1OrganizationsJson` calls `Get-Action1Organizations` in page mode, optionally filters each returned page by organization ID or organization name, and exports the selected organizations to a JSON file.</maml:para>
       <maml:para>The command writes a single JSON object with the following top-level properties:</maml:para>
       <maml:para>* `schema`</maml:para>
       <maml:para>* `datetime`</maml:para>
@@ -7857,8 +8055,11 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para></maml:para>
       <maml:para>The self value is built from the configured Action1 API base URI and the organization ID.</maml:para>
       <maml:para>Use either OrgIds or OrgNames to filter the export. These parameters are mutually exclusive and cannot be used in the same command.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>Filtering is applied to each API page as it is returned. Pages that do not contain matching organizations are skipped, and later pages are still requested until pagination is complete.</maml:para>
+      <maml:para>If a paged API response overlaps an earlier page, an organization ID is written only once.</maml:para>
+      <maml:para>Use PageSize to control how many organizations are requested per API page. The value must be from 1 through 200. The default page size is 200.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -7867,7 +8068,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -7881,7 +8082,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -7903,6 +8105,19 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PageSize</maml:name>
+          <maml:description>
+            <maml:para>Specifies how many organizations to request from Action1 per API page during the JSON export.</maml:para>
+            <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Export-Action1OrganizationsJson</maml:name>
@@ -7910,7 +8125,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -7924,7 +8139,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -7946,13 +8162,27 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PageSize</maml:name>
+          <maml:description>
+            <maml:para>Specifies how many organizations to request from Action1 per API page during the JSON export.</maml:para>
+            <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -7988,11 +8218,24 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>PageSize</maml:name>
+        <maml:description>
+          <maml:para>Specifies how many organizations to request from Action1 per API page during the JSON export.</maml:para>
+          <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>200</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Organizations_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -8020,7 +8263,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -8034,7 +8277,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:title>- Example 1: Export all organizations to the default JSON file -</maml:title>
         <dev:code>Export-Action1OrganizationsJson</dev:code>
         <dev:remarks>
-          <maml:para>Exports all organizations returned by `Get-Action1Organizations` to a timestamped JSON file in the current location.</maml:para>
+          <maml:para>Exports all organizations returned by `Get-Action1Organizations` page by page to a timestamped JSON file in the current location.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -8063,10 +8306,10 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 5: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 5: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1OrganizationsJson -Path 'C:\Reports\Organizations.json' -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports organizations and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports organizations and overwrites the target file if it already exists.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -8248,13 +8491,68 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     <maml:description>
       <maml:para>`Get-Action1Organizations` calls the Action1 organizations endpoint and returns a sorted object list containing organization names, IDs, descriptions, types, and enterprise IDs.</maml:para>
       <maml:para>Results are sorted by organization name, then organization ID.</maml:para>
+      <maml:para>Use AsPage to return one object per API page. Page mode is intended for export commands that need to process large result sets incrementally. In page mode, each page object contains normalized organization objects in the Items property and preserves the API page order.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-Action1Organizations</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>AsPage</maml:name>
+          <maml:description>
+            <maml:para>Returns one object per API page instead of a flattened organization list.</maml:para>
+            <maml:para>Each page object's Items property contains normalized organization objects with `Org_Name`, `Org_ID`, `Description`, `Type`, and `EnterpriseId` properties.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Limit</maml:name>
+          <maml:description>
+            <maml:para>Specifies the page size used for paged API requests.</maml:para>
+            <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+            <maml:para>The command still retrieves all available pages unless AsPage is used by a caller that processes each page incrementally.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
-    <command:parameters />
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>AsPage</maml:name>
+        <maml:description>
+          <maml:para>Returns one object per API page instead of a flattened organization list.</maml:para>
+          <maml:para>Each page object's Items property contains normalized organization objects with `Org_Name`, `Org_ID`, `Description`, `Type`, and `EnterpriseId` properties.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Limit</maml:name>
+        <maml:description>
+          <maml:para>Specifies the page size used for paged API requests.</maml:para>
+          <maml:para>The value must be from 1 through 200. The default value is 200.</maml:para>
+          <maml:para>The command still retrieves all available pages unless AsPage is used by a caller that processes each page incrementally.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>200</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
     <command:inputTypes>
       <command:inputType>
         <dev:type>
@@ -8272,6 +8570,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:type>
         <maml:description>
           <maml:para>Each object contains `Org_Name`, `Org_ID`, `Description`, `Type`, and `EnterpriseId` properties.</maml:para>
+          <maml:para>When AsPage is used, each page object contains `Items`, `PageNumber`, `From`, `Limit`, `TotalItems`, and `NextPage` properties.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -9146,8 +9445,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para></maml:para>
       <maml:para>The schema property is set to `PSAction1.Role.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The user_id property is set to the supplied user ID. The type property is set to `Role`.</maml:para>
       <maml:para>The items array contains the role objects returned by `Get-Action1UserRoles`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist.</maml:para>
+      <maml:para>If the target JSON file already exists, the command stops before writing. Use Force to overwrite an existing target JSON file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -9169,7 +9468,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_UserRoles_UserId_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -9183,7 +9482,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -9198,7 +9498,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden, that would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -9212,7 +9513,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_UserRoles_UserId_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -9253,7 +9554,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -9280,13 +9581,13 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 3: Export to a read-only or hidden JSON file -----</maml:title>
+        <maml:title>---------- Example 3: Overwrite an existing JSON file ----------</maml:title>
         <dev:code>Export-Action1UserRolesJson `
     -UserId '5e79941d-e4cc-40f3-899b-0cff63836d46' `
     -Path 'C:\Reports\UserRoles.json' `
     -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports user roles and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports user roles and overwrites the target file if it already exists.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -9344,8 +9645,9 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>The schema property is set to `PSAction1.User.v1`. The datetime property contains the UTC export timestamp in the `yyyy-MM-dd'T'HH:mm:ss'Z'` format. The region property is populated from `Get-Action1Region`. The enterprise_id property is populated from `Get-Action1EnterpriseId`. The organization_id property is populated from `Get-Action1DefaultOrgId`. The type property is set to `User`.</maml:para>
       <maml:para>The items array contains the user objects returned by `Get-Action1Users`. Item fields are not remapped, so all fields returned by the source command are preserved in the JSON output.</maml:para>
       <maml:para>Use UserIds to export only users whose `id` value matches one of the specified IDs.</maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target JSON file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>Use PageSize to control how many users are requested per API page. The command writes the JSON export incrementally as pages are returned.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist and overwrites an existing target JSON file only when Force is specified.</maml:para>
+      <maml:para>Use Force to overwrite an existing target JSON file and to write when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -9354,7 +9656,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the JSON file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, use Force to overwrite it.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Users_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
           </maml:description>
@@ -9368,7 +9670,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target JSON file if it already exists.</maml:para>
+            <maml:para>This parameter also attempts to write when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -9376,6 +9679,19 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
             <maml:uri />
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PageSize</maml:name>
+          <maml:description>
+            <maml:para>Specifies the maximum number of users to request per API page.</maml:para>
+            <maml:para>The value must be from 1 through the module export page-size maximum.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>UserIds</maml:name>
@@ -9396,7 +9712,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target JSON file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target JSON file if it already exists.</maml:para>
+          <maml:para>This parameter also attempts to write when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Windows Notepad, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -9406,11 +9723,24 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>PageSize</maml:name>
+        <maml:description>
+          <maml:para>Specifies the maximum number of users to request per API page.</maml:para>
+          <maml:para>The value must be from 1 through the module export page-size maximum.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>200</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the JSON file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, use Force to overwrite it.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped JSON file in the current location using the `Action1_Users_yyMMdd_HHmmssZ.json` naming format. The `Z` suffix marks the timestamp as UTC.</maml:para>
         </maml:description>
@@ -9451,7 +9781,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a JSON file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a JSON file at the specified path and overwrites an existing file only when Force is specified.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -9488,7 +9818,14 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:title>----- Example 4: Export to a read-only or hidden JSON file -----</maml:title>
         <dev:code>Export-Action1UsersJson -Path 'C:\Reports\Users.json' -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports users and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports users and overwrites the target file if it already exists. The command also attempts to write when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 5: Export users with a smaller API page size -----</maml:title>
+        <dev:code>Export-Action1UsersJson -Path 'C:\Reports\Users.json' -PageSize 50 -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Requests users in pages of 50 records and writes the selected users to the JSON file incrementally.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -9785,13 +10122,65 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     <maml:description>
       <maml:para>`Get-Action1Users` calls the Action1 users API and returns enabled user records visible to the current credentials.</maml:para>
       <maml:para>The requested GET endpoint is `/users`. The command uses the module paging helper and returns the enabled user objects from Action1 without reshaping them. Disabled users are not included. To retrieve a disabled user, call `Get-Action1User` with the user's ID.</maml:para>
+      <maml:para>Use AsPage to return page envelopes that contain an Items array and page metadata. This mode is intended for paged export workflows.</maml:para>
+      <maml:para>Use Limit to control how many users are requested per API page. The value must be from 1 through the module paging maximum.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-Action1Users</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>AsPage</maml:name>
+          <maml:description>
+            <maml:para>Returns page envelope objects instead of writing each user object directly to the pipeline. Each page contains Items , PageNumber , From , Limit , TotalItems , and NextPage properties.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Limit</maml:name>
+          <maml:description>
+            <maml:para>Specifies the maximum number of users to request per API page.</maml:para>
+            <maml:para>The value must be from 1 through the module paging maximum.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>200</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
-    <command:parameters />
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>AsPage</maml:name>
+        <maml:description>
+          <maml:para>Returns page envelope objects instead of writing each user object directly to the pipeline. Each page contains Items , PageNumber , From , Limit , TotalItems , and NextPage properties.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Limit</maml:name>
+        <maml:description>
+          <maml:para>Specifies the maximum number of users to request per API page.</maml:para>
+          <maml:para>The value must be from 1 through the module paging maximum.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>200</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
     <command:inputTypes>
       <command:inputType>
         <dev:type>
@@ -9808,7 +10197,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>Returns enabled user objects from Action1.</maml:para>
+          <maml:para>Returns enabled user objects from Action1. With AsPage , returns page envelope objects containing enabled user objects and page metadata.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -9878,9 +10267,9 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>`New-Action1User` calls the Action1 users API and creates a user with the specified profile and sign-in values.</maml:para>
+      <maml:para>`New-Action1User` calls the Action1 users API and creates a user with the specified profile and initial sign-in values.</maml:para>
       <maml:para>The requested POST endpoint is `/users`.</maml:para>
-      <maml:para>The command always sends `first_name`, `last_name`, `email`, and `password`. Optional fields are added to the request body only when their parameters are specified. -SessionTimeout accepts a value in minutes and sends the API `session_timeout` field in seconds. -Enabled accepts `yes` or `no`.</maml:para>
+      <maml:para>The command always sends `first_name`, `last_name`, `email`, and `password`. The `password` value sets the user's initial password and is expected to be changed by the user later. Optional fields are added to the request body only when their parameters are specified. -SessionTimeout accepts a value in minutes and sends the API `session_timeout` field in seconds. -Enabled accepts `yes` or `no`.</maml:para>
       <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the create operation without sending the POST request. Use -Confirm to prompt for confirmation before sending the POST request. Use -Force to bypass confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
@@ -9964,8 +10353,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Password</maml:name>
           <maml:description>
-            <maml:para>Specifies the user's password.</maml:para>
-            <maml:para>The password must be at least 12 characters long, contain at least one number, and contain upper and lower case letters.</maml:para>
+            <maml:para>Specifies the user's initial password.</maml:para>
+            <maml:para>This value is expected to be changed by the user later. The initial password must be at least 12 characters long, contain at least one number, and contain upper and lower case letters.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -9978,7 +10367,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Phone</maml:name>
           <maml:description>
             <maml:para>Specifies the user's phone number.</maml:para>
-            <maml:para>The value can optionally start with `+` and must then contain 6 to 13 digits.</maml:para>
+            <maml:para>The value must be 30 characters or fewer.</maml:para>
             <maml:para>When omitted, the command does not send the `phone` field.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -10104,8 +10493,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Password</maml:name>
         <maml:description>
-          <maml:para>Specifies the user's password.</maml:para>
-          <maml:para>The password must be at least 12 characters long, contain at least one number, and contain upper and lower case letters.</maml:para>
+          <maml:para>Specifies the user's initial password.</maml:para>
+          <maml:para>This value is expected to be changed by the user later. The initial password must be at least 12 characters long, contain at least one number, and contain upper and lower case letters.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -10118,7 +10507,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>Phone</maml:name>
         <maml:description>
           <maml:para>Specifies the user's phone number.</maml:para>
-          <maml:para>The value can optionally start with `+` and must then contain 6 to 13 digits.</maml:para>
+          <maml:para>The value must be 30 characters or fewer.</maml:para>
           <maml:para>When omitted, the command does not send the `phone` field.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -10205,7 +10594,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     -Enabled yes `
     -SessionTimeout 30</dev:code>
         <dev:remarks>
-          <maml:para>Creates the user and returns the Action1 API response. The session timeout is sent to the API as `1800` seconds.</maml:para>
+          <maml:para>Creates the user and returns the Action1 API response. The password sets the user's initial password, which the user is expected to change later. The session timeout is sent to the API as `1800` seconds.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -10216,7 +10605,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     -Email 'piotrivanov9@example.com' `
     -Password 'Madeira2025A'</dev:code>
         <dev:remarks>
-          <maml:para>Creates the user without sending optional `phone`, `timezone`, `enabled`, or `session_timeout` fields.</maml:para>
+          <maml:para>Creates the user with the specified initial password and without sending optional `phone`, `timezone`, `enabled`, or `session_timeout` fields.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -10570,7 +10959,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Phone</maml:name>
           <maml:description>
             <maml:para>Specifies the user's phone number.</maml:para>
-            <maml:para>The value can optionally start with `+` and must then contain 6 to 13 digits.</maml:para>
+            <maml:para>The value must be 30 characters or fewer.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -10695,7 +11084,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>Phone</maml:name>
         <maml:description>
           <maml:para>Specifies the user's phone number.</maml:para>
-          <maml:para>The value can optionally start with `+` and must then contain 6 to 13 digits.</maml:para>
+          <maml:para>The value must be 30 characters or fewer.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -10871,8 +11260,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>* `InstalledVersion`</maml:para>
       <maml:para>* `AvailableUpdate`</maml:para>
       <maml:para></maml:para>
-      <maml:para>The command creates the target directory when it does not already exist and overwrites the target CSV file if it already exists.</maml:para>
-      <maml:para>Use Force to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing. Force does not override file locks or insufficient file system permissions.</maml:para>
+      <maml:para>The command creates the target directory when it does not already exist. If the target CSV file already exists, the command stops before writing. Use Force to overwrite an existing target CSV file. Force also passes through to the underlying file write operation for file attributes, such as read-only or hidden. Force does not override file locks or insufficient file system permissions.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
     <command:syntax>
@@ -10882,7 +11270,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>Path</maml:name>
           <maml:description>
             <maml:para>Specifies the path to the CSV file to create.</maml:para>
-            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+            <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
             <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
             <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyMMdd_HHmmssZ.csv` naming format. The `Z` suffix marks the timestamp as UTC. The organization name is normalized to Latin letters and digits while preserving capitalization.</maml:para>
           </maml:description>
@@ -10910,7 +11298,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+            <maml:para>Forces the command to overwrite the target CSV file when it already exists.</maml:para>
+            <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden.</maml:para>
             <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
           </maml:description>
           <dev:type>
@@ -10995,7 +11384,8 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Forces the command to write to the target CSV file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Forces the command to overwrite the target CSV file when it already exists.</maml:para>
+          <maml:para>This parameter also passes through to the underlying file write operation for file attributes, such as read-only or hidden.</maml:para>
           <maml:para>This parameter does not override file locks or insufficient file system permissions. Close the file if it is open in another application, such as Microsoft Excel, and verify that you have write permission to the target location.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -11009,7 +11399,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>Path</maml:name>
         <maml:description>
           <maml:para>Specifies the path to the CSV file to create.</maml:para>
-          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command overwrites it.</maml:para>
+          <maml:para>If the path contains a directory that does not exist, the command creates the directory. If the file already exists, the command stops before writing. Use Force to overwrite an existing file.</maml:para>
           <maml:para>If the existing target file has read-only or hidden file attributes, use Force .</maml:para>
           <maml:para>If this parameter is not specified, the command creates a timestamped CSV file in the current location using the `Action1_OrgName_VulnerabilitiesEndpoints_yyMMdd_HHmmssZ.csv` naming format. The `Z` suffix marks the timestamp as UTC. The organization name is normalized to Latin letters and digits while preserving capitalization.</maml:para>
         </maml:description>
@@ -11077,7 +11467,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
-          <maml:para>This command does not return pipeline output. It creates or overwrites a CSV file at the specified path.</maml:para>
+          <maml:para>This command does not return pipeline output. It creates a CSV file at the specified path and overwrites an existing file only when Force is specified.</maml:para>
         </maml:description>
       </command:returnValue>
     </command:returnValues>
@@ -11128,10 +11518,10 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>----- Example 6: Export to a read-only or hidden CSV file -----</maml:title>
+        <maml:title>----- Example 6: Export and overwrite an existing CSV file -----</maml:title>
         <dev:code>Export-Action1VulnerabilitiesEndpointsCsv -Path 'C:\Reports\VulnerabilityEndpoints.csv' -Force</dev:code>
         <dev:remarks>
-          <maml:para>Exports vulnerability endpoint records and attempts to write to the target file even when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
+          <maml:para>Exports vulnerability endpoint records and overwrites the target file if it already exists. The command also attempts to write to the target file when file attributes, such as read-only or hidden, would otherwise prevent writing.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
