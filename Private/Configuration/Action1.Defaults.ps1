@@ -7,10 +7,12 @@
 
 # Basic params
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
-$Script:Action1_ExportPageSize = 200
 $Script:Action1_JsonObjectConversionDepth = 10
+
+# Pagination
 $Script:Action1_PagedGetRequestDefaultLimit = 200
 $Script:Action1_PagedGetRequestDefaultOffset = 0
+$Script:Action1_ExportPageSize = 200
 
 # Timestamp template
 $Script:Action1_UtcTimestampTemplate = "yyyy-MM-dd'T'HH:mm:ss'Z'"
@@ -37,3 +39,6 @@ $Script:Action1_UserJsonSchema = 'PSAction1.User.v1'
 $Script:Action1_RoleJsonSchema = 'PSAction1.Role.v1'
 $Script:Action1_EndpointJsonSchema = 'PSAction1.Endpoint.v1'
 $Script:Action1_EndpointGroupJsonSchema = 'PSAction1.EndpointGroup.v1'
+
+# Vulnerability
+$Script:Action1_CVEIdValidationPattern = '^CVE-\d{4}-\d{4,}$'

@@ -11285,7 +11285,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>CVEIds</maml:name>
           <maml:description>
             <maml:para>Specifies one or more CVE IDs whose affected endpoint records should be exported.</maml:para>
-            <maml:para>Each value must match the `CVE-YYYY-NNN` or `CVE-YYYY-NNNNNN` format.</maml:para>
+            <maml:para>Each value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits.</maml:para>
             <maml:para>When this parameter is specified, the command uses only the provided CVE IDs. RemediationStatus and Score are not used to select CVEs.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
@@ -11371,7 +11371,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>CVEIds</maml:name>
         <maml:description>
           <maml:para>Specifies one or more CVE IDs whose affected endpoint records should be exported.</maml:para>
-          <maml:para>Each value must match the `CVE-YYYY-NNN` or `CVE-YYYY-NNNNNN` format.</maml:para>
+          <maml:para>Each value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits.</maml:para>
           <maml:para>When this parameter is specified, the command uses only the provided CVE IDs. RemediationStatus and Score are not used to select CVEs.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
@@ -11782,6 +11782,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
           <maml:name>CVEId</maml:name>
           <maml:description>
             <maml:para>Specifies the CVE ID of the vulnerability to retrieve.</maml:para>
+            <maml:para>The value must use the standard CVE format, with a 4-digit year and a CVE number of four or more digits, such as `CVE-2024-12345`.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11797,6 +11798,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         <maml:name>CVEId</maml:name>
         <maml:description>
           <maml:para>Specifies the CVE ID of the vulnerability to retrieve.</maml:para>
+          <maml:para>The value must use the standard CVE format, with a 4-digit year and a CVE number of four or more digits, such as `CVE-2024-12345`.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -11874,7 +11876,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
     <maml:description>
       <maml:para>Gets endpoints in the current Action1 organization that are affected by a specific vulnerability.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
-      <maml:para>The CVE ID must use the standard CVE format, such as `CVE-2024-12345`.</maml:para>
+      <maml:para>The CVE ID must use the standard CVE format, with a 4-digit year and a CVE number of four or more digits, such as `CVE-2024-12345`.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11883,7 +11885,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
           <maml:name>CVEId</maml:name>
           <maml:description>
             <maml:para>Specifies the CVE ID whose affected endpoints should be retrieved.</maml:para>
-            <maml:para>The value must match the `CVE-YYYY-NNN` or `CVE-YYYY-NNNNNN` format.</maml:para>
+            <maml:para>The value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -11899,7 +11901,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         <maml:name>CVEId</maml:name>
         <maml:description>
           <maml:para>Specifies the CVE ID whose affected endpoints should be retrieved.</maml:para>
-          <maml:para>The value must match the `CVE-YYYY-NNN` or `CVE-YYYY-NNNNNN` format.</maml:para>
+          <maml:para>The value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -11978,7 +11980,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
     <maml:description>
       <maml:para>Gets previously applied remediation records, including compensating control records, for a specific vulnerability in the current Action1 organization.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
-      <maml:para>The CVE ID must use the standard CVE format, such as `CVE-2024-12345`.</maml:para>
+      <maml:para>The CVE ID must use the standard CVE format, with a 4-digit year and a CVE number of four or more digits, such as `CVE-2024-12345`.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11987,6 +11989,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
           <maml:name>CVEId</maml:name>
           <maml:description>
             <maml:para>Specifies the CVE ID whose remediation records should be retrieved.</maml:para>
+            <maml:para>The value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12002,6 +12005,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         <maml:name>CVEId</maml:name>
         <maml:description>
           <maml:para>Specifies the CVE ID whose remediation records should be retrieved.</maml:para>
+          <maml:para>The value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -12094,14 +12098,14 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
           <maml:name>CVEId</maml:name>
           <maml:description>
             <maml:para>Specifies the CVE ID of the vulnerability for which the remediation record should be created.</maml:para>
-            <maml:para>The value must match the CVE format `CVE-YYYY-NNN`, where:</maml:para>
+            <maml:para>The value must match the CVE format `CVE-YYYY-NNNN`, where:</maml:para>
             <maml:para>* `YYYY` is a 4-digit year.</maml:para>
-            <maml:para>* `NNN` is a 3- to 6-digit CVE number.</maml:para>
+            <maml:para>* `NNNN` is a CVE number of four or more digits.</maml:para>
             <maml:para></maml:para>
             <maml:para>Examples:</maml:para>
-            <maml:para>* `CVE-2024-123`</maml:para>
+            <maml:para>* `CVE-2024-1234`</maml:para>
             <maml:para>* `CVE-2024-12345`</maml:para>
-            <maml:para>* `CVE-2024-123456`</maml:para>
+            <maml:para>* `CVE-2024-1234567`</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12165,14 +12169,14 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         <maml:name>CVEId</maml:name>
         <maml:description>
           <maml:para>Specifies the CVE ID of the vulnerability for which the remediation record should be created.</maml:para>
-          <maml:para>The value must match the CVE format `CVE-YYYY-NNN`, where:</maml:para>
+          <maml:para>The value must match the CVE format `CVE-YYYY-NNNN`, where:</maml:para>
           <maml:para>* `YYYY` is a 4-digit year.</maml:para>
-          <maml:para>* `NNN` is a 3- to 6-digit CVE number.</maml:para>
+          <maml:para>* `NNNN` is a CVE number of four or more digits.</maml:para>
           <maml:para></maml:para>
           <maml:para>Examples:</maml:para>
-          <maml:para>* `CVE-2024-123`</maml:para>
+          <maml:para>* `CVE-2024-1234`</maml:para>
           <maml:para>* `CVE-2024-12345`</maml:para>
-          <maml:para>* `CVE-2024-123456`</maml:para>
+          <maml:para>* `CVE-2024-1234567`</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -12328,7 +12332,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
     <maml:description>
       <maml:para>Deletes a specific remediation record for a specific vulnerability in the current Action1 organization.</maml:para>
       <maml:para>The Action1 API requires both the CVE ID and the remediation ID to delete a remediation record.</maml:para>
-      <maml:para>The CVE ID must use the standard CVE format, such as `CVE-2024-12345`.</maml:para>
+      <maml:para>The CVE ID must use the standard CVE format, with a 4-digit year and a CVE number of four or more digits, such as `CVE-2024-12345`.</maml:para>
       <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the delete operation. Use -Force to bypass the confirmation prompt.</maml:para>
     </maml:description>
     <command:syntax>
@@ -12338,6 +12342,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
           <maml:name>CVEId</maml:name>
           <maml:description>
             <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
+            <maml:para>The value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12398,6 +12403,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         <maml:name>CVEId</maml:name>
         <maml:description>
           <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
+          <maml:para>The value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -12776,7 +12782,7 @@ $Summary | Format-List</dev:code>
           <maml:name>CVEId</maml:name>
           <maml:description>
             <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
-            <maml:para>The value must match the format `CVE-YYYY-NNN` through `CVE-YYYY-NNNNNN`, for example `CVE-2024-12345`.</maml:para>
+            <maml:para>The value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits, for example `CVE-2024-12345`.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -12838,7 +12844,7 @@ $Summary | Format-List</dev:code>
         <maml:name>CVEId</maml:name>
         <maml:description>
           <maml:para>Specifies the CVE ID that owns the remediation record.</maml:para>
-          <maml:para>The value must match the format `CVE-YYYY-NNN` through `CVE-YYYY-NNNNNN`, for example `CVE-2024-12345`.</maml:para>
+          <maml:para>The value must match the `CVE-YYYY-NNNN` format, where the CVE number can contain four or more digits, for example `CVE-2024-12345`.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
