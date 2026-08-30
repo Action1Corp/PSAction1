@@ -145,6 +145,7 @@ $Script:PSAction1ApprovedNounWords = @{}
     'Rows'
     'Schedule'
     'Schedules'
+    'Schema'
     'Script'
     'Scripts'
     'Search'

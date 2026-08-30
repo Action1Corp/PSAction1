@@ -24,6 +24,8 @@ $Script:Action1_OrgExportFileNameTemplate = 'Action1_Organizations_{0}.json'
 $Script:Action1_UsersExportFileNameTemplate = 'Action1_Users_{0}.json'
 $Script:Action1_UserRolesExportFileNameTemplate =
     'Action1_UserRoles_{0}_{1}.json'
+$Script:Action1_MigrationMappingFileNameTemplate =
+    'Action1_MigrationMapping_{0}_{1}.json'
 $Script:Action1_EndpointsExportFileNameTemplate =
     'Action1_{0}_Endpoints_{1}.json'
 $Script:Action1_EndpointGroupsExportFileNameTemplate =
@@ -35,6 +37,7 @@ $Script:Action1_VulnerabilitiesEndpointsExportFileNameTemplate =
 
 # JSON schema for export/import files    
 $Script:Action1_OrganizationJsonSchema = 'PSAction1.Organization.v1'
+$Script:Action1_MappingJsonSchema = 'PSAction1.Mapping.v1'
 $Script:Action1_UserJsonSchema = 'PSAction1.User.v1'
 $Script:Action1_RoleJsonSchema = 'PSAction1.Role.v1'
 $Script:Action1_EndpointJsonSchema = 'PSAction1.Endpoint.v1'
