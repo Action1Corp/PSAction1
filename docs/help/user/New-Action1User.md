@@ -33,10 +33,9 @@ Optional fields are added to the request body only when their parameters are
 specified. **-SessionTimeout** accepts a value in minutes and sends the API
 `session_timeout` field in seconds. **-Enabled** accepts `yes` or `no`.
 
-This command supports PowerShell confirmation. Use **-WhatIf** to preview the
-create operation without sending the POST request. Use **-Confirm** to prompt
-for confirmation before sending the POST request. Use **-Force** to bypass
-confirmation prompts.
+This command prompts for confirmation before creating a user. Use **-WhatIf**
+to preview the create operation without sending the POST request. Use
+**-Force** to bypass confirmation prompts.
 
 ## EXAMPLES
 
