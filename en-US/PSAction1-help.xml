@@ -4816,7 +4816,7 @@ Add-Action1EndpointGroupMembers `
       <maml:para>Creates an endpoint group in the current Action1 organization by calling the Action1 endpoint groups API.</maml:para>
       <maml:para>The -EndpointGroupDefinition value is sent as the endpoint group definition without local conversion. Supply the request definition expected by the Action1 API, for example an endpoint group object without response-only fields such as `id`, `type`, `self`, and `contents`.</maml:para>
       <maml:para>The command does not validate the endpoint group definition schema locally; API validation errors are returned by the Action1 request helper.</maml:para>
-      <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The command prompts for confirmation before creating an endpoint group. Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
     <command:syntax>
@@ -5330,7 +5330,7 @@ New-Action1EndpointGroup -EndpointGroupDefinition $endpointGroupDefinition -Forc
       <maml:para>The command accepts an endpoint group ID or an endpoint group name. When -GroupName is used, the command resolves the name by searching endpoint groups in the current organization and then calls the endpoint group contents API path with the resolved ID.</maml:para>
       <maml:para>Each -EndpointIds value must use the standard GUID format. The command sends an Action1 group-member operation for each endpoint ID with `method` set to `DELETE` and `endpoint_id` set to the supplied endpoint ID.</maml:para>
       <maml:para>You can also pipe endpoint objects to the command. Piped endpoint objects must include an `id` property that contains the endpoint GUID. The command collects valid endpoint IDs from all pipeline input before sending a single API request. Invalid piped objects are reported and skipped. If no valid endpoint IDs are supplied, the command does not call the API.</maml:para>
-      <maml:para>Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>The command prompts for confirmation before removing endpoints from a group. Use -WhatIf to preview the operation. Use -Force to bypass confirmation prompts.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
     </maml:description>
     <command:syntax>
@@ -8605,6 +8605,255 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Import-Action1OrganizationsJson</command:name>
+      <command:verb>Import</command:verb>
+      <command:noun>Action1OrganizationsJson</command:noun>
+      <maml:description>
+        <maml:para>Imports organizations from a PSAction1 organization JSON export.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Import-Action1OrganizationsJson` reads a JSON file created by `Export-Action1OrganizationsJson`, creates each unmapped organization in the current Action1 target enterprise, and records created target objects in a JSON migration map.</maml:para>
+      <maml:para>The source JSON file must contain these top-level properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para>* `type`</maml:para>
+      <maml:para>* `items`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The schema value must be `PSAction1.Organization.v1`, and the type value must be `Organization`.</maml:para>
+      <maml:para>The migration map uses schema `PSAction1.Mapping.v1` and contains these header properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>Additional top-level properties are source organization IDs. Each source ID maps to the complete response object returned by `New-Action1Organization` when the corresponding organization was created in the current target enterprise.</maml:para>
+      <maml:para>If MapPath is not specified, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
+      <maml:para>When a source organization ID already exists as a top-level property in the map, the command skips that source item. Otherwise, it creates the organization with `New-Action1Organization`, appends the full created target organization response to the map under the source organization ID, and saves the map file.</maml:para>
+      <maml:para>The map file region and enterprise_id must match the current target region and enterprise. This prevents appending target objects to a map for a different tenant or region.</maml:para>
+      <maml:para>The command prompts for confirmation before creating each organization. Use WhatIf to preview organization creation without sending API requests or writing the map file. Use Force to bypass confirmation prompts.</maml:para>
+      <maml:para>At the end of the import, the command returns a statistics object with source path, map path, processed count, skipped count, created count, failed count, source region, target region, and target enterprise ID.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Import-Action1OrganizationsJson</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the source JSON file created by `Export-Action1OrganizationsJson`.</maml:para>
+            <maml:para>The file must use schema `PSAction1.Organization.v1`, type `Organization`, and include the `items` array.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before creating each organization.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MapPath</maml:name>
+          <maml:description>
+            <maml:para>Specifies the JSON migration map path.</maml:para>
+            <maml:para>If the path exists, the command validates the map schema, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
+            <maml:para>If this parameter is omitted, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before creating each organization.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MapPath</maml:name>
+        <maml:description>
+          <maml:para>Specifies the JSON migration map path.</maml:para>
+          <maml:para>If the path exists, the command validates the map schema, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
+          <maml:para>If this parameter is omitted, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the source JSON file created by `Export-Action1OrganizationsJson`.</maml:para>
+          <maml:para>The file must use schema `PSAction1.Organization.v1`, type `Organization`, and include the `items` array.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns a statistics object describing the import.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires permission to view enterprise settings and create organizations in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-- Example 1: Import organizations and create the default map --</maml:title>
+        <dev:code>Import-Action1OrganizationsJson -Path 'C:\Migration\Organizations.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports all unmapped organizations from the export file. The command creates or reuses a migration map in the current location.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 2: Import organizations with a specific map -----</maml:title>
+        <dev:code>Import-Action1OrganizationsJson `
+    -Path 'C:\Migration\Organizations.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports unmapped organizations and stores created target objects in the specified migration map.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------------- Example 3: Preview an import -----------------</maml:title>
+        <dev:code>Import-Action1OrganizationsJson `
+    -Path 'C:\Migration\Organizations.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows which organizations would be created. The command does not send API requests and does not write the migration map.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 4: Import without confirmation prompts --------</maml:title>
+        <dev:code>Import-Action1OrganizationsJson `
+    -Path 'C:\Migration\Organizations.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Imports unmapped organizations without confirmation prompts.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1OrganizationsJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1Organization</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Organizations</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Region</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>New-Action1Organization</command:name>
       <command:verb>New</command:verb>
       <command:noun>Action1Organization</command:noun>
@@ -8615,7 +8864,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     <maml:description>
       <maml:para>`New-Action1Organization` calls the Action1 organizations API and creates a new organization with the specified name and description.</maml:para>
       <maml:para>The -Description parameter is optional and defaults to an empty string. The API body always includes the description property.</maml:para>
-      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the operation without sending the POST request. Use -Confirm to prompt for confirmation before sending the POST request. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>This command prompts for confirmation before creating an organization. Use -WhatIf to preview the operation without sending the POST request. Use -Force to bypass confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10270,7 +10519,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>`New-Action1User` calls the Action1 users API and creates a user with the specified profile and initial sign-in values.</maml:para>
       <maml:para>The requested POST endpoint is `/users`.</maml:para>
       <maml:para>The command always sends `first_name`, `last_name`, `email`, and `password`. The `password` value sets the user's initial password and is expected to be changed by the user later. Optional fields are added to the request body only when their parameters are specified. -SessionTimeout accepts a value in minutes and sends the API `session_timeout` field in seconds. -Enabled accepts `yes` or `no`.</maml:para>
-      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the create operation without sending the POST request. Use -Confirm to prompt for confirmation before sending the POST request. Use -Force to bypass confirmation prompts.</maml:para>
+      <maml:para>This command prompts for confirmation before creating a user. Use -WhatIf to preview the create operation without sending the POST request. Use -Force to bypass confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12089,7 +12338,7 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
       <maml:para>The command sends a POST request to the Action1 vulnerabilities remediation API endpoint for the specified CVE ID.</maml:para>
       <maml:para>The request body includes the following values: `comment` - The value of the Comment * parameter. `product_name` - The value of the ProductName * parameter.</maml:para>
       <maml:para>The command uses the module default organization configured by Set-Action1DefaultOrg .</maml:para>
-      <maml:para>This command supports PowerShell confirmation. Use -WhatIf to preview the create operation without sending the POST request.</maml:para>
+      <maml:para>The command prompts for confirmation before creating a compensating control remediation record. Use -WhatIf to preview the create operation without sending the POST request. Use -Force to bypass confirmation prompts.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12151,6 +12400,17 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
           <maml:name>WhatIf</maml:name>
           <maml:description>
@@ -12202,6 +12462,18 @@ Import-Csv -Path $Path | Format-Table CVEId, Severity, EndpointName, Application
         <maml:name>Confirm</maml:name>
         <maml:description>
           <maml:para>Prompts you for confirmation before running the command.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. -WhatIf is still honored when it is specified.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
