@@ -8626,13 +8626,15 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>The migration map uses schema `PSAction1.Mapping.v1` and contains these header properties:</maml:para>
       <maml:para>* `schema`</maml:para>
       <maml:para>* `datetime`</maml:para>
-      <maml:para>* `region`</maml:para>
-      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para>* `source_region`</maml:para>
+      <maml:para>* `source_enterprise_id`</maml:para>
+      <maml:para>* `target_region`</maml:para>
+      <maml:para>* `target_enterprise_id`</maml:para>
       <maml:para></maml:para>
       <maml:para>Additional top-level properties are source organization IDs. Each source ID maps to the complete response object returned by `New-Action1Organization` when the corresponding organization was created in the current target enterprise.</maml:para>
       <maml:para>If MapPath is not specified, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
       <maml:para>When a source organization ID already exists as a top-level property in the map, the command skips that source item. Otherwise, it creates the organization with `New-Action1Organization`, appends the full created target organization response to the map under the source organization ID, and saves the map file.</maml:para>
-      <maml:para>The map file region and enterprise_id must match the current target region and enterprise. This prevents appending target objects to a map for a different tenant or region.</maml:para>
+      <maml:para>The map file source_region and source_enterprise_id must match the source JSON file being imported. The target_region and target_enterprise_id values must match the current target region and enterprise. This prevents appending target objects to a map for a different source export, tenant, or region. If the mapping header is wrong, the import stops before processing source items.</maml:para>
       <maml:para>The command prompts for confirmation before creating each organization. Use WhatIf to preview organization creation without sending API requests or writing the map file. Use Force to bypass confirmation prompts.</maml:para>
       <maml:para>At the end of the import, the command returns a statistics object with source path, map path, processed count, skipped count, created count, failed count, source region, target region, and target enterprise ID.</maml:para>
     </maml:description>
@@ -8678,7 +8680,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:name>MapPath</maml:name>
           <maml:description>
             <maml:para>Specifies the JSON migration map path.</maml:para>
-            <maml:para>If the path exists, the command validates the map schema, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
+            <maml:para>If the path exists, the command validates the map schema, source region, source enterprise ID, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
             <maml:para>If this parameter is omitted, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -8730,7 +8732,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:name>MapPath</maml:name>
         <maml:description>
           <maml:para>Specifies the JSON migration map path.</maml:para>
-          <maml:para>If the path exists, the command validates the map schema, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
+          <maml:para>If the path exists, the command validates the map schema, source region, source enterprise ID, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
           <maml:para>If this parameter is omitted, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
