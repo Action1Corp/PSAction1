@@ -39,6 +39,9 @@ function Import-Action1OrganizationsJson {
     $sourceEnterpriseId = Get-FirstPropertyValue `
         -InputObject $sourceJson `
         -PropertyName @('enterprise_id')
+    $sourceRegion = Get-FirstPropertyValue `
+        -InputObject $sourceJson `
+        -PropertyName @('region')
 
     try {
         [void](Test-Guid `
@@ -80,26 +83,32 @@ function Import-Action1OrganizationsJson {
     }
 
     $newMappingFile = $false
+    $mappingHeaderValues = [ordered]@{
+        schema               = $Script:Action1_MappingJsonSchema
+        datetime             = $null
+        source_region        = $sourceRegion
+        source_enterprise_id = $sourceEnterpriseId
+        target_region        = $targetRegion
+        target_enterprise_id = $targetEnterpriseId
+    }
 
     if (Test-Path -LiteralPath $resolvedMapPath -PathType Leaf) {
         $mapping = Read-JsonFile -Path $resolvedMapPath
     }
     else {
         $newMappingFile = $true
-        $mapping = [PSCustomObject][ordered]@{
-            schema        = $Script:Action1_MappingJsonSchema
-            datetime      = Get-UtcTimestamp
-            region        = $targetRegion
-            enterprise_id = $targetEnterpriseId
-        }
+        $mappingHeaderValues['datetime'] = Get-UtcTimestamp
+
+        $mappingHeader = New-Action1JsonHeader `
+            -HeaderTemplate $Script:Action1_MappingJsonHeader `
+            -PropertyValues $mappingHeaderValues
+        $mapping = [PSCustomObject]$mappingHeader
+        $mappingHeaderValues['datetime'] = $null
     }
 
-    $mapValidationMap = [ordered]@{
-        schema        = $Script:Action1_MappingJsonSchema
-        datetime      = $null
-        region        = $targetRegion
-        enterprise_id = $targetEnterpriseId
-    }
+    $mapValidationMap = New-Action1JsonHeader `
+        -HeaderTemplate $Script:Action1_MappingJsonHeader `
+        -PropertyValues $mappingHeaderValues
 
     [void](Test-Action1JsonSchema `
         -Json $mapping `

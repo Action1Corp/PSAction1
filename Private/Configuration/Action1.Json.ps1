@@ -9,13 +9,22 @@
 $Script:Action1_JsonObjectConversionDepth = 10
 
 # JSON export/import envelope
-$Script:Action1_DefaultJsonHeader = [ordered]@{
+$Script:Action1_ExportJsonHeader = [ordered]@{
     schema        = $null
     datetime      = $null
     region        = $null
     enterprise_id = $null
     type          = $null
     items         = $null
+}
+
+$Script:Action1_MappingJsonHeader = [ordered]@{
+    schema               = $null
+    datetime             = $null
+    source_region        = $null
+    source_enterprise_id = $null
+    target_region        = $null
+    target_enterprise_id = $null
 }
 
 # JSON export file name template

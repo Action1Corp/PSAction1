@@ -42,8 +42,10 @@ properties:
 
 * `schema`
 * `datetime`
-* `region`
-* `enterprise_id`
+* `source_region`
+* `source_enterprise_id`
+* `target_region`
+* `target_enterprise_id`
 
 Additional top-level properties are source organization IDs. Each source ID maps
 to the complete response object returned by `New-Action1Organization` when the
@@ -58,9 +60,12 @@ the command skips that source item. Otherwise, it creates the organization with
 `New-Action1Organization`, appends the full created target organization response
 to the map under the source organization ID, and saves the map file.
 
-The map file **region** and **enterprise_id** must match the current target
-region and enterprise. This prevents appending target objects to a map for a
-different tenant or region.
+The map file **source_region** and **source_enterprise_id** must match the
+source JSON file being imported. The **target_region** and
+**target_enterprise_id** values must match the current target region and
+enterprise. This prevents appending target objects to a map for a different
+source export, tenant, or region. If the mapping header is wrong, the import
+stops before processing source items.
 
 The command prompts for confirmation before creating each organization. Use
 **WhatIf** to preview organization creation without sending API requests or
@@ -153,9 +158,10 @@ Accept wildcard characters: False
 
 Specifies the JSON migration map path.
 
-If the path exists, the command validates the map schema, target region, and
-target enterprise ID before processing source items. If the path does not exist,
-the command creates a new map with the `PSAction1.Mapping.v1` header.
+If the path exists, the command validates the map schema, source region, source
+enterprise ID, target region, and target enterprise ID before processing source
+items. If the path does not exist, the command creates a new map with the
+`PSAction1.Mapping.v1` header.
 
 If this parameter is omitted, the command creates or reuses a map file in the
 current location named

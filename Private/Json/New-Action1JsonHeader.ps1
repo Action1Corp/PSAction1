@@ -10,59 +10,41 @@ function New-Action1JsonHeader {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [ValidateScript({
-            if ([string]::IsNullOrWhiteSpace($_)) {
-                throw 'JSON schema cannot be empty.'
-            }
-
-            $true
-        })]
-        [string]$Schema,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [ValidateScript({
-            if ([string]::IsNullOrWhiteSpace($_)) {
-                throw 'JSON object type cannot be empty.'
-            }
-
-            $true
-        })]
-        [string]$Type,
+        [System.Collections.IDictionary]$HeaderTemplate,
 
         [Parameter(Mandatory = $false)]
         [AllowNull()]
         [System.Collections.IDictionary]$PropertyValues
     )
 
-    if (
-        $null -eq $Script:Action1_DefaultJsonHeader -or
-        $Script:Action1_DefaultJsonHeader.Count -eq 0
-    ) {
-        Write-Error 'Default JSON header configuration is empty.' `
-            -ErrorAction Stop
-    }
-
     $header = [ordered]@{}
+    $templatePropertyNames = @()
 
-    foreach ($entry in $Script:Action1_DefaultJsonHeader.GetEnumerator()) {
+    foreach ($entry in $HeaderTemplate.GetEnumerator()) {
         $propertyName = [string]$entry.Key
 
         if ([string]::IsNullOrWhiteSpace($propertyName)) {
-            Write-Error 'Default JSON header contains an empty property name.' `
+            Write-Error 'JSON header contains an empty property name.' `
                 -ErrorAction Stop
         }
 
-        $header[$propertyName.Trim()] = $entry.Value
-    }
+        $propertyName = $propertyName.Trim()
 
-    $header['schema'] = ([string]$Schema).Trim()
-    $header['datetime'] = Get-UtcTimestamp
-    $header['type'] = ([string]$Type).Trim()
+        if ($header.Contains($propertyName)) {
+            $message = "JSON header template contains duplicate property "
+            $message += "'$propertyName'."
+            Write-Error $message -ErrorAction Stop
+        }
+
+        $header[$propertyName] = $entry.Value
+        $templatePropertyNames += $propertyName
+    }
 
     if ($null -eq $PropertyValues) {
         return $header
     }
+
+    $assignedPropertyNames = @{}
 
     foreach ($entry in $PropertyValues.GetEnumerator()) {
         $propertyName = [string]$entry.Key
@@ -74,23 +56,20 @@ function New-Action1JsonHeader {
 
         $propertyName = $propertyName.Trim()
 
-        if ($header.Contains($propertyName)) {
-            $header[$propertyName] = $entry.Value
-            continue
+        if ($assignedPropertyNames.ContainsKey($propertyName)) {
+            $message = "JSON header property values contain duplicate property "
+            $message += "'$propertyName'."
+            Write-Error $message -ErrorAction Stop
         }
 
-        $insertIndex = [array]::IndexOf(@($header.Keys), 'type')
-
-        if ($insertIndex -lt 0) {
-            $insertIndex = [array]::IndexOf(@($header.Keys), 'items')
+        if ($templatePropertyNames -cnotcontains $propertyName) {
+            $message = "JSON header template does not contain property "
+            $message += "'$propertyName'."
+            Write-Error $message -ErrorAction Stop
         }
 
-        if ($insertIndex -lt 0) {
-            $header[$propertyName] = $entry.Value
-        }
-        else {
-            $header.Insert($insertIndex, $propertyName, $entry.Value)
-        }
+        $assignedPropertyNames[$propertyName] = $true
+        $header[$propertyName] = $entry.Value
     }
 
     $header

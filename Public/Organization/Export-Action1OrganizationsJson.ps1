@@ -105,11 +105,13 @@ function Export-Action1OrganizationsJson {
     }
 
     $organizationJsonHeader = New-Action1JsonHeader `
-        -Schema $Script:Action1_OrganizationJsonSchema `
-        -Type 'Organization' `
+        -HeaderTemplate $Script:Action1_ExportJsonHeader `
         -PropertyValues ([ordered]@{
+            schema        = $Script:Action1_OrganizationJsonSchema
+            datetime      = Get-UtcTimestamp
             region        = $region
             enterprise_id = $enterpriseId
+            type          = 'Organization'
         })
     $headerLines = ConvertTo-Action1JsonHeaderContent `
         -Header $organizationJsonHeader
