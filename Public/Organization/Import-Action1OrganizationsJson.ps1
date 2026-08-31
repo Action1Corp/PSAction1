@@ -27,14 +27,9 @@ function Import-Action1OrganizationsJson {
     $sourcePath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path)
     $sourceJson = Read-JsonFile -Path $Path
 
-    $sourceValidationMap = [ordered]@{
-        schema        = $Script:Action1_OrganizationJsonSchema
-        datetime      = $null
-        region        = $null
-        enterprise_id = $null
-        type          = 'Organization'
-        items         = $null
-    }
+    $sourceValidationMap = New-Action1JsonSchemaMap `
+        -Schema $Script:Action1_OrganizationJsonSchema `
+        -Type 'Organization'
 
     [void](Test-Action1JsonSchema `
         -Json $sourceJson `
