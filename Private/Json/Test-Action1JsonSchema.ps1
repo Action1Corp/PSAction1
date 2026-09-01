@@ -31,13 +31,25 @@ function Test-Action1JsonSchema {
         $objectLabel = $objectLabel.Trim()
     }
 
+    $writeValidationDebug = {
+        param(
+            [Parameter(Mandatory = $true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$Message
+        )
+
+        Write-Action1Debug "$objectLabel validation failed. $Message"
+    }
+
     if ($null -eq $Json) {
         $message = "$objectLabel cannot be null."
+        & $writeValidationDebug $message
         Write-Error $message -ErrorAction Stop
     }
 
     if ($null -eq $ValidationMap -or $ValidationMap.Count -eq 0) {
         $message = "Cannot validate $objectLabel because validation map is empty."
+        & $writeValidationDebug $message
         Write-Error $message -ErrorAction Stop
     }
 
@@ -50,6 +62,7 @@ function Test-Action1JsonSchema {
                     "Cannot validate $objectLabel because validation map " +
                     'contains an empty property name.'
                 )
+                & $writeValidationDebug $message
                 Write-Error $message -ErrorAction Stop
             }
 
@@ -72,6 +85,7 @@ function Test-Action1JsonSchema {
             ) {
                 $message = "$objectLabel is missing required property "
                 $message += "'$propertyName'."
+                & $writeValidationDebug $message
                 Write-Error $message -ErrorAction Stop
             }
         }
@@ -91,6 +105,7 @@ function Test-Action1JsonSchema {
         if ($actualValue -cne $expectedValue) {
             $message = "$objectLabel property '$propertyName' has value "
             $message += "'$actualValue'. Expected '$expectedValue'."
+            & $writeValidationDebug $message
             Write-Error $message -ErrorAction Stop
         }
     }

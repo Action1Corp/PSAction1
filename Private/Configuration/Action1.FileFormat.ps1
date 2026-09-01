@@ -5,7 +5,7 @@
 # Review and test before production deployment
 # (c) Action1 Corporation
 
-# JSON serialization
+# JSON and text file formats
 $Script:Action1_JsonObjectConversionDepth = 10
 
 # JSON export/import envelope
@@ -21,6 +21,14 @@ $Script:Action1_ExportJsonHeader = [ordered]@{
 $Script:Action1_MappingJsonHeader = [ordered]@{
     schema               = $null
     datetime             = $null
+    source_region        = $null
+    source_enterprise_id = $null
+    target_region        = $null
+    target_enterprise_id = $null
+}
+
+$Script:Action1_MappingIndexTextHeader = [ordered]@{
+    schema               = $null
     source_region        = $null
     source_enterprise_id = $null
     target_region        = $null
@@ -44,7 +52,11 @@ $Script:Action1_EndpointGroupMembersExportFileNameTemplate =
 # JSON schema for export/import files
 $Script:Action1_OrganizationJsonSchema = 'PSAction1.Organization.v1'
 $Script:Action1_MappingJsonSchema = 'PSAction1.Mapping.v1'
+$Script:Action1_MappingIndexTextSchema = 'PSAction1.MappingIndex.v1'
 $Script:Action1_UserJsonSchema = 'PSAction1.User.v1'
 $Script:Action1_RoleJsonSchema = 'PSAction1.Role.v1'
 $Script:Action1_EndpointJsonSchema = 'PSAction1.Endpoint.v1'
 $Script:Action1_EndpointGroupJsonSchema = 'PSAction1.EndpointGroup.v1'
+
+# Text source-map index
+$Script:Action1_MappingIndexTextHeaderEnd = '# end_header'
