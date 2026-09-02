@@ -17,7 +17,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.9.13'
+    ModuleVersion     = '1.9.14'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
