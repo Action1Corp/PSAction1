@@ -13,7 +13,7 @@ function Export-Action1VulnerabilitiesEndpointsCsv {
         [string]$Path,
 
         [Parameter(Mandatory = $false)]
-        [ValidatePattern('^CVE-\d{4}-\d{3,6}$')]
+        [ValidatePattern('^CVE-\d{4}-\d{4,}$')]
         [string[]]$CVEIds,
 
         [Parameter(Mandatory = $false)]

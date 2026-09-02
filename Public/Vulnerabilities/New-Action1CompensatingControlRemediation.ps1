@@ -9,7 +9,7 @@ function New-Action1CompensatingControlRemediation {
     [CmdletBinding(SupportsShouldProcess = $true)]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
-        [ValidatePattern('^CVE-\d{4}-\d{3,6}$')]
+        [ValidatePattern('^CVE-\d{4}-\d{4,}$')]
         [string]$CVEId,
 
         [Parameter(Mandatory = $true, Position = 1)]
