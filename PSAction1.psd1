@@ -164,20 +164,7 @@
             # IconUri = ''
 
             # ReleaseNotes of this module
-            ReleaseNotes = @'
-New cmdlets:
-    Enterprise:
-        Get-Action1Enterprise
-        Get-Action1EnterpriseId
-        Update-Action1Enterprise
-    Organizations:
-        Get-Action1Organization
-        New-Action1Organization
-        Update-Action1Organization
-        Remove-Action1Organization
-        Export-Action1OrganizationsJson
-Support retry_timeout field handling in 429 HTTP error code response.
-'@
+            ReleaseNotes = 'Update CVEId validation template'
 
         } # End of PSData hashtable
 
