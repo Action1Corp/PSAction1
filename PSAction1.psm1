@@ -17,6 +17,7 @@ $BootstrapFilesToLoadFirst = @(
     'Private\Configuration\Action1.Defaults.ps1'
     'Private\Configuration\Action1.Hosts.ps1'
     'Private\Configuration\Action1.UriMap.ps1'
+    'Private\Configuration\Action1.FileFormat.ps1'
     'Private\Initialization\Initialize-Action1ModuleState.ps1'
     'Private\Templates\RemediationTemplate.ps1'
     'Private\Templates\PackageDeployTemplate.ps1'

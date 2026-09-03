@@ -57,7 +57,8 @@ valid endpoint IDs from all pipeline input before sending a single API request.
 Invalid piped objects are reported and skipped. If no valid endpoint IDs are
 supplied, the command does not call the API.
 
-Use **-WhatIf** to preview the operation. Use **-Force** to bypass confirmation
+The command prompts for confirmation before removing endpoints from a group. Use
+**-WhatIf** to preview the operation. Use **-Force** to bypass confirmation
 prompts.
 
 The command uses the module default organization configured by

@@ -8,6 +8,7 @@
 function Remove-Action1EndpointGroupMembers {
     [CmdletBinding(
         SupportsShouldProcess = $true,
+        ConfirmImpact = 'High',
         DefaultParameterSetName = 'ByGroupIdEndpointIds'
     )]
     param(

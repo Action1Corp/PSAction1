@@ -30,7 +30,8 @@ for example an endpoint group object without response-only fields such as `id`,
 The command does not validate the endpoint group definition schema locally; API
 validation errors are returned by the Action1 request helper.
 
-Use **-WhatIf** to preview the operation. Use **-Force** to bypass confirmation
+The command prompts for confirmation before creating an endpoint group. Use
+**-WhatIf** to preview the operation. Use **-Force** to bypass confirmation
 prompts.
 
 The command uses the module default organization configured by

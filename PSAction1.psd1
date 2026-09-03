@@ -97,6 +97,7 @@
         'Update-Action1Organization'
         'Remove-Action1Organization'
         'Export-Action1OrganizationsJson'
+        'Import-Action1OrganizationsJson'
 
         # User
         'Get-Action1User'
@@ -199,6 +200,7 @@ New cmdlets:
         Update-Action1Organization
         Remove-Action1Organization
         Export-Action1OrganizationsJson
+        Import-Action1OrganizationsJson
 Support retry_timeout field handling in 429 HTTP error code response.
 '@
 

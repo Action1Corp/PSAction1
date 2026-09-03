@@ -14,7 +14,11 @@ function New-Action1User {
         'Password',
         Justification = 'The Action1 users API requires an initial password value in the POST body.'
     )]
-    [CmdletBinding(SupportsShouldProcess = $true, PositionalBinding = $false)]
+    [CmdletBinding(
+        SupportsShouldProcess = $true,
+        ConfirmImpact = 'High',
+        PositionalBinding = $false
+    )]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]

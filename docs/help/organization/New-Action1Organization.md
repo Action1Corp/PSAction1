@@ -26,10 +26,9 @@ organization with the specified name and description.
 The **-Description** parameter is optional and defaults to an empty string. The
 API body always includes the **description** property.
 
-This command supports PowerShell confirmation. Use **-WhatIf** to preview the
-operation without sending the POST request. Use **-Confirm** to prompt for
-confirmation before sending the POST request. Use **-Force** to bypass
-confirmation prompts.
+This command prompts for confirmation before creating an organization. Use
+**-WhatIf** to preview the operation without sending the POST request. Use
+**-Force** to bypass confirmation prompts.
 
 ## EXAMPLES
 

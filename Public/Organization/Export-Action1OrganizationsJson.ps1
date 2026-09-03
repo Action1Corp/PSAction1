@@ -104,15 +104,17 @@ function Export-Action1OrganizationsJson {
         return $true
     }
 
-    $headerLines = @(
-        '{',
-        ('  "schema": {0},' -f (ConvertTo-JsonValue $Script:Action1_OrganizationJsonSchema)),
-        ('  "datetime": {0},' -f (ConvertTo-JsonValue (Get-UtcTimestamp))),
-        ('  "region": {0},' -f (ConvertTo-JsonValue $region)),
-        ('  "enterprise_id": {0},' -f (ConvertTo-JsonValue $enterpriseId)),
-        '  "type": "Organization",',
-        '  "items": ['
-    )
+    $organizationJsonHeader = New-Action1JsonHeader `
+        -HeaderTemplate $Script:Action1_ExportJsonHeader `
+        -PropertyValues ([ordered]@{
+            schema        = $Script:Action1_OrganizationJsonSchema
+            datetime      = Get-UtcTimestamp
+            region        = $region
+            enterprise_id = $enterpriseId
+            type          = 'Organization'
+        })
+    $headerLines = ConvertTo-Action1JsonHeaderContent `
+        -Header $organizationJsonHeader
 
     Write-TextFileContent @jsonContentParams -Content $headerLines
 
