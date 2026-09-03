@@ -17,7 +17,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.9.13'
+    ModuleVersion     = '1.9.15'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -165,18 +165,7 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
-New cmdlets:
-    Enterprise:
-        Get-Action1Enterprise
-        Get-Action1EnterpriseId
-        Update-Action1Enterprise
-    Organizations:
-        Get-Action1Organization
-        New-Action1Organization
-        Update-Action1Organization
-        Remove-Action1Organization
-        Export-Action1OrganizationsJson
-Support retry_timeout field handling in 429 HTTP error code response.
+Update CVEId validation pattern.
 '@
 
         } # End of PSData hashtable
@@ -190,4 +179,3 @@ Support retry_timeout field handling in 429 HTTP error code response.
     # DefaultCommandPrefix = ''
 
 }
-
