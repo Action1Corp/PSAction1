@@ -86,8 +86,9 @@ function Import-Action1OrganizationsJson {
     $mapFilePath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($MapPath)
     $inProgressMapFilePath = "$mapFilePath.inprogress"
     $mapParentPath = Split-Path -Path $mapFilePath -Parent
+    $mapIndexPathSpecified = $PSBoundParameters.ContainsKey('MapIndexPath')
 
-    if ($PSBoundParameters.ContainsKey('MapIndexPath')) {
+    if ($mapIndexPathSpecified) {
         $mapIndexFilePath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath(
             $MapIndexPath
         )
@@ -181,11 +182,12 @@ function Import-Action1OrganizationsJson {
     }
 
     # Build the in-memory source ID map used for skip checks.
+    # Derived index files are rebuilt from the authoritative JSON map.
     $mappedSourceIds = @{}
 
     $mapIndexFile = Test-Path -LiteralPath $mapIndexFilePath -PathType Leaf
 
-    if ($mapIndexFile) {
+    if ($mapIndexPathSpecified -and $mapIndexFile) {
         $mapIndexHeaderError = Get-Action1MappingIndexFileHeaderError `
             -Path $mapIndexFilePath `
             -HeaderValues $mapIndexHeaderValues

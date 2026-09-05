@@ -57,11 +57,14 @@ current location named
 
 Supported map and index path combinations are:
 
-* **Path** only: use the default map path and derive the default index path from
-  that map path.
+* **Path** only: use the default map path and rebuild the default index file
+  from that map path. If the derived index file already exists, it is replaced.
 * **Path** with **MapPath**: use the specified map path and derive the default
-  index path from that map path.
-* **Path** with **MapPath** and **MapIndexPath**: use both specified paths.
+  index path from that map path, then rebuild that index file. If the derived
+  index file already exists, it is replaced.
+* **Path** with **MapPath** and **MapIndexPath**: use both specified paths. If
+  the specified index file exists, validate and use it. If it does not exist,
+  create it from the migration map or create a header-only index for a new map.
 * **Path** with **MapIndexPath** but without **MapPath**: not supported.
 
 When a source organization ID already exists as a top-level property in the map,
@@ -70,12 +73,18 @@ the command skips that source item. Otherwise, it creates the organization with
 response under the source organization ID.
 
 When **MapIndexPath** is omitted, the command derives the text index path from
-**MapPath** by replacing the map file extension with `.index.txt`. When
-**MapIndexPath** is specified, **MapPath** must also be specified. If the index
-exists, the command reads the text index header and source IDs instead of
-rebuilding the skip list from the JSON map. If the index does not exist, the
-command builds it from the migration map when the map exists, or creates a new
-index header when the map is new. The index starts with these header lines:
+**MapPath** by replacing the map file extension with `.index.txt`, rebuilds the
+index from the JSON migration map, and saves the rebuilt index file before
+processing source items. If the derived index file already exists, the command
+replaces it. If the migration map is new, the command creates a new index
+header.
+
+When **MapIndexPath** is specified, **MapPath** must also be specified. If the
+specified index exists, the command reads the text index header and source IDs
+instead of rebuilding the skip list from the JSON map. If the specified index
+does not exist, the command builds it from the migration map when the map
+exists, or creates a new index header when the map is new. The index starts
+with these header lines:
 
 * `# schema=PSAction1.MappingIndex.v1`
 * `# source_region=<source-region>`
@@ -86,10 +95,10 @@ index header when the map is new. The index starts with these header lines:
 
 Each following line contains one mapped source organization ID.
 
-The command validates an existing index header against the current source and
-target migration metadata. It does not verify that an existing index body
-exactly matches the full JSON map. If the index is stale, objects can be skipped
-or duplicated.
+The command validates a specified existing index header against the current
+source and target migration metadata. It does not verify that a specified
+existing index body exactly matches the full JSON map. If the specified index
+is stale, objects can be skipped or duplicated.
 
 The command writes changes to a temporary file named
 `<MapPath>.inprogress`. After processing completes, it validates that temporary
@@ -124,8 +133,9 @@ Import-Action1OrganizationsJson -Path 'C:\Migration\Organizations.json'
 ```
 
 Imports all unmapped organizations from the export file. The command creates or
-reuses the default migration map in the current location and creates or reuses
-the derived default index file.
+reuses the default migration map in the current location and rebuilds the
+derived default index file from the migration map. If the derived index file
+already exists, it is replaced.
 
 ### Example 2: Import with a specific map and derived index path
 
@@ -140,10 +150,10 @@ specified migration map. Because **MapIndexPath** is omitted, the command uses
 `C:\Migration\Action1_MigrationMapping_source_target.index.txt` as the index
 path.
 
-If the specified map exists but the derived index file does not exist, the
-command builds the index from the map before processing source items.
+The command rebuilds the derived index file from the specified map before
+processing source items.
 
-### Example 3: Import with a specific map and specific index
+### Example 3: Import with a specific map and an existing specified index
 
 ```powershell
 Import-Action1OrganizationsJson `
@@ -153,10 +163,26 @@ Import-Action1OrganizationsJson `
 ```
 
 Imports unmapped organizations using the specified JSON map and specified text
-index. The command validates an existing index header before processing items.
-If the index does not exist, the command creates it before importing.
+index. If the specified index exists, the command validates its header and uses
+the source IDs in that index for skip checks. The specified index is not rebuilt
+from the JSON map.
 
-### Example 4: Show the unsupported index-only combination
+### Example 4: Import with a specific map and a new specified index
+
+```powershell
+Import-Action1OrganizationsJson `
+    -Path 'C:\Migration\Organizations.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
+    -MapIndexPath 'D:\Indexes\NewOrganizations.index.txt'
+```
+
+Imports unmapped organizations using the specified JSON map and specified text
+index path. If `D:\Indexes\NewOrganizations.index.txt` does not exist, the
+command creates it from the migration map before processing source items. If
+the migration map is new, the command creates a header-only index and appends
+source IDs after successful creates.
+
+### Example 5: Show the unsupported index-only combination
 
 ```powershell
 Import-Action1OrganizationsJson `
@@ -167,7 +193,7 @@ Import-Action1OrganizationsJson `
 This command fails before reading tenant context because **MapIndexPath** cannot
 be used without **MapPath**.
 
-### Example 5: Preview an import without writing files
+### Example 6: Preview an import without writing files
 
 ```powershell
 Import-Action1OrganizationsJson `
@@ -181,7 +207,7 @@ source file and resolves target metadata, but it does not send create requests
 and does not write the map or index files. **WhatIf** previews are not counted
 as confirmation skips.
 
-### Example 6: Import without confirmation prompts
+### Example 7: Import without confirmation prompts
 
 ```powershell
 Import-Action1OrganizationsJson `
@@ -239,10 +265,11 @@ map. A stale index can cause unmapped source objects to be skipped or previously
 created target objects to be duplicated.
 
 When this parameter is omitted, the command derives the index path from
-**MapPath** by replacing the map file extension with `.index.txt`. If the index
-path does not exist and the migration map exists, the command creates the index
-from the migration map before processing items. If neither the index nor the
-migration map exists, the command creates the index header before importing.
+**MapPath** by replacing the map file extension with `.index.txt`, rebuilds the
+index from the JSON migration map, and saves the rebuilt index file before
+processing source items. If the derived index file already exists, the command
+replaces it. If the migration map is new, the command creates the index header
+before importing.
 
 ```yaml
 Type: String
@@ -270,7 +297,8 @@ current location named
 `Action1_MigrationMapping_<source-enterprise-id>_<target-enterprise-id>.json`.
 
 When **MapIndexPath** is omitted, this map path is also used to derive the
-default `.index.txt` path.
+default `.index.txt` path. That derived index file is rebuilt from the JSON map
+and replaced when it already exists.
 
 ```yaml
 Type: String
