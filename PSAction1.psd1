@@ -108,6 +108,7 @@
         'Remove-Action1User'
         'Export-Action1UserRolesJson'
         'Export-Action1UsersJson'
+        'Import-Action1UsersJson'
 
         # Endpoint
         'Get-Action1Endpoints'

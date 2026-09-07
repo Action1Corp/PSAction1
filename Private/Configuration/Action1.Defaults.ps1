@@ -24,3 +24,17 @@ $Script:Action1_VulnerabilitiesEndpointsExportFileNameTemplate =
 
 # Vulnerability
 $Script:Action1_CVEIdValidationPattern = '^CVE-\d{4}-\d{4,}$'
+
+# User
+$Script:Action1_EmailValidationPattern = '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+$Script:Action1_TimezoneValidationPattern =
+    '^[A-Za-z][A-Za-z0-9_+-]*/[A-Za-z0-9_+-]+(?:/[A-Za-z0-9_+-]+)*$'
+
+# Known user-create error returned after the user may already have been created.
+$Script:Action1_UserCreateRecoveryErrorText = @(
+    'Lead'
+    'invalid ID field: undefined'
+)
+$Script:Action1_UserCreateRecoveryAttempts = 3
+$Script:Action1_UserCreateRecoveryDelaySeconds = 1
+$Script:Action1_UserAlreadyExistsErrorText = 'This user already exists in this enterprise.'
