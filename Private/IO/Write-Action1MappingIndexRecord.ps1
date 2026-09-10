@@ -16,19 +16,33 @@ function Write-Action1MappingIndexRecord {
         [ValidateNotNullOrEmpty()]
         [string]$SourceId,
 
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$TargetId,
+
         [Parameter(Mandatory = $false)]
         [switch]$Force
     )
 
     $sourceIdValue = $SourceId.Trim()
+    $targetIdValue = $TargetId.Trim()
 
     if ([string]::IsNullOrWhiteSpace($sourceIdValue)) {
         Write-Error 'Source ID cannot be empty.' -ErrorAction Stop
     }
 
+    if ([string]::IsNullOrWhiteSpace($targetIdValue)) {
+        Write-Error 'Target ID cannot be empty.' -ErrorAction Stop
+    }
+
+    if ($SourceId -match '[\t\r\n]' -or $TargetId -match '[\t\r\n]') {
+        Write-Error 'Mapping index IDs cannot contain tabs or line breaks.' `
+            -ErrorAction Stop
+    }
+
     $writeParams = @{
         Path    = $Path
-        Content = $sourceIdValue
+        Content = "$sourceIdValue`t$targetIdValue"
         Append  = $true
     }
 
