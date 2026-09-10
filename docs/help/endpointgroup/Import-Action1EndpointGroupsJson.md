@@ -102,7 +102,23 @@ with these header lines:
 * `# target_enterprise_id=<target-enterprise-id>`
 * `# end_header`
 
-Each following line contains one mapped source endpoint group ID.
+Each following nonblank line contains `<source-id><TAB><target-id>`, where
+`<TAB>` is one actual tab character. The target ID is the created response
+object's `id` field, or the stored mapped object's `id` when rebuilding the
+index. The full response remains in the authoritative JSON map. Skip checks
+use only the source ID column.
+
+Both IDs must be nonempty and cannot contain tabs or line breaks. Malformed
+rows and conflicting target IDs for the same source ID are rejected. If a
+created response cannot supply a valid index ID, the import reports a failure
+and retains the response in the JSON map being written, without adding an
+index row. Review that mapping before retrying; an index rebuild also fails
+when a mapped object cannot supply a valid target ID.
+
+The unreleased schema remains `PSAction1.MappingIndex.v1`. Earlier development
+indexes containing only source IDs are not accepted as supplied indexes. Omit
+**MapIndexPath** to rebuild the derived index from the JSON map in the new
+format, or specify a new index path to rebuild at that location.
 
 The command validates a specified existing index header against the current
 source and target migration metadata. It does not verify that a specified
@@ -189,7 +205,7 @@ Imports unmapped endpoint groups using the specified JSON map and specified
 text index path. If `D:\Indexes\NewEndpointGroups.index.txt` does not exist,
 the command creates it from the migration map before processing source items.
 If the migration map is new, the command creates a header-only index and
-appends source IDs after successful creates.
+appends source and target ID pairs after successful creates.
 
 ### Example 5: Show the unsupported index-only combination
 
@@ -265,7 +281,7 @@ Accept wildcard characters: False
 
 ### -MapIndexPath
 
-Specifies an optional text source ID index path.
+Specifies an optional text index path containing tab-separated source and target IDs.
 
 When this parameter is specified, **MapPath** must also be specified. The
 command validates the index header and uses the index body for source ID skip
