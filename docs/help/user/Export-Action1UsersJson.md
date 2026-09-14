@@ -225,6 +225,7 @@ includes the current organization ID.
 
 ## RELATED LINKS
 
+[Import-Action1UsersJson](Import-Action1UsersJson.md)
 [Get-Action1Users](Get-Action1Users.md)
 [Get-Action1User](Get-Action1User.md)
 [Get-Action1UserRoles](Get-Action1UserRoles.md)

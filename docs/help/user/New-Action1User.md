@@ -103,7 +103,11 @@ Accept wildcard characters: False
 
 ### -Email
 
-Specifies the user's email address. The value must use a valid email format.
+Specifies the user's email address. The value must contain a nonempty local part,
+one `@`, and a domain with a dot separating nonempty parts. Whitespace is not
+accepted.
+
+Validation checks the email format; it does not verify that the mailbox exists.
 
 ```yaml
 Type: String
@@ -186,7 +190,7 @@ Accept wildcard characters: False
 
 ### -Password
 
-Specifies the user's initial password.
+Specifies the user's temporary initial password.
 
 This value is expected to be changed by the user later. The initial password
 must be at least 12 characters long, contain at least one number, and contain
@@ -249,6 +253,10 @@ Accept wildcard characters: False
 Specifies the user's time zone using the region/location form, such as
 `America/Los_Angeles`.
 
+The format must start with a letter and contain at least two nonempty parts
+separated by `/`. Parts may contain letters, digits, underscores, plus signs,
+and hyphens. Validation checks this format without looking up the time zone.
+
 When omitted, the command does not send the `timezone` field.
 
 ```yaml
@@ -300,6 +308,7 @@ Requires permission to manage users in Action1.
 
 ## RELATED LINKS
 
+[Import-Action1UsersJson](Import-Action1UsersJson.md)
 [Get-Action1User](Get-Action1User.md)
 [Get-Action1Users](Get-Action1Users.md)
 [Get-Action1UserRoles](Get-Action1UserRoles.md)

@@ -30,25 +30,15 @@ function New-Action1User {
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [ValidatePattern('^[^@\s]+@[^@\s]+\.[^@\s]+$')]
+        [ValidateScript({
+            Test-Email -Email $_
+        })]
         [string]$Email,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
-            if (
-                $_.Length -lt 12 -or
-                $_ -notmatch '\d' -or
-                $_ -cnotmatch '[A-Z]' -or
-                $_ -cnotmatch '[a-z]'
-            ) {
-                $message = 'The initial password must be at least 12 characters long, '
-                $message += 'contain at least one number, and contain upper '
-                $message += 'and lower case letters.'
-                throw $message
-            }
-
-            $true
+            Test-Action1UserPassword -Password $_
         })]
         [string]$Password,
 
@@ -59,7 +49,18 @@ function New-Action1User {
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        [ValidatePattern('^[A-Za-z][A-Za-z0-9_+-]*/[A-Za-z0-9_+-]+(?:/[A-Za-z0-9_+-]+)*$')]
+        [ValidateScript({
+            if ($_ -notmatch $Script:Action1_TimezoneValidationPattern) {
+                $message = (
+                    'The argument "{0}" does not match the "{1}" pattern. ' +
+                    'Supply an argument that matches "{1}" and try the command again.'
+                ) -f $_, $Script:Action1_TimezoneValidationPattern
+
+                throw $message
+            }
+
+            $true
+        })]
         [string]$Timezone,
 
         [Parameter(Mandatory = $false)]

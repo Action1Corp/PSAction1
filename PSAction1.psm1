@@ -23,6 +23,8 @@ $BootstrapFilesToLoadFirst = @(
     'Private\Templates\PackageDeployTemplate.ps1'
     'Private\Data\Test-Guid.ps1'
     'Private\API\Test-Action1PageSize.ps1'
+    'Private\User\Test-Action1UserPassword.ps1'
+    'Private\User\Test-Email.ps1'
 )
 
 foreach ($RelativePath in $BootstrapFilesToLoadFirst) {
