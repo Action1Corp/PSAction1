@@ -5,25 +5,25 @@ online version:
 schema: 2.0.0
 ---
 
-# Import-Action1OrganizationsJson
+# Import-Action1EndpointGroupsJson
 
 ## SYNOPSIS
 
-Imports organizations from a PSAction1 organization JSON export.
+Imports endpoint groups from a PSAction1 endpoint-group JSON export.
 
 ## SYNTAX
 
 ```
-Import-Action1OrganizationsJson [-Path] <String> [-MapPath <String>] [-MapIndexPath <String>] [-Force]
+Import-Action1EndpointGroupsJson [-Path] <String> [-MapPath <String>] [-MapIndexPath <String>] [-Force]
  [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-`Import-Action1OrganizationsJson` reads a JSON file created by
-`Export-Action1OrganizationsJson`, creates each unmapped organization in the
-current Action1 target enterprise, and records created target objects in a JSON
-migration map.
+`Import-Action1EndpointGroupsJson` reads a JSON file created by
+`Export-Action1EndpointGroupsJson`, creates each unmapped endpoint group in the
+current Action1 default organization, and records created target objects in a
+JSON migration map.
 
 The source JSON file must contain these top-level properties:
 
@@ -31,11 +31,12 @@ The source JSON file must contain these top-level properties:
 * `datetime`
 * `region`
 * `enterprise_id`
+* `organization_id`
 * `type`
 * `items`
 
-The **schema** value must be `PSAction1.Organization.v1`, and the **type** value
-must be `Organization`.
+The **schema** value must be `PSAction1.EndpointGroup.v1`, and the **type**
+value must be `EndpointGroup`.
 
 The migration map uses schema `PSAction1.Mapping.v1` and contains these header
 properties:
@@ -47,13 +48,15 @@ properties:
 * `target_region`
 * `target_enterprise_id`
 
-Additional top-level properties are source organization IDs. Each source ID maps
-to the complete response object returned by `New-Action1Organization` when the
-corresponding organization was created in the current target enterprise.
+Additional top-level properties are source endpoint group IDs. Each source ID
+maps to the complete response object returned by `New-Action1EndpointGroup`
+when the corresponding endpoint group was created in the current target
+organization.
 
-If **MapPath** is not specified, the command creates or reuses a map file in the
-current location named
-`Action1_MigrationMapping_<source-enterprise-id>_<target-enterprise-id>.json`.
+If **MapPath** is not specified, the command creates or reuses a map file in
+the current location named:
+
+`Action1_MigrationMapping_<source-enterprise-id>_<target-enterprise-id>.json`
 
 Supported map and index path combinations are:
 
@@ -67,10 +70,16 @@ Supported map and index path combinations are:
   create it from the migration map or create a header-only index for a new map.
 * **Path** with **MapIndexPath** but without **MapPath**: not supported.
 
-When a source organization ID already exists as a top-level property in the map,
-the command skips that source item. Otherwise, it creates the organization with
-`New-Action1Organization` and records the full created target organization
-response under the source organization ID.
+When a source endpoint group ID already exists as a top-level property in the
+map, the command skips that source item. Otherwise, it builds an endpoint group
+definition from the exported item's `name`, `description`, filter, filter logic,
+and `uptime_alerts` fields, creates the endpoint group with
+`New-Action1EndpointGroup`, and records the full created target endpoint group
+response under the source endpoint group ID.
+
+If one of those endpoint group definition fields is absent in a source item,
+the command omits that field from the object passed to
+`New-Action1EndpointGroup`.
 
 When **MapIndexPath** is omitted, the command derives the text index path from
 **MapPath** by replacing the map file extension with `.index.txt`, rebuilds the
@@ -114,7 +123,7 @@ format, or specify a new index path to rebuild at that location.
 The command validates a specified existing index header against the current
 source and target migration metadata. It does not verify that a specified
 existing index body exactly matches the full JSON map. If the specified index
-is stale, objects can be skipped or duplicated.
+is stale, endpoint groups can be skipped or duplicated.
 
 The command writes changes to a temporary file named
 `<MapPath>.inprogress`. After processing completes, it validates that temporary
@@ -129,42 +138,42 @@ enterprise. This prevents appending target objects to a map for a different
 source export, tenant, or region. If the mapping header is wrong, the import
 stops before processing source items.
 
-The command prompts for confirmation before creating each organization. Use
-**WhatIf** to preview organization creation without sending API requests or
+The command prompts for confirmation before creating each endpoint group. Use
+**WhatIf** to preview endpoint group creation without sending API requests or
 writing the map or index files. Use **Force** to bypass confirmation prompts.
 If you answer **No** or **No to All** at the confirmation prompt, the declined
 source items are counted as skipped.
 
 At the end of the import, the command returns a statistics object with source
 file path, map file path, map index file path, processed count, skipped count,
-created count, failed count, source region, target region, and target
-enterprise ID.
+created count, failed count, source region, target region, target enterprise
+ID, and target organization ID.
 
 ## EXAMPLES
 
 ### Example 1: Import with default map and default index paths
 
 ```powershell
-Import-Action1OrganizationsJson -Path 'C:\Migration\Organizations.json'
+Import-Action1EndpointGroupsJson -Path 'C:\Migration\EndpointGroups.json'
 ```
 
-Imports all unmapped organizations from the export file. The command creates or
-reuses the default migration map in the current location and rebuilds the
+Imports all unmapped endpoint groups from the export file. The command creates
+or reuses the default migration map in the current location and rebuilds the
 derived default index file from the migration map. If the derived index file
 already exists, it is replaced.
 
 ### Example 2: Import with a specific map and derived index path
 
 ```powershell
-Import-Action1OrganizationsJson `
-    -Path 'C:\Migration\Organizations.json' `
+Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json'
 ```
 
-Imports unmapped organizations and stores created target objects in the
+Imports unmapped endpoint groups and stores created target objects in the
 specified migration map. Because **MapIndexPath** is omitted, the command uses
-`C:\Migration\Action1_MigrationMapping_source_target.index.txt` as the index
-path.
+`C:\Migration\Action1_MigrationMapping_source_target.index.txt`
+as the index path.
 
 The command rebuilds the derived index file from the specified map before
 processing source items.
@@ -172,37 +181,37 @@ processing source items.
 ### Example 3: Import with a specific map and an existing specified index
 
 ```powershell
-Import-Action1OrganizationsJson `
-    -Path 'C:\Migration\Organizations.json' `
+Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
     -MapIndexPath 'D:\Indexes\Action1_MigrationMapping_source_target.index.txt'
 ```
 
-Imports unmapped organizations using the specified JSON map and specified text
-index. If the specified index exists, the command validates its header and uses
-the source IDs in that index for skip checks. The specified index is not rebuilt
-from the JSON map.
+Imports unmapped endpoint groups using the specified JSON map and specified
+text index. If the specified index exists, the command validates its header and
+uses the source IDs in that index for skip checks. The specified index is not
+rebuilt from the JSON map.
 
 ### Example 4: Import with a specific map and a new specified index
 
 ```powershell
-Import-Action1OrganizationsJson `
-    -Path 'C:\Migration\Organizations.json' `
+Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
-    -MapIndexPath 'D:\Indexes\NewOrganizations.index.txt'
+    -MapIndexPath 'D:\Indexes\NewEndpointGroups.index.txt'
 ```
 
-Imports unmapped organizations using the specified JSON map and specified text
-index path. If `D:\Indexes\NewOrganizations.index.txt` does not exist, the
-command creates it from the migration map before processing source items. If
-the migration map is new, the command creates a header-only index and appends
-source and target ID pairs after successful creates.
+Imports unmapped endpoint groups using the specified JSON map and specified
+text index path. If `D:\Indexes\NewEndpointGroups.index.txt` does not exist,
+the command creates it from the migration map before processing source items.
+If the migration map is new, the command creates a header-only index and
+appends source and target ID pairs after successful creates.
 
 ### Example 5: Show the unsupported index-only combination
 
 ```powershell
-Import-Action1OrganizationsJson `
-    -Path 'C:\Migration\Organizations.json' `
+Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
     -MapIndexPath 'C:\Migration\Action1_MigrationMapping_source_target.index.txt'
 ```
 
@@ -212,35 +221,35 @@ be used without **MapPath**.
 ### Example 6: Preview an import without writing files
 
 ```powershell
-Import-Action1OrganizationsJson `
-    -Path 'C:\Migration\Organizations.json' `
+Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
     -WhatIf
 ```
 
-Shows which organizations would be created. The command reads and validates the
-source file and resolves target metadata, but it does not send create requests
-and does not write the map or index files. **WhatIf** previews are not counted
-as confirmation skips.
+Shows which endpoint groups would be created. The command reads and validates
+the source file and resolves target metadata, but it does not send create
+requests and does not write the map or index files. **WhatIf** previews are not
+counted as confirmation skips.
 
 ### Example 7: Import without confirmation prompts
 
 ```powershell
-Import-Action1OrganizationsJson `
-    -Path 'C:\Migration\Organizations.json' `
+Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
     -Force
 ```
 
-Imports unmapped organizations without confirmation prompts. The command still
-creates or updates the map and index files, and **WhatIf** is still honored when
-it is specified.
+Imports unmapped endpoint groups without confirmation prompts. The command
+still creates or updates the map and index files, and **WhatIf** is still
+honored when it is specified.
 
 ## PARAMETERS
 
 ### -Confirm
 
-Prompts you for confirmation before creating each organization.
+Prompts you for confirmation before creating each endpoint group.
 
 ```yaml
 Type: SwitchParameter
@@ -277,8 +286,8 @@ Specifies an optional text index path containing tab-separated source and target
 When this parameter is specified, **MapPath** must also be specified. The
 command validates the index header and uses the index body for source ID skip
 checks. The command does not rebuild or fully verify the index against the JSON
-map. A stale index can cause unmapped source objects to be skipped or previously
-created target objects to be duplicated.
+map. A stale index can cause unmapped source endpoint groups to be skipped or
+previously created target endpoint groups to be duplicated.
 
 When this parameter is omitted, the command derives the index path from
 **MapPath** by replacing the map file extension with `.index.txt`, rebuilds the
@@ -330,10 +339,10 @@ Accept wildcard characters: False
 
 ### -Path
 
-Specifies the source JSON file created by `Export-Action1OrganizationsJson`.
+Specifies the source JSON file created by `Export-Action1EndpointGroupsJson`.
 
-The file must use schema `PSAction1.Organization.v1`, type `Organization`, and
-include the `items` array.
+The file must use schema `PSAction1.EndpointGroup.v1`, type `EndpointGroup`,
+and include the `organization_id` property and `items` array.
 
 ```yaml
 Type: String
@@ -378,19 +387,22 @@ You cannot pipe input to this command.
 
 Returns a statistics object describing the import. The object includes
 `SourceFile`, `MapFile`, `MapIndexFile`, `Processed`, `Skipped`, `Created`,
-`Failed`, `SourceRegion`, `TargetRegion`, and `EnterpriseId`. `Skipped`
-includes source items already present in the mapping index or JSON map, and
-source items declined at the confirmation prompt in a real run.
+`Failed`, `SourceRegion`, `TargetRegion`, `EnterpriseId`, and
+`OrganizationId`. `Skipped` includes source items already present in the
+mapping index or JSON map, and source items declined at the confirmation prompt
+in a real run.
 
 ## NOTES
 
-Requires permission to view enterprise settings and create organizations in
+Requires the default Action1 organization to be configured with
+**Set-Action1DefaultOrg** and requires permission to create endpoint groups in
 Action1.
 
 ## RELATED LINKS
 
-[Export-Action1OrganizationsJson](Export-Action1OrganizationsJson.md)
-[New-Action1Organization](New-Action1Organization.md)
-[Get-Action1Organizations](Get-Action1Organizations.md)
+[Export-Action1EndpointGroupsJson](Export-Action1EndpointGroupsJson.md)
+[New-Action1EndpointGroup](New-Action1EndpointGroup.md)
+[Get-Action1EndpointGroups](Get-Action1EndpointGroups.md)
 [Get-Action1EnterpriseId](../enterprise/Get-Action1EnterpriseId.md)
+[Get-Action1DefaultOrgId](../configuration/Get-Action1DefaultOrgId.md)
 [Get-Action1Region](../configuration/Get-Action1Region.md)
