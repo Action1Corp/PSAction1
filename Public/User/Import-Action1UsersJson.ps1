@@ -251,6 +251,7 @@ function Import-Action1UsersJson {
                 Write-Action1MappingIndexRecord `
                     -Path $mapIndexFilePath `
                     -SourceId $mappedSourceId `
+                    -TargetId ([string]$mapping.$mappedSourceId.id) `
                     -Force
             }
         }
@@ -469,6 +470,7 @@ function Import-Action1UsersJson {
                 Write-Action1MappingIndexRecord `
                     -Path $mapIndexFilePath `
                     -SourceId $sourceObjectId `
+                    -TargetId ([string]$createdUser.id) `
                     -Force
             }
 

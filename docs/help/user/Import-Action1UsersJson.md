@@ -79,8 +79,8 @@ using the same format validation as `New-Action1User` before reading the list.
 When no match appears immediately, the importer makes up to three post-create
 list reads, waiting one second between reads. A recovered user counts as
 created: its complete list response is appended under the source ID in the
-JSON map, and the source ID is appended to the mapping index. The create
-request is never repeated during recovery.
+JSON map, and the source ID and recovered target user ID are appended to the
+mapping index. The create request is never repeated during recovery.
 
 If creation instead returns HTTP 400 with
 `This user already exists in this enterprise.`, the importer resolves the
@@ -89,8 +89,9 @@ distinct user ID must match, and that ID must be a standard GUID. This lookup
 includes users that were present before the create request.
 
 The existing user's complete list response is written under the source ID in
-the JSON map, and the source ID is appended to the mapping index. This record
-increments **Failed**, not **Created** or **Skipped**, because the create
+the JSON map, and the source ID and existing target user ID are appended to the
+mapping index. This record increments **Failed**, not **Created** or **Skipped**,
+because the create
 request failed. The handled conflict does not emit another error or stop
 processing, even with **ErrorAction** set to `Stop`. On a later run, the mapped
 source ID is skipped. If the existing user cannot be resolved uniquely, the
@@ -110,13 +111,14 @@ from the authoritative JSON map on every run, overwriting an existing derived
 index. A new map starts with a header-only index.
 
 An explicitly supplied **MapIndexPath** requires **MapPath**. If that index
-exists, its header is validated and its source IDs are used for skip checks.
+exists, its header and record format are validated, and its source IDs are used
+for skip checks.
 Its body is not compared with the JSON map; the caller must keep it consistent.
 A stale supplied index can skip unmapped users or cause duplicate create
 attempts. A missing explicit index is built from the map. A nonempty supplied
 index without an existing JSON map is rejected.
 
-The index contains these header lines, then one source ID per line:
+The index contains these header lines, then one source/target ID pair per line:
 
 * `# schema=PSAction1.MappingIndex.v1`
 * `# source_region=<source-region>`
@@ -124,6 +126,14 @@ The index contains these header lines, then one source ID per line:
 * `# target_region=<target-region>`
 * `# target_enterprise_id=<target-enterprise-id>`
 * `# end_header`
+
+Each record is `<source-id><TAB><target-id>`, separated by one actual tab.
+The target ID comes from the created or recovered user object's `id` field,
+or the stored mapped object's `id` when rebuilding the index. Both fields must
+be nonblank and cannot contain tabs or line breaks. Single-column indexes are
+rejected; omit **MapIndexPath** to rebuild the derived index from the JSON map,
+or supply a new index path. Conflicting target IDs for the same source ID are
+rejected. Repeated identical pairs are accepted.
 
 The command writes map changes to `<MapPath>.inprogress`, closes and validates
 that JSON, then replaces the final map. An existing temporary map blocks a real
@@ -183,7 +193,7 @@ Import-Action1UsersJson `
 ```
 
 Imports without confirmation. Validates an existing explicit index header and
-uses its source IDs; creates the index from the map if it does not exist.
+records and uses its source IDs; creates the index from the map if it does not exist.
 The caller must keep an existing explicit index consistent with the JSON map.
 **Force** bypasses confirmation; it does not rebuild an existing explicit index.
 
@@ -232,9 +242,9 @@ Import-Action1UsersJson `
 Uses an explicit map and a separate explicit index path. If the index does not
 exist, the command creates its parent directory as needed and builds the index
 from the map. If neither file exists, it starts a new map and header-only index.
-If the explicit index already exists, its header is validated and its body is
-used without rebuilding. A nonempty existing index without a JSON map is
-rejected.
+If the explicit index already exists, its header and records are validated and
+its body is used without rebuilding. A nonempty existing index without a JSON
+map is rejected.
 
 ### Example 7: Preview with both paths explicitly specified
 
@@ -308,8 +318,9 @@ Accept wildcard characters: False
 
 ### -MapIndexPath
 
-Specifies an optional caller-maintained text index. Requires **MapPath**. An
-existing explicit index is header-validated and used without rebuilding or
+Specifies an optional caller-maintained text index with tab-separated source
+and target IDs. Requires **MapPath**. An existing explicit index has its header
+and record format validated and is used without rebuilding or
 comparing its body with the map. When omitted, the derived `.index.txt` file is
 rebuilt from the JSON map on every real run. **WhatIf** does not write the index.
 
