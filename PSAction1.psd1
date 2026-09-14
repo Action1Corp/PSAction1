@@ -129,6 +129,7 @@
         'Add-Action1EndpointGroupMembers'
         'Remove-Action1EndpointGroupMembers'
         'Export-Action1EndpointGroupsJson'
+        'Import-Action1EndpointGroupsJson'
         'Export-Action1EndpointGroupMembersJson'
 
         # Vulnerability

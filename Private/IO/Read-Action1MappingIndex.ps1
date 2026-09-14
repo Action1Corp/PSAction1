@@ -22,6 +22,8 @@ function Read-Action1MappingIndex {
     }
 
     $sourceIds = @()
+    $targetIds = @{}
+    $lineNumber = 0
     $foundHeaderEnd = $false
     $reader = $null
 
@@ -30,6 +32,7 @@ function Read-Action1MappingIndex {
 
         while (-not $reader.EndOfStream) {
             $line = $reader.ReadLine()
+            $lineNumber++
 
             if (-not $foundHeaderEnd) {
                 if ($line -ceq $Script:Action1_MappingIndexTextHeaderEnd) {
@@ -39,11 +42,36 @@ function Read-Action1MappingIndex {
                 continue
             }
 
-            if ([string]::IsNullOrWhiteSpace($line)) {
+            if ([string]::IsNullOrWhiteSpace($line) -and -not $line.Contains("`t")) {
                 continue
             }
 
-            $sourceIds += $line.Trim()
+            $fields = $line.Split([char]9)
+
+            if (
+                $fields.Count -ne 2 -or
+                [string]::IsNullOrWhiteSpace($fields[0]) -or
+                [string]::IsNullOrWhiteSpace($fields[1])
+            ) {
+                $message = "Mapping index file '$resolvedPath' line $lineNumber "
+                $message += 'must contain a source ID and target ID separated by one tab.'
+                Write-Error $message -ErrorAction Stop
+            }
+
+            $sourceId = $fields[0].Trim()
+            $targetId = $fields[1].Trim()
+
+            if (
+                $targetIds.ContainsKey($sourceId) -and
+                $targetIds[$sourceId] -cne $targetId
+            ) {
+                $message = "Mapping index file '$resolvedPath' line $lineNumber "
+                $message += "contains conflicting target IDs for source ID '$sourceId'."
+                Write-Error $message -ErrorAction Stop
+            }
+
+            $targetIds[$sourceId] = $targetId
+            $sourceIds += $sourceId
         }
     }
     catch {

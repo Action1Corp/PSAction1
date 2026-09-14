@@ -5,7 +5,7 @@
 # Review and test before production deployment
 # (c) Action1 Corporation
 
-function Import-Action1OrganizationsJson {
+function Import-Action1EndpointGroupsJson {
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -41,18 +41,37 @@ function Import-Action1OrganizationsJson {
     $resolvedInputPath = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path)
     $inputJson = Read-JsonFile -Path $Path
 
-    $inputValidationMap = New-Action1JsonSchemaMap `
-        -Schema $Script:Action1_OrganizationJsonSchema `
-        -Type 'Organization'
+    $inputValidationMap = New-Action1JsonHeader `
+        -HeaderTemplate ([ordered]@{
+            schema          = $null
+            datetime        = $null
+            region          = $null
+            enterprise_id   = $null
+            organization_id = $null
+            type            = $null
+            items           = $null
+        }) `
+        -PropertyValues ([ordered]@{
+            schema          = $Script:Action1_EndpointGroupJsonSchema
+            datetime        = $null
+            region          = $null
+            enterprise_id   = $null
+            organization_id = $null
+            type            = 'EndpointGroup'
+            items           = $null
+        })
 
     [void](Test-Action1JsonSchema `
         -Json $inputJson `
         -ValidationMap $inputValidationMap `
-        -ObjectType "Source organizations file: $resolvedInputPath")
+        -ObjectType "Source endpoint groups file: $resolvedInputPath")
 
     $sourceEnterpriseId = Get-FirstPropertyValue `
         -InputObject $inputJson `
         -PropertyName @('enterprise_id')
+    $sourceOrganizationId = Get-FirstPropertyValue `
+        -InputObject $inputJson `
+        -PropertyName @('organization_id')
     $sourceRegion = Get-FirstPropertyValue `
         -InputObject $inputJson `
         -PropertyName @('region')
@@ -61,6 +80,9 @@ function Import-Action1OrganizationsJson {
         [void](Test-Guid `
             -Guid $sourceEnterpriseId `
             -Label "Source enterprise ID '$sourceEnterpriseId'")
+        [void](Test-Guid `
+            -Guid $sourceOrganizationId `
+            -Label "Source organization ID '$sourceOrganizationId'")
     }
     catch {
         Write-Error $_.Exception.Message -ErrorAction Stop
@@ -75,6 +97,7 @@ function Import-Action1OrganizationsJson {
     }
 
     $targetEnterpriseId = Get-Action1EnterpriseId -ErrorAction Stop
+    $targetOrganizationId = Get-Action1DefaultOrgId -ErrorAction Stop
 
     if (-not $PSBoundParameters.ContainsKey('MapPath')) {
         $mapFileName = $Script:Action1_MigrationMappingFileNameTemplate -f `
@@ -281,44 +304,44 @@ function Import-Action1OrganizationsJson {
             }
 
             Write-Progress `
-                -Activity 'Import Action1 organizations from JSON' `
+                -Activity 'Import Action1 endpoint groups from JSON' `
                 -Status "Processing $processedCount of $totalCount" `
                 -PercentComplete $percentComplete
 
-            $identity = Get-Action1OrganizationIdentityFromObject `
-                -OrganizationObject $item
+            $sourceObjectId = Get-FirstPropertyValue `
+                -InputObject $item `
+                -PropertyName @('id', 'Id')
 
-            if (-not $identity.IsValid) {
+            if ([string]::IsNullOrWhiteSpace($sourceObjectId)) {
                 $failedCount++
-                Write-Error $identity.ErrorMessage
+                Write-Error 'Source endpoint group item is missing an id.'
                 continue
             }
 
-            $sourceObjectId = $identity.Org_ID
+            $sourceObjectId = $sourceObjectId.Trim()
 
             if ($mappedSourceIds.ContainsKey($sourceObjectId)) {
                 $skippedCount++
-                Write-Action1Debug (
-                    "Skipping source organization '$sourceObjectId' because it is mapped."
-                )
+                $message = "Skipping source endpoint group '$sourceObjectId' "
+                $message += 'because it is mapped.'
+                Write-Action1Debug $message
                 continue
             }
 
-            $organizationName = $identity.Org_Name
-            $organizationDescription = Get-FirstPropertyValue `
+            $endpointGroupName = Get-FirstPropertyValue `
                 -InputObject $item `
-                -PropertyName @('description', 'Description')
+                -PropertyName @('name', 'Name')
 
-            $targetLabel = New-Action1OrganizationLabel -Org_Name $organizationName
+            $targetLabel = "source endpoint group '$sourceObjectId'"
 
-            if ([string]::IsNullOrWhiteSpace($targetLabel)) {
-                $targetLabel = "source organization '$sourceObjectId'"
+            if (-not [string]::IsNullOrWhiteSpace($endpointGroupName)) {
+                $targetLabel = "endpoint group '$endpointGroupName'"
             }
 
             if (
                 -not $PSCmdlet.ShouldProcess(
                     $targetLabel,
-                    "Import source organization '$sourceObjectId'"
+                    "Import source endpoint group '$sourceObjectId'"
                 )
             ) {
                 if (-not $WhatIfPreference) {
@@ -329,28 +352,54 @@ function Import-Action1OrganizationsJson {
             }
 
             try {
-                $newOrganizationParams = @{
-                    Name        = $organizationName
-                    Description = $organizationDescription
-                    Confirm     = $false
-                    ErrorAction = 'Stop'
+                $endpointGroupDefinitionProperties = @(
+                    'name',
+                    'description',
+                    'include_filter',
+                    'include_filter_logic',
+                    'exclude_filter',
+                    'exclude_filter_logic',
+                    'uptime_alerts'
+                )
+
+                $endpointGroupDefinitionValues = [ordered]@{}
+
+                foreach ($propertyName in $endpointGroupDefinitionProperties) {
+                    $property = $item.PSObject.Properties[$propertyName]
+
+                    if ($null -eq $property) {
+                        continue
+                    }
+
+                    $endpointGroupDefinitionValues[$propertyName] = $property.Value
+                }
+
+                $endpointGroupDefinition = [PSCustomObject](
+                    $endpointGroupDefinitionValues
+                )
+
+                $newEndpointGroupParams = @{
+                    EndpointGroupDefinition = $endpointGroupDefinition
+                    Confirm                 = $false
+                    ErrorAction             = 'Stop'
                 }
 
                 if ($Force.IsPresent) {
-                    $newOrganizationParams.Force = $true
+                    $newEndpointGroupParams.Force = $true
                 }
 
-                $createdOrganization = New-Action1Organization @newOrganizationParams
+                $createdEndpointGroup = New-Action1EndpointGroup `
+                    @newEndpointGroupParams
 
-                if ($null -eq $createdOrganization) {
-                    throw "No created organization was returned for '$targetLabel'."
+                if ($null -eq $createdEndpointGroup) {
+                    throw "No created endpoint group was returned for '$targetLabel'."
                 }
 
                 if (-not $WhatIfPreference) {
                     $mapRecordContent = @(',')
                     $mapRecordContent += ConvertTo-Action1JsonPropertyContent `
                         -Name $sourceObjectId `
-                        -Value $createdOrganization
+                        -Value $createdEndpointGroup
 
                     Write-TextFileContent `
                         -Path $inProgressMapFilePath `
@@ -365,7 +414,7 @@ function Import-Action1OrganizationsJson {
                     Write-Action1MappingIndexRecord `
                         -Path $mapIndexFilePath `
                         -SourceId $sourceObjectId `
-                        -TargetId ([string]$createdOrganization.id) `
+                        -TargetId ([string]$createdEndpointGroup.id) `
                         -Force
                 }
 
@@ -373,7 +422,8 @@ function Import-Action1OrganizationsJson {
             }
             catch {
                 $failedCount++
-                $message = "Failed to import source organization '$sourceObjectId'. "
+                $message = "Failed to import source endpoint group "
+                $message += "'$sourceObjectId'. "
                 $message += $_.Exception.Message
                 Write-Error $message
             }
@@ -393,7 +443,7 @@ function Import-Action1OrganizationsJson {
     }
 
     Write-Progress `
-        -Activity 'Import Action1 organizations from JSON' `
+        -Activity 'Import Action1 endpoint groups from JSON' `
         -Completed
 
     # Validate the completed temporary map and promote it to the final map path.
@@ -414,15 +464,16 @@ function Import-Action1OrganizationsJson {
 
     # Return import statistics.
     [PSCustomObject][ordered]@{
-        SourceFile    = $resolvedInputPath
-        MapFile       = $mapFilePath
-        MapIndexFile  = $mapIndexFilePath
-        Processed     = $processedCount
-        Skipped       = $skippedCount
-        Created       = $createdCount
-        Failed        = $failedCount
-        SourceRegion  = $sourceRegion
-        TargetRegion  = $targetRegion
-        EnterpriseId  = $targetEnterpriseId
+        SourceFile        = $resolvedInputPath
+        MapFile           = $mapFilePath
+        MapIndexFile      = $mapIndexFilePath
+        Processed         = $processedCount
+        Skipped           = $skippedCount
+        Created           = $createdCount
+        Failed            = $failedCount
+        SourceRegion      = $sourceRegion
+        TargetRegion      = $targetRegion
+        EnterpriseId      = $targetEnterpriseId
+        OrganizationId    = $targetOrganizationId
     }
 }

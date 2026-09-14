@@ -4805,6 +4805,339 @@ Add-Action1EndpointGroupMembers `
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Import-Action1EndpointGroupsJson</command:name>
+      <command:verb>Import</command:verb>
+      <command:noun>Action1EndpointGroupsJson</command:noun>
+      <maml:description>
+        <maml:para>Imports endpoint groups from a PSAction1 endpoint-group JSON export.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Import-Action1EndpointGroupsJson` reads a JSON file created by `Export-Action1EndpointGroupsJson`, creates each unmapped endpoint group in the current Action1 default organization, and records created target objects in a JSON migration map.</maml:para>
+      <maml:para>The source JSON file must contain these top-level properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `region`</maml:para>
+      <maml:para>* `enterprise_id`</maml:para>
+      <maml:para>* `organization_id`</maml:para>
+      <maml:para>* `type`</maml:para>
+      <maml:para>* `items`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>The schema value must be `PSAction1.EndpointGroup.v1`, and the type value must be `EndpointGroup`.</maml:para>
+      <maml:para>The migration map uses schema `PSAction1.Mapping.v1` and contains these header properties:</maml:para>
+      <maml:para>* `schema`</maml:para>
+      <maml:para>* `datetime`</maml:para>
+      <maml:para>* `source_region`</maml:para>
+      <maml:para>* `source_enterprise_id`</maml:para>
+      <maml:para>* `target_region`</maml:para>
+      <maml:para>* `target_enterprise_id`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>Additional top-level properties are source endpoint group IDs. Each source ID maps to the complete response object returned by `New-Action1EndpointGroup` when the corresponding endpoint group was created in the current target organization.</maml:para>
+      <maml:para>If MapPath is not specified, the command creates or reuses a map file in the current location named:</maml:para>
+      <maml:para>`Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`</maml:para>
+      <maml:para>Supported map and index path combinations are:  Path * only: use the default map path and rebuild the default index file   from that map path. If the derived index file already exists, it is replaced.  Path with MapPath *: use the specified map path and derive the default   index path from that map path, then rebuild that index file. If the derived   index file already exists, it is replaced.  Path with MapPath and MapIndexPath *: use both specified paths. If   the specified index file exists, validate and use it. If it does not exist,   create it from the migration map or create a header-only index for a new map.  Path with MapIndexPath but without MapPath *: not supported.</maml:para>
+      <maml:para>When a source endpoint group ID already exists as a top-level property in the map, the command skips that source item. Otherwise, it builds an endpoint group definition from the exported item's `name`, `description`, filter, filter logic, and `uptime_alerts` fields, creates the endpoint group with `New-Action1EndpointGroup`, and records the full created target endpoint group response under the source endpoint group ID.</maml:para>
+      <maml:para>If one of those endpoint group definition fields is absent in a source item, the command omits that field from the object passed to `New-Action1EndpointGroup`.</maml:para>
+      <maml:para>When MapIndexPath is omitted, the command derives the text index path from MapPath by replacing the map file extension with `.index.txt`, rebuilds the index from the JSON migration map, and saves the rebuilt index file before processing source items. If the derived index file already exists, the command replaces it. If the migration map is new, the command creates a new index header.</maml:para>
+      <maml:para>When MapIndexPath is specified, MapPath must also be specified. If the specified index exists, the command reads the text index header and source IDs instead of rebuilding the skip list from the JSON map. If the specified index does not exist, the command builds it from the migration map when the map exists, or creates a new index header when the map is new. The index starts with these header lines:</maml:para>
+      <maml:para>* `# schema=PSAction1.MappingIndex.v1`</maml:para>
+      <maml:para>* `# source_region=&lt;source-region&gt;`</maml:para>
+      <maml:para>* `# source_enterprise_id=&lt;source-enterprise-id&gt;`</maml:para>
+      <maml:para>* `# target_region=&lt;target-region&gt;`</maml:para>
+      <maml:para>* `# target_enterprise_id=&lt;target-enterprise-id&gt;`</maml:para>
+      <maml:para>* `# end_header`</maml:para>
+      <maml:para></maml:para>
+      <maml:para>Each following nonblank line contains `&lt;source-id&gt;&lt;TAB&gt;&lt;target-id&gt;`, where `&lt;TAB&gt;` is one actual tab character. The target ID is the created response object's `id` field, or the stored mapped object's `id` when rebuilding the index. The full response remains in the authoritative JSON map. Skip checks use only the source ID column.</maml:para>
+      <maml:para>Both IDs must be nonempty and cannot contain tabs or line breaks. Malformed rows and conflicting target IDs for the same source ID are rejected. If a created response cannot supply a valid index ID, the import reports a failure and retains the response in the JSON map being written, without adding an index row. Review that mapping before retrying; an index rebuild also fails when a mapped object cannot supply a valid target ID.</maml:para>
+      <maml:para>The unreleased schema remains `PSAction1.MappingIndex.v1`. Earlier development indexes containing only source IDs are not accepted as supplied indexes. Omit MapIndexPath to rebuild the derived index from the JSON map in the new format, or specify a new index path to rebuild at that location.</maml:para>
+      <maml:para>The command validates a specified existing index header against the current source and target migration metadata. It does not verify that a specified existing index body exactly matches the full JSON map. If the specified index is stale, endpoint groups can be skipped or duplicated.</maml:para>
+      <maml:para>The command writes changes to a temporary file named `&lt;MapPath&gt;.inprogress`. After processing completes, it validates that temporary map and replaces MapPath with it. If the command stops before completion, the original map remains the last completed map and the temporary file is left for inspection.</maml:para>
+      <maml:para>The map file source_region and source_enterprise_id must match the source JSON file being imported. The target_region and target_enterprise_id values must match the current target region and enterprise. This prevents appending target objects to a map for a different source export, tenant, or region. If the mapping header is wrong, the import stops before processing source items.</maml:para>
+      <maml:para>The command prompts for confirmation before creating each endpoint group. Use WhatIf to preview endpoint group creation without sending API requests or writing the map or index files. Use Force to bypass confirmation prompts. If you answer No or No to All at the confirmation prompt, the declined source items are counted as skipped.</maml:para>
+      <maml:para>At the end of the import, the command returns a statistics object with source file path, map file path, map index file path, processed count, skipped count, created count, failed count, source region, target region, target enterprise ID, and target organization ID.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Import-Action1EndpointGroupsJson</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies the source JSON file created by `Export-Action1EndpointGroupsJson`.</maml:para>
+            <maml:para>The file must use schema `PSAction1.EndpointGroup.v1`, type `EndpointGroup`, and include the `organization_id` property and `items` array.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before creating each endpoint group.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>Bypasses confirmation prompts. WhatIf is still honored when it is specified.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MapIndexPath</maml:name>
+          <maml:description>
+            <maml:para>Specifies an optional text index path containing tab-separated source and target IDs.</maml:para>
+            <maml:para>When this parameter is specified, MapPath must also be specified. The command validates the index header and uses the index body for source ID skip checks. The command does not rebuild or fully verify the index against the JSON map. A stale index can cause unmapped source endpoint groups to be skipped or previously created target endpoint groups to be duplicated.</maml:para>
+            <maml:para>When this parameter is omitted, the command derives the index path from MapPath by replacing the map file extension with `.index.txt`, rebuilds the index from the JSON migration map, and saves the rebuilt index file before processing source items. If the derived index file already exists, the command replaces it. If the migration map is new, the command creates the index header before importing.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MapPath</maml:name>
+          <maml:description>
+            <maml:para>Specifies the JSON migration map path.</maml:para>
+            <maml:para>If the path exists, the command validates the map schema, source region, source enterprise ID, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
+            <maml:para>If this parameter is omitted, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
+            <maml:para>When MapIndexPath is omitted, this map path is also used to derive the default `.index.txt` path. That derived index file is rebuilt from the JSON map and replaced when it already exists.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before creating each endpoint group.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>Bypasses confirmation prompts. WhatIf is still honored when it is specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MapIndexPath</maml:name>
+        <maml:description>
+          <maml:para>Specifies an optional text index path containing tab-separated source and target IDs.</maml:para>
+          <maml:para>When this parameter is specified, MapPath must also be specified. The command validates the index header and uses the index body for source ID skip checks. The command does not rebuild or fully verify the index against the JSON map. A stale index can cause unmapped source endpoint groups to be skipped or previously created target endpoint groups to be duplicated.</maml:para>
+          <maml:para>When this parameter is omitted, the command derives the index path from MapPath by replacing the map file extension with `.index.txt`, rebuilds the index from the JSON migration map, and saves the rebuilt index file before processing source items. If the derived index file already exists, the command replaces it. If the migration map is new, the command creates the index header before importing.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MapPath</maml:name>
+        <maml:description>
+          <maml:para>Specifies the JSON migration map path.</maml:para>
+          <maml:para>If the path exists, the command validates the map schema, source region, source enterprise ID, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
+          <maml:para>If this parameter is omitted, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
+          <maml:para>When MapIndexPath is omitted, this map path is also used to derive the default `.index.txt` path. That derived index file is rebuilt from the JSON map and replaced when it already exists.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies the source JSON file created by `Export-Action1EndpointGroupsJson`.</maml:para>
+          <maml:para>The file must use schema `PSAction1.EndpointGroup.v1`, type `EndpointGroup`, and include the `organization_id` property and `items` array.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the command runs. The command is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You cannot pipe input to this command.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSCustomObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returns a statistics object describing the import. The object includes `SourceFile`, `MapFile`, `MapIndexFile`, `Processed`, `Skipped`, `Created`, `Failed`, `SourceRegion`, `TargetRegion`, `EnterpriseId`, and `OrganizationId`. `Skipped` includes source items already present in the mapping index or JSON map, and source items declined at the confirmation prompt in a real run.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Requires the default Action1 organization to be configured with Set-Action1DefaultOrg and requires permission to create endpoint groups in Action1.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-- Example 1: Import with default map and default index paths --</maml:title>
+        <dev:code>Import-Action1EndpointGroupsJson -Path 'C:\Migration\EndpointGroups.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports all unmapped endpoint groups from the export file. The command creates or reuses the default migration map in the current location and rebuilds the derived default index file from the migration map. If the derived index file already exists, it is replaced.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>- Example 2: Import with a specific map and derived index path -</maml:title>
+        <dev:code>Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports unmapped endpoint groups and stores created target objects in the specified migration map. Because MapIndexPath is omitted, the command uses `C:\Migration\Action1_MigrationMapping_source_target.index.txt` as the index path.</maml:para>
+          <maml:para>The command rebuilds the derived index file from the specified map before processing source items.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 3: Import with a specific map and an existing specified index</maml:title>
+        <dev:code>Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
+    -MapIndexPath 'D:\Indexes\Action1_MigrationMapping_source_target.index.txt'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports unmapped endpoint groups using the specified JSON map and specified text index. If the specified index exists, the command validates its header and uses the source IDs in that index for skip checks. The specified index is not rebuilt from the JSON map.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>Example 4: Import with a specific map and a new specified index</maml:title>
+        <dev:code>Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
+    -MapIndexPath 'D:\Indexes\NewEndpointGroups.index.txt'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports unmapped endpoint groups using the specified JSON map and specified text index path. If `D:\Indexes\NewEndpointGroups.index.txt` does not exist, the command creates it from the migration map before processing source items. If the migration map is new, the command creates a header-only index and appends source and target ID pairs after successful creates.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 5: Show the unsupported index-only combination ----</maml:title>
+        <dev:code>Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
+    -MapIndexPath 'C:\Migration\Action1_MigrationMapping_source_target.index.txt'</dev:code>
+        <dev:remarks>
+          <maml:para>This command fails before reading tenant context because MapIndexPath cannot be used without MapPath .</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------ Example 6: Preview an import without writing files ------</maml:title>
+        <dev:code>Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
+    -WhatIf</dev:code>
+        <dev:remarks>
+          <maml:para>Shows which endpoint groups would be created. The command reads and validates the source file and resolves target metadata, but it does not send create requests and does not write the map or index files. WhatIf previews are not counted as confirmation skips.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------- Example 7: Import without confirmation prompts --------</maml:title>
+        <dev:code>Import-Action1EndpointGroupsJson `
+    -Path 'C:\Migration\EndpointGroups.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
+    -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Imports unmapped endpoint groups without confirmation prompts. The command still creates or updates the map and index files, and WhatIf is still honored when it is specified.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Export-Action1EndpointGroupsJson</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>New-Action1EndpointGroup</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EndpointGroups</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1EnterpriseId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1DefaultOrgId</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Action1Region</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>New-Action1EndpointGroup</command:name>
       <command:verb>New</command:verb>
       <command:noun>Action1EndpointGroup</command:noun>
@@ -8633,9 +8966,10 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para></maml:para>
       <maml:para>Additional top-level properties are source organization IDs. Each source ID maps to the complete response object returned by `New-Action1Organization` when the corresponding organization was created in the current target enterprise.</maml:para>
       <maml:para>If MapPath is not specified, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
-      <maml:para>Supported map and index path combinations are:  Path * only: use the default map path and derive the default index path from   that map path.  Path with MapPath *: use the specified map path and derive the default   index path from that map path.  Path with MapPath and MapIndexPath *: use both specified paths.  Path with MapIndexPath but without MapPath *: not supported.</maml:para>
+      <maml:para>Supported map and index path combinations are:  Path * only: use the default map path and rebuild the default index file   from that map path. If the derived index file already exists, it is replaced.  Path with MapPath *: use the specified map path and derive the default   index path from that map path, then rebuild that index file. If the derived   index file already exists, it is replaced.  Path with MapPath and MapIndexPath *: use both specified paths. If   the specified index file exists, validate and use it. If it does not exist,   create it from the migration map or create a header-only index for a new map.  Path with MapIndexPath but without MapPath *: not supported.</maml:para>
       <maml:para>When a source organization ID already exists as a top-level property in the map, the command skips that source item. Otherwise, it creates the organization with `New-Action1Organization` and records the full created target organization response under the source organization ID.</maml:para>
-      <maml:para>When MapIndexPath is omitted, the command derives the text index path from MapPath by replacing the map file extension with `.index.txt`. When MapIndexPath is specified, MapPath must also be specified. If the index exists, the command reads the text index header and source IDs instead of rebuilding the skip list from the JSON map. If the index does not exist, the command builds it from the migration map when the map exists, or creates a new index header when the map is new. The index starts with these header lines:</maml:para>
+      <maml:para>When MapIndexPath is omitted, the command derives the text index path from MapPath by replacing the map file extension with `.index.txt`, rebuilds the index from the JSON migration map, and saves the rebuilt index file before processing source items. If the derived index file already exists, the command replaces it. If the migration map is new, the command creates a new index header.</maml:para>
+      <maml:para>When MapIndexPath is specified, MapPath must also be specified. If the specified index exists, the command reads the text index header and source IDs instead of rebuilding the skip list from the JSON map. If the specified index does not exist, the command builds it from the migration map when the map exists, or creates a new index header when the map is new. The index starts with these header lines:</maml:para>
       <maml:para>* `# schema=PSAction1.MappingIndex.v1`</maml:para>
       <maml:para>* `# source_region=&lt;source-region&gt;`</maml:para>
       <maml:para>* `# source_enterprise_id=&lt;source-enterprise-id&gt;`</maml:para>
@@ -8643,8 +8977,10 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <maml:para>* `# target_enterprise_id=&lt;target-enterprise-id&gt;`</maml:para>
       <maml:para>* `# end_header`</maml:para>
       <maml:para></maml:para>
-      <maml:para>Each following line contains one mapped source organization ID.</maml:para>
-      <maml:para>The command validates an existing index header against the current source and target migration metadata. It does not verify that an existing index body exactly matches the full JSON map. If the index is stale, objects can be skipped or duplicated.</maml:para>
+      <maml:para>Each following nonblank line contains `&lt;source-id&gt;&lt;TAB&gt;&lt;target-id&gt;`, where `&lt;TAB&gt;` is one actual tab character. The target ID is the created response object's `id` field, or the stored mapped object's `id` when rebuilding the index. The full response remains in the authoritative JSON map. Skip checks use only the source ID column.</maml:para>
+      <maml:para>Both IDs must be nonempty and cannot contain tabs or line breaks. Malformed rows and conflicting target IDs for the same source ID are rejected. If a created response cannot supply a valid index ID, the import reports a failure and retains the response in the JSON map being written, without adding an index row. Review that mapping before retrying; an index rebuild also fails when a mapped object cannot supply a valid target ID.</maml:para>
+      <maml:para>The unreleased schema remains `PSAction1.MappingIndex.v1`. Earlier development indexes containing only source IDs are not accepted as supplied indexes. Omit MapIndexPath to rebuild the derived index from the JSON map in the new format, or specify a new index path to rebuild at that location.</maml:para>
+      <maml:para>The command validates a specified existing index header against the current source and target migration metadata. It does not verify that a specified existing index body exactly matches the full JSON map. If the specified index is stale, objects can be skipped or duplicated.</maml:para>
       <maml:para>The command writes changes to a temporary file named `&lt;MapPath&gt;.inprogress`. After processing completes, it validates that temporary map and replaces MapPath with it. If the command stops before completion, the original map remains the last completed map and the temporary file is left for inspection.</maml:para>
       <maml:para>The map file source_region and source_enterprise_id must match the source JSON file being imported. The target_region and target_enterprise_id values must match the current target region and enterprise. This prevents appending target objects to a map for a different source export, tenant, or region. If the mapping header is wrong, the import stops before processing source items.</maml:para>
       <maml:para>The command prompts for confirmation before creating each organization. Use WhatIf to preview organization creation without sending API requests or writing the map or index files. Use Force to bypass confirmation prompts. If you answer No or No to All at the confirmation prompt, the declined source items are counted as skipped.</maml:para>
@@ -8691,9 +9027,9 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>MapIndexPath</maml:name>
           <maml:description>
-            <maml:para>Specifies an optional text source ID index path.</maml:para>
+            <maml:para>Specifies an optional text index path containing tab-separated source and target IDs.</maml:para>
             <maml:para>When this parameter is specified, MapPath must also be specified. The command validates the index header and uses the index body for source ID skip checks. The command does not rebuild or fully verify the index against the JSON map. A stale index can cause unmapped source objects to be skipped or previously created target objects to be duplicated.</maml:para>
-            <maml:para>When this parameter is omitted, the command derives the index path from MapPath by replacing the map file extension with `.index.txt`. If the index path does not exist and the migration map exists, the command creates the index from the migration map before processing items. If neither the index nor the migration map exists, the command creates the index header before importing.</maml:para>
+            <maml:para>When this parameter is omitted, the command derives the index path from MapPath by replacing the map file extension with `.index.txt`, rebuilds the index from the JSON migration map, and saves the rebuilt index file before processing source items. If the derived index file already exists, the command replaces it. If the migration map is new, the command creates the index header before importing.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -8708,7 +9044,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
             <maml:para>Specifies the JSON migration map path.</maml:para>
             <maml:para>If the path exists, the command validates the map schema, source region, source enterprise ID, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
             <maml:para>If this parameter is omitted, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
-            <maml:para>When MapIndexPath is omitted, this map path is also used to derive the default `.index.txt` path.</maml:para>
+            <maml:para>When MapIndexPath is omitted, this map path is also used to derive the default `.index.txt` path. That derived index file is rebuilt from the JSON map and replaced when it already exists.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -8758,9 +9094,9 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>MapIndexPath</maml:name>
         <maml:description>
-          <maml:para>Specifies an optional text source ID index path.</maml:para>
+          <maml:para>Specifies an optional text index path containing tab-separated source and target IDs.</maml:para>
           <maml:para>When this parameter is specified, MapPath must also be specified. The command validates the index header and uses the index body for source ID skip checks. The command does not rebuild or fully verify the index against the JSON map. A stale index can cause unmapped source objects to be skipped or previously created target objects to be duplicated.</maml:para>
-          <maml:para>When this parameter is omitted, the command derives the index path from MapPath by replacing the map file extension with `.index.txt`. If the index path does not exist and the migration map exists, the command creates the index from the migration map before processing items. If neither the index nor the migration map exists, the command creates the index header before importing.</maml:para>
+          <maml:para>When this parameter is omitted, the command derives the index path from MapPath by replacing the map file extension with `.index.txt`, rebuilds the index from the JSON migration map, and saves the rebuilt index file before processing source items. If the derived index file already exists, the command replaces it. If the migration map is new, the command creates the index header before importing.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -8775,7 +9111,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
           <maml:para>Specifies the JSON migration map path.</maml:para>
           <maml:para>If the path exists, the command validates the map schema, source region, source enterprise ID, target region, and target enterprise ID before processing source items. If the path does not exist, the command creates a new map with the `PSAction1.Mapping.v1` header.</maml:para>
           <maml:para>If this parameter is omitted, the command creates or reuses a map file in the current location named `Action1_MigrationMapping_&lt;source-enterprise-id&gt;_&lt;target-enterprise-id&gt;.json`.</maml:para>
-          <maml:para>When MapIndexPath is omitted, this map path is also used to derive the default `.index.txt` path.</maml:para>
+          <maml:para>When MapIndexPath is omitted, this map path is also used to derive the default `.index.txt` path. That derived index file is rebuilt from the JSON map and replaced when it already exists.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -8840,7 +9176,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         <maml:title>-- Example 1: Import with default map and default index paths --</maml:title>
         <dev:code>Import-Action1OrganizationsJson -Path 'C:\Migration\Organizations.json'</dev:code>
         <dev:remarks>
-          <maml:para>Imports all unmapped organizations from the export file. The command creates or reuses the default migration map in the current location and creates or reuses the derived default index file.</maml:para>
+          <maml:para>Imports all unmapped organizations from the export file. The command creates or reuses the default migration map in the current location and rebuilds the derived default index file from the migration map. If the derived index file already exists, it is replaced.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -8850,21 +9186,31 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json'</dev:code>
         <dev:remarks>
           <maml:para>Imports unmapped organizations and stores created target objects in the specified migration map. Because MapIndexPath is omitted, the command uses `C:\Migration\Action1_MigrationMapping_source_target.index.txt` as the index path.</maml:para>
-          <maml:para>If the specified map exists but the derived index file does not exist, the command builds the index from the map before processing source items.</maml:para>
+          <maml:para>The command rebuilds the derived index file from the specified map before processing source items.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>--- Example 3: Import with a specific map and specific index ---</maml:title>
+        <maml:title>Example 3: Import with a specific map and an existing specified index</maml:title>
         <dev:code>Import-Action1OrganizationsJson `
     -Path 'C:\Migration\Organizations.json' `
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
     -MapIndexPath 'D:\Indexes\Action1_MigrationMapping_source_target.index.txt'</dev:code>
         <dev:remarks>
-          <maml:para>Imports unmapped organizations using the specified JSON map and specified text index. The command validates an existing index header before processing items. If the index does not exist, the command creates it before importing.</maml:para>
+          <maml:para>Imports unmapped organizations using the specified JSON map and specified text index. If the specified index exists, the command validates its header and uses the source IDs in that index for skip checks. The specified index is not rebuilt from the JSON map.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>---- Example 4: Show the unsupported index-only combination ----</maml:title>
+        <maml:title>Example 4: Import with a specific map and a new specified index</maml:title>
+        <dev:code>Import-Action1OrganizationsJson `
+    -Path 'C:\Migration\Organizations.json' `
+    -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
+    -MapIndexPath 'D:\Indexes\NewOrganizations.index.txt'</dev:code>
+        <dev:remarks>
+          <maml:para>Imports unmapped organizations using the specified JSON map and specified text index path. If `D:\Indexes\NewOrganizations.index.txt` does not exist, the command creates it from the migration map before processing source items. If the migration map is new, the command creates a header-only index and appends source and target ID pairs after successful creates.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---- Example 5: Show the unsupported index-only combination ----</maml:title>
         <dev:code>Import-Action1OrganizationsJson `
     -Path 'C:\Migration\Organizations.json' `
     -MapIndexPath 'C:\Migration\Action1_MigrationMapping_source_target.index.txt'</dev:code>
@@ -8873,7 +9219,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>------ Example 5: Preview an import without writing files ------</maml:title>
+        <maml:title>------ Example 6: Preview an import without writing files ------</maml:title>
         <dev:code>Import-Action1OrganizationsJson `
     -Path 'C:\Migration\Organizations.json' `
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
@@ -8883,7 +9229,7 @@ Update-Action1 -Action Modify -Type RawURI -URI '/v1/custom/path' -Data $data</d
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>-------- Example 6: Import without confirmation prompts --------</maml:title>
+        <maml:title>-------- Example 7: Import without confirmation prompts --------</maml:title>
         <dev:code>Import-Action1OrganizationsJson `
     -Path 'C:\Migration\Organizations.json' `
     -MapPath 'C:\Migration\Action1_MigrationMapping_source_target.json' `
