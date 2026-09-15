@@ -95,6 +95,7 @@ jobs:
           FilesFolderFilter: "ps1,psm1,psd1"
           FilesFolderRecurse: true
           FileDigest: "SHA256"
+          Timeout: '1200' # Seconds: 20 minutes
           ExcludeSharedTokenCacheCredential: true
           ExcludeVisualStudioCredential: true
           ExcludeVisualStudioCodeCredential: true
