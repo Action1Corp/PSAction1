@@ -25,6 +25,10 @@ The command updates the module's internal region setting by selecting one of the
 
 Run this command before calling Action1 API commands when you need to target a specific Action1 regional environment.
 
+Region validation uses the module's internal host lookup table.
+Region names are case-insensitive. Unsupported names are rejected before the
+configured region changes, with an error listing the supported names.
+
 ## EXAMPLES
 
 ### Example 1
@@ -67,6 +71,15 @@ PS C:\> Set-Action1Region -Region 'NA-2'
 
 Configures the PSAction1 module to use the NA-2 API endpoint value.
 
+### Example 6: Select the United Kingdom region
+
+```powershell
+PS C:\> Set-Action1Region -Region UK
+```
+
+Configures the module to use `https://app.uk.action1.com/api/3.0`.
+`UnitedKingdom` selects the same endpoint.
+
 ## PARAMETERS
 
 ### -Region
@@ -80,12 +93,13 @@ Accepted values are:
 - NA-2
 - Europe
 - Australia
+- UnitedKingdom
+- UK
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: NorthAmerica, NorthAmerica-2, NA-2, Europe, Australia
 
 Required: True
 Position: 0
@@ -117,6 +131,8 @@ Use this command before making API requests if the default regional endpoint is 
 
 ## RELATED LINKS
 
-[about_PSAction1](about_PSAction1.md)
+[about_PSAction1](../about_PSAction1.md)
 
-[Set-Action1Locale](Set-Action1Locale.md)
+[Get-Action1Region](Get-Action1Region.md)
+
+[Set-Action1Locale](../legacy/Set-Action1Locale.md)

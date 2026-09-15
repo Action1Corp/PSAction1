@@ -45,6 +45,17 @@ Europe
 
 Configures the PSAction1 module to use the Europe API endpoint, then returns the configured region.
 
+### Example 3: Preserve the United Kingdom alias
+
+```powershell
+PS C:\> Set-Action1Region -Region UK
+PS C:\> Get-Action1Region
+UK
+```
+
+Returns the supplied alias. Setting `UnitedKingdom` instead returns `UnitedKingdom`;
+both names select the same UK API endpoint.
+
 ## PARAMETERS
 
 ### CommonParameters
@@ -72,4 +83,4 @@ When the region is inferred from the configured API base URI, duplicate host ali
 
 [Set-Action1Region](Set-Action1Region.md)
 
-[about_PSAction1](about_PSAction1.md)
+[about_PSAction1](../about_PSAction1.md)
