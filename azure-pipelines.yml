@@ -4,6 +4,9 @@
 # Use at your own risk
 # © Action1 Corporation
 
+# yaml-language-server: $schema=./.vscode/azure-pipelines-schema.json
+# The Yaml Schema was taken from: https://dev.azure.com/Action1Corp/_apis/distributedtask/yamlschema
+
 trigger: none
 
 variables:
