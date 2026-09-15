@@ -322,11 +322,23 @@ This allows you to provide authentication details step by step.
 :stop_sign: **Important:**  _The values below are examples and DO NOT belong to a live instance. Replace them with your actual credentials._
 
 ```PowerShell
-PS C:\> Set-Action1Region NorthAmerica # Choices are currently NorthAmerica, NorthAmerica-2, Europe and Australia. More regions coming soon.
+PS C:\> Set-Action1Region NorthAmerica
 
 PS C:\> Set-Action1Credentials -APIKey api-key-example_e0983b7c-45e8-4c82-9f98-b63bdc4dcb33@action1.com -Secret 652b47a18e212e695e9fbfaa
 
 ```
+
+Supported regions are `NorthAmerica`, `NorthAmerica-2` (alias `NA-2`), `Europe`,
+`Australia`, and `UnitedKingdom` (alias `UK`). Region names are case-insensitive.
+Invalid region names produce an error listing the supported names.
+
+For the United Kingdom region, use `Set-Action1Region -Region UK` or
+`Set-Action1Region -Region UnitedKingdom`. Both select
+`https://app.uk.action1.com/api/3.0`.
+
+Region endpoints, validation, and interactive region selection
+use the shared host lookup table in `Private/Configuration/Action1.Hosts.ps1`.
+See [Set-Action1Region](docs/help/configuration/Set-Action1Region.md) for details.
 
 Next, you should set an organization context.
 
