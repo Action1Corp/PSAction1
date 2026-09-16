@@ -17,7 +17,7 @@
     RootModule        = 'PSAction1.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.9.13'
+    ModuleVersion     = '1.10.16'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -97,7 +97,6 @@
         'Update-Action1Organization'
         'Remove-Action1Organization'
         'Export-Action1OrganizationsJson'
-        'Import-Action1OrganizationsJson'
 
         # User
         'Get-Action1User'
@@ -108,7 +107,6 @@
         'Remove-Action1User'
         'Export-Action1UserRolesJson'
         'Export-Action1UsersJson'
-        'Import-Action1UsersJson'
 
         # Endpoint
         'Get-Action1Endpoints'
@@ -130,7 +128,6 @@
         'Add-Action1EndpointGroupMembers'
         'Remove-Action1EndpointGroupMembers'
         'Export-Action1EndpointGroupsJson'
-        'Import-Action1EndpointGroupsJson'
         'Export-Action1EndpointGroupMembersJson'
 
         # Vulnerability
@@ -192,18 +189,32 @@
             # ReleaseNotes of this module
             ReleaseNotes = @'
 New cmdlets:
-    Enterprise:
-        Get-Action1Enterprise
-        Get-Action1EnterpriseId
-        Update-Action1Enterprise
-    Organizations:
-        Get-Action1Organization
-        New-Action1Organization
-        Update-Action1Organization
-        Remove-Action1Organization
-        Export-Action1OrganizationsJson
-        Import-Action1OrganizationsJson
-Support retry_timeout field handling in 429 HTTP error code response.
+    Endpoint:
+    'Export-Action1EndpointsJson'
+
+    EndpointGroup:
+    'Get-Action1EndpointGroup'
+    'Get-Action1EndpointGroupMembers'
+    'Get-Action1EndpointGroups'
+    'New-Action1EndpointGroup'
+    'Update-Action1EndpointGroup'
+    'Remove-Action1EndpointGroup'
+    'Add-Action1EndpointGroupMembers'
+    'Remove-Action1EndpointGroupMembers'
+    'Export-Action1EndpointGroupsJson'
+    'Export-Action1EndpointGroupMembersJson'
+    
+    User:
+    'Get-Action1User'
+    'Get-Action1UserRoles'
+    'Get-Action1Users'
+    'New-Action1User'
+    'Update-Action1User'
+    'Remove-Action1User'
+    'Export-Action1UserRolesJson'
+    'Export-Action1UsersJson'
+Support new UnitedKingdom(UK) region.
+Update CVEId validation pattern.
 '@
 
         } # End of PSData hashtable
