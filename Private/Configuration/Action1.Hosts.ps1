@@ -10,5 +10,7 @@ $script:Action1_Hosts = [ordered]@{
     'NorthAmerica-2' = 'https://app.na-2.action1.com/api/3.0';
     'NA-2' = 'https://app.na-2.action1.com/api/3.0';
     'Europe' = 'https://app.eu.action1.com/api/3.0'; 
-    'Australia' = 'https://app.au.action1.com/api/3.0'
+    'Australia' = 'https://app.au.action1.com/api/3.0';
+    'UnitedKingdom' = 'https://app.uk.action1.com/api/3.0';
+    'UK' = 'https://app.uk.action1.com/api/3.0'
 }

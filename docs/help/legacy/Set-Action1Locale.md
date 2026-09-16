@@ -59,6 +59,11 @@ Specifies the Action1 API region to use.
 
 The value is passed directly to `Set-Action1Region`.
 
+Region validation uses the module's internal host lookup table.
+Unsupported names produce an error listing the supported names.
+Region names are case-insensitive. `UnitedKingdom` and `UK` both select
+`https://app.uk.action1.com/api/3.0`.
+
 Accepted values:
 
 - NorthAmerica
@@ -66,12 +71,13 @@ Accepted values:
 - NA-2
 - Europe
 - Australia
+- UnitedKingdom
+- UK
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: NorthAmerica, NorthAmerica-2, NA-2, Europe, Australia
 
 Required: True
 Position: 0
@@ -103,4 +109,4 @@ Use `Set-Action1Region` instead.
 
 ## RELATED LINKS
 
-[Set-Action1Region](Set-Action1Region.md)
+[Set-Action1Region](../configuration/Set-Action1Region.md)

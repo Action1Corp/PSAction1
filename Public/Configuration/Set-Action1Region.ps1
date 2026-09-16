@@ -9,7 +9,7 @@ function Set-Action1Region {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [ValidateSet('NorthAmerica', 'NorthAmerica-2', 'NA-2', 'Europe', 'Australia')]
+        [ValidateScript({ Test-Action1Region -Region $_ })]
         [String]$Region
     )
 
