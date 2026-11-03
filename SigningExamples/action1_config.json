@@ -1,0 +1,11 @@
+{
+  "api_key": "api-key-XXX@action1.com",
+  "api_secret_file": "C:/Users/Admin/Desktop/api_secret.txt",
+  "passphrase_file": "C:/Users/Admin/Desktop/passphrase.txt",
+  "key_file": "C:/Users/Admin/Desktop/Action1.key",
+  "organization_id": "YOUR-ORGANIZATION-ID",
+  "api_url": "https://app.na-3.action1.com/api/4.0",
+  "sign_file_name": "C:/Users/Admin/Desktop/action1sign.exe",
+  "sign_tool_url": "https://github.com/Action1Corp/Action1Sign/releases/download/v1.0.1.0/action1sign-1.0.1.0-windows-x86.zip",
+  "sign_tool_sha256": "4df03c255aea527b39349b15363d2ce641347a24f79df15b35a6a2bb9a929717"
+}
