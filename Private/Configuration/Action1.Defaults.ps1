@@ -8,6 +8,16 @@
 # Basic params
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
 
+# Signing tool directory and executable name (installed only when explicitly requested).
+$Script:Action1_SignToolPath = $null
+if ($env:LOCALAPPDATA -match '\S') {
+    $Script:Action1_SignToolPath = Join-Path $env:LOCALAPPDATA 'PSAction1\Tools\Action1Sign'
+}
+$Script:Action1_SignToolFileName = 'action1sign.exe'
+$Script:Action1_SignToolReleaseApiUrl =
+    'https://api.github.com/repos/Action1Corp/Action1Sign/releases/latest'
+$Script:Action1_SignToolAssetPattern = 'action1sign-*-windows-x86.zip'
+
 # Pagination
 $Script:Action1_PagedGetRequestDefaultLimit = 200
 $Script:Action1_PagedGetRequestDefaultOffset = 0
