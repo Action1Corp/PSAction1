@@ -8,15 +8,16 @@
 # Basic params
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
 
-# Signing tool directory and executable name (installed only when explicitly requested).
-$Script:Action1_SignToolPath = $null
-if ($env:LOCALAPPDATA -match '\S') {
-    $Script:Action1_SignToolPath = Join-Path $env:LOCALAPPDATA 'PSAction1\Tools\Action1Sign'
-}
+# SHA256 hash validation
+$Script:Action1_Sha256ValidationPattern = '^[a-fA-F0-9]{64}$'
+
+# Bundled signing tool with download recovery for a missing executable.
+$Script:Action1_SignToolPath = Join-Path $Script:ModuleRoot 'tools\Action1Sign'
 $Script:Action1_SignToolFileName = 'action1sign.exe'
 $Script:Action1_SignToolReleaseApiUrl =
     'https://api.github.com/repos/Action1Corp/Action1Sign/releases/latest'
 $Script:Action1_SignToolAssetPattern = 'action1sign-*-windows-x86.zip'
+$Script:Action1_SignToolSha256 = '2E0E41B12B3B4CC566FEFE67F0CBA91609D4C7D316369396115FB2578728BBA9'
 
 # Pagination
 $Script:Action1_PagedGetRequestDefaultLimit = 200

@@ -10,25 +10,39 @@ function Test-Action1SignTool {
     [OutputType([bool])]
     param()
 
-    # Windows PowerShell 5.1 runs only on Windows and does not define IsWindows.
-    $windowsPlatform = Get-Variable -Name IsWindows -ErrorAction SilentlyContinue
-    if ($null -ne $windowsPlatform -and -not $windowsPlatform.Value) {
-        throw 'Action1 object signing is supported only on Windows.'
-    }
+    try {
+        # Windows PowerShell 5.1 runs only on Windows and does not define IsWindows.
+        $windowsPlatform = Get-Variable -Name IsWindows -ErrorAction SilentlyContinue
+        if ($null -ne $windowsPlatform -and -not $windowsPlatform.Value) {
+            throw 'Action1 object signing is supported only on Windows.'
+        }
 
-    if (
-        $Script:Action1_SignToolPath -notmatch '\S' -or
-        $Script:Action1_SignToolFileName -notmatch '\S'
-    ) {
-        throw 'Action1 signing tool directory or filename is not configured.'
-    }
+        if (
+            [string]::IsNullOrWhiteSpace($Script:Action1_SignToolPath) -or
+            [string]::IsNullOrWhiteSpace($Script:Action1_SignToolFileName)
+        ) {
+            throw 'Action1 signing tool directory or filename is not configured.'
+        }
+        if ($Script:Action1_SignToolSha256 -notmatch $Script:Action1_Sha256ValidationPattern) {
+            throw 'Action1 signing tool executable SHA256 is not configured or invalid.'
+        }
 
-    $signToolPath = Join-Path $Script:Action1_SignToolPath `
-        $Script:Action1_SignToolFileName -ErrorAction Stop
-    if (Test-Path -LiteralPath $signToolPath -PathType Leaf -ErrorAction Stop) {
+        $signToolPath = Join-Path $Script:Action1_SignToolPath `
+            $Script:Action1_SignToolFileName -ErrorAction Stop
+        if (-not (Test-Path -LiteralPath $signToolPath -PathType Leaf -ErrorAction Stop)) {
+            Write-Action1Debug "Action1 signing tool was not found at '$signToolPath'."
+            $null = Get-Action1SignTool -ErrorAction Stop
+        }
+
+        if (-not (Test-HashCode -Path $signToolPath `
+            -ExpectedHash $Script:Action1_SignToolSha256)) {
+            throw 'Action1 signing tool executable SHA256 mismatch.'
+        }
+
         return $true
     }
-
-    Write-Action1Debug "Action1 signing tool was not found at '$signToolPath'."
-    return $false
+    catch {
+        Write-Action1Debug "Action1 signing tool validation failed: $($_.Exception.Message)"
+        return $false
+    }
 }

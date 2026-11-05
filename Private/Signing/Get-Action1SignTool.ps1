@@ -10,8 +10,14 @@ function Get-Action1SignTool {
     [OutputType([string])]
     param()
 
-    if (Test-Action1SignTool) {
-        return (Join-Path $Script:Action1_SignToolPath $Script:Action1_SignToolFileName)
+    if (
+        [string]::IsNullOrWhiteSpace($Script:Action1_SignToolPath) -or
+        [string]::IsNullOrWhiteSpace($Script:Action1_SignToolFileName)
+    ) {
+        throw 'Action1 signing tool directory or filename is not configured.'
+    }
+    if ($Script:Action1_SignToolSha256 -notmatch $Script:Action1_Sha256ValidationPattern) {
+        throw 'Action1 signing tool executable SHA256 is not configured or invalid.'
     }
 
     $signToolLastRelease = Get-Action1SignToolLastRelease
@@ -32,8 +38,7 @@ function Get-Action1SignTool {
         Invoke-WebRequest -Uri $signToolLastRelease.Url -OutFile $zipFile `
             -UseBasicParsing -TimeoutSec 120 -ErrorAction Stop
 
-        $actualHash = (Get-FileHash -LiteralPath $zipFile -Algorithm SHA256 -ErrorAction Stop).Hash
-        if ($actualHash -ne $signToolLastRelease.Sha256) {
+        if (-not (Test-HashCode -Path $zipFile -ExpectedHash $signToolLastRelease.Sha256)) {
             throw 'Action1 signing tool ZIP SHA256 mismatch. Installation was cancelled.'
         }
 
@@ -44,6 +49,11 @@ function Get-Action1SignTool {
         })
         if ($executables.Count -ne 1 -or $executables[0].Length -eq 0) {
             throw 'Action1 signing tool ZIP must contain exactly one nonempty signing executable.'
+        }
+
+        if (-not (Test-HashCode -Path $executables[0].FullName `
+            -ExpectedHash $Script:Action1_SignToolSha256)) {
+            throw 'Action1 signing tool executable SHA256 mismatch. Installation was cancelled.'
         }
 
         Move-Item -LiteralPath $executables[0].FullName -Destination $signToolPath -ErrorAction Stop

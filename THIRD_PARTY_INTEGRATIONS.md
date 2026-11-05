@@ -2,6 +2,9 @@
 
 Some Repository Materials may connect to third-party services.
 
+For third-party components included in the bundled Action1Sign executable, see
+[Action1Sign third-party notices](tools/Action1Sign/THIRD_PARTY_NOTICES.md).
+
 You are solely responsible for:
 
 - API credentials  
