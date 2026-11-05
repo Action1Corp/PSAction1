@@ -328,9 +328,14 @@ PS C:\> Set-Action1Credentials -APIKey api-key-example_e0983b7c-45e8-4c82-9f98-b
 
 ```
 
-Supported regions are `NorthAmerica`, `NorthAmerica-2` (alias `NA-2`), `Europe`,
-`Australia`, and `UnitedKingdom` (alias `UK`). Region names are case-insensitive.
+Supported regions are `NorthAmerica`, `NorthAmerica-2` (alias `NA-2`),
+`NorthAmerica-3` (alias `NA-3`), `Europe`, `Australia`, and `UnitedKingdom`
+(alias `UK`). Region names are case-insensitive.
 Invalid region names produce an error listing the supported names.
+
+For the third North America region, use `Set-Action1Region -Region NorthAmerica-3`
+or `Set-Action1Region -Region NA-3`. Both select
+`https://app.na-3.action1.com/api/4.0`.
 
 For the United Kingdom region, use `Set-Action1Region -Region UK` or
 `Set-Action1Region -Region UnitedKingdom`. Both select

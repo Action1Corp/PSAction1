@@ -63,12 +63,15 @@ Region validation uses the module's internal host lookup table.
 Unsupported names produce an error listing the supported names.
 Region names are case-insensitive. `UnitedKingdom` and `UK` both select
 `https://app.uk.action1.com/api/3.0`.
+`NorthAmerica-3` and `NA-3` both select `https://app.na-3.action1.com/api/4.0`.
 
 Accepted values:
 
 - NorthAmerica
 - NorthAmerica-2
 - NA-2
+- NorthAmerica-3
+- NA-3
 - Europe
 - Australia
 - UnitedKingdom

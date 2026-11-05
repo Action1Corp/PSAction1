@@ -80,6 +80,15 @@ PS C:\> Set-Action1Region -Region UK
 Configures the module to use `https://app.uk.action1.com/api/3.0`.
 `UnitedKingdom` selects the same endpoint.
 
+### Example 7: Select the third North America region
+
+```powershell
+PS C:\> Set-Action1Region -Region 'NorthAmerica-3'
+```
+
+Configures the module to use `https://app.na-3.action1.com/api/4.0`.
+`NA-3` selects the same endpoint.
+
 ## PARAMETERS
 
 ### -Region
@@ -91,6 +100,8 @@ Accepted values are:
 - NorthAmerica
 - NorthAmerica-2
 - NA-2
+- NorthAmerica-3
+- NA-3
 - Europe
 - Australia
 - UnitedKingdom
