@@ -60,6 +60,7 @@ $Script:Action1_UriMap = @{
     N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
 
     # Automation
+    G_AutomationActionTemplates = { "/automations/action-templates" }
     G_AutomationInstance   = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID" }
     G_AutomationInstanceEndpoints = {
         param($Org_ID, $Object_ID)

@@ -131,6 +131,7 @@
         'Export-Action1EndpointGroupMembersJson'
 
         # Automation
+        'Get-Action1AutomationActionTemplates'
         'Get-Action1AutomationInstance'
         'Get-Action1AutomationInstanceEndpoints'
         'Get-Action1AutomationInstances'
