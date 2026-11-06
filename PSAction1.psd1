@@ -130,6 +130,9 @@
         'Export-Action1EndpointGroupsJson'
         'Export-Action1EndpointGroupMembersJson'
 
+        # Automation
+        'Get-Action1AutomationInstances'
+
         # Vulnerability
         'Get-Action1Vulnerabilities'
         'Get-Action1Vulnerability'

@@ -60,7 +60,18 @@ $Script:Action1_UriMap = @{
     N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
 
     # Automation
-    G_AutomationInstances  = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID`?endpoint_id=$Object_ID" }
+    G_AutomationInstances  = {
+        param($Org_ID, $Object_ID)
+
+        $uri = "/automations/instances/$Org_ID"
+
+        if (-not [string]::IsNullOrWhiteSpace([string]$Object_ID)) {
+            $encodedEndpointId = [System.Uri]::EscapeDataString([string]$Object_ID)
+            $uri += "?endpoint_id=$encodedEndpointId"
+        }
+
+        $uri
+    }
     G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
     N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_DeferredRemediation  = { param($Org_ID)  "/policies/schedules/$Org_ID" }
