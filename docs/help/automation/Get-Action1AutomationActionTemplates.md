@@ -134,5 +134,6 @@ the Action1 API.
 
 ## RELATED LINKS
 
+[Get-Action1AutomationActionTemplate](Get-Action1AutomationActionTemplate.md)
 [Get-Action1AutomationInstances](Get-Action1AutomationInstances.md)
 [Get-Action1AutomationSchedules](Get-Action1AutomationSchedules.md)
