@@ -22,7 +22,7 @@ function Get-Action1AutomationInstance {
     $uri = & $uriPathBuilder $orgId $AutomationInstanceId
     $path = "$Script:Action1_BaseURI{0}" -f $uri
 
-    Write-Action1Debug "Getting automation instance '$AutomationInstanceId'."
+    Write-Action1Debug "Getting automation instance '$AutomationInstanceId' details."
 
     Invoke-Action1ApiRequest `
         -Method GET `

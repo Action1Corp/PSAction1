@@ -132,6 +132,7 @@
 
         # Automation
         'Get-Action1AutomationInstance'
+        'Get-Action1AutomationInstanceEndpoints'
         'Get-Action1AutomationInstances'
         'Get-Action1AutomationSchedules'
 
