@@ -132,6 +132,7 @@
 
         # Automation
         'Get-Action1AutomationInstances'
+        'Get-Action1AutomationSchedules'
 
         # Vulnerability
         'Get-Action1Vulnerabilities'
