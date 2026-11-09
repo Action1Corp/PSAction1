@@ -60,15 +60,6 @@ $Script:Action1_UriMap = @{
     N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
 
     # Automation
-    G_AutomationActionTemplate = { param($TemplateId) "/automations/action-templates/$TemplateId" }
-    G_AutomationActionTemplates = { "/automations/action-templates" }
-    G_AutomationInstance   = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID" }
-    G_AutomationInstanceEndpoints = {
-        param($Org_ID, $Object_ID)
-
-        "/automations/instances/$Org_ID/$Object_ID/endpoint-results"
-    }
-    G_AutomationSchedules  = { param($Org_ID) "/automations/schedules/$Org_ID" }
     G_AutomationInstances  = {
         param($Org_ID, $Object_ID)
 
@@ -81,10 +72,24 @@ $Script:Action1_UriMap = @{
 
         $uri
     }
+    G_AutomationInstance   = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID" }
+    G_AutomationInstanceEndpoints = {
+        param($Org_ID, $Object_ID)
+
+        "/automations/instances/$Org_ID/$Object_ID/endpoint-results"
+    }
+    G_AutomationInstanceEndpointDetails = {
+        param($OrgId, $AutomationInstanceId, $EndpointId)
+
+        "/automations/instances/$OrgId/$AutomationInstanceId/endpoint-results/$EndpointId/details"
+    }
+    G_AutomationSchedules  = { param($Org_ID) "/automations/schedules/$Org_ID" }
     G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
     N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     N_DeferredRemediation  = { param($Org_ID)  "/policies/schedules/$Org_ID" }
     U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
+    G_AutomationActionTemplates = { "/automations/action-templates" }
+    G_AutomationActionTemplate = { param($TemplateId) "/automations/action-templates/$TemplateId" }
 
     # Policy
     G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
