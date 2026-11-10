@@ -57,7 +57,6 @@ $Script:Action1_UriMap = @{
     G_Packages             = { "/packages/all" }
     G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
     G_Scripts              = { "/scripts/all" }
-    N_DeploySoftware       = { param($Org_ID)  "/policies/instances/$Org_ID" }
 
     # Automation
     G_AutomationInstances  = {
@@ -72,6 +71,7 @@ $Script:Action1_UriMap = @{
 
         $uri
     }
+    N_DeploySoftware       = { param($Org_ID)  "/automations/instances/$Org_ID" }
     G_AutomationInstance   = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID" }
     G_AutomationInstanceEndpoints = {
         param($Org_ID, $Object_ID)
@@ -84,18 +84,18 @@ $Script:Action1_UriMap = @{
         "/automations/instances/$OrgId/$AutomationInstanceId/endpoint-results/$EndpointId/details"
     }
     G_AutomationSchedules  = { param($Org_ID) "/automations/schedules/$Org_ID" }
-    G_Automations          = { param($Org_ID) "/policies/schedules/$Org_ID" }
-    N_Automation           = { param($Org_ID)  "/policies/schedules/$Org_ID" }
-    N_DeferredRemediation  = { param($Org_ID)  "/policies/schedules/$Org_ID" }
-    U_Automation           = { param($Org_ID, $Object_ID)  "/policies/schedules/$Org_ID/$Object_ID" }
+    G_Automations          = { param($Org_ID) "/automations/schedules/$Org_ID" }
+    N_Automation           = { param($Org_ID)  "/automations/schedules/$Org_ID" }
+    N_DeferredRemediation  = { param($Org_ID)  "/automations/schedules/$Org_ID" }
+    U_Automation           = { param($Org_ID, $Object_ID)  "/automations/schedules/$Org_ID/$Object_ID" }
     G_AutomationActionTemplates = { "/automations/action-templates" }
     G_AutomationActionTemplate = { param($TemplateId) "/automations/action-templates/$TemplateId" }
 
-    # Policy
-    G_Policy               = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID" }
-    G_Policies             = { param($Org_ID)  "/policies/instances/$Org_ID" }
-    G_PolicyResults        = { param($Org_ID, $Object_ID) "/policies/instances/$Org_ID/$Object_ID/endpoint_results" }
-    N_Remediation          = { param($Org_ID)  "/policies/instances/$Org_ID" }
+    # Policy. Outdated. Endpoint /policies -> /automations. Policy -> AutomationInstance
+    G_Policy               = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID" }
+    G_Policies             = { param($Org_ID)  "/automations/instances/$Org_ID" }
+    G_PolicyResults        = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID/endpoint_results" }
+    N_Remediation          = { param($Org_ID)  "/automations/instances/$Org_ID" }
 
     # Report
     G_ReportData           = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/data" }
