@@ -64,6 +64,8 @@ Unsupported names produce an error listing the supported names.
 Region names are case-insensitive. `UnitedKingdom` and `UK` both select
 `https://app.uk.action1.com/api/3.0`.
 `NorthAmerica-3` and `NA-3` both select `https://app.na-3.action1.com/api/4.0`.
+`Europe-2` selects `https://app.eu.action1.com/api/4.0`;
+`Europe` continues to use `https://app.eu.action1.com/api/3.0`.
 
 Accepted values:
 
@@ -73,6 +75,7 @@ Accepted values:
 - NorthAmerica-3
 - NA-3
 - Europe
+- Europe-2
 - Australia
 - UnitedKingdom
 - UK

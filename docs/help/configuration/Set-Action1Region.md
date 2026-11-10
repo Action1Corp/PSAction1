@@ -89,6 +89,15 @@ PS C:\> Set-Action1Region -Region 'NorthAmerica-3'
 Configures the module to use `https://app.na-3.action1.com/api/4.0`.
 `NA-3` selects the same endpoint.
 
+### Example 8: Select Europe-2
+
+```powershell
+PS C:\> Set-Action1Region -Region 'Europe-2'
+```
+
+Configures the module to use `https://app.eu.action1.com/api/4.0`.
+`Europe` continues to use `https://app.eu.action1.com/api/3.0`.
+
 ## PARAMETERS
 
 ### -Region
@@ -103,6 +112,7 @@ Accepted values are:
 - NorthAmerica-3
 - NA-3
 - Europe
+- Europe-2
 - Australia
 - UnitedKingdom
 - UK
