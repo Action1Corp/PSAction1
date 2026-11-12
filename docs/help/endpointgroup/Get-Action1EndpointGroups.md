@@ -20,7 +20,7 @@ Get-Action1EndpointGroups [-Limit <Int32>] [<CommonParameters>]
 
 ### AsPage
 ```
-Get-Action1EndpointGroups [-AsPage] [-Limit <Int32>] [<CommonParameters>]
+Get-Action1EndpointGroups [-AsPages] [-Limit <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,7 +31,7 @@ Action1 endpoint groups API.
 The command uses the module default organization configured by
 **Set-Action1DefaultOrg**.
 
-Use **AsPage** to return one object per API page. Page mode is intended for
+Use **AsPages** to return one object per API page. Page mode is intended for
 export commands and other callers that need to process endpoint groups page by
 page without materializing the whole collection first.
 
@@ -56,16 +56,22 @@ Gets endpoint groups and selects key fields.
 
 ## PARAMETERS
 
-### -AsPage
+### -AsPages
 
 Returns page envelope objects instead of individual endpoint group objects.
 Each page object contains `Items`, `PageNumber`, `From`, `Limit`,
 `TotalItems`, and `NextPage`.
 
+This switch changes only the output format; the command still retrieves all
+available pages. Without **Limit**, it requests 200 items per page. **Limit**
+controls the requested page size, not the total number of returned items.
+
+**AsPage** remains available as an alias.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: AsPage
-Aliases:
+Aliases: AsPage
 
 Required: False
 Position: Named
@@ -107,7 +113,7 @@ You cannot pipe input to this command.
 
 Returns endpoint group objects from Action1.
 
-When **AsPage** is used, each page object contains `Items`, `PageNumber`,
+When **AsPages** is used, each page object contains `Items`, `PageNumber`,
 `From`, `Limit`, `TotalItems`, and `NextPage`.
 
 ## NOTES

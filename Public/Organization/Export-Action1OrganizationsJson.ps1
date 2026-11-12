@@ -124,7 +124,7 @@ function Export-Action1OrganizationsJson {
     $pendingJsonLines = $null
 
     foreach (
-        $page in Get-Action1Organizations -AsPage -Limit $PageSize -ErrorAction Stop
+        $page in Get-Action1Organizations -AsPages -Limit $PageSize -ErrorAction Stop
     ) {
         $organizationsToExport = @(
             $page.Items |

@@ -32,8 +32,8 @@ Export-Action1OrganizationsJson [[-Path] <String>] [-OrgNames <String[]>] [-Page
 
 ## DESCRIPTION
 
-`Export-Action1OrganizationsJson` calls `Get-Action1Organizations` in page
-mode, optionally filters each returned page by organization ID or organization
+`Export-Action1OrganizationsJson` calls `Get-Action1Organizations -AsPages`,
+optionally filters each returned page by organization ID or organization
 name, and exports the selected organizations to a JSON file.
 
 The command writes a single JSON object with the following top-level

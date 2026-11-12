@@ -97,7 +97,7 @@ function Export-Action1EndpointsJson {
         Status         = $Status
         RebootRequired = $RebootRequired
         OS             = $OS
-        AsPage         = $true
+        AsPages        = $true
         Limit          = $PageSize
         ErrorAction    = 'Stop'
     }
