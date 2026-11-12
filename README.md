@@ -328,13 +328,22 @@ PS C:\> Set-Action1Credentials -APIKey api-key-example_e0983b7c-45e8-4c82-9f98-b
 
 ```
 
-Supported regions are `NorthAmerica`, `NorthAmerica-2` (alias `NA-2`), `Europe`,
-`Australia`, and `UnitedKingdom` (alias `UK`). Region names are case-insensitive.
-Invalid region names produce an error listing the supported names.
+Supported regions and aliases are listed below. Names are case-insensitive.
+Each region and its alias select the same API endpoint.
 
-For the United Kingdom region, use `Set-Action1Region -Region UK` or
-`Set-Action1Region -Region UnitedKingdom`. Both select
-`https://app.uk.action1.com/api/3.0`.
+| Region | Alias | API endpoint |
+| --- | --- | --- |
+| NorthAmerica | NA | `https://app.action1.com/api/3.0` |
+| NorthAmerica-2 | NA-2 | `https://app.na-2.action1.com/api/3.0` |
+| NorthAmerica-3 | NA-3 | `https://app.na-3.action1.com/api/4.0` |
+| Europe | EU | `https://app.eu.action1.com/api/3.0` |
+| Europe-2 | EU2 | `https://app.eu.action1.com/api/4.0` |
+| Australia | AU | `https://app.au.action1.com/api/3.0` |
+| UnitedKingdom | UK | `https://app.uk.action1.com/api/3.0` |
+
+For example, `Set-Action1Region -Region EU2` selects the same endpoint as
+`Set-Action1Region -Region Europe-2`.
+Invalid region names produce an error listing the supported names.
 
 Region endpoints, validation, and interactive region selection
 use the shared host lookup table in `Private/Configuration/Action1.Hosts.ps1`.
