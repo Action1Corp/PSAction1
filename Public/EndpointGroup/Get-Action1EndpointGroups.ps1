@@ -9,7 +9,8 @@ function Get-Action1EndpointGroups {
     [CmdletBinding(DefaultParameterSetName = 'AllEndpointGroups')]
     param(
         [Parameter(Mandatory = $false, ParameterSetName = 'AsPage')]
-        [switch]$AsPage,
+        [Alias('AsPage')]
+        [switch]$AsPages,
 
         [Parameter(Mandatory = $false)]
         [ValidateScript({
@@ -38,8 +39,8 @@ function Get-Action1EndpointGroups {
         Limit = $Limit
     }
 
-    if ($AsPage.IsPresent) {
-        $requestParams.AsPage = $true
+    if ($AsPages.IsPresent) {
+        $requestParams.AsPages = $true
     }
 
     if ($Limit -eq 1) {

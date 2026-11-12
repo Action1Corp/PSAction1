@@ -23,7 +23,7 @@ Get-Action1AutomationInstanceEndpoints [-AutomationInstanceId] <String> [-Limit 
 ### AsPage
 
 ```
-Get-Action1AutomationInstanceEndpoints [-AutomationInstanceId] <String> [-AsPage]
+Get-Action1AutomationInstanceEndpoints [-AutomationInstanceId] <String> [-AsPages]
  [-Limit <Int32>] [<CommonParameters>]
 ```
 
@@ -36,7 +36,7 @@ the module default organization configured by **Set-Action1DefaultOrg**.
 By default, the command retrieves all API pages and returns individual endpoint
 result objects to the pipeline without changing their properties.
 
-Use **AsPage** to return one envelope object per API page. Use **Limit** to
+Use **AsPages** to return one envelope object per API page. Use **Limit** to
 control how many endpoint results are requested per API page. The value must be
 from 1 through 200. The default value is 200.
 
@@ -65,7 +65,7 @@ results, requesting up to 50 records per API page.
 ```powershell
 Get-Action1AutomationInstanceEndpoints `
     -AutomationInstanceId '11111111-1111-1111-1111-111111111111' `
-    -AsPage `
+    -AsPages `
     -Limit 50
 ```
 
@@ -90,16 +90,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -AsPage
+### -AsPages
 
 Returns page envelope objects instead of individual endpoint result objects.
 Each page object contains `Items`, `PageNumber`, `From`, `Limit`,
 `TotalItems`, and `NextPage`.
 
+This switch changes only the output format; the command still retrieves all
+available pages. Without **Limit**, it requests 200 items per page. **Limit**
+controls the requested page size, not the total number of returned items.
+
+**AsPage** remains available as an alias.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: AsPage
-Aliases:
+Aliases: AsPage
 
 Required: False
 Position: Named
@@ -143,7 +149,7 @@ You cannot pipe input to this command.
 
 Returns endpoint result objects from Action1.
 
-When **AsPage** is used, each page object contains `Items`, `PageNumber`,
+When **AsPages** is used, each page object contains `Items`, `PageNumber`,
 `From`, `Limit`, `TotalItems`, and `NextPage`. The `Items` property contains
 the endpoint results returned for that API page.
 

@@ -21,7 +21,7 @@ Get-Action1Endpoints [-Status <String>] [-RebootRequired <String>] [-OS <String>
 
 ### AsPage
 ```
-Get-Action1Endpoints [-AsPage] [-Status <String>] [-RebootRequired <String>] [-OS <String>] [-Limit <Int32>]
+Get-Action1Endpoints [-AsPages] [-Status <String>] [-RebootRequired <String>] [-OS <String>] [-Limit <Int32>]
  [<CommonParameters>]
 ```
 
@@ -39,7 +39,7 @@ Specify `All` for a filter parameter to skip that filter.
 
 The command uses the module default organization configured by **Set-Action1DefaultOrg**.
 
-Use **AsPage** to return page envelope objects instead of individual endpoint
+Use **AsPages** to return page envelope objects instead of individual endpoint
 objects. Page mode is intended for export workflows that need to process one
 API page at a time.
 
@@ -132,7 +132,7 @@ endpoint group membership update without sending the add request.
 ### Example 9: Get endpoint pages
 
 ```powershell
-Get-Action1Endpoints -AsPage -Limit 50
+Get-Action1Endpoints -AsPages -Limit 50
 ```
 
 Gets managed endpoints as page envelope objects, requesting up to 50 endpoint
@@ -140,7 +140,7 @@ records per API page.
 
 ## PARAMETERS
 
-### -AsPage
+### -AsPages
 
 Returns page envelope objects instead of individual endpoint objects.
 
@@ -148,10 +148,16 @@ Each page envelope includes **Items**, **PageNumber**, **From**, **Limit**,
 **TotalItems**, and **NextPage** properties. The **Items** property contains
 endpoint objects returned for that API page.
 
+This switch changes only the output format; the command still retrieves all
+available pages. Without **Limit**, it requests 200 items per page. **Limit**
+controls the requested page size, not the total number of returned items.
+
+**AsPage** remains available as an alias.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: AsPage
-Aliases:
+Aliases: AsPage
 
 Required: False
 Position: Named
@@ -274,7 +280,7 @@ By default, returns managed endpoint objects from Action1. The objects include
 an `id` property and can be piped to commands that accept endpoint objects,
 such as **Add-Action1EndpointGroupMembers**.
 
-When **AsPage** is specified, returns page envelope objects whose **Items**
+When **AsPages** is specified, returns page envelope objects whose **Items**
 property contains endpoint objects.
 
 ## NOTES

@@ -24,7 +24,7 @@ Get-Action1AutomationInstanceEndpointDetails [-AutomationInstanceId] <String>
 
 ```
 Get-Action1AutomationInstanceEndpointDetails [-AutomationInstanceId] <String>
- [-EndpointId] <String> [-AsPage] [-Limit <Int32>] [<CommonParameters>]
+ [-EndpointId] <String> [-AsPages] [-Limit <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,7 +36,7 @@ by using the module default organization configured by **Set-Action1DefaultOrg**
 By default, the command retrieves all API pages and returns individual detail
 objects to the pipeline without changing their properties.
 
-Use **AsPage** to return one envelope object per API page. Use **Limit** to
+Use **AsPages** to return one envelope object per API page. Use **Limit** to
 control how many detail records are requested per API page. The value must be
 from 1 through 200. The default value is 200.
 
@@ -69,7 +69,7 @@ Retrieves all result details, requesting up to 50 records per API page.
 Get-Action1AutomationInstanceEndpointDetails `
     -AutomationInstanceId '11111111-1111-1111-1111-111111111111' `
     -EndpointId '22222222-2222-2222-2222-222222222222' `
-    -AsPage -Limit 50
+    -AsPages -Limit 50
 ```
 
 Gets page envelope objects for the specified endpoint and automation instance.
@@ -111,16 +111,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -AsPage
+### -AsPages
 
 Returns page envelope objects instead of individual detail objects.
 Each page object contains `Items`, `PageNumber`, `From`, `Limit`,
 `TotalItems`, and `NextPage`.
 
+This switch changes only the output format; the command still retrieves all
+available pages. Without **Limit**, it requests 200 items per page. **Limit**
+controls the requested page size, not the total number of returned items.
+
+**AsPage** remains available as an alias.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: AsPage
-Aliases:
+Aliases: AsPage
 
 Required: False
 Position: Named
@@ -164,7 +170,7 @@ You cannot pipe input to this command.
 
 Returns endpoint result detail objects from Action1.
 
-When **AsPage** is used, each page object contains `Items`, `PageNumber`,
+When **AsPages** is used, each page object contains `Items`, `PageNumber`,
 `From`, `Limit`, `TotalItems`, and `NextPage`. The `Items` property contains
 the detail records returned for that API page.
 

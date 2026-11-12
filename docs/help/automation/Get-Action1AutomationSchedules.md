@@ -22,7 +22,7 @@ Get-Action1AutomationSchedules [-Limit <Int32>] [<CommonParameters>]
 ### AsPage
 
 ```
-Get-Action1AutomationSchedules [-AsPage] [-Limit <Int32>] [<CommonParameters>]
+Get-Action1AutomationSchedules [-AsPages] [-Limit <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,7 +33,7 @@ the module default organization configured by **Set-Action1DefaultOrg**.
 By default, the command retrieves all API pages and returns individual
 automation schedule objects to the pipeline without changing their properties.
 
-Use **AsPage** to return one envelope object per API page for callers that need
+Use **AsPages** to return one envelope object per API page for callers that need
 to process automation schedules page by page.
 
 Use **Limit** to control how many automation schedules are requested per API
@@ -60,7 +60,7 @@ Gets all automation schedules, requesting up to 50 records per API page.
 ### Example 3: Get automation schedule pages
 
 ```powershell
-Get-Action1AutomationSchedules -AsPage -Limit 50
+Get-Action1AutomationSchedules -AsPages -Limit 50
 ```
 
 Gets automation schedules as page envelope objects, requesting up to 50 records
@@ -68,16 +68,22 @@ per API page.
 
 ## PARAMETERS
 
-### -AsPage
+### -AsPages
 
 Returns page envelope objects instead of individual automation schedule objects.
 Each page object contains `Items`, `PageNumber`, `From`, `Limit`,
 `TotalItems`, and `NextPage`.
 
+This switch changes only the output format; the command still retrieves all
+available pages. Without **Limit**, it requests 200 items per page. **Limit**
+controls the requested page size, not the total number of returned items.
+
+**AsPage** remains available as an alias.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: AsPage
-Aliases:
+Aliases: AsPage
 
 Required: False
 Position: Named
@@ -121,7 +127,7 @@ You cannot pipe input to this command.
 
 Returns automation schedule objects from Action1.
 
-When **AsPage** is used, each page object contains `Items`, `PageNumber`,
+When **AsPages** is used, each page object contains `Items`, `PageNumber`,
 `From`, `Limit`, `TotalItems`, and `NextPage`. The `Items` property contains
 the automation schedule objects returned for that API page.
 

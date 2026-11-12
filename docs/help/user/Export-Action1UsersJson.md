@@ -26,8 +26,8 @@ Export-Action1UsersJson [[-Path] <String>] [-UserIds <String[]>] [-PageSize <Int
 
 ## DESCRIPTION
 
-`Export-Action1UsersJson` calls `Get-Action1Users`, optionally filters the
-returned user list by user ID, and exports the selected users to a JSON file.
+`Export-Action1UsersJson` calls `Get-Action1Users -AsPages`, optionally filters
+each returned page by user ID, and exports the selected users to a JSON file.
 
 The command writes a single JSON object with the following top-level
 properties:

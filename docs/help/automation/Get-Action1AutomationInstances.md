@@ -22,7 +22,7 @@ Get-Action1AutomationInstances [-Limit <Int32>] [-EndpointId <String>] [<CommonP
 ### AsPage
 
 ```
-Get-Action1AutomationInstances [-AsPage] [-Limit <Int32>] [-EndpointId <String>] [<CommonParameters>]
+Get-Action1AutomationInstances [-AsPages] [-Limit <Int32>] [-EndpointId <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -37,7 +37,7 @@ command adds `endpoint_id={EndpointId}` to the request query string. Omit
 By default, the command retrieves all API pages and returns individual
 automation instance objects to the pipeline without changing their properties.
 
-Use **AsPage** to return one envelope object per API page for callers that need
+Use **AsPages** to return one envelope object per API page for callers that need
 to process automation instances page by page.
 
 Use **Limit** to control how many automation instances are requested per API
@@ -64,7 +64,7 @@ Gets all automation instances, requesting up to 50 records per API page.
 ### Example 3: Get automation instance pages
 
 ```powershell
-Get-Action1AutomationInstances -AsPage -Limit 50
+Get-Action1AutomationInstances -AsPages -Limit 50
 ```
 
 Gets automation instances as page envelope objects, requesting up to 50 records
@@ -84,7 +84,7 @@ organization.
 ```powershell
 Get-Action1AutomationInstances `
     -EndpointId '11111111-1111-1111-1111-111111111111' `
-    -AsPage `
+    -AsPages `
     -Limit 50
 ```
 
@@ -93,16 +93,22 @@ automation instances per API page.
 
 ## PARAMETERS
 
-### -AsPage
+### -AsPages
 
 Returns page envelope objects instead of individual automation instance objects.
 Each page object contains `Items`, `PageNumber`, `From`, `Limit`,
 `TotalItems`, and `NextPage`.
 
+This switch changes only the output format; the command still retrieves all
+available pages. Without **Limit**, it requests 200 items per page. **Limit**
+controls the requested page size, not the total number of returned items.
+
+**AsPage** remains available as an alias.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: AsPage
-Aliases:
+Aliases: AsPage
 
 Required: False
 Position: Named
@@ -167,7 +173,7 @@ You cannot pipe input to this command.
 
 Returns automation instance objects from Action1.
 
-When **AsPage** is used, each page object contains `Items`, `PageNumber`,
+When **AsPages** is used, each page object contains `Items`, `PageNumber`,
 `From`, `Limit`, `TotalItems`, and `NextPage`. The `Items` property contains
 the automation instance objects returned for that API page.
 

@@ -109,7 +109,7 @@ function Export-Action1UsersJson {
     $exportedUserIds = @{}
     $pendingJsonLines = $null
 
-    foreach ($page in Get-Action1Users -AsPage -Limit $PageSize -ErrorAction Stop) {
+    foreach ($page in Get-Action1Users -AsPages -Limit $PageSize -ErrorAction Stop) {
         $usersToExport = @(
             $page.Items |
                 Where-Object { $null -ne $_ } |
