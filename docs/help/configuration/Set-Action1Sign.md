@@ -9,44 +9,50 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Configures the Action1 signing key and stores an encrypted signing passphrase.
+Configures the Action1 signing key and SecureString passphrase for the current session.
 
 ## SYNTAX
 
 ```text
-Set-Action1Sign -Action1KeyPath <String> -PassPhrase <String> [-PassPhrasePath <String>]
- [-Force] [-WhatIf] [-Confirm] [<CommonParameters>]
+Set-Action1Sign -Action1KeyPath <String> -PassPhrase <SecureString> [-Force]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 `Set-Action1Sign` records the full path to an existing, nonempty Action1 signing
-key file and writes the supplied passphrase to an encrypted file. The key file
-is not copied or modified. No Action1 API request is made, and the command does
-not verify that the key and passphrase match; this is checked when signing.
+key file in `$Script:Action1_SignKeyPath` and retains the passphrase as a
+SecureString in `$Script:Action1_SignPassPhrase` inside the module. Both values
+last only for the current module session. The command does not write a
+passphrase file, copy or modify the key file, or make an Action1 API request.
+It does not verify that the key and passphrase match; this is checked when signing.
 
-The passphrase is accepted as a string, converted to a SecureString, and
-encrypted using Windows Data Protection API (DPAPI) through
-`ConvertFrom-SecureString`, without a custom encryption key. Decryption requires
-the same Windows user on the same computer. New files inherit the destination
-directory's permissions; the command does not change file permissions.
+The passphrase parameter is a SecureString. A custom argument transformation
+converts nonempty plaintext strings to SecureString during parameter binding,
+so existing string-based calls continue to work. Existing nonempty SecureString
+values are accepted directly. The command body receives and stores only the
+SecureString. Subsequent successful calls replace the configured credentials.
 
-The command replaces an existing passphrase file. Module credential paths are
-updated only after the encrypted file is successfully written. The default
-location is `%LOCALAPPDATA%\PSAction1\Signing\passphrase.txt`; subsequent calls
-in the same module session reuse the last configured passphrase path.
+The private signer calls `Test-Action1SignTool` before accessing the passphrase
+contents. It writes configuration JSON to a temporary UTF-8 file without a BOM,
+then obtains the plaintext passphrase only for the native invocation and pipes
+it to Action1Sign using `--passphrase-file=-`. The configuration is supplied
+through `--config=<temporary path>` because only one input can use stdin.
+The passphrase value is not included in process arguments or written to a file.
+Windows PowerShell sends the stdin value as a UTF-8 line with a terminating newline.
 
-Private conversion helpers handle encryption and decryption. The private signer
-writes the decrypted passphrase into one temporary UTF-8 file without a BOM or
-added newline. It pipes configuration JSON to Action1Sign using `--config=-`
-and `--passphrase-file=<temporary path>`, captures the signature from stdout,
-and removes the temporary passphrase file in `finally`, including after tool
-failures. Invocation is synchronous, without an explicit timeout. Process
-arguments contain file paths, not the passphrase value. A forced host
-termination can interrupt cleanup and leave the temporary file behind.
+Windows PowerShell 5.1 has no `ConvertFrom-SecureString -AsPlainText` parameter.
+The signer uses `New-Object System.Net.NetworkCredential` with the SecureString
+and reads its `Password` property to obtain plaintext for stdin. No network
+connection or authentication occurs during this conversion.
 
-`-WhatIf` skips file and directory creation, file replacement, and module-state
-changes. `-Force` bypasses confirmation prompts while still honoring `-WhatIf`.
+The signer captures the signature JSON from stdout and removes the temporary
+configuration file in `finally`, including after tool failures. Invocation is
+synchronous, without an explicit timeout. A forced host termination can interrupt
+cleanup and leave the temporary configuration file behind.
+
+`-WhatIf` skips module-state changes. `-Force` bypasses confirmation prompts
+while still honoring `-WhatIf`.
 
 ## EXAMPLES
 
@@ -56,28 +62,28 @@ changes. `-Force` bypasses confirmation prompts while still honoring `-WhatIf`.
 Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $passphrase
 ```
 
-Uses the passphrase string already obtained from Action1 and stores it encrypted
-at the default path. The command produces no output.
+Uses the passphrase string already obtained from Action1, converts it to
+SecureString during binding, and stores it in module memory for this session.
+The command produces no output.
 
-### Example 2: Select the encrypted passphrase file
-
-```powershell
-Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' `
-    -PassPhrase $passphrase -PassPhrasePath 'C:\Signing\passphrase.txt'
-```
-
-Creates the destination directory when necessary and configures the module to
-use this encrypted file for subsequent signing operations.
-
-### Example 3: Preview a credential update
+### Example 2: Preview a credential update
 
 ```powershell
 Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' `
     -PassPhrase $passphrase -WhatIf
 ```
 
-Validates the arguments and displays the intended operation without writing
-files or changing the configured credential paths.
+Validates the arguments and displays the intended operation without changing
+the configured key path or passphrase.
+
+### Example 3: Supply a SecureString directly
+
+```powershell
+$passphrase = Read-Host 'Action1 signing passphrase' -AsSecureString
+Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $passphrase
+```
+
+Accepts the existing SecureString without converting it from plaintext again.
 
 ## PARAMETERS
 
@@ -101,13 +107,15 @@ Accept wildcard characters: False
 
 ### -PassPhrase
 
-Passphrase string supplied by Action1 for the signing key. Null and empty
-strings are rejected. The value is preserved without trimming or adding a
-newline. It is encrypted before being written to disk and is not retained in
-module state.
+Passphrase supplied by Action1 for the signing key. Accepts a nonempty plaintext
+string or SecureString. Plaintext is converted to SecureString during parameter
+binding, before the command body runs. Null, empty, and unsupported input types
+are rejected. The stored value is preserved without trimming or adding a newline.
+It is retained as a SecureString in `$Script:Action1_SignPassPhrase` for the
+current module session and is not written to disk.
 
 ```yaml
-Type: String
+Type: SecureString
 Parameter Sets: (All)
 Aliases:
 
@@ -118,33 +126,10 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PassPhrasePath
-
-Literal filesystem path for the DPAPI-encrypted passphrase file. Defaults to
-`$Script:Action1_SignPassPhrasePath` inside the module, initially
-`%LOCALAPPDATA%\PSAction1\Signing\passphrase.txt`. The resolved path is stored
-in that module variable after a successful write. Existing files are replaced;
-directories, file links, and the supplied key path are rejected.
-
-This file is encrypted storage for PSAction1. It cannot be passed directly to
-Action1Sign as a plaintext passphrase file.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: $Script:Action1_SignPassPhrasePath
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Force
 
 Bypasses confirmation prompts. This switch does not override validation or
-`-WhatIf`. Replacing an existing encrypted passphrase file does not require it.
+`-WhatIf`. Replacing the configured credentials does not require it.
 
 ```yaml
 Type: SwitchParameter
@@ -160,7 +145,7 @@ Accept wildcard characters: False
 
 ### -WhatIf
 
-Shows the intended credential update without writing files or changing module state.
+Shows the intended credential update without changing module state.
 
 ```yaml
 Type: SwitchParameter
@@ -176,7 +161,7 @@ Accept wildcard characters: False
 
 ### -Confirm
 
-Prompts before writing the encrypted passphrase file and updating module state.
+Prompts before updating the signing credentials in module state.
 
 ```yaml
 Type: SwitchParameter
@@ -205,19 +190,24 @@ This command does not accept pipeline input.
 
 ### None
 
-This command writes the encrypted passphrase file and updates module state.
+This command updates the signing credentials in module state and produces no output.
 
 ## NOTES
 
 Supported on Windows, including Windows PowerShell 5.1.
 
-The encrypted file persists after the session ends. Configured paths are module
-session state; call `Set-Action1Sign` again after importing the module in a new
-session. Reusing the default file does not automatically restore the key path.
+Neither the key path nor the passphrase is persisted between PowerShell sessions.
+Call `Set-Action1Sign` again after starting a new session or reloading the module.
+The key file itself remains at the user-supplied path. Previously created
+encrypted passphrase files are no longer used and are not deleted by this command.
 
-Because `PassPhrase` is a string parameter, literal values typed into commands
-can appear in PowerShell history or transcription. Encryption protects the
-stored file, not the caller's command text or existing string variables.
+Although the parameter type is SecureString, accepted plaintext literals can
+still appear in PowerShell history or transcription. Parameter transformation
+does not erase the caller's original string variable or command text. Use
+`Read-Host -AsSecureString` when plaintext input in the caller is unnecessary.
+Signing temporarily exposes plaintext in process memory and stdin buffers for
+the native signing tool. SecureString and module scope do not prevent code with
+sufficient access to the process from obtaining credentials.
 
 Keep the signing key secure separately. Its permissions are not changed by this command.
 
