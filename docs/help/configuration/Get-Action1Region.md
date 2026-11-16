@@ -56,7 +56,7 @@ UK
 Returns the supplied alias. Setting `UnitedKingdom` instead returns `UnitedKingdom`;
 both names select the same UK API endpoint.
 
-### Example 4: Preserve the Europe-2 alias
+### Example 4: Preserve the Europe2 alias
 
 ```powershell
 PS C:\> Set-Action1Region -Region EU2
@@ -64,8 +64,8 @@ PS C:\> Get-Action1Region
 EU2
 ```
 
-Returns the supplied alias. Setting `Europe-2` instead returns `Europe-2`;
-both names select `https://app.eu.action1.com/api/4.0`.
+Returns the supplied alias. Setting `Europe2` instead returns `Europe2`;
+both names select `https://app.eu-2.action1.com/api/4.0`.
 
 ## PARAMETERS
 

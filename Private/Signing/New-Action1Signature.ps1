@@ -31,7 +31,7 @@ function New-Action1Signature {
         throw 'ObjectConfig must contain at least one configuration property.'
     }
     $setupHint = 'Run Set-Action1Sign to configure signing credentials.'
-    if ($Action1KeyPath -notmatch '\S') {
+    if ([string]::IsNullOrWhiteSpace($Action1KeyPath)) {
         throw "The Action1 signing key path is not configured. $setupHint"
     }
     try {
