@@ -32,8 +32,8 @@ Export-Action1EndpointGroupsJson [[-Path] <String>] [-EndpointGroupNames <String
 
 ## DESCRIPTION
 
-`Export-Action1EndpointGroupsJson` calls `Get-Action1EndpointGroups` in page
-mode, optionally filters each returned page by endpoint group ID or endpoint
+`Export-Action1EndpointGroupsJson` calls `Get-Action1EndpointGroups -AsPages`,
+optionally filters each returned page by endpoint group ID or endpoint
 group name, and exports the selected endpoint groups to a JSON file.
 
 The command writes a single JSON object with the following top-level

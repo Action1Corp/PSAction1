@@ -9,7 +9,8 @@ function Get-Action1Users {
     [CmdletBinding(DefaultParameterSetName = 'AllUsers')]
     param(
         [Parameter(Mandatory = $false, ParameterSetName = 'AsPage')]
-        [switch]$AsPage,
+        [Alias('AsPage')]
+        [switch]$AsPages,
 
         [Parameter(Mandatory = $false)]
         [ValidateScript({
@@ -34,11 +35,11 @@ function Get-Action1Users {
         Limit = $Limit
     }
 
-    if ($AsPage.IsPresent) {
-        $requestParams.AsPage = $true
+    if ($AsPages.IsPresent) {
+        $requestParams.AsPages = $true
     }
 
-    if ($AsPage.IsPresent) {
+    if ($AsPages.IsPresent) {
         Invoke-Action1PagedGetRequest @requestParams |
             Where-Object { $null -ne $_ } |
             ForEach-Object {

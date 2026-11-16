@@ -20,7 +20,7 @@ Get-Action1Organizations [-Limit <Int32>] [<CommonParameters>]
 
 ### AsPage
 ```
-Get-Action1Organizations [-AsPage] [-Limit <Int32>] [<CommonParameters>]
+Get-Action1Organizations [-AsPages] [-Limit <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,7 +31,7 @@ and enterprise IDs.
 
 Results are sorted by organization name, then organization ID.
 
-Use **AsPage** to return one object per API page. Page mode is intended for
+Use **AsPages** to return one object per API page. Page mode is intended for
 export commands that need to process large result sets incrementally. In page
 mode, each page object contains normalized organization objects in the
 **Items** property and preserves the API page order.
@@ -48,7 +48,7 @@ Returns organization details available to the current account.
 
 ## PARAMETERS
 
-### -AsPage
+### -AsPages
 
 Returns one object per API page instead of a flattened organization list.
 
@@ -56,10 +56,16 @@ Each page object's **Items** property contains normalized organization objects
 with `Org_Name`, `Org_ID`, `Description`, `Type`, and `EnterpriseId`
 properties.
 
+This switch changes only the output format; the command still retrieves all
+available pages. Without **Limit**, it requests 200 items per page. **Limit**
+controls the requested page size, not the total number of returned items.
+
+**AsPage** remains available as an alias.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: AsPage
-Aliases:
+Aliases: AsPage
 
 Required: False
 Position: Named
@@ -74,8 +80,7 @@ Specifies the page size used for paged API requests.
 
 The value must be from 1 through 200. The default value is 200.
 
-The command still retrieves all available pages unless **AsPage** is used by a
-caller that processes each page incrementally.
+The command retrieves all available pages in both output modes.
 
 ```yaml
 Type: Int32
@@ -105,13 +110,13 @@ You cannot pipe input to this command.
 Each object contains `Org_Name`, `Org_ID`, `Description`, `Type`, and
 `EnterpriseId` properties.
 
-When **AsPage** is used, each page object contains `Items`, `PageNumber`,
+When **AsPages** is used, each page object contains `Items`, `PageNumber`,
 `From`, `Limit`, `TotalItems`, and `NextPage` properties.
 
 ## NOTES
 
 ## RELATED LINKS
 
-[Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
-[Get-Action1DefaultOrgId](Get-Action1DefaultOrgId.md)
-[Get-Action1DefaultOrgName](Get-Action1DefaultOrgName.md)
+[Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
+[Get-Action1DefaultOrgId](../configuration/Get-Action1DefaultOrgId.md)
+[Get-Action1DefaultOrgName](../configuration/Get-Action1DefaultOrgName.md)

@@ -131,7 +131,7 @@ function Export-Action1EndpointGroupsJson {
     $pendingJsonLines = $null
 
     foreach (
-        $page in Get-Action1EndpointGroups -AsPage -Limit $PageSize -ErrorAction Stop
+        $page in Get-Action1EndpointGroups -AsPages -Limit $PageSize -ErrorAction Stop
     ) {
         $endpointGroupsToExport = @(
             $page.Items |

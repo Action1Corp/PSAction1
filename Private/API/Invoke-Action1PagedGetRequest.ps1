@@ -23,10 +23,12 @@ function Invoke-Action1PagedGetRequest {
         })]
         [int]$Limit = $Script:Action1_PagedGetRequestDefaultLimit,
         [switch]$OmitInitialOffset,
-        [switch]$AsPage
+        # Returns object items by page if specified. By default returns all objects stream.
+        [Alias('AsPage')]
+        [switch]$AsPages
     )
 
-    $asPageOutput = $AsPage.IsPresent
+    $asPagesOutput = $AsPages.IsPresent
 
     $getPageItemCount = {
         param(
@@ -97,7 +99,7 @@ function Invoke-Action1PagedGetRequest {
 
     $page = Invoke-Action1ApiRequest -Method GET -Path $Path -Label $Label -AddArgs $requestArgs
 
-    # Normal callers receive streamed items. AsPage callers receive page
+    # Normal callers receive streamed items. AsPages callers receive page
     # envelopes so exporters can write each page incrementally.
     $writePagedOutput = {
         param(
@@ -105,7 +107,7 @@ function Invoke-Action1PagedGetRequest {
             [int]$CurrentPageNumber
         )
 
-        if ($asPageOutput) {
+        if ($asPagesOutput) {
             [PSCustomObject][ordered]@{
                 Items      = @($CurrentPage.items)
                 PageNumber = $CurrentPageNumber

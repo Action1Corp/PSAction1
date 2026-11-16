@@ -9,7 +9,8 @@ function Get-Action1Endpoints {
     [CmdletBinding(DefaultParameterSetName = 'AllEndpoints')]
     param(
         [Parameter(Mandatory = $false, ParameterSetName = 'AsPage')]
-        [switch]$AsPage,
+        [Alias('AsPage')]
+        [switch]$AsPages,
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('Connected', 'Disconnected', 'Pending Uninstall', 'All')]
@@ -80,8 +81,8 @@ function Get-Action1Endpoints {
         Limit   = $Limit
     }
 
-    if ($AsPage.IsPresent) {
-        $requestParams.AsPage = $true
+    if ($AsPages.IsPresent) {
+        $requestParams.AsPages = $true
     }
 
     Invoke-Action1PagedGetRequest @requestParams
