@@ -324,9 +324,32 @@ This allows you to provide authentication details step by step.
 ```PowerShell
 PS C:\> Set-Action1Region NorthAmerica
 
-PS C:\> Set-Action1Credentials -APIKey api-key-example_e0983b7c-45e8-4c82-9f98-b63bdc4dcb33@action1.com -Secret 652b47a18e212e695e9fbfaa
+PS C:\> $apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+
+PS C:\> $secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
+
+PS C:\> Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
 ```
+
+`Set-Action1Credentials` requires nonempty SecureStrings for both parameters.
+If the credentials are already in string variables, convert them first:
+
+```powershell
+$apiKey = ConvertTo-SecureString -String $apiKeyText -AsPlainText -Force
+$secret = ConvertTo-SecureString -String $secretText -AsPlainText -Force
+Set-Action1Credentials -APIKey $apiKey -Secret $secret
+```
+
+The module keeps both credentials as SecureStrings for the current session and
+obtains plaintext only to build an OAuth request. See
+[Set-Action1Credentials](docs/help/configuration/Set-Action1Credentials.md).
+
+OAuth request and response bodies and raw failure details are omitted from
+module diagnostics; HTTP verbose and debug output are also suppressed for these
+requests. This cannot guarantee exclusion from machine-level auditing, external
+tracing, or caller commands containing plaintext. The module leaves customer
+audit policies in place. See the command help for the logging limitations.
 
 Supported regions and aliases are listed below. Names are case-insensitive.
 Each region and its alias select the same API endpoint.

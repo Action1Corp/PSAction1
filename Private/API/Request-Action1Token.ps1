@@ -10,7 +10,12 @@ function Request-Action1Token {
     param()
 
     if (Initialize-Action1Region) {
-        if ([string]::IsNullOrEmpty($Script:Action1_APIKey) -or [string]::IsNullOrEmpty($Script:Action1_Secret)) {
+        if (
+            $Script:Action1_APIKey -isnot [System.Security.SecureString] -or
+            $Script:Action1_APIKey.Length -eq 0 -or
+            $Script:Action1_Secret -isnot [System.Security.SecureString] -or
+            $Script:Action1_Secret.Length -eq 0
+        ) {
             if ($Script:Action1_Interactive) {
                 Set-Action1Credentials 
             }
@@ -26,10 +31,17 @@ function Request-Action1Token {
                 -Path "$Script:Action1_BaseURI/oauth2/token" `
                 -Label 'Request OAuth2 token' `
                 -Body @{
-                    client_id     = $Script:Action1_APIKey
-                    client_secret = $Script:Action1_Secret
+                    # Expose plaintext only for the OAuth request, not module state.
+                    # NetworkCredential supports SecureString in PowerShell 5.1.
+                    client_id     = (New-Object System.Net.NetworkCredential `
+                        -ArgumentList 'Action1', $Script:Action1_APIKey `
+                        -ErrorAction Stop).Password
+                    client_secret = (New-Object System.Net.NetworkCredential `
+                        -ArgumentList 'Action1', $Script:Action1_Secret `
+                        -ErrorAction Stop).Password
                 } `
                 -SkipAuthenticationCheck `
+                -SensitiveData `
                 -ErrorVariable tokenRequestErrors
             if ($null -eq $token) {
                 $hasTokenRequestError = $false
@@ -55,7 +67,7 @@ function Request-Action1Token {
             return $token
         }
         catch [System.Net.WebException] {
-            Write-Error "Error fetching auth token: $($_)."
+            Write-Error 'Error fetching auth token: authentication request failed.'
             return $null
         }     
     }

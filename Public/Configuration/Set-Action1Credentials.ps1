@@ -9,10 +9,12 @@ function Set-Action1Credentials {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string]$APIKey,
+        [ValidateScript({ $_.Length -gt 0 })]
+        [System.Security.SecureString]$APIKey,
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string]$Secret
+        [ValidateScript({ $_.Length -gt 0 })]
+        [System.Security.SecureString]$Secret
     )
     $Script:Action1_APIKey = $APIKey
     $Script:Action1_Secret = $Secret
