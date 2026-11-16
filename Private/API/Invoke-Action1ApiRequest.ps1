@@ -20,8 +20,16 @@ function Invoke-Action1ApiRequest {
         [switch]$RawBody,
         [string]$AddArgs,
         [switch]$RawResponse,
-        [switch]$SkipAuthenticationCheck
+        [switch]$SkipAuthenticationCheck,
+        [switch]$SensitiveData
     )
+
+    if ($SensitiveData) {
+        # These preferences apply only within this request, not the caller's session.
+        $VerbosePreference = 'SilentlyContinue'
+        $DebugPreference = 'SilentlyContinue'
+        $ProgressPreference = 'SilentlyContinue'
+    }
 
     if ($AddArgs) {
         $Path += "?{0}" -f $AddArgs
@@ -56,13 +64,20 @@ function Invoke-Action1ApiRequest {
     if ($PSBoundParameters.ContainsKey('Body') -and $null -ne $Body) {
         if ($RawBody) {
             $requestBody = $Body
-            Write-Action1Debug "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
+            if (-not $SensitiveData) {
+                Write-Action1Debug "Raw request body supplied. Type: $($requestBody.GetType().FullName)"
+            }
         }
         else {
             $requestBody = ConvertTo-Json `
                 -InputObject $Body `
                 -Depth $Script:Action1_JsonObjectConversionDepth
-            Write-Action1Debug "JSON Data to be sent:`n$requestBody"  
+            if (-not $SensitiveData) {
+                Write-Action1Debug "JSON Data to be sent:`n$requestBody"
+            }
+        }
+        if ($SensitiveData) {
+            Write-Action1Debug 'Sensitive request body omitted from debug output.'
         }
     }
 
@@ -72,6 +87,13 @@ function Invoke-Action1ApiRequest {
         UseBasicParsing = $true
         Headers         = $requestHeaders
         ErrorAction     = 'Stop'
+    }
+
+    if ($SensitiveData) {
+        $invokeWebRequestParams.Verbose = $false
+        $invokeWebRequestParams.Debug = $false
+        $invokeWebRequestParams.WarningAction = 'SilentlyContinue'
+        $invokeWebRequestParams.InformationAction = 'SilentlyContinue'
     }
 
     if ($null -ne $requestBody) {
@@ -85,7 +107,13 @@ function Invoke-Action1ApiRequest {
         try {
             if($Script:Action1_DebugEnabled){$webRequestSW = [System.Diagnostics.Stopwatch]::StartNew()}
 
-            $response = Invoke-WebRequest @invokeWebRequestParams
+            if ($SensitiveData) {
+                $response = Invoke-WebRequest @invokeWebRequestParams `
+                    3>$null 4>$null 5>$null 6>$null
+            }
+            else {
+                $response = Invoke-WebRequest @invokeWebRequestParams
+            }
 
             if($Script:Action1_DebugEnabled){
                 $webRequestSW.Stop()
@@ -102,6 +130,9 @@ function Invoke-Action1ApiRequest {
                     return $null
                 }
 
+                if ($SensitiveData) {
+                    return ConvertFrom-Json -InputObject $response.Content -ErrorAction Stop
+                }
                 return ConvertFrom-Json -InputObject $response.Content
             }
 
@@ -121,9 +152,56 @@ function Invoke-Action1ApiRequest {
                     ErrorRecord = $_
             }
             $responseContent = Trace-WebResponseContent @responseContentParams
-            $responseStatus = Get-JsonPropertyValue `
-                -JsonContent $responseContent `
-                -PropertyName 'status'
+            if ($SensitiveData) {
+                # Parse only retry metadata; never log server text or parse errors.
+                $errorResponse = $null
+                if (-not [string]::IsNullOrWhiteSpace($responseContent)) {
+                    try {
+                        $errorResponse = ConvertFrom-Json -InputObject $responseContent `
+                            -ErrorAction Stop
+                    }
+                    catch {
+                        $errorResponse = $null
+                    }
+                }
+                $responseStatus = $null
+                $errorDetails = $null
+                if ($null -ne $errorResponse) {
+                    if ($errorResponse.PSObject.Properties.Name -contains 'status') {
+                        $responseStatus = $errorResponse.status
+                    }
+                    if ($errorResponse.PSObject.Properties.Name -contains 'details') {
+                        $errorDetails = $errorResponse.details
+                    }
+                }
+                $apiErrorMessage = (
+                    'Authentication request failed. Check your Action1 API key and secret.'
+                )
+            }
+            else {
+                $responseStatus = Get-JsonPropertyValue `
+                    -JsonContent $responseContent `
+                    -PropertyName 'status'
+                $errorDetails = Get-JsonPropertyValue `
+                    -JsonContent $responseContent `
+                    -PropertyName 'details'
+                $userMessage = Get-JsonPropertyValue `
+                    -JsonContent $responseContent `
+                    -PropertyName 'user_message'
+                $developerMessage = $null
+
+                if ([string]::IsNullOrWhiteSpace($userMessage)) {
+                    $developerMessage = Get-JsonPropertyValue `
+                        -JsonContent $responseContent `
+                        -PropertyName 'developer_message'
+                }
+
+                $apiErrorMessage = $userMessage
+
+                if ([string]::IsNullOrWhiteSpace($apiErrorMessage)) {
+                    $apiErrorMessage = $developerMessage
+                }
+            }
 
             if ($null -eq $statusCode) {
                 $parsedStatusCode = 0
@@ -135,26 +213,6 @@ function Invoke-Action1ApiRequest {
                 if ($hasParsedStatusCode) {
                     $statusCode = $parsedStatusCode
                 }
-            }
-
-            $errorDetails = Get-JsonPropertyValue `
-                -JsonContent $responseContent `
-                -PropertyName 'details'
-            $userMessage = Get-JsonPropertyValue `
-                -JsonContent $responseContent `
-                -PropertyName 'user_message'
-            $developerMessage = $null
-
-            if ([string]::IsNullOrWhiteSpace($userMessage)) {
-                $developerMessage = Get-JsonPropertyValue `
-                    -JsonContent $responseContent `
-                    -PropertyName 'developer_message'
-            }
-
-            $apiErrorMessage = $userMessage
-
-            if ([string]::IsNullOrWhiteSpace($apiErrorMessage)) {
-                $apiErrorMessage = $developerMessage
             }
 
             if (
@@ -171,10 +229,18 @@ function Invoke-Action1ApiRequest {
                 $responseContent = '<empty response content>'
             }
 
-            Write-Action1Debug (
-                "Failed response code {0} for {1} request to {2}. Response: {3}" -f
-                $statusCode, $Method, $Path, $responseContent
-            )
+            if ($SensitiveData) {
+                Write-Action1Debug (
+                    'Sensitive request failed: HTTP status {0}. Response details omitted.' -f
+                    $statusCode
+                )
+            }
+            else {
+                Write-Action1Debug (
+                    "Failed response code {0} for {1} request to {2}. Response: {3}" -f
+                    $statusCode, $Method, $Path, $responseContent
+                )
+            }
 
             if ($statusCode -eq 429) {
                 $retryTimeout = $null
@@ -232,7 +298,12 @@ function Invoke-Action1ApiRequest {
                 return $null
             }
 
-            Write-Action1Debug "Error processing $($Label): $($_.Exception.Message)"
+            if ($SensitiveData) {
+                Write-Action1Debug 'Sensitive request failed. Exception details omitted.'
+            }
+            else {
+                Write-Action1Debug "Error processing $($Label): $($_.Exception.Message)"
+            }
             return $null
         }
     }

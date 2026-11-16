@@ -38,6 +38,7 @@ PS C:\> Set-Action1Region -Region Europe
 ```
 
 Configures the PSAction1 module to use the Europe API endpoint.
+`EU` selects the same endpoint, `https://app.eu.action1.com/api/3.0`.
 
 ### Example 2
 
@@ -46,6 +47,7 @@ PS C:\> Set-Action1Region -Region NorthAmerica
 ```
 
 Configures the PSAction1 module to use the North America API endpoint.
+`NA` selects the same endpoint, `https://app.action1.com/api/3.0`.
 
 ### Example 3
 
@@ -54,6 +56,7 @@ PS C:\> Set-Action1Region -Region Australia
 ```
 
 Configures the PSAction1 module to use the Australia API endpoint.
+`AU` selects the same endpoint, `https://app.au.action1.com/api/3.0`.
 
 ### Example 4
 
@@ -80,6 +83,25 @@ PS C:\> Set-Action1Region -Region UK
 Configures the module to use `https://app.uk.action1.com/api/3.0`.
 `UnitedKingdom` selects the same endpoint.
 
+### Example 7: Select the third North America region
+
+```powershell
+PS C:\> Set-Action1Region -Region 'NorthAmerica-3'
+```
+
+Configures the module to use `https://app.na-3.action1.com/api/4.0`.
+`NA-3` selects the same endpoint.
+
+### Example 8: Select Europe-2
+
+```powershell
+PS C:\> Set-Action1Region -Region 'Europe-2'
+```
+
+Configures the module to use `https://app.eu.action1.com/api/4.0`.
+`EU2` selects the same endpoint.
+`Europe` continues to use `https://app.eu.action1.com/api/3.0`.
+
 ## PARAMETERS
 
 ### -Region
@@ -89,10 +111,17 @@ Specifies the Action1 API region to use.
 Accepted values are:
 
 - NorthAmerica
+- NA
 - NorthAmerica-2
 - NA-2
+- NorthAmerica-3
+- NA-3
 - Europe
+- EU
+- Europe-2
+- EU2
 - Australia
+- AU
 - UnitedKingdom
 - UK
 

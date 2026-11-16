@@ -49,7 +49,9 @@ Before using the module, configure authentication.
 ### Step 1: Set credentials
 
 ```powershell
-Set-Action1Credentials -APIKey "your-api-key" -Secret "your-secret"
+$apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+$secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
+Set-Action1Credentials -APIKey $apiKey -Secret $secret
 ```
 
 ### Step 2:  Set region
@@ -95,10 +97,13 @@ Typical usage flow:
 Sets API credentials for the current session.
 
 ```powershell
-Set-Action1Credentials -APIKey <String> -Secret <String>
+Set-Action1Credentials -APIKey <SecureString> -Secret <SecureString>
 ```
 
-Stores credentials used by all module commands.
+Stores nonempty SecureString credentials used by all module commands. To convert
+existing string variables, use `ConvertTo-SecureString -AsPlainText -Force` before
+calling this command. See
+[Set-Action1Credentials](configuration/Set-Action1Credentials.md) for examples.
 
 ### Set-Action1DefaultOrg
 
@@ -203,7 +208,9 @@ Handles package upload and deployment workflows.
 ### Example 1: Retrieve endpoints
 
 ```powershell
-Set-Credentials -APIKey "xxx" -Secret "yyy"
+$apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+$secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
+Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
 Get-Action1 -Query Endpoints
 ```
@@ -235,7 +242,9 @@ Start-Action1Requery -Type InstalledSoftware -Endpoint_Id "12345"
 ### Example 5: Full workflow
 
 ```powershell
-Set-Action1Credentials -APIKey "xxx" -Secret "yyy"
+$apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+$secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
+Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
 Set-Action1Region -Region "eu"
 
@@ -254,7 +263,8 @@ All API operations require authentication.
 
 Use **Set-Action1Credentials** to provide API key and secret.
 
-Credentials are stored in memory and must be re-entered for each new PowerShell session.
+Credentials are stored in memory as SecureStrings and must be re-entered for each
+new PowerShell session. Plaintext is obtained only to build the OAuth request.
 
 ## NOTES
 
@@ -272,7 +282,7 @@ Credentials are stored only for the duration of the session
 
 [Update-Action1](Update-Action1.md)
 
-[Set-Action1Credentials](Set-Action1Credentials.md)
+[Set-Action1Credentials](configuration/Set-Action1Credentials.md)
 
 [Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
 
