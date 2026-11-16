@@ -27,11 +27,11 @@ last only for the current module session. The command does not write a
 passphrase file, copy or modify the key file, or make an Action1 API request.
 It does not verify that the key and passphrase match; this is checked when signing.
 
-The passphrase parameter is a SecureString. A custom argument transformation
-converts nonempty plaintext strings to SecureString during parameter binding,
-so existing string-based calls continue to work. Existing nonempty SecureString
-values are accepted directly. The command body receives and stores only the
-SecureString. Subsequent successful calls replace the configured credentials.
+The passphrase parameter accepts only a nonempty SecureString. If you already
+have the passphrase as a plaintext string, convert it with
+`ConvertTo-SecureString -AsPlainText -Force` before calling this command, as shown
+in Example 1. Plaintext strings are no longer accepted directly. Subsequent
+successful calls replace the configured credentials.
 
 The private signer calls `Test-Action1SignTool` before accessing the passphrase
 contents. It writes configuration JSON to a temporary UTF-8 file without a BOM,
@@ -56,25 +56,28 @@ while still honoring `-WhatIf`.
 
 ## EXAMPLES
 
-### Example 1: Configure signing using a passphrase variable
+### Example 1: Convert an existing string passphrase and configure signing
 
 ```powershell
-Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $passphrase
+$securePassphrase = ConvertTo-SecureString -String $passphrase -AsPlainText -Force
+Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $securePassphrase
 ```
 
-Uses the passphrase string already obtained from Action1, converts it to
-SecureString during binding, and stores it in module memory for this session.
-The command produces no output.
+Assumes `$passphrase` contains the nonempty string passphrase already obtained
+from Action1. `-AsPlainText` tells `ConvertTo-SecureString` to wrap that string;
+without it, the cmdlet expects an encrypted string representation. `-Force` is
+required with `-AsPlainText` in Windows PowerShell 5.1. The command stores the
+SecureString in module memory for this session and produces no output.
 
 ### Example 2: Preview a credential update
 
 ```powershell
 Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' `
-    -PassPhrase $passphrase -WhatIf
+    -PassPhrase $securePassphrase -WhatIf
 ```
 
-Validates the arguments and displays the intended operation without changing
-the configured key path or passphrase.
+Uses the SecureString created in Example 1. Validates the arguments and displays
+the intended operation without changing the configured key path or passphrase.
 
 ### Example 3: Supply a SecureString directly
 
@@ -107,10 +110,11 @@ Accept wildcard characters: False
 
 ### -PassPhrase
 
-Passphrase supplied by Action1 for the signing key. Accepts a nonempty plaintext
-string or SecureString. Plaintext is converted to SecureString during parameter
-binding, before the command body runs. Null, empty, and unsupported input types
-are rejected. The stored value is preserved without trimming or adding a newline.
+Passphrase supplied by Action1 for the signing key. Accepts only a nonempty
+SecureString. Convert an existing plaintext string with
+`ConvertTo-SecureString -String $passphrase -AsPlainText -Force`, or prompt with
+`Read-Host -AsSecureString`. Null values, empty SecureStrings, and plaintext
+strings are rejected. The stored value is preserved without trimming or adding a newline.
 It is retained as a SecureString in `$Script:Action1_SignPassPhrase` for the
 current module session and is not written to disk.
 
@@ -201,9 +205,9 @@ Call `Set-Action1Sign` again after starting a new session or reloading the modul
 The key file itself remains at the user-supplied path. Previously created
 encrypted passphrase files are no longer used and are not deleted by this command.
 
-Although the parameter type is SecureString, accepted plaintext literals can
-still appear in PowerShell history or transcription. Parameter transformation
-does not erase the caller's original string variable or command text. Use
+Converting a plaintext string does not erase the caller's original string
+variable or command text. Plaintext literals can appear in PowerShell history
+or transcription. Use
 `Read-Host -AsSecureString` when plaintext input in the caller is unnecessary.
 Signing temporarily exposes plaintext in process memory and stdin buffers for
 the native signing tool. SecureString and module scope do not prevent code with

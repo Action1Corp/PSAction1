@@ -13,8 +13,8 @@ function Set-Action1Sign {
         [string]$Action1KeyPath,
 
         [Parameter(Mandatory)]
-        [Action1SecureStringTransformationAttribute()]
         [ValidateNotNullOrEmpty()]
+        [ValidateScript({ $_.Length -gt 0 })]
         [System.Security.SecureString]$PassPhrase,
 
         [switch]$Force

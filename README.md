@@ -400,6 +400,23 @@ The module provides  five main commands:
     - Initiates a data refresh.
 
 
+## Configuring signing
+
+`Set-Action1Sign` requires a nonempty `System.Security.SecureString` passphrase.
+If you already have the Action1 signing passphrase in a string variable named
+`$passphrase`, convert it before configuring signing:
+
+```powershell
+$securePassphrase = ConvertTo-SecureString -String $passphrase -AsPlainText -Force
+Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $securePassphrase
+```
+
+`-AsPlainText -Force` supports this conversion in Windows PowerShell 5.1.
+To enter the passphrase interactively as a SecureString, use
+`$securePassphrase = Read-Host 'Action1 signing passphrase' -AsSecureString`.
+The key path and SecureString are kept only for the current module session.
+See [Set-Action1Sign](docs/help/configuration/Set-Action1Sign.md) for details.
+
 ## Querying endpoints
 
 To retrieve endpoint data, use this command:
