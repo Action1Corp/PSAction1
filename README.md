@@ -324,7 +324,7 @@ This allows you to provide authentication details step by step.
 ```PowerShell
 PS C:\> Set-Action1Region NorthAmerica
 
-PS C:\> $apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+PS C:\> $apiKey = Read-Host 'Action1 API key (Client ID)'
 
 PS C:\> $secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
 
@@ -332,17 +332,19 @@ PS C:\> Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
 ```
 
-`Set-Action1Credentials` requires nonempty SecureStrings for both parameters.
-If the credentials are already in string variables, convert them first:
+`Set-Action1Credentials` requires a nonempty string API key. `Secret` is expected
+to be a nonempty `System.Security.SecureString`. Plaintext strings are accepted
+only temporarily for backward compatibility, and support for them will be removed
+soon. Passing a plaintext secret produces a warning. Convert existing string
+secrets before calling the command:
 
 ```powershell
-$apiKey = ConvertTo-SecureString -String $apiKeyText -AsPlainText -Force
 $secret = ConvertTo-SecureString -String $secretText -AsPlainText -Force
-Set-Action1Credentials -APIKey $apiKey -Secret $secret
+Set-Action1Credentials -APIKey $apiKeyText -Secret $secret
 ```
 
-The module keeps both credentials as SecureStrings for the current session and
-obtains plaintext only to build an OAuth request. See
+The module keeps the API key as a string and the secret as a SecureString for the
+current session. It obtains the secret's plaintext only to build an OAuth request. See
 [Set-Action1Credentials](docs/help/configuration/Set-Action1Credentials.md).
 
 OAuth request and response bodies and raw failure details are omitted from

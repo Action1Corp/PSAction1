@@ -11,7 +11,7 @@ function Request-Action1Token {
 
     if (Initialize-Action1Region) {
         if (
-            $Script:Action1_APIKey -isnot [System.Security.SecureString] -or
+            $Script:Action1_APIKey -isnot [string] -or
             $Script:Action1_APIKey.Length -eq 0 -or
             $Script:Action1_Secret -isnot [System.Security.SecureString] -or
             $Script:Action1_Secret.Length -eq 0
@@ -31,11 +31,9 @@ function Request-Action1Token {
                 -Path "$Script:Action1_BaseURI/oauth2/token" `
                 -Label 'Request OAuth2 token' `
                 -Body @{
-                    # Expose plaintext only for the OAuth request, not module state.
+                    # Expose the secret as plaintext only for the OAuth request.
                     # NetworkCredential supports SecureString in PowerShell 5.1.
-                    client_id     = (New-Object System.Net.NetworkCredential `
-                        -ArgumentList 'Action1', $Script:Action1_APIKey `
-                        -ErrorAction Stop).Password
+                    client_id     = $Script:Action1_APIKey
                     client_secret = (New-Object System.Net.NetworkCredential `
                         -ArgumentList 'Action1', $Script:Action1_Secret `
                         -ErrorAction Stop).Password
