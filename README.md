@@ -324,17 +324,55 @@ This allows you to provide authentication details step by step.
 ```PowerShell
 PS C:\> Set-Action1Region NorthAmerica
 
-PS C:\> Set-Action1Credentials -APIKey api-key-example_e0983b7c-45e8-4c82-9f98-b63bdc4dcb33@action1.com -Secret 652b47a18e212e695e9fbfaa
+PS C:\> $apiKey = Read-Host 'Action1 API key (Client ID)'
+
+PS C:\> $secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
+
+PS C:\> Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
 ```
 
-Supported regions are `NorthAmerica`, `NorthAmerica-2` (alias `NA-2`), `Europe`,
-`Australia`, and `UnitedKingdom` (alias `UK`). Region names are case-insensitive.
-Invalid region names produce an error listing the supported names.
+`Set-Action1Credentials` requires a nonempty string API key. `Secret` is expected
+to be a nonempty `System.Security.SecureString`. Plaintext strings are accepted
+only temporarily for backward compatibility, and support for them will be removed
+soon. Passing a plaintext secret produces a warning. Convert existing string
+secrets before calling the command:
 
-For the United Kingdom region, use `Set-Action1Region -Region UK` or
-`Set-Action1Region -Region UnitedKingdom`. Both select
-`https://app.uk.action1.com/api/3.0`.
+```powershell
+$secret = ConvertTo-SecureString -String $secretText -AsPlainText -Force
+Set-Action1Credentials -APIKey $apiKeyText -Secret $secret
+```
+
+The module keeps the API key as a string and the secret as a SecureString for the
+current session. It obtains the secret's plaintext only to build an OAuth request. See
+[Set-Action1Credentials](docs/help/configuration/Set-Action1Credentials.md).
+
+OAuth request and response bodies and raw failure details are omitted from
+module diagnostics; HTTP verbose and debug output are also suppressed for these
+requests. This cannot guarantee exclusion from machine-level auditing, external
+tracing, or caller commands containing plaintext. The module leaves customer
+audit policies in place. See the command help for the logging limitations.
+
+Supported regions and aliases are listed below. Names are case-insensitive.
+Each region and its alias select the same API endpoint.
+
+| Region | Alias | API endpoint |
+| --- | --- | --- |
+| NorthAmerica | NA | `https://app.action1.com/api/3.0` |
+| NorthAmerica2 | NA2 | `https://app.na-2.action1.com/api/3.0` |
+| NorthAmerica3 | NA3 | `https://app.na-3.action1.com/api/4.0` |
+| Europe | EU | `https://app.eu.action1.com/api/3.0` |
+| Europe2 | EU2 | `https://app.eu-2.action1.com/api/4.0` |
+| Australia | AU | `https://app.au.action1.com/api/3.0` |
+| UnitedKingdom | UK | `https://app.uk.action1.com/api/3.0` |
+
+`NorthAmerica-2` and `NA-2` are temporary aliases for `NorthAmerica2` and `NA2`.
+They select the same endpoint and produce a warning to use the corresponding
+name without a dash.
+
+For example, `Set-Action1Region -Region EU2` selects the same endpoint as
+`Set-Action1Region -Region Europe2`.
+Invalid region names produce an error listing the supported names.
 
 Region endpoints, validation, and interactive region selection
 use the shared host lookup table in `Private/Configuration/Action1.Hosts.ps1`.
@@ -390,6 +428,23 @@ The module provides  five main commands:
 
     - Initiates a data refresh.
 
+
+## Configuring signing
+
+`Set-Action1Sign` requires a nonempty `System.Security.SecureString` passphrase.
+If you already have the Action1 signing passphrase in a string variable named
+`$passphrase`, convert it before configuring signing:
+
+```powershell
+$securePassphrase = ConvertTo-SecureString -String $passphrase -AsPlainText -Force
+Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -Passphrase $securePassphrase
+```
+
+`-AsPlainText -Force` supports this conversion in Windows PowerShell 5.1.
+To enter the passphrase interactively as a SecureString, use
+`$securePassphrase = Read-Host 'Action1 signing passphrase' -AsSecureString`.
+The key path and SecureString are kept only for the current module session.
+See [Set-Action1Sign](docs/help/configuration/Set-Action1Sign.md) for details.
 
 ## Querying endpoints
 

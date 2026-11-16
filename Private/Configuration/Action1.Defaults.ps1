@@ -8,6 +8,14 @@
 # Basic params
 $Script:Action1_429RetryBaseTimeoutSeconds = 2
 
+# SHA256 hash validation
+$Script:Action1_Sha256ValidationPattern = '^[a-fA-F0-9]{64}$'
+
+# Bundled signing tool.
+$Script:Action1_SignToolPath = Join-Path $Script:ModuleRoot 'tools\Action1Sign'
+$Script:Action1_SignToolFileName = 'action1sign.exe'
+$Script:Action1_SignToolSha256 = '2E0E41B12B3B4CC566FEFE67F0CBA91609D4C7D316369396115FB2578728BBA9'
+
 # Pagination
 $Script:Action1_PagedGetRequestDefaultLimit = 200
 $Script:Action1_PagedGetRequestDefaultOffset = 0

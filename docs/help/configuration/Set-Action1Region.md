@@ -29,6 +29,10 @@ Region validation uses the module's internal host lookup table.
 Region names are case-insensitive. Unsupported names are rejected before the
 configured region changes, with an error listing the supported names.
 
+`NA-2` and `NorthAmerica-2` are temporary names for `NA2` and `NorthAmerica2`.
+They select the same endpoint, `https://app.na-2.action1.com/api/3.0`, and emit a
+warning to use `NA2` or `NorthAmerica2`, respectively.
+
 ## EXAMPLES
 
 ### Example 1
@@ -38,6 +42,7 @@ PS C:\> Set-Action1Region -Region Europe
 ```
 
 Configures the PSAction1 module to use the Europe API endpoint.
+`EU` selects the same endpoint, `https://app.eu.action1.com/api/3.0`.
 
 ### Example 2
 
@@ -46,6 +51,7 @@ PS C:\> Set-Action1Region -Region NorthAmerica
 ```
 
 Configures the PSAction1 module to use the North America API endpoint.
+`NA` selects the same endpoint, `https://app.action1.com/api/3.0`.
 
 ### Example 3
 
@@ -54,22 +60,23 @@ PS C:\> Set-Action1Region -Region Australia
 ```
 
 Configures the PSAction1 module to use the Australia API endpoint.
+`AU` selects the same endpoint, `https://app.au.action1.com/api/3.0`.
 
 ### Example 4
 
 ```powershell
-PS C:\> Set-Action1Region -Region 'NorthAmerica-2'
+PS C:\> Set-Action1Region -Region 'NorthAmerica2'
 ```
 
-Configures the PSAction1 module to use the NorthAmerica-2 API endpoint.
+Configures the PSAction1 module to use the NorthAmerica2 API endpoint.
 
 ### Example 5
 
 ```powershell
-PS C:\> Set-Action1Region -Region 'NA-2'
+PS C:\> Set-Action1Region -Region 'NA2'
 ```
 
-Configures the PSAction1 module to use the NA-2 API endpoint value.
+Configures the PSAction1 module to use the NA2 API endpoint value.
 
 ### Example 6: Select the United Kingdom region
 
@@ -80,6 +87,25 @@ PS C:\> Set-Action1Region -Region UK
 Configures the module to use `https://app.uk.action1.com/api/3.0`.
 `UnitedKingdom` selects the same endpoint.
 
+### Example 7: Select the third North America region
+
+```powershell
+PS C:\> Set-Action1Region -Region 'NorthAmerica3'
+```
+
+Configures the module to use `https://app.na-3.action1.com/api/4.0`.
+`NA3` selects the same endpoint.
+
+### Example 8: Select Europe2
+
+```powershell
+PS C:\> Set-Action1Region -Region 'Europe2'
+```
+
+Configures the module to use `https://app.eu-2.action1.com/api/4.0`.
+`EU2` selects the same endpoint.
+`Europe` continues to use `https://app.eu.action1.com/api/3.0`.
+
 ## PARAMETERS
 
 ### -Region
@@ -89,10 +115,19 @@ Specifies the Action1 API region to use.
 Accepted values are:
 
 - NorthAmerica
+- NA
+- NorthAmerica2
+- NA2
 - NorthAmerica-2
 - NA-2
+- NorthAmerica3
+- NA3
 - Europe
+- EU
+- Europe2
+- EU2
 - Australia
+- AU
 - UnitedKingdom
 - UK
 

@@ -49,7 +49,9 @@ Before using the module, configure authentication.
 ### Step 1: Set credentials
 
 ```powershell
-Set-Action1Credentials -APIKey "your-api-key" -Secret "your-secret"
+$apiKey = Read-Host 'Action1 API key (Client ID)'
+$secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
+Set-Action1Credentials -APIKey $apiKey -Secret $secret
 ```
 
 ### Step 2:  Set region
@@ -95,10 +97,17 @@ Typical usage flow:
 Sets API credentials for the current session.
 
 ```powershell
-Set-Action1Credentials -APIKey <String> -Secret <String>
+Set-Action1Credentials -APIKey <String> -Secret <Object>
 ```
 
-Stores credentials used by all module commands.
+Stores a nonempty string API key and a nonempty SecureString secret used by all
+module commands. `Secret` is expected to be a `System.Security.SecureString`.
+Plaintext strings are accepted only temporarily for backward compatibility, and
+support for them will be removed soon. A plaintext secret produces a warning and
+is converted to a SecureString before storage. Other secret types are rejected.
+To convert an existing string secret yourself, use
+`ConvertTo-SecureString -AsPlainText -Force` before calling this command. See
+[Set-Action1Credentials](configuration/Set-Action1Credentials.md) for examples.
 
 ### Set-Action1DefaultOrg
 
@@ -203,7 +212,9 @@ Handles package upload and deployment workflows.
 ### Example 1: Retrieve endpoints
 
 ```powershell
-Set-Credentials -APIKey "xxx" -Secret "yyy"
+$apiKey = Read-Host 'Action1 API key (Client ID)'
+$secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
+Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
 Get-Action1 -Query Endpoints
 ```
@@ -235,7 +246,9 @@ Start-Action1Requery -Type InstalledSoftware -Endpoint_Id "12345"
 ### Example 5: Full workflow
 
 ```powershell
-Set-Action1Credentials -APIKey "xxx" -Secret "yyy"
+$apiKey = Read-Host 'Action1 API key (Client ID)'
+$secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
+Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
 Set-Action1Region -Region "eu"
 
@@ -254,7 +267,9 @@ All API operations require authentication.
 
 Use **Set-Action1Credentials** to provide API key and secret.
 
-Credentials are stored in memory and must be re-entered for each new PowerShell session.
+The API key is stored in memory as a string and the secret as a SecureString.
+Both must be re-entered for each new PowerShell session. The secret's plaintext
+is obtained only to build the OAuth request.
 
 ## NOTES
 
@@ -272,7 +287,7 @@ Credentials are stored only for the duration of the session
 
 [Update-Action1](Update-Action1.md)
 
-[Set-Action1Credentials](Set-Action1Credentials.md)
+[Set-Action1Credentials](configuration/Set-Action1Credentials.md)
 
 [Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
 

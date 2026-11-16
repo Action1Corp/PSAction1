@@ -7,10 +7,25 @@
 
 $script:Action1_Hosts = [ordered]@{
     'NorthAmerica' = 'https://app.action1.com/api/3.0';
+    'NA' = 'https://app.action1.com/api/3.0';
+
+    'NorthAmerica2' = 'https://app.na-2.action1.com/api/3.0';
+    'NA2' = 'https://app.na-2.action1.com/api/3.0';
     'NorthAmerica-2' = 'https://app.na-2.action1.com/api/3.0';
     'NA-2' = 'https://app.na-2.action1.com/api/3.0';
-    'Europe' = 'https://app.eu.action1.com/api/3.0'; 
+
+    'NorthAmerica3' = 'https://app.na-3.action1.com/api/4.0';
+    'NA3' = 'https://app.na-3.action1.com/api/4.0';
+
+    'Europe' = 'https://app.eu.action1.com/api/3.0';
+    'EU' = 'https://app.eu.action1.com/api/3.0';
+
+    'Europe2' = 'https://app.eu-2.action1.com/api/4.0';
+    'EU2' = 'https://app.eu-2.action1.com/api/4.0';
+
     'Australia' = 'https://app.au.action1.com/api/3.0';
+    'AU' = 'https://app.au.action1.com/api/3.0';
+
     'UnitedKingdom' = 'https://app.uk.action1.com/api/3.0';
     'UK' = 'https://app.uk.action1.com/api/3.0'
 }

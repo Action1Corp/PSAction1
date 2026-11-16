@@ -77,6 +77,7 @@
     FunctionsToExport = @(
         # Configuration
         'Set-Action1Credentials'
+        'Set-Action1Sign'
         'Set-Action1DefaultOrg'
         'Get-Action1DefaultOrgId'
         'Get-Action1DefaultOrgName'
