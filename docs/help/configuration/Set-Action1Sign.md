@@ -34,7 +34,12 @@ in Example 1. Plaintext strings are no longer accepted directly. Subsequent
 successful calls replace the configured credentials.
 
 The private signer calls `Test-Action1SignTool` before accessing the passphrase
-contents. It writes configuration JSON to a temporary UTF-8 file without a BOM,
+contents. Signing requires the bundled `tools/Action1Sign/action1sign.exe` to
+match the module's expected SHA256 hash. A missing tool or hash mismatch reports
+an error and stops signing. The module does not download a replacement; reinstall
+PSAction1 to restore the bundled tool.
+
+The signer writes configuration JSON to a temporary UTF-8 file without a BOM,
 then obtains the plaintext passphrase only for the native invocation and pipes
 it to Action1Sign using `--passphrase-file=-`. The configuration is supplied
 through `--config=<temporary path>` because only one input can use stdin.

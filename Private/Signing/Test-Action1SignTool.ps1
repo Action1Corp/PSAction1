@@ -30,19 +30,22 @@ function Test-Action1SignTool {
         $signToolPath = Join-Path $Script:Action1_SignToolPath `
             $Script:Action1_SignToolFileName -ErrorAction Stop
         if (-not (Test-Path -LiteralPath $signToolPath -PathType Leaf -ErrorAction Stop)) {
-            Write-Action1Debug "Action1 signing tool was not found at '$signToolPath'."
-            $null = Get-Action1SignTool -ErrorAction Stop
+            throw "Action1 signing tool was not found at '$signToolPath'. Reinstall PSAction1 to restore the bundled tool."
         }
 
         if (-not (Test-HashCode -Path $signToolPath `
             -ExpectedHash $Script:Action1_SignToolSha256)) {
-            throw 'Action1 signing tool executable SHA256 mismatch.'
+            throw 'Action1 signing tool executable SHA256 mismatch. Reinstall PSAction1 to restore the bundled tool.'
         }
 
         return $true
     }
     catch {
         Write-Action1Debug "Action1 signing tool validation failed: $($_.Exception.Message)"
+        # Always return false; the caller decides whether validation failure terminates.
+        Write-Error "Action1Sign tool is missing or invalid: $($_.Exception.Message)" `
+        Write-Error "Action1Sign tool is missing or invalid: $($_.Exception.Message)" `
+            -ErrorAction Continue
         return $false
     }
 }
