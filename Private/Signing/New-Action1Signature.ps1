@@ -15,7 +15,7 @@ function New-Action1Signature {
 
         [string]$Action1KeyPath = $Script:Action1_SignKeyPath,
 
-        [System.Security.SecureString]$PassPhrase = $Script:Action1_SignPassPhrase
+        [System.Security.SecureString]$Passphrase = $Script:Action1_SignPassphrase
     )
 
     if ($ObjectConfig -is [System.Collections.IDictionary]) {
@@ -52,7 +52,7 @@ function New-Action1Signature {
     if (-not (Test-Action1SignTool)) {
         throw 'Action1 signing tool validation failed.'
     }
-    if ($null -eq $PassPhrase -or $PassPhrase.Length -eq 0) {
+    if ($null -eq $Passphrase -or $Passphrase.Length -eq 0) {
         throw "The Action1 signing passphrase is not configured or is empty. $setupHint"
     }
     $signToolPath = Join-Path $Script:Action1_SignToolPath $Script:Action1_SignToolFileName
@@ -76,7 +76,7 @@ function New-Action1Signature {
         # PowerShell 5.1 has no ConvertFrom-SecureString -AsPlainText. New-Object
         # wraps the SecureString; Password exposes plaintext for the native tool.
         $plainPassphrase = (New-Object System.Net.NetworkCredential `
-            -ArgumentList 'Action1', $PassPhrase -ErrorAction Stop).Password
+            -ArgumentList 'Action1', $Passphrase -ErrorAction Stop).Password
         $errorAction = $ErrorActionPreference
         try {
             # Capture native stderr without terminating the pipeline and keep

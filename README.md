@@ -431,7 +431,7 @@ If you already have the Action1 signing passphrase in a string variable named
 
 ```powershell
 $securePassphrase = ConvertTo-SecureString -String $passphrase -AsPlainText -Force
-Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $securePassphrase
+Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -Passphrase $securePassphrase
 ```
 
 `-AsPlainText -Force` supports this conversion in Windows PowerShell 5.1.

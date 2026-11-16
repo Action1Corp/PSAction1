@@ -15,7 +15,7 @@ function Set-Action1Sign {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({ $_.Length -gt 0 })]
-        [System.Security.SecureString]$PassPhrase,
+        [System.Security.SecureString]$Passphrase,
 
         [switch]$Force
     )
@@ -40,6 +40,6 @@ function Set-Action1Sign {
     }
 
     $Script:Action1_SignKeyPath = $keyFile.FullName
-    $Script:Action1_SignPassPhrase = $PassPhrase
+    $Script:Action1_SignPassphrase = $Passphrase
     Write-Action1Debug 'Action1 signing credentials configured for the current module session.'
 }

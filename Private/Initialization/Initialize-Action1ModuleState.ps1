@@ -15,7 +15,7 @@ $Script:Action1_Secret = $null
 $Script:Action1_Token = $null
 
 $Script:Action1_SignKeyPath = $null
-$Script:Action1_SignPassPhrase = $null
+$Script:Action1_SignPassphrase = $null
 
 $Script:Action1_DebugEnabled = $false
 
