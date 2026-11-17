@@ -14,7 +14,7 @@ Configures the Action1 signing key and SecureString passphrase for the current s
 ## SYNTAX
 
 ```text
-Set-Action1Sign -Action1KeyPath <String> -PassPhrase <SecureString> [-Force]
+Set-Action1Sign -Action1KeyPath <String> -Passphrase <SecureString> [-Force]
  [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
@@ -22,7 +22,7 @@ Set-Action1Sign -Action1KeyPath <String> -PassPhrase <SecureString> [-Force]
 
 `Set-Action1Sign` records the full path to an existing, nonempty Action1 signing
 key file in `$Script:Action1_SignKeyPath` and retains the passphrase as a
-SecureString in `$Script:Action1_SignPassPhrase` inside the module. Both values
+SecureString in `$Script:Action1_SignPassphrase` inside the module. Both values
 last only for the current module session. The command does not write a
 passphrase file, copy or modify the key file, or make an Action1 API request.
 It does not verify that the key and passphrase match; this is checked when signing.
@@ -65,7 +65,7 @@ while still honoring `-WhatIf`.
 
 ```powershell
 $securePassphrase = ConvertTo-SecureString -String $passphrase -AsPlainText -Force
-Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $securePassphrase
+Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -Passphrase $securePassphrase
 ```
 
 Assumes `$passphrase` contains the nonempty string passphrase already obtained
@@ -78,7 +78,7 @@ SecureString in module memory for this session and produces no output.
 
 ```powershell
 Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' `
-    -PassPhrase $securePassphrase -WhatIf
+    -Passphrase $securePassphrase -WhatIf
 ```
 
 Uses the SecureString created in Example 1. Validates the arguments and displays
@@ -88,7 +88,7 @@ the intended operation without changing the configured key path or passphrase.
 
 ```powershell
 $passphrase = Read-Host 'Action1 signing passphrase' -AsSecureString
-Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $passphrase
+Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -Passphrase $passphrase
 ```
 
 Accepts the existing SecureString without converting it from plaintext again.
@@ -113,14 +113,14 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PassPhrase
+### -Passphrase
 
 Passphrase supplied by Action1 for the signing key. Accepts only a nonempty
 SecureString. Convert an existing plaintext string with
 `ConvertTo-SecureString -String $passphrase -AsPlainText -Force`, or prompt with
 `Read-Host -AsSecureString`. Null values, empty SecureStrings, and plaintext
 strings are rejected. The stored value is preserved without trimming or adding a newline.
-It is retained as a SecureString in `$Script:Action1_SignPassPhrase` for the
+It is retained as a SecureString in `$Script:Action1_SignPassphrase` for the
 current module session and is not written to disk.
 
 ```yaml

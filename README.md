@@ -324,7 +324,7 @@ This allows you to provide authentication details step by step.
 ```PowerShell
 PS C:\> Set-Action1Region NorthAmerica
 
-PS C:\> $apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+PS C:\> $apiKey = Read-Host 'Action1 API key (Client ID)'
 
 PS C:\> $secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
 
@@ -332,17 +332,19 @@ PS C:\> Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
 ```
 
-`Set-Action1Credentials` requires nonempty SecureStrings for both parameters.
-If the credentials are already in string variables, convert them first:
+`Set-Action1Credentials` requires a nonempty string API key. `Secret` is expected
+to be a nonempty `System.Security.SecureString`. Plaintext strings are accepted
+only temporarily for backward compatibility, and support for them will be removed
+soon. Passing a plaintext secret produces a warning. Convert existing string
+secrets before calling the command:
 
 ```powershell
-$apiKey = ConvertTo-SecureString -String $apiKeyText -AsPlainText -Force
 $secret = ConvertTo-SecureString -String $secretText -AsPlainText -Force
-Set-Action1Credentials -APIKey $apiKey -Secret $secret
+Set-Action1Credentials -APIKey $apiKeyText -Secret $secret
 ```
 
-The module keeps both credentials as SecureStrings for the current session and
-obtains plaintext only to build an OAuth request. See
+The module keeps the API key as a string and the secret as a SecureString for the
+current session. It obtains the secret's plaintext only to build an OAuth request. See
 [Set-Action1Credentials](docs/help/configuration/Set-Action1Credentials.md).
 
 OAuth request and response bodies and raw failure details are omitted from
@@ -357,15 +359,19 @@ Each region and its alias select the same API endpoint.
 | Region | Alias | API endpoint |
 | --- | --- | --- |
 | NorthAmerica | NA | `https://app.action1.com/api/3.0` |
-| NorthAmerica-2 | NA-2 | `https://app.na-2.action1.com/api/3.0` |
-| NorthAmerica-3 | NA-3 | `https://app.na-3.action1.com/api/4.0` |
+| NorthAmerica2 | NA2 | `https://app.na-2.action1.com/api/3.0` |
+| NorthAmerica3 | NA3 | `https://app.na-3.action1.com/api/4.0` |
 | Europe | EU | `https://app.eu.action1.com/api/3.0` |
-| Europe-2 | EU2 | `https://app.eu.action1.com/api/4.0` |
+| Europe2 | EU2 | `https://app.eu-2.action1.com/api/4.0` |
 | Australia | AU | `https://app.au.action1.com/api/3.0` |
 | UnitedKingdom | UK | `https://app.uk.action1.com/api/3.0` |
 
+`NorthAmerica-2` and `NA-2` are temporary aliases for `NorthAmerica2` and `NA2`.
+They select the same endpoint and produce a warning to use the corresponding
+name without a dash.
+
 For example, `Set-Action1Region -Region EU2` selects the same endpoint as
-`Set-Action1Region -Region Europe-2`.
+`Set-Action1Region -Region Europe2`.
 Invalid region names produce an error listing the supported names.
 
 Region endpoints, validation, and interactive region selection
@@ -431,7 +437,7 @@ If you already have the Action1 signing passphrase in a string variable named
 
 ```powershell
 $securePassphrase = ConvertTo-SecureString -String $passphrase -AsPlainText -Force
-Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -PassPhrase $securePassphrase
+Set-Action1Sign -Action1KeyPath 'C:\Keys\Action1.key' -Passphrase $securePassphrase
 ```
 
 `-AsPlainText -Force` supports this conversion in Windows PowerShell 5.1.

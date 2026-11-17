@@ -46,10 +46,10 @@ Sets the Action1 API region to `Europe` for the current PowerShell session.
 ### Example 3
 
 ```powershell
-PS C:\> Set-Action1Locale -Region 'NA-2'
+PS C:\> Set-Action1Locale -Region 'NA2'
 ```
 
-Sets the Action1 API region using the `NA-2` region value. This command is deprecated; use `Set-Action1Region` instead.
+Sets the Action1 API region using the `NA2` region value. This command is deprecated; use `Set-Action1Region` instead.
 
 ## PARAMETERS
 
@@ -59,6 +59,10 @@ Specifies the Action1 API region to use.
 
 The value is passed directly to `Set-Action1Region`.
 
+`NA-2` and `NorthAmerica-2` are temporary names for `NA2` and `NorthAmerica2`.
+They select the same endpoint, `https://app.na-2.action1.com/api/3.0`, and the
+forwarded call emits a warning to use `NA2` or `NorthAmerica2`, respectively.
+
 Region validation uses the module's internal host lookup table.
 Unsupported names produce an error listing the supported names.
 Region names are case-insensitive. `UnitedKingdom` and `UK` both select
@@ -66,20 +70,22 @@ Region names are case-insensitive. `UnitedKingdom` and `UK` both select
 `NorthAmerica` and `NA` both select `https://app.action1.com/api/3.0`.
 `Europe` and `EU` both select `https://app.eu.action1.com/api/3.0`.
 `Australia` and `AU` both select `https://app.au.action1.com/api/3.0`.
-`NorthAmerica-3` and `NA-3` both select `https://app.na-3.action1.com/api/4.0`.
-`Europe-2` and `EU2` both select `https://app.eu.action1.com/api/4.0`.
+`NorthAmerica3` and `NA3` both select `https://app.na-3.action1.com/api/4.0`.
+`Europe2` and `EU2` both select `https://app.eu-2.action1.com/api/4.0`.
 
 Accepted values:
 
 - NorthAmerica
 - NA
+- NorthAmerica2
+- NA2
 - NorthAmerica-2
 - NA-2
-- NorthAmerica-3
-- NA-3
+- NorthAmerica3
+- NA3
 - Europe
 - EU
-- Europe-2
+- Europe2
 - EU2
 - Australia
 - AU

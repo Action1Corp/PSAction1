@@ -49,7 +49,7 @@ Before using the module, configure authentication.
 ### Step 1: Set credentials
 
 ```powershell
-$apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+$apiKey = Read-Host 'Action1 API key (Client ID)'
 $secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
 Set-Action1Credentials -APIKey $apiKey -Secret $secret
 ```
@@ -97,12 +97,16 @@ Typical usage flow:
 Sets API credentials for the current session.
 
 ```powershell
-Set-Action1Credentials -APIKey <SecureString> -Secret <SecureString>
+Set-Action1Credentials -APIKey <String> -Secret <Object>
 ```
 
-Stores nonempty SecureString credentials used by all module commands. To convert
-existing string variables, use `ConvertTo-SecureString -AsPlainText -Force` before
-calling this command. See
+Stores a nonempty string API key and a nonempty SecureString secret used by all
+module commands. `Secret` is expected to be a `System.Security.SecureString`.
+Plaintext strings are accepted only temporarily for backward compatibility, and
+support for them will be removed soon. A plaintext secret produces a warning and
+is converted to a SecureString before storage. Other secret types are rejected.
+To convert an existing string secret yourself, use
+`ConvertTo-SecureString -AsPlainText -Force` before calling this command. See
 [Set-Action1Credentials](configuration/Set-Action1Credentials.md) for examples.
 
 ### Set-Action1DefaultOrg
@@ -208,7 +212,7 @@ Handles package upload and deployment workflows.
 ### Example 1: Retrieve endpoints
 
 ```powershell
-$apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+$apiKey = Read-Host 'Action1 API key (Client ID)'
 $secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
 Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
@@ -242,7 +246,7 @@ Start-Action1Requery -Type InstalledSoftware -Endpoint_Id "12345"
 ### Example 5: Full workflow
 
 ```powershell
-$apiKey = Read-Host 'Action1 API key (Client ID)' -AsSecureString
+$apiKey = Read-Host 'Action1 API key (Client ID)'
 $secret = Read-Host 'Action1 API secret (Client Secret)' -AsSecureString
 Set-Action1Credentials -APIKey $apiKey -Secret $secret
 
@@ -263,8 +267,9 @@ All API operations require authentication.
 
 Use **Set-Action1Credentials** to provide API key and secret.
 
-Credentials are stored in memory as SecureStrings and must be re-entered for each
-new PowerShell session. Plaintext is obtained only to build the OAuth request.
+The API key is stored in memory as a string and the secret as a SecureString.
+Both must be re-entered for each new PowerShell session. The secret's plaintext
+is obtained only to build the OAuth request.
 
 ## NOTES
 
