@@ -139,6 +139,7 @@
         'Start-Action1Automation'
         'Get-Action1AutomationSchedules'
         'New-Action1AutomationSchedule'
+        'Update-Action1AutomationSchedule'
 
         # Vulnerability
         'Get-Action1Vulnerabilities'

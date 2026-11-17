@@ -93,6 +93,11 @@ $Script:Action1_UriMap = @{
     }
     G_AutomationSchedules  = { param($OrgId) "/automations/schedules/$OrgId" }
     N_AutomationSchedule   = { param($OrgId) "/automations/schedules/$OrgId" }
+    U_AutomationSchedule   = {
+        param($OrgId, $AutomationInstanceId)
+
+        "/automations/schedules/$OrgId/$AutomationInstanceId"
+    }
     G_AutomationActionTemplates = { "/automations/action-templates" }
     G_AutomationActionTemplate = { param($TemplateId) "/automations/action-templates/$TemplateId" }
 
