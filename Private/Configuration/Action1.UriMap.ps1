@@ -8,6 +8,7 @@
 # Route-builder parameters use PascalCase names, such as OrgId and ObjectId.
 $Script:Action1_UriMap = @{
     # Configuration
+    #Legacy
     G_AdvancedSettings     = { param($OrgId) "/setting_templates/$OrgId" }
     G_Logs                 = { param($OrgId) "/logs/$OrgId" }
     G_Me                   = { "/Me" }
@@ -32,11 +33,13 @@ $Script:Action1_UriMap = @{
     D_User                 = { param($UserId) "/users/$UserId" }
 
     # Endpoint
-    G_AgentDeployment      = { param($OrgId) "/endpoints/discovery/$OrgId" }
     G_Endpoints            = { param($OrgId) "/endpoints/managed/$OrgId" }
     G_Endpoint             = { param($OrgId, $ObjectId) "/endpoints/managed/$OrgId/$ObjectId" }
     U_Endpoint             = { param($OrgId, $ObjectId) "/endpoints/managed/$OrgId/$ObjectId" }
     D_Endpoint             = { param($OrgId, $ObjectId) "/endpoints/managed/$OrgId/$ObjectId" }
+
+    #Legacy
+    G_AgentDeployment      = { param($OrgId) "/endpoints/discovery/$OrgId" }
 
     # EndpointGroup
     G_EndpointGroup        = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId" }
@@ -46,15 +49,19 @@ $Script:Action1_UriMap = @{
     D_EndpointGroup        = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId" }
     G_EndpointGroupMembers = { param($OrgId, $ObjectId)"/endpoints/groups/$OrgId/$ObjectId/contents" }
     N_EndpointGroupMembers = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId/contents" }
-    U_EndpointGroupMembers = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId/contents" }
     D_EndpointGroupMembers = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId/contents" }
 
+    #Legacy
+    U_EndpointGroupMembers = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId/contents" }
+
     # App
+    #Legacy
     G_Apps                 = { param($OrgId) "/apps/$OrgId/data" }
     G_EndpointApps         = { param($OrgId, $ObjectId) "/apps/$OrgId/data/$ObjectId" }
     R_InstalledSoftware    = { param($OrgId, $ObjectId) "/apps/$OrgId/requery/$ObjectId" }
 
     # Package
+    #Legacy
     G_Packages             = { "/packages/all" }
     G_PackageVersions      = { param($ObjectId) "/software-repository/all/$ObjectId`?fields=versions" }
     G_Scripts              = { "/scripts/all" }
@@ -72,7 +79,6 @@ $Script:Action1_UriMap = @{
 
         $uri
     }
-    N_DeploySoftware       = { param($OrgId)  "/automations/instances/$OrgId" }
     G_AutomationInstance   = { param($OrgId, $ObjectId) "/automations/instances/$OrgId/$ObjectId" }
     N_AutomationInstance   = { param($OrgId) "/automations/instances/$OrgId" }
     G_AutomationInstanceEndpoints = {
@@ -87,26 +93,32 @@ $Script:Action1_UriMap = @{
     }
     G_AutomationSchedules  = { param($OrgId) "/automations/schedules/$OrgId" }
     N_AutomationSchedule   = { param($OrgId) "/automations/schedules/$OrgId" }
+    G_AutomationActionTemplates = { "/automations/action-templates" }
+    G_AutomationActionTemplate = { param($TemplateId) "/automations/action-templates/$TemplateId" }
+
+    #Legacy
+    N_DeploySoftware       = { param($OrgId)  "/automations/instances/$OrgId" }
     G_Automations          = { param($OrgId) "/automations/schedules/$OrgId" }
     N_Automation           = { param($OrgId)  "/automations/schedules/$OrgId" }
     N_DeferredRemediation  = { param($OrgId)  "/automations/schedules/$OrgId" }
     U_Automation           = { param($OrgId, $ObjectId)  "/automations/schedules/$OrgId/$ObjectId" }
-    G_AutomationActionTemplates = { "/automations/action-templates" }
-    G_AutomationActionTemplate = { param($TemplateId) "/automations/action-templates/$TemplateId" }
 
     # Policy. Outdated. Endpoint /policies -> /automations. Policy -> AutomationInstance
+    #Legacy
     G_Policy               = { param($OrgId, $ObjectId) "/automations/instances/$OrgId/$ObjectId" }
     G_Policies             = { param($OrgId)  "/automations/instances/$OrgId" }
     G_PolicyResults        = { param($OrgId, $ObjectId) "/automations/instances/$OrgId/$ObjectId/endpoint_results" }
     N_Remediation          = { param($OrgId)  "/automations/instances/$OrgId" }
 
     # Report
+    #Legacy
     G_ReportData           = { param($OrgId, $ObjectId)"/reportdata/$OrgId/$ObjectId/data" }
     G_ReportExport         = { param($OrgId, $ObjectId)"/reportdata/$OrgId/$ObjectId/export" }
-    G_Reports              = { "/reports/all" } 
+    G_Reports              = { "/reports/all" }
     R_ReportData           = { param($OrgId, $ObjectId) "/reportdata/$OrgId/$ObjectId/requery" }
 
     # Update
+    #Legacy
     G_MissingUpdates       = { param($OrgId) "/updates/$OrgId" }
     R_InstalledUpdates     = { param($OrgId) "/updates/installed/$OrgId/requery" }
 
