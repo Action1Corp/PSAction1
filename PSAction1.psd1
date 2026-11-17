@@ -136,6 +136,7 @@
         'Get-Action1AutomationInstance'
         'Get-Action1AutomationInstanceEndpoints'
         'Get-Action1AutomationInstanceEndpointDetails'
+        'Start-Action1Automation'
         'Get-Action1AutomationSchedules'
         'New-Action1AutomationSchedule'
 
