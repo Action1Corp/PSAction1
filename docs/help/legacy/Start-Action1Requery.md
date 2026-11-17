@@ -126,11 +126,13 @@ This command requires a valid Action1 authentication token in the current sessio
 Use `Set-Action1Credentials` before invoking API actions.
 
 For organization-scoped requests, set the default organization by using `Set-Action1DefaultOrg` before running this command.
+Use **Endpoint_Id** to supply an endpoint ID; the organization ID in the request
+URL comes from the configured default organization.
 
 ## RELATED LINKS
 
-[Set-Action1Credentials](Set-Action1Credentials.md)
+[Set-Action1Credentials](../configuration/Set-Action1Credentials.md)
 
-[Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
+[Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
 
 [Get-Action1](Get-Action1.md)

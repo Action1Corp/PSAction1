@@ -5,10 +5,11 @@
 # Review and test before production deployment
 # (c) Action1 Corporation
 
+# Route-builder parameters use PascalCase names, such as OrgId and ObjectId.
 $Script:Action1_UriMap = @{
     # Configuration
-    G_AdvancedSettings     = { param($Org_ID) "/setting_templates/$Org_ID" }
-    G_Logs                 = { param($Org_ID) "/logs/$Org_ID" }
+    G_AdvancedSettings     = { param($OrgId) "/setting_templates/$OrgId" }
+    G_Logs                 = { param($OrgId) "/logs/$OrgId" }
     G_Me                   = { "/Me" }
 
     # Enterprise
@@ -16,11 +17,11 @@ $Script:Action1_UriMap = @{
     U_Enterprise           = { "/enterprise" }
 
     # Organization
-    G_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
+    G_Organization         = { param($OrgId) "/organizations/$OrgId" }
     G_Organizations        = { "/organizations" }
     N_Organization         = { "/organizations" }
-    U_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
-    D_Organization         = { param($Org_ID) "/organizations/$Org_ID" }
+    U_Organization         = { param($OrgId) "/organizations/$OrgId" }
+    D_Organization         = { param($OrgId) "/organizations/$OrgId" }
 
     # User
     G_User                 = { param($UserId) "/users/$UserId" }
@@ -31,89 +32,90 @@ $Script:Action1_UriMap = @{
     D_User                 = { param($UserId) "/users/$UserId" }
 
     # Endpoint
-    G_AgentDeployment      = { param($Org_ID) "/endpoints/discovery/$Org_ID" }
-    G_Endpoints            = { param($Org_ID) "/endpoints/managed/$Org_ID" }
-    G_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    U_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
-    D_Endpoint             = { param($Org_ID, $Object_ID) "/endpoints/managed/$Org_ID/$Object_ID" }
+    G_AgentDeployment      = { param($OrgId) "/endpoints/discovery/$OrgId" }
+    G_Endpoints            = { param($OrgId) "/endpoints/managed/$OrgId" }
+    G_Endpoint             = { param($OrgId, $ObjectId) "/endpoints/managed/$OrgId/$ObjectId" }
+    U_Endpoint             = { param($OrgId, $ObjectId) "/endpoints/managed/$OrgId/$ObjectId" }
+    D_Endpoint             = { param($OrgId, $ObjectId) "/endpoints/managed/$OrgId/$ObjectId" }
 
     # EndpointGroup
-    G_EndpointGroup        = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
-    G_EndpointGroups       = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    N_EndpointGroup        = { param($Org_ID) "/endpoints/groups/$Org_ID" }
-    U_EndpointGroup        = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
-    D_EndpointGroup        = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID" }
-    G_EndpointGroupMembers = { param($Org_ID, $Object_ID)"/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    N_EndpointGroupMembers = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    U_EndpointGroupMembers = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
-    D_EndpointGroupMembers = { param($Org_ID, $Object_ID) "/endpoints/groups/$Org_ID/$Object_ID/contents" }
+    G_EndpointGroup        = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId" }
+    G_EndpointGroups       = { param($OrgId) "/endpoints/groups/$OrgId" }
+    N_EndpointGroup        = { param($OrgId) "/endpoints/groups/$OrgId" }
+    U_EndpointGroup        = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId" }
+    D_EndpointGroup        = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId" }
+    G_EndpointGroupMembers = { param($OrgId, $ObjectId)"/endpoints/groups/$OrgId/$ObjectId/contents" }
+    N_EndpointGroupMembers = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId/contents" }
+    U_EndpointGroupMembers = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId/contents" }
+    D_EndpointGroupMembers = { param($OrgId, $ObjectId) "/endpoints/groups/$OrgId/$ObjectId/contents" }
 
     # App
-    G_Apps                 = { param($Org_ID) "/apps/$Org_ID/data" }
-    G_EndpointApps         = { param($Org_ID, $Object_ID) "/apps/$Org_ID/data/$Object_ID" }
-    R_InstalledSoftware    = { param($Org_ID, $Object_ID) "/apps/$Org_ID/requery/$Object_ID" }
+    G_Apps                 = { param($OrgId) "/apps/$OrgId/data" }
+    G_EndpointApps         = { param($OrgId, $ObjectId) "/apps/$OrgId/data/$ObjectId" }
+    R_InstalledSoftware    = { param($OrgId, $ObjectId) "/apps/$OrgId/requery/$ObjectId" }
 
     # Package
     G_Packages             = { "/packages/all" }
-    G_PackageVersions      = { param($Object_ID) "/software-repository/all/$Object_ID`?fields=versions" }
+    G_PackageVersions      = { param($ObjectId) "/software-repository/all/$ObjectId`?fields=versions" }
     G_Scripts              = { "/scripts/all" }
 
     # Automation
     G_AutomationInstances  = {
-        param($Org_ID, $Object_ID)
+        param($OrgId, $ObjectId)
 
-        $uri = "/automations/instances/$Org_ID"
+        $uri = "/automations/instances/$OrgId"
 
-        if (-not [string]::IsNullOrWhiteSpace([string]$Object_ID)) {
-            $encodedEndpointId = [System.Uri]::EscapeDataString([string]$Object_ID)
+        if (-not [string]::IsNullOrWhiteSpace([string]$ObjectId)) {
+            $encodedEndpointId = [System.Uri]::EscapeDataString([string]$ObjectId)
             $uri += "?endpoint_id=$encodedEndpointId"
         }
 
         $uri
     }
-    N_DeploySoftware       = { param($Org_ID)  "/automations/instances/$Org_ID" }
-    G_AutomationInstance   = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID" }
+    N_DeploySoftware       = { param($OrgId)  "/automations/instances/$OrgId" }
+    G_AutomationInstance   = { param($OrgId, $ObjectId) "/automations/instances/$OrgId/$ObjectId" }
+    N_AutomationInstance   = { param($OrgId) "/automations/instances/$OrgId" }
     G_AutomationInstanceEndpoints = {
-        param($Org_ID, $Object_ID)
+        param($OrgId, $ObjectId)
 
-        "/automations/instances/$Org_ID/$Object_ID/endpoint-results"
+        "/automations/instances/$OrgId/$ObjectId/endpoint-results"
     }
     G_AutomationInstanceEndpointDetails = {
         param($OrgId, $AutomationInstanceId, $EndpointId)
 
         "/automations/instances/$OrgId/$AutomationInstanceId/endpoint-results/$EndpointId/details"
     }
-    G_AutomationSchedules  = { param($Org_ID) "/automations/schedules/$Org_ID" }
+    G_AutomationSchedules  = { param($OrgId) "/automations/schedules/$OrgId" }
     N_AutomationSchedule   = { param($OrgId) "/automations/schedules/$OrgId" }
-    G_Automations          = { param($Org_ID) "/automations/schedules/$Org_ID" }
-    N_Automation           = { param($Org_ID)  "/automations/schedules/$Org_ID" }
-    N_DeferredRemediation  = { param($Org_ID)  "/automations/schedules/$Org_ID" }
-    U_Automation           = { param($Org_ID, $Object_ID)  "/automations/schedules/$Org_ID/$Object_ID" }
+    G_Automations          = { param($OrgId) "/automations/schedules/$OrgId" }
+    N_Automation           = { param($OrgId)  "/automations/schedules/$OrgId" }
+    N_DeferredRemediation  = { param($OrgId)  "/automations/schedules/$OrgId" }
+    U_Automation           = { param($OrgId, $ObjectId)  "/automations/schedules/$OrgId/$ObjectId" }
     G_AutomationActionTemplates = { "/automations/action-templates" }
     G_AutomationActionTemplate = { param($TemplateId) "/automations/action-templates/$TemplateId" }
 
     # Policy. Outdated. Endpoint /policies -> /automations. Policy -> AutomationInstance
-    G_Policy               = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID" }
-    G_Policies             = { param($Org_ID)  "/automations/instances/$Org_ID" }
-    G_PolicyResults        = { param($Org_ID, $Object_ID) "/automations/instances/$Org_ID/$Object_ID/endpoint_results" }
-    N_Remediation          = { param($Org_ID)  "/automations/instances/$Org_ID" }
+    G_Policy               = { param($OrgId, $ObjectId) "/automations/instances/$OrgId/$ObjectId" }
+    G_Policies             = { param($OrgId)  "/automations/instances/$OrgId" }
+    G_PolicyResults        = { param($OrgId, $ObjectId) "/automations/instances/$OrgId/$ObjectId/endpoint_results" }
+    N_Remediation          = { param($OrgId)  "/automations/instances/$OrgId" }
 
     # Report
-    G_ReportData           = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/data" }
-    G_ReportExport         = { param($Org_ID, $Object_ID)"/reportdata/$Org_ID/$Object_ID/export" }
+    G_ReportData           = { param($OrgId, $ObjectId)"/reportdata/$OrgId/$ObjectId/data" }
+    G_ReportExport         = { param($OrgId, $ObjectId)"/reportdata/$OrgId/$ObjectId/export" }
     G_Reports              = { "/reports/all" } 
-    R_ReportData           = { param($Org_ID, $Object_ID) "/reportdata/$Org_ID/$Object_ID/requery" }
+    R_ReportData           = { param($OrgId, $ObjectId) "/reportdata/$OrgId/$ObjectId/requery" }
 
     # Update
-    G_MissingUpdates       = { param($Org_ID) "/updates/$Org_ID" }
-    R_InstalledUpdates     = { param($Org_ID) "/updates/installed/$Org_ID/requery" }
+    G_MissingUpdates       = { param($OrgId) "/updates/$OrgId" }
+    R_InstalledUpdates     = { param($OrgId) "/updates/installed/$OrgId/requery" }
 
     # Vulnerability
-    G_Vulnerabilities              = { param($Org_ID) "/vulnerabilities/$Org_ID" }
-    G_Vulnerability                = { param($Org_ID, $CVEId) "/vulnerabilities/$Org_ID/$CVEId" }
-    G_VulnerabilityEndpoints       = { param($Org_ID, $CVEId) "/vulnerabilities/$Org_ID/$CVEId/endpoints" }
-    G_VulnerabilityRemediations    = { param($Org_ID, $CVEId) "/vulnerabilities/$Org_ID/$CVEId/remediations" }
-    N_VulnerabilityRemediation     = { param($Org_ID, $CVEId) "/vulnerabilities/$Org_ID/$CVEId/remediations" }
-    U_VulnerabilityRemediation     = { param($Org_ID, $CVEId, $RemediationId) "/vulnerabilities/$Org_ID/$CVEId/remediations/$RemediationId" }
-    D_VulnerabilityRemediation     = { param($Org_ID, $CVEId, $RemediationId) "/vulnerabilities/$Org_ID/$CVEId/remediations/$RemediationId" }
+    G_Vulnerabilities              = { param($OrgId) "/vulnerabilities/$OrgId" }
+    G_Vulnerability                = { param($OrgId, $CVEId) "/vulnerabilities/$OrgId/$CVEId" }
+    G_VulnerabilityEndpoints       = { param($OrgId, $CVEId) "/vulnerabilities/$OrgId/$CVEId/endpoints" }
+    G_VulnerabilityRemediations    = { param($OrgId, $CVEId) "/vulnerabilities/$OrgId/$CVEId/remediations" }
+    N_VulnerabilityRemediation     = { param($OrgId, $CVEId) "/vulnerabilities/$OrgId/$CVEId/remediations" }
+    U_VulnerabilityRemediation     = { param($OrgId, $CVEId, $RemediationId) "/vulnerabilities/$OrgId/$CVEId/remediations/$RemediationId" }
+    D_VulnerabilityRemediation     = { param($OrgId, $CVEId, $RemediationId) "/vulnerabilities/$OrgId/$CVEId/remediations/$RemediationId" }
 }

@@ -305,6 +305,7 @@ Returns the response object from the Action1 API request.
 The command requires a valid authentication token. Use `Set-Action1Credentials` before running API operations.
 
 For operations that target organization resources, configure the default organization by using `Set-Action1DefaultOrg`.
+The **Id** parameter identifies the target object within that organization.
 
 Endpoint modifications automatically remove properties other than `name` and `comment` from the request body before sending the request to the API.
 
@@ -316,6 +317,6 @@ Endpoint modifications automatically remove properties other than `name` and `co
 
 [New-Action1](New-Action1.md)
 
-[Set-Action1Credentials](Set-Action1Credentials.md)
+[Set-Action1Credentials](../configuration/Set-Action1Credentials.md)
 
-[Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
+[Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)

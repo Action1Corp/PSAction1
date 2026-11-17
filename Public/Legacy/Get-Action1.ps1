@@ -248,29 +248,34 @@ function Get-Action1 {
     $Rawlist = @('ReportExport', 'Logs')
 
     $AddArgs = ""
-    if (!$Script:Action1_UriMap["G_$Query"].ToString().Contains("`$Org_ID")) {
-        if (!$Script:Action1_UriMap["G_$Query"].ToString().Contains("`$Object_ID")) {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"])
+    $uriPathBuilder = Get-UriMapValue -Key "G_$Query"
+    $uriParameterNames = @(
+        Get-Action1UriMapParameters -UriPathBuilder $uriPathBuilder
+    )
+
+    if ($uriParameterNames -notcontains 'OrgId') {
+        if ($uriParameterNames -notcontains 'ObjectId') {
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $uriPathBuilder)
         }
         else {
             if ($Id) {
-                $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"] -Object_ID $Id)
+                $Path = "$Script:Action1_BaseURI{0}" -f (& $uriPathBuilder -ObjectId $Id)
             }
             else {
-                Write-Error 'This options requires that you specify an Object_ID.'
+                Write-Error 'This option requires that you specify -Id.'
             }
         }
     }
     else {
         if (Initialize-Action1DefaultOrg) {
-            $Org_ID = Get-Action1DefaultOrgId
+            $orgId = Get-Action1DefaultOrgId
         }
 
         if ($Id) {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"] -Org_ID $Org_ID -Object_ID $Id)
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $uriPathBuilder -OrgId $orgId -ObjectId $Id)
         }
         else {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["G_$Query"] -Org_ID $Org_ID)
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $uriPathBuilder -OrgId $orgId)
         }
     }
 

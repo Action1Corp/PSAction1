@@ -164,6 +164,7 @@ Accept wildcard characters: False
 Specifies the identifier of the Action1 object to retrieve.
 
 Use this parameter with queries that retrieve a specific resource instance rather than a list.
+When **Query** is `AutomationInstances`, this parameter filters instances by endpoint ID.
 
 ```yaml
 Type: String
@@ -298,6 +299,6 @@ Some queries return raw API responses, while others return processed objects wit
 
 [Update-Action1](Update-Action1.md)
 
-[Set-Action1Credentials](Set-Action1Credentials.md)
+[Set-Action1Credentials](../configuration/Set-Action1Credentials.md)
 
-[Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
+[Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)

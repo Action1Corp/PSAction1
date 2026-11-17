@@ -34,14 +34,19 @@ function New-Action1 {
         } 
     }
     try {
-        if (!$Script:Action1_UriMap["N_$Item"].ToString().Contains("`$Org_ID")) {
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["N_$Item"])
+        $uriPathBuilder = Get-UriMapValue -Key "N_$Item"
+        $uriParameterNames = @(
+            Get-Action1UriMapParameters -UriPathBuilder $uriPathBuilder
+        )
+
+        if ($uriParameterNames -notcontains 'OrgId') {
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $uriPathBuilder)
         }
         else {
             if (Initialize-Action1DefaultOrg) {
-                $Org_ID = Get-Action1DefaultOrgId
+                $orgId = Get-Action1DefaultOrgId
             }
-            $Path = "$Script:Action1_BaseURI{0}" -f (& $Script:Action1_UriMap["N_$Item"] -Org_ID $Org_ID)
+            $Path = "$Script:Action1_BaseURI{0}" -f (& $uriPathBuilder -OrgId $orgId)
         } 
         return Invoke-Action1ApiRequest -Method POST -Path $Path -Label $Item -Body $Data
     }

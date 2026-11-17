@@ -159,7 +159,9 @@ This command sends data using an HTTP POST request through the module's internal
 
 Use `Set-Action1Credentials` before running this command.
 
-For organization-scoped item types, set the default organization before running this command.
+For organization-scoped item types, the request URL uses the default organization
+configured with **Set-Action1DefaultOrg**. The **Data** object supplies the request
+body and does not select the organization used in the URL.
 
 When using `RawURI`, provide a valid API path in **URI**.
 
@@ -169,6 +171,6 @@ When using `RawURI`, provide a valid API path in **URI**.
 
 [Update-Action1](Update-Action1.md)
 
-[Set-Action1Credentials](Set-Action1Credentials.md)
+[Set-Action1Credentials](../configuration/Set-Action1Credentials.md)
 
-[Set-Action1DefaultOrg](Set-Action1DefaultOrg.md)
+[Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
