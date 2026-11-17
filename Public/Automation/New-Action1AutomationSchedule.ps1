@@ -1,0 +1,54 @@
+# Action1 Public Repository Material
+# Subject to TERMS_OF_USE.md (https://github.com/Action1Corp/PSAction1/blob/main/TERMS_OF_USE.md)
+# Provided AS IS
+# Use at your own risk
+# Review and test before production deployment
+# (c) Action1 Corporation
+
+function New-Action1AutomationSchedule {
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [object]$AutomationScheduleDefinition,
+
+        [switch]$Force
+    )
+
+    if ($Force) {
+        $ConfirmPreference = 'None'
+    }
+
+    $scheduleLabel = 'automation schedule'
+
+    if (-not $PSCmdlet.ShouldProcess($scheduleLabel, 'Create automation schedule')) {
+        Write-Action1Debug "Skipped creating $scheduleLabel."
+        return
+    }
+
+    if (Initialize-Action1DefaultOrg) {
+        $orgId = Get-Action1DefaultOrgId
+    }
+
+    $uriPathBuilder = Get-UriMapValue -Key 'N_AutomationSchedule'
+
+    $uri = & $uriPathBuilder $orgId
+    $path = "$Script:Action1_BaseURI{0}" -f $uri
+
+    Write-Action1Debug "Creating $scheduleLabel."
+
+    $response = Invoke-Action1ApiRequest `
+        -Method POST `
+        -Path $path `
+        -Label "Create $scheduleLabel" `
+        -Body $AutomationScheduleDefinition
+
+    if ($null -eq $response) {
+        Write-Error "Failed to create $scheduleLabel."
+        return
+    }
+
+    Write-Action1Debug "Created $scheduleLabel."
+
+    $response
+}
