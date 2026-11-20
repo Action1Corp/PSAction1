@@ -81,6 +81,11 @@ $Script:Action1_UriMap = @{
     }
     G_AutomationInstance   = { param($OrgId, $ObjectId) "/automations/instances/$OrgId/$ObjectId" }
     N_AutomationInstance   = { param($OrgId) "/automations/instances/$OrgId" }
+    N_AutomationInstanceStop = {
+        param($OrgId, $AutomationInstanceId)
+
+        "/automations/instances/$OrgId/$AutomationInstanceId/stop"
+    }
     G_AutomationInstanceEndpoints = {
         param($OrgId, $ObjectId)
 
