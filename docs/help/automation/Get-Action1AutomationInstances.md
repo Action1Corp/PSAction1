@@ -16,13 +16,15 @@ Gets automation instances for the current Action1 organization.
 ### AllAutomationInstances (Default)
 
 ```
-Get-Action1AutomationInstances [-Limit <Int32>] [-EndpointId <String>] [<CommonParameters>]
+Get-Action1AutomationInstances [-Limit <Int32>] [-EndpointId <String>] [-NotCompleted]
+ [<CommonParameters>]
 ```
 
 ### AsPage
 
 ```
-Get-Action1AutomationInstances [-AsPages] [-Limit <Int32>] [-EndpointId <String>] [<CommonParameters>]
+Get-Action1AutomationInstances [-AsPages] [-Limit <Int32>] [-EndpointId <String>] [-NotCompleted]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,11 +32,21 @@ Get-Action1AutomationInstances [-AsPages] [-Limit <Int32>] [-EndpointId <String>
 Gets automation instance records from `/automations/instances/{orgId}` by using
 the module default organization configured by **Set-Action1DefaultOrg**.
 
+By default, the command explicitly sends `completed=yes` to retrieve completed
+automation instances. The API treats an omitted `completed` query parameter the
+same as `completed=yes`.
+
+Use **NotCompleted** to send `completed=no` and retrieve only automation
+instances that have not completed. Omitting the switch or specifying
+`-NotCompleted:$false` sends `completed=yes`. This switch selects between
+completed and uncompleted instances; neither setting requests both categories.
+It can be combined with **EndpointId**, **AsPages**, and **Limit**.
+
 Use **EndpointId** to filter automation instances for a specific endpoint. The
 command adds `endpoint_id={EndpointId}` to the request query string. Omit
 **EndpointId** to retrieve automation instances without an endpoint filter.
 
-By default, the command retrieves all API pages and returns individual
+The command retrieves all matching API pages and returns individual
 automation instance objects to the pipeline without changing their properties.
 
 Use **AsPages** to return one envelope object per API page for callers that need
@@ -45,13 +57,14 @@ page. The value must be from 1 through 200. The default value is 200.
 
 ## EXAMPLES
 
-### Example 1: Get all automation instances
+### Example 1: Get completed automation instances
 
 ```powershell
 Get-Action1AutomationInstances
 ```
 
-Gets all automation instances in the current organization.
+Gets all completed automation instances in the current organization by sending
+`completed=yes`.
 
 ### Example 2: Use a smaller API page size
 
@@ -59,7 +72,7 @@ Gets all automation instances in the current organization.
 Get-Action1AutomationInstances -Limit 50
 ```
 
-Gets all automation instances, requesting up to 50 records per API page.
+Gets all completed automation instances, requesting up to 50 records per API page.
 
 ### Example 3: Get automation instance pages
 
@@ -67,8 +80,8 @@ Gets all automation instances, requesting up to 50 records per API page.
 Get-Action1AutomationInstances -AsPages -Limit 50
 ```
 
-Gets automation instances as page envelope objects, requesting up to 50 records
-per API page.
+Gets completed automation instances as page envelope objects, requesting up to
+50 records per API page.
 
 ### Example 4: Get automation instances for an endpoint
 
@@ -76,7 +89,7 @@ per API page.
 Get-Action1AutomationInstances -EndpointId '11111111-1111-1111-1111-111111111111'
 ```
 
-Gets all automation instances for the specified endpoint in the current
+Gets all completed automation instances for the specified endpoint in the current
 organization.
 
 ### Example 5: Get pages for an endpoint
@@ -88,8 +101,17 @@ Get-Action1AutomationInstances `
     -Limit 50
 ```
 
-Gets page envelope objects for the specified endpoint, requesting up to 50
-automation instances per API page.
+Gets page envelope objects of completed instances for the specified endpoint,
+requesting up to 50 automation instances per API page.
+
+### Example 6: Get uncompleted automation instances
+
+```powershell
+Get-Action1AutomationInstances -NotCompleted
+```
+
+Gets only automation instances that have not completed in the current
+organization by sending `completed=no`.
 
 ## PARAMETERS
 
@@ -153,6 +175,27 @@ Aliases:
 Required: False
 Position: Named
 Default value: 200
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NotCompleted
+
+Returns only automation instances that have not completed by sending
+`completed=no`.
+
+The switch is off by default. When omitted or explicitly set to `$false`, the
+command sends `completed=yes` and retrieves completed instances. It does not
+request both categories together.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

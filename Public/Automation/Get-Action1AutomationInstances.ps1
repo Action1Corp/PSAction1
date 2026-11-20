@@ -26,7 +26,10 @@ function Get-Action1AutomationInstances {
         [ValidateScript({
             Test-Guid -Guid $_ -Label 'EndpointId'
         })]
-        [string]$EndpointId
+        [string]$EndpointId,
+
+        [Parameter(Mandatory = $false)]
+        [switch]$NotCompleted
     )
 
     if (Initialize-Action1DefaultOrg) {
@@ -39,7 +42,13 @@ function Get-Action1AutomationInstances {
     $uriParts = $uri -split '\?', 2
     $path = "$Script:Action1_BaseURI{0}" -f $uriParts[0]
 
-    $debugMessage = 'Listing automation instances'
+    $completed = 'yes'
+
+    if ($NotCompleted.IsPresent) {
+        $completed = 'no'
+    }
+
+    $debugMessage = "Listing automation instances (completed=$completed)"
 
     if ($EndpointId) {
         $debugMessage += " for endpoint '$EndpointId'"
@@ -48,13 +57,16 @@ function Get-Action1AutomationInstances {
     Write-Action1Debug "$debugMessage."
 
     $requestParams = @{
-        Path  = $path
-        Label = 'Automation instances'
-        Limit = $Limit
+        Path    = $path
+        Label   = 'Automation instances'
+        Limit   = $Limit
+        AddArgs = "completed=$completed"
     }
 
     if ($uriParts.Count -gt 1) {
-        $requestParams.AddArgs = $uriParts[1]
+        $requestParams.AddArgs = Join-QueryString `
+            -QueryString $uriParts[1] `
+            -Argument $requestParams.AddArgs
     }
 
     if ($AsPages.IsPresent) {
