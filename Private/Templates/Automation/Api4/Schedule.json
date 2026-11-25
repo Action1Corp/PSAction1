@@ -1,0 +1,13 @@
+{
+  "configuration": {
+    "id": "",
+    "type": "AutomationScheduleConfiguration",
+    "organization_id": "",
+    "name": "",
+    "actions": [],
+    "retry_minutes": "",
+    "settings": "",
+    "settings_timezone": ""
+  },
+  "endpoints": []
+}

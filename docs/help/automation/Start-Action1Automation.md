@@ -24,9 +24,11 @@ Starts an automation by sending a POST request to
 by **Set-Action1DefaultOrg**.
 
 Supply **AutomationDefinition** as a PowerShell object containing the request
-definition expected by the Action1 API, including the `endpoints` and
-`configuration` properties. Build the definition separately before calling this
-command. To use a JSON string or file, first convert it to an object with
+definition expected by the configured API version. API 3.0 uses root-level
+`name`, `actions`, `retry_minutes`, and `endpoints`; API 4.0 uses `configuration`
+and root-level `endpoints` and signatures. Build the unsigned object with
+**New-Action1AutomationDefinition**. Complete API 4.0 signing separately before
+submission. To use a JSON string or file, first convert it to an object with
 **ConvertFrom-Json**.
 
 The command passes the definition directly to the shared Action1 request helper,
@@ -80,8 +82,10 @@ hashtable or an object returned by **ConvertFrom-Json**. The value must not be
 null or empty.
 
 The object is passed directly to the Action1 request helper as the request body.
-Use the definition schema expected by the API, including `endpoints` with target
-IDs and types, and `configuration` with the automation's actions and settings.
+Use the definition schema expected by the configured API version, with explicit
+target IDs and types. API 3.0 actions and settings are at the root; API 4.0 places
+them inside `configuration`. The body version and organization must match the
+request URI. This command does not build, transform, or sign the definition.
 
 ```yaml
 Type: Object
@@ -171,6 +175,7 @@ The command reports an error if the request helper returns a null response.
 ## RELATED LINKS
 
 [Get-Action1AutomationInstances](Get-Action1AutomationInstances.md)
+[New-Action1AutomationDefinition](New-Action1AutomationDefinition.md)
 [Get-Action1AutomationInstance](Get-Action1AutomationInstance.md)
 [New-Action1AutomationSchedule](New-Action1AutomationSchedule.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)

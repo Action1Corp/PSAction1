@@ -27,9 +27,12 @@ organization configured by **Set-Action1DefaultOrg**. The
 and identifies the schedule to update.
 
 Supply **AutomationScheduleDefinition** as a PowerShell object containing the
-request definition expected by the Action1 API, including the `endpoints` and
-`configuration` properties. Build the definition separately before calling this
-command. To use a JSON string or file, first convert it to an object with
+request definition expected by the configured API version. API 3.0 uses a flat
+definition; API 4.0 uses nested `configuration` and root-level `endpoints` and
+signatures. **New-Action1AutomationScheduleDefinition -ExistingSchedule** can
+copy a complete schedule and apply explicit overrides to build the unsigned
+update body. Complete API 4.0 signing separately before submission. To use a
+JSON string or file, first convert it to an object with
 **ConvertFrom-Json**.
 
 The command passes the supplied definition directly to the shared Action1 request
@@ -112,8 +115,10 @@ be supplied to send an update request. If omitted, the command reports an error
 without sending a request; **-WhatIf** can preview the operation without one.
 
 The object is passed directly to the Action1 request helper as the PATCH body.
-Use the definition schema expected by the API, including `endpoints` and
-`configuration` with the schedule's actions and settings.
+Use the definition schema expected by the configured API version. API 3.0 keeps
+actions and settings at the root; API 4.0 places them inside `configuration`.
+The body version and organization must match the request URI. Supply a new
+signature for a changed API 4.0 configuration; this command does not sign it.
 
 ```yaml
 Type: Object
@@ -201,6 +206,7 @@ The command reports an error if the request helper returns a null response.
 
 ## RELATED LINKS
 
+[New-Action1AutomationScheduleDefinition](New-Action1AutomationScheduleDefinition.md)
 [Get-Action1AutomationSchedules](Get-Action1AutomationSchedules.md)
 [New-Action1AutomationSchedule](New-Action1AutomationSchedule.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
