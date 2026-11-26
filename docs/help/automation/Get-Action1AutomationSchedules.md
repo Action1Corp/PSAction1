@@ -141,5 +141,6 @@ the Action1 API.
 
 ## RELATED LINKS
 
+[Get-Action1AutomationSchedule](Get-Action1AutomationSchedule.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
 [Get-Action1AutomationInstances](Get-Action1AutomationInstances.md)

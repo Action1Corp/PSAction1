@@ -136,6 +136,7 @@
         'Get-Action1AutomationInstanceEndpoints'
         'Get-Action1AutomationInstanceEndpointDetails'
         'Get-Action1AutomationSchedules'
+        'Get-Action1AutomationSchedule'
 
         # Vulnerability
         'Get-Action1Vulnerabilities'
