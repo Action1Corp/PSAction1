@@ -352,7 +352,8 @@ Create still generates missing API 4.0 action IDs. FromAutomation retains the
 presence or absence of existing action IDs. API 4.0 start_time, when present,
 is checked for format; an absent source start time is not invented.
 
-Sign the completed configuration and attach root-level signatures separately.
+**Start-Action1Automation** signs the completed API 4.0 configuration and attaches
+root-level signatures using credentials configured with **Set-Action1Sign**.
 Changing a configuration requires a new signature. Generated Create timestamps
 use UTC as the module convention; live API timezone/required-field behavior has
 not been verified. Structural validation does not prove server acceptance.

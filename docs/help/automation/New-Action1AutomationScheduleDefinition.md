@@ -365,9 +365,11 @@ submission. API 3.0 source IDs are preserved as root id properties. API 4.0 GUID
 validation still applies; composite instance execution IDs require an explicit
 ConfigurationId override, and missing organization IDs require OrganizationId.
 
-No signatures are inherited. Sign the completed API 4.0 configuration and attach
-root signatures before submission. Existing action IDs, including their absence,
-are retained; Create continues to generate IDs for raw new API 4.0 actions.
+No signatures are inherited. **New-Action1AutomationSchedule** and
+**Update-Action1AutomationSchedule** sign API 4.0 configurations before submission
+using credentials configured with **Set-Action1Sign**. Existing action IDs,
+including their absence, are retained; Create continues to generate IDs for raw
+new API 4.0 actions.
 
 API 4.0 schedule-create structure is inferred from captured GET/PATCH bodies and
 has not been validated with a live create request. Server scheduling grammar and

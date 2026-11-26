@@ -34,6 +34,16 @@ function Update-Action1AutomationSchedule {
         return
     }
 
+    $requestBody = $AutomationScheduleDefinition
+    $apiVersion = Resolve-Action1AutomationApiVersion
+    if ($apiVersion -eq '4.0') {
+        $requestBody = Add-Action1Signature -InputObject $requestBody -ErrorAction Stop
+        if ($null -eq $requestBody -or -not (Test-Action1Signature -InputObject $requestBody)) {
+            Write-Error 'The signed automation schedule definition has invalid or missing signatures.'
+            return
+        }
+    }
+
     if (Initialize-Action1DefaultOrg) {
         $orgId = Get-Action1DefaultOrgId
     }
@@ -49,7 +59,7 @@ function Update-Action1AutomationSchedule {
         -Method PATCH `
         -Path $path `
         -Label "Update $scheduleLabel" `
-        -Body $AutomationScheduleDefinition
+        -Body $requestBody
 
     if ($null -eq $response) {
         Write-Error "Failed to update $scheduleLabel."

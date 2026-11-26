@@ -31,18 +31,24 @@ request definition expected by the configured API version. API 3.0 uses a flat
 definition; API 4.0 uses nested `configuration` and root-level `endpoints` and
 signatures. **New-Action1AutomationScheduleDefinition -ExistingSchedule** can
 copy a complete schedule and apply explicit overrides to build the unsigned
-update body. Complete API 4.0 signing separately before submission. To use a
-JSON string or file, first convert it to an object with
-**ConvertFrom-Json**.
+update body. For API 4.0, the command signs `configuration` using the session
+credentials set by **Set-Action1Sign** and validates the attached signatures
+before submission. To use a JSON string or file, first convert it to an object
+with **ConvertFrom-Json**.
 
-The command passes the supplied definition directly to the shared Action1 request
-helper, which serializes it as JSON. It does not build the definition, merge in
-existing schedule values, or validate the definition schema locally. API
-validation errors are reported by the request helper.
+The configured region's base URI determines the API version. API 3.0 definitions
+are passed unchanged to the shared request helper, which serializes them as JSON.
+For API 4.0, signing updates the supplied object, generates a configuration GUID
+if missing, and replaces existing signatures. Submission requires a nonempty
+signature array with valid reference fields and signature fields (`alg`, `iat`,
+`kid`, and `value`). This checks signature structure, not cryptographic validity.
+Signing failures or invalid signatures prevent the request. The command does
+not merge existing schedule values into the definition. Other API validation
+errors are reported by the request helper.
 
-Use **-WhatIf** to preview the operation without sending the PATCH request. Use
-**-Confirm** to request confirmation or **-Force** to suppress confirmation prompts
-while still honoring **-WhatIf**.
+Use **-WhatIf** to preview the operation without signing or sending the PATCH
+request. Use **-Confirm** to request confirmation or **-Force** to suppress
+confirmation prompts while still honoring **-WhatIf**.
 
 ## EXAMPLES
 
@@ -114,11 +120,12 @@ not be null or empty. Although optional at parameter binding, a definition must
 be supplied to send an update request. If omitted, the command reports an error
 without sending a request; **-WhatIf** can preview the operation without one.
 
-The object is passed directly to the Action1 request helper as the PATCH body.
+The object supplies the PATCH body and is signed in place for API 4.0.
 Use the definition schema expected by the configured API version. API 3.0 keeps
 actions and settings at the root; API 4.0 places them inside `configuration`.
-The body version and organization must match the request URI. Supply a new
-signature for a changed API 4.0 configuration; this command does not sign it.
+The body version and organization must match the request URI. Configure session
+signing credentials with **Set-Action1Sign** for API 4.0; the command replaces
+prior signatures automatically.
 
 ```yaml
 Type: Object
@@ -210,3 +217,4 @@ The command reports an error if the request helper returns a null response.
 [Get-Action1AutomationSchedules](Get-Action1AutomationSchedules.md)
 [New-Action1AutomationSchedule](New-Action1AutomationSchedule.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
+[Set-Action1Sign](../configuration/Set-Action1Sign.md)

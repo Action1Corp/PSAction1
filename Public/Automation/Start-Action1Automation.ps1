@@ -26,6 +26,16 @@ function Start-Action1Automation {
         return
     }
 
+    $requestBody = $AutomationDefinition
+    $apiVersion = Resolve-Action1AutomationApiVersion
+    if ($apiVersion -eq '4.0') {
+        $requestBody = Add-Action1Signature -InputObject $requestBody -ErrorAction Stop
+        if ($null -eq $requestBody -or -not (Test-Action1Signature -InputObject $requestBody)) {
+            Write-Error 'The signed automation definition has invalid or missing signatures.'
+            return
+        }
+    }
+
     if (Initialize-Action1DefaultOrg) {
         $orgId = Get-Action1DefaultOrgId
     }
@@ -41,7 +51,7 @@ function Start-Action1Automation {
         -Method POST `
         -Path $path `
         -Label "Start $automationLabel" `
-        -Body $AutomationDefinition
+        -Body $requestBody
 
     if ($null -eq $response) {
         Write-Error "Failed to start $automationLabel."

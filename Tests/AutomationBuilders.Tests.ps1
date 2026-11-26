@@ -621,6 +621,14 @@ InModuleScope PSAction1 {
             $script:capturedAutomationRequest = $null
             Mock Initialize-Action1DefaultOrg { $true }
             Mock Initialize-Action1Token { $true }
+            Mock New-Action1Signature {
+                [pscustomobject]@{
+                    alg = 'EdDSA'
+                    iat = 1795614034
+                    kid = 'synthetic-key'
+                    value = 'synthetic-signature'
+                }
+            }
             Mock Invoke-WebRequest {
                 $script:capturedAutomationRequest = @{
                     Method = $Method
@@ -631,7 +639,7 @@ InModuleScope PSAction1 {
             }
         }
 
-        It 'serializes both versions unchanged for run-now POST and schedule POST/PATCH' {
+        It 'serializes API 3 unchanged and signs API 4 for run-now POST and schedule POST/PATCH' {
             foreach ($version in @('3.0', '4.0')) {
                 $script:Action1_BaseURI = "https://example.invalid/api/$version"
                 $action = New-Action1AutomationAction -Name Test -TemplateId run_script `
@@ -655,12 +663,15 @@ InModuleScope PSAction1 {
                 $capturedAutomationRequest.Uri | Should Match '/synthetic_schedule$'
                 if ($version -eq '4.0') {
                     $capturedAutomationRequest.Body.configuration.settings | Should Be 'DISABLED'
+                    Test-Action1Signature -InputObject $capturedAutomationRequest.Body |
+                        Should Be $true
                 }
                 else {
                     $capturedAutomationRequest.Body.settings | Should Be 'DISABLED'
                 }
             }
             Assert-MockCalled Invoke-WebRequest -Times 6 -Exactly -Scope It
+            Assert-MockCalled New-Action1Signature -Times 3 -Exactly -Scope It
         }
 
         It 'still honors WhatIf with Force for all three submission commands' {
@@ -671,6 +682,7 @@ InModuleScope PSAction1 {
             $null = Update-Action1AutomationSchedule -AutomationInstanceId synthetic_schedule `
                 -AutomationScheduleDefinition $body -Force -WhatIf
             Assert-MockCalled Invoke-WebRequest -Times 0 -Exactly -Scope It
+            Assert-MockCalled New-Action1Signature -Times 0 -Exactly -Scope It
         }
     }
 }
