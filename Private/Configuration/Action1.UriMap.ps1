@@ -97,6 +97,11 @@ $Script:Action1_UriMap = @{
         "/automations/instances/$OrgId/$AutomationInstanceId/endpoint-results/$EndpointId/details"
     }
     G_AutomationSchedules  = { param($OrgId) "/automations/schedules/$OrgId" }
+    G_AutomationSchedule = {
+        param($OrgId, $AutomationInstanceId)
+
+        "/automations/schedules/$OrgId/$AutomationInstanceId"
+    }
     N_AutomationSchedule   = { param($OrgId) "/automations/schedules/$OrgId" }
     U_AutomationSchedule   = {
         param($OrgId, $AutomationInstanceId)
