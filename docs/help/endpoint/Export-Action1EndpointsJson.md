@@ -20,7 +20,7 @@ Export-Action1EndpointsJson [[-Status] <String>] [[-RebootRequired] <String>] [[
 
 ## DESCRIPTION
 
-`Export-Action1EndpointsJson` calls `Get-Action1Endpoints` in page mode with
+`Export-Action1EndpointsJson` calls `Get-Action1Endpoints -AsPages` with
 the selected endpoint filters and exports the returned endpoint records to a
 JSON file.
 

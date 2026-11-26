@@ -20,7 +20,7 @@ Get-Action1Users [-Limit <Int32>] [<CommonParameters>]
 
 ### AsPage
 ```
-Get-Action1Users [-AsPage] [-Limit <Int32>] [<CommonParameters>]
+Get-Action1Users [-AsPages] [-Limit <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,7 +33,7 @@ helper and returns the enabled user objects from Action1 without reshaping them.
 Disabled users are not included. To retrieve a disabled user, call
 `Get-Action1User` with the user's ID.
 
-Use **AsPage** to return page envelopes that contain an **Items** array and
+Use **AsPages** to return page envelopes that contain an **Items** array and
 page metadata. This mode is intended for paged export workflows.
 
 Use **Limit** to control how many users are requested per API page. The value
@@ -60,16 +60,22 @@ present in the API response.
 
 ## PARAMETERS
 
-### -AsPage
+### -AsPages
 
 Returns page envelope objects instead of writing each user object directly to
 the pipeline. Each page contains **Items**, **PageNumber**, **From**, **Limit**,
 **TotalItems**, and **NextPage** properties.
 
+This switch changes only the output format; the command still retrieves all
+available pages. Without **Limit**, it requests 200 items per page. **Limit**
+controls the requested page size, not the total number of returned items.
+
+**AsPage** remains available as an alias.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: AsPage
-Aliases:
+Aliases: AsPage
 
 Required: False
 Position: Named
@@ -109,7 +115,7 @@ You cannot pipe input to this command.
 
 ### System.Object
 
-Returns enabled user objects from Action1. With **AsPage**, returns page
+Returns enabled user objects from Action1. With **AsPages**, returns page
 envelope objects containing enabled user objects and page metadata.
 
 ## NOTES

@@ -9,7 +9,8 @@ function Get-Action1Organizations {
     [CmdletBinding(DefaultParameterSetName = 'AllOrganizations')]
     param(
         [Parameter(Mandatory = $false, ParameterSetName = 'AsPage')]
-        [switch]$AsPage,
+        [Alias('AsPage')]
+        [switch]$AsPages,
 
         [Parameter(Mandatory = $false)]
         [ValidateScript({
@@ -34,8 +35,8 @@ function Get-Action1Organizations {
         OmitInitialOffset = $true
     }
 
-    if ($AsPage.IsPresent) {
-        $requestParams.AsPage = $true
+    if ($AsPages.IsPresent) {
+        $requestParams.AsPages = $true
     }
 
     $convertToOrganizationObject = {
@@ -52,7 +53,7 @@ function Get-Action1Organizations {
         }
     }
 
-    if ($AsPage.IsPresent) {
+    if ($AsPages.IsPresent) {
         $pageCount = 0
 
         Invoke-Action1PagedGetRequest @requestParams |
