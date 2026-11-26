@@ -19,7 +19,8 @@ function New-Action1Signature {
     )
 
     if ($ObjectConfig -is [System.Collections.IDictionary]) {
-        $propertyCount = $ObjectConfig.Count
+        # A JSON property named Count must not shadow the dictionary member.
+        $propertyCount = $ObjectConfig.get_Count()
     }
     elseif ($ObjectConfig -is [PSCustomObject]) {
         $propertyCount = @($ObjectConfig.PSObject.Properties).Count
