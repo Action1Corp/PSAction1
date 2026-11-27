@@ -102,6 +102,11 @@ $Script:Action1_UriMap = @{
 
         "/automations/schedules/$OrgId/$AutomationInstanceId"
     }
+    G_AutomationDeploymentStatuses = {
+        param($OrgId, $AutomationInstanceId)
+
+        "/automations/schedules/$OrgId/$AutomationInstanceId/deployment-statuses"
+    }
     N_AutomationSchedule   = { param($OrgId) "/automations/schedules/$OrgId" }
     U_AutomationSchedule   = {
         param($OrgId, $AutomationInstanceId)

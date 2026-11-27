@@ -140,6 +140,7 @@
         'Stop-Action1Automation'
         'Get-Action1AutomationSchedule'
         'Get-Action1AutomationSchedules'
+        'Get-Action1AutomationDeploymentStatuses'
         'New-Action1AutomationDefinition'
         'New-Action1AutomationAction'
         'New-Action1AutomationActionFilter'
