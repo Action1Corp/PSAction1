@@ -55,69 +55,130 @@ Scalar overrides apply to a fresh top-level configuration. Nested action,
 parameter, target, and extension objects are reused, so later edits can affect
 the source. No deep copy or JSON round trip is performed.
 
+The construction flow is filter -> action -> real target reference -> unsigned
+schedule definition. **New-Action1AutomationSchedule** submits it through POST;
+**Update-Action1AutomationSchedule** submits it through PATCH. Both Create and
+FromSchedule can supply either operation. For cloning through POST, explicitly
+assign a fresh API 4.0 ConfigurationId. For PATCH, retain the stored
+`configuration.id`, including when rebuilding the whole body from scratch.
+
+The schedule resource ID returned by the list/detail getters is passed as
+AutomationInstanceId to schedule GET, update, and remove commands. It is distinct
+in purpose from the configuration GUID referenced by the signature, and from an
+Automation instance execution ID. See **New-Action1AutomationSchedule** for both
+complete CRUD paths, including verification after removal.
+
+The examples use API 4.0 and the configured default test organization.
+The endpoint and Automation getters contact Action1 and require an authenticated
+session; the builders themselves only construct objects locally. Configure
+**Set-Action1Sign** before submitting an API 4.0 definition. See the related
+submission command for the complete create/read/cleanup flow.
+
 ## EXAMPLES
 
-### Example 1: Build a disabled schedule from scratch
+### Example 1: Build a disabled schedule definition from scratch
 
 ```powershell
-$action = New-Action1AutomationAction -Name 'Maintenance script' `
-    -TemplateId run_script -Parameters @{ run_script_id = 'maintenance_script_id' }
-$definition = New-Action1AutomationScheduleDefinition -Name 'Maintenance' `
-    -Actions @($action) -Endpoints @() -RetryMinutes 60 -Settings DISABLED `
-    -ApiVersion '3.0'
+$endpoints = @(Get-Action1Endpoints -Status Connected -ErrorAction Stop)
+if ($endpoints.Count -eq 0) { throw 'No connected test endpoint was returned.' }
+$target = New-Action1AutomationTarget -Id $endpoints[0].id -Type Endpoint
+
+$filter = New-Action1AutomationActionFilter -Name update_types `
+    -Values 'Security Updates' -Operator include
+$action = New-Action1AutomationAction -Name 'Security updates' `
+    -TemplateId deploy_update -Parameters @{
+        scope = 'MatchingFilters'
+        filters = @($filter)
+        reboot_options = @{ auto_reboot = 'no' }
+    }
+
+$scheduleName = 'Documentation schedule ' + [guid]::NewGuid().ToString('N')
+$definition = New-Action1AutomationScheduleDefinition -Name $scheduleName `
+    -Actions @($action) -Endpoints @($target) -RetryMinutes 10 `
+    -Settings DISABLED -SettingsTimezone UTC -ApiVersion '4.0' `
+    -OrganizationId (Get-Action1DefaultOrgId)
+
+$definition | ConvertTo-Json -Depth 100
 ```
 
-Builds a flat disabled definition with UTC settings_timezone.
+Builds every component explicitly and keeps the schedule disabled. Create generates
+the configuration GUID when omitted. **New-Action1AutomationSchedule** creates
+the remote schedule; this builder only returns the unsigned definition.
 
-### Example 2: Override one property from a retrieved schedule
+### Example 2: Clone a retrieved schedule for a new resource
 
 ```powershell
-$schedule = Get-Action1AutomationSchedules | Select-Object -First 1
-$definition = New-Action1AutomationScheduleDefinition `
-    -ExistingSchedule $schedule -RetryMinutes 120
+$schedules = @(Get-Action1AutomationSchedules -ErrorAction Stop)
+if ($schedules.Count -eq 0) { throw 'No source schedule was returned.' }
+$source = Get-Action1AutomationSchedule `
+    -AutomationInstanceId $schedules[0].id -ErrorAction Stop
+
+$scheduleName = 'Documentation cloned schedule ' + [guid]::NewGuid().ToString('N')
+$definition = New-Action1AutomationScheduleDefinition -ExistingSchedule $source `
+    -Name $scheduleName -Settings DISABLED -SettingsTimezone UTC -RetryMinutes 10 `
+    -ApiVersion '4.0' -OrganizationId (Get-Action1DefaultOrgId) `
+    -ConfigurationId ([guid]::NewGuid().ToString())
 ```
 
-Preserves source identities and unspecified fields. The caller chooses the submission command and is responsible for the IDs.
+Reads the full schedule by its resource ID, then assigns a fresh configuration GUID
+and generated name before POST. Usable actions and targets are inherited. If the
+source lacks them, also supply `-Actions @($action) -Endpoints @($target)` from
+Example 1. The source schedule itself is not updated.
 
-### Example 3: Use the ExistingAutomation alias
+### Example 3: Build an update from an existing schedule without resetting identity
 
 ```powershell
-$definition = New-Action1AutomationScheduleDefinition `
-    -ExistingAutomation $schedule -Name 'Revised maintenance'
+$scheduleId = Read-Host 'Test schedule resource ID'
+$details = Get-Action1AutomationSchedule `
+    -AutomationInstanceId $scheduleId -ErrorAction Stop
+$scheduleName = $details.configuration.name
+# Inherit the stored identity and collections; override only these scalar fields.
+$updateDefinition = New-Action1AutomationScheduleDefinition -ExistingSchedule $details `
+    -Name "$scheduleName Updated" -RetryMinutes 11 -Settings DISABLED -SettingsTimezone UTC `
+    -ApiVersion '4.0'
+$response = Update-Action1AutomationSchedule -AutomationInstanceId $scheduleId `
+    -AutomationScheduleDefinition $updateDefinition -Force -ErrorAction Stop
 ```
 
-Uses exactly the same inheritance rules as ExistingSchedule. This alias does not trigger identity regeneration.
+Uses the selected test schedule. The **New-Action1AutomationSchedule** workflow
+shows creation and cleanup of a disposable resource for the same operation.
+Omitting ConfigurationId preserves `configuration.id`. `-ExistingAutomation`
+is an alias for `-ExistingSchedule` with the same inheritance rules. The update
+command signs the changed API 4.0 configuration before sending PATCH.
 
-### Example 4: Supply scheduling fields for an instance
+### Example 4: Build an update from scratch while preserving the stored identity
 
 ```powershell
-$existing = Get-Action1AutomationInstance -AutomationInstanceId $instanceId
-$definition = New-Action1AutomationScheduleDefinition `
-    -ExistingAutomation $existing -Actions @($action) `
-    -Settings 'ENABLED MONTHLY:4 AT:11-17-00' -SettingsTimezone UTC `
-    -ApiVersion '3.0'
+$scheduleId = Read-Host 'Test schedule resource ID'
+$details = Get-Action1AutomationSchedule `
+    -AutomationInstanceId $scheduleId -ErrorAction Stop
+$scheduleName = $details.configuration.name
+$configurationId = [string]$details.configuration.id
+# Rebuild the whole body with Create parameters; retain the stored configuration identity.
+$updateDefinition = New-Action1AutomationScheduleDefinition `
+    -Name "$scheduleName Updated" -Actions @($action) -Endpoints @($target) `
+    -RetryMinutes 11 -Settings DISABLED -SettingsTimezone UTC -ApiVersion '4.0' `
+    -OrganizationId (Get-Action1DefaultOrgId) -ConfigurationId $configurationId
+$response = Update-Action1AutomationSchedule -AutomationInstanceId $scheduleId `
+    -AutomationScheduleDefinition $updateDefinition -Force -ErrorAction Stop
 ```
 
-Retains the available instance definition fields and source ID. Supply missing API 4.0 configuration identity explicitly when using API 4.0.
+Uses the Create parameter set even though the result is submitted through PATCH.
+Supply the full action and target arrays from Example 1, all schedule settings,
+and the stored configuration GUID. The schedule resource ID remains in the
+update command parameter. The builder does not choose POST or PATCH.
 
-### Example 5: Explicitly override API 4.0 identity
+### Example 5: Build a disabled API 3.0 schedule
 
 ```powershell
-$definition = New-Action1AutomationScheduleDefinition `
-    -ExistingSchedule $schedule -ApiVersion '4.0' `
-    -ConfigurationId '33333333-3333-3333-3333-333333333333'
+$legacyDefinition = New-Action1AutomationScheduleDefinition -Name 'Legacy test schedule' `
+    -Actions @($action) -Endpoints @($target) -RetryMinutes 10 `
+    -Settings DISABLED -SettingsTimezone UTC -ApiVersion '3.0'
 ```
 
-Overrides configuration.id because the caller supplied ConfigurationId. The builder makes no POST/PATCH choice.
-
-### Example 6: Clear targets while disabling a schedule
-
-```powershell
-$definition = New-Action1AutomationScheduleDefinition `
-    -ExistingSchedule $schedule -Settings DISABLED -Endpoints @()
-```
-
-Explicitly clears targets. Omitting Endpoints preserves them.
+Uses the components from Example 1 and returns a flat unsigned body. API 3.0
+does not accept OrganizationId or ConfigurationId on this builder. Use an API 3.0
+session for submission. See **New-Action1AutomationSchedule** for full CRUD flows.
 
 ## PARAMETERS
 
@@ -371,9 +432,9 @@ using credentials configured with **Set-Action1Sign**. Existing action IDs,
 including their absence, are retained; Create continues to generate IDs for raw
 new API 4.0 actions.
 
-API 4.0 schedule-create structure is inferred from captured GET/PATCH bodies and
-has not been validated with a live create request. Server scheduling grammar and
-sparse PATCH semantics are outside this builder's contract.
+Server scheduling grammar and sparse PATCH semantics are outside this builder's
+contract. The builder checks structure; the service validates submitted action
+parameters and schedule settings.
 
 Update-Action1AutomationSchedule uses AutomationInstanceId for the schedule
 resource ID in the request path. The signature references configuration.id.
@@ -389,3 +450,8 @@ and API version. The builder does not migrate API-specific action semantics.
 [Update-Action1AutomationSchedule](Update-Action1AutomationSchedule.md)
 [Get-Action1AutomationSchedules](Get-Action1AutomationSchedules.md)
 [Get-Action1AutomationInstance](Get-Action1AutomationInstance.md)
+[New-Action1AutomationActionFilter](New-Action1AutomationActionFilter.md)
+[Get-Action1AutomationSchedule](Get-Action1AutomationSchedule.md)
+[Remove-Action1AutomationSchedule](Remove-Action1AutomationSchedule.md)
+[Get-Action1Endpoints](../endpoint/Get-Action1Endpoints.md)
+[Get-Action1EndpointGroups](../endpointgroup/Get-Action1EndpointGroups.md)

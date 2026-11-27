@@ -50,47 +50,150 @@ Use **-WhatIf** to preview the operation without signing or sending the PATCH
 request. Use **-Confirm** to request confirmation or **-Force** to suppress
 confirmation prompts while still honoring **-WhatIf**.
 
+Two construction paths produce an update body: retrieve the full schedule and
+apply explicit overrides through ExistingSchedule, or build the full replacement
+definition from scratch with actions, filters, real targets, settings, and the
+stored ConfigurationId. A scratch rebuild does not inherit unspecified fields.
+Keep `configuration.id` for the signed body and the schedule resource ID for
+AutomationInstanceId in the request path; use the corresponding list/detail
+getters to obtain both rather than treating an instance execution ID as either.
+
+Verify changes with both **Get-Action1AutomationSchedules** and
+**Get-Action1AutomationSchedule**, allowing bounded read-after-write delay.
+The complete create/update/remove examples are in **New-Action1AutomationSchedule**.
+This command updates a schedule definition, not an already running instance.
+
+The API 4.0 examples use an authenticated session with an API 4.0 region,
+a default test organization, and signing credentials configured through
+**Set-Action1Credentials**, **Set-Action1Region**, **Set-Action1DefaultOrg**, and
+**Set-Action1Sign**. The definition's API version and organization must match
+the submission URI. The security-update action can install matching updates when
+started; its `auto_reboot = 'no'` parameter disables automatic reboot. Schedules
+in these examples remain `DISABLED`.
+
 ## EXAMPLES
 
-### Example 1: Update an automation schedule from a prepared definition
+### Example 1: Update a test schedule using its existing object
 
 ```powershell
-Update-Action1AutomationSchedule `
-    -AutomationInstanceId '11111111-1111-1111-1111-111111111111' `
-    -AutomationScheduleDefinition $automationScheduleDefinition
+# Supply the resource ID of a test schedule you intend to update.
+$scheduleId = Read-Host 'Test schedule resource ID'
+$details = Get-Action1AutomationSchedule -AutomationInstanceId $scheduleId -ErrorAction Stop
+if ($null -eq $details) { throw 'The selected schedule was not returned.' }
+$scheduleName = $details.configuration.name
+$configurationId = [string]$details.configuration.id
+
+# Inherit the stored identity and collections; override only these scalar fields.
+$updateDefinition = New-Action1AutomationScheduleDefinition -ExistingSchedule $details `
+    -Name "$scheduleName Updated" -RetryMinutes 11 -Settings DISABLED -SettingsTimezone UTC `
+    -ApiVersion '4.0'
+
+$updateResponse = Update-Action1AutomationSchedule -AutomationInstanceId $scheduleId `
+    -AutomationScheduleDefinition $updateDefinition -Force -ErrorAction Stop
+
+$verified = $false
+for ($attempt = 1; $attempt -le 6; $attempt++) {
+    $schedules = @(Get-Action1AutomationSchedules -ErrorAction Stop)
+    $listed = @($schedules | Where-Object {
+        $_.id -eq $scheduleId -and $_.configuration.name -ceq "$scheduleName Updated"
+    })
+    $updated = Get-Action1AutomationSchedule `
+        -AutomationInstanceId $scheduleId -ErrorAction Stop
+    if ($listed.Count -eq 1 -and $null -ne $updated -and
+        $updated.configuration.id -eq $configurationId -and
+        $updated.configuration.name -ceq "$scheduleName Updated" -and
+        [string]$updated.configuration.retry_minutes -eq '11' -and
+        $updated.configuration.settings -ceq 'DISABLED' -and
+        $updated.configuration.settings_timezone -ceq 'UTC') {
+        $verified = $true
+        break
+    }
+    if ($attempt -lt 6) { Start-Sleep -Seconds 2 }
+}
+if (-not $verified) { throw 'Updated schedule fields did not read back before the timeout.' }
 ```
 
-Updates the specified schedule in the current organization using a definition
-object built separately.
+Reads the full object, rebuilds the unsigned definition with scalar overrides,
+and submits PATCH. Actions, targets, and configuration identity are inherited.
+The schedule stays disabled. Bounded list and detail reads verify the update.
+The complete **New-Action1AutomationSchedule** examples create a disposable schedule
+first and remove it afterward.
 
-### Example 2: Update an automation schedule from a JSON file
+### Example 2: Replace the definition using builders from scratch
 
 ```powershell
-$automationScheduleDefinition = Get-Content `
-    -LiteralPath '.\AutomationScheduleDefinition.json' `
-    -Raw | ConvertFrom-Json
+$endpoints = @(Get-Action1Endpoints -Status Connected -ErrorAction Stop)
+if ($endpoints.Count -eq 0) { throw 'No connected test endpoint was returned.' }
+$target = New-Action1AutomationTarget -Id $endpoints[0].id -Type Endpoint
 
-Update-Action1AutomationSchedule `
-    -AutomationInstanceId '11111111-1111-1111-1111-111111111111' `
-    -AutomationScheduleDefinition $automationScheduleDefinition `
-    -Force
+$filter = New-Action1AutomationActionFilter -Name update_types `
+    -Values 'Security Updates' -Operator include
+$action = New-Action1AutomationAction -Name 'Security updates' `
+    -TemplateId deploy_update -Parameters @{
+        scope = 'MatchingFilters'
+        filters = @($filter)
+        reboot_options = @{ auto_reboot = 'no' }
+    }
+
+# Supply the resource ID of the test schedule whose full definition will be replaced.
+$scheduleId = Read-Host 'Test schedule resource ID'
+$details = Get-Action1AutomationSchedule -AutomationInstanceId $scheduleId -ErrorAction Stop
+if ($null -eq $details) { throw 'The selected schedule was not returned.' }
+$scheduleName = $details.configuration.name
+$configurationId = [string]$details.configuration.id
+
+# Rebuild the whole body with Create parameters; retain the stored configuration identity.
+$updateDefinition = New-Action1AutomationScheduleDefinition `
+    -Name "$scheduleName Updated" -Actions @($action) -Endpoints @($target) `
+    -RetryMinutes 11 -Settings DISABLED -SettingsTimezone UTC -ApiVersion '4.0' `
+    -OrganizationId (Get-Action1DefaultOrgId) -ConfigurationId $configurationId
+
+$updateResponse = Update-Action1AutomationSchedule -AutomationInstanceId $scheduleId `
+    -AutomationScheduleDefinition $updateDefinition -Force -ErrorAction Stop
+
+$verified = $false
+for ($attempt = 1; $attempt -le 6; $attempt++) {
+    $schedules = @(Get-Action1AutomationSchedules -ErrorAction Stop)
+    $listed = @($schedules | Where-Object {
+        $_.id -eq $scheduleId -and $_.configuration.name -ceq "$scheduleName Updated"
+    })
+    $updated = Get-Action1AutomationSchedule `
+        -AutomationInstanceId $scheduleId -ErrorAction Stop
+    if ($listed.Count -eq 1 -and $null -ne $updated -and
+        $updated.configuration.id -eq $configurationId -and
+        $updated.configuration.name -ceq "$scheduleName Updated" -and
+        [string]$updated.configuration.retry_minutes -eq '11' -and
+        $updated.configuration.settings -ceq 'DISABLED' -and
+        $updated.configuration.settings_timezone -ceq 'UTC') {
+        $verified = $true
+        break
+    }
+    if ($attempt -lt 6) { Start-Sleep -Seconds 2 }
+}
+if (-not $verified) { throw 'Updated schedule fields did not read back before the timeout.' }
 ```
 
-Reads a prepared JSON request definition and updates the automation schedule
-without prompting for confirmation.
+Builds a new filter, action, and real target, then uses the Create parameter set for
+the replacement body. Retaining the stored configuration GUID is explicit. This is
+a full definition, not a sparse merge: fields and collections not supplied by this
+flow are not inherited from the selected schedule.
 
-### Example 3: Preview an automation schedule update
+### Example 3: Rebuild a saved schedule definition and preview an update
 
 ```powershell
-Update-Action1AutomationSchedule `
-    -AutomationInstanceId '11111111-1111-1111-1111-111111111111' `
-    -AutomationScheduleDefinition $automationScheduleDefinition `
-    -Force `
-    -WhatIf
+$saved = Get-Content -LiteralPath '.\AutomationScheduleDefinition.json' -Raw | ConvertFrom-Json
+$scheduleId = Read-Host 'Test schedule resource ID'
+$current = Get-Action1AutomationSchedule -AutomationInstanceId $scheduleId -ErrorAction Stop
+if ($null -eq $current) { throw 'The selected schedule was not returned.' }
+$updateDefinition = New-Action1AutomationScheduleDefinition -ExistingSchedule $saved `
+    -ConfigurationId $current.configuration.id -OrganizationId (Get-Action1DefaultOrgId) `
+    -Settings DISABLED -SettingsTimezone UTC -ApiVersion '4.0'
+Update-Action1AutomationSchedule -AutomationInstanceId $scheduleId `
+    -AutomationScheduleDefinition $updateDefinition -Force -WhatIf
 ```
 
-Shows the update operation without sending an API request, even when **-Force**
-is specified.
+Uses the stored resource identity and the saved definition content. WhatIf skips
+signing and PATCH but does not skip the preceding file read, GET, or builder calls.
 
 ## PARAMETERS
 
@@ -218,3 +321,10 @@ The command reports an error if the request helper returns a null response.
 [New-Action1AutomationSchedule](New-Action1AutomationSchedule.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
 [Set-Action1Sign](../configuration/Set-Action1Sign.md)
+[Get-Action1AutomationSchedule](Get-Action1AutomationSchedule.md)
+[New-Action1AutomationActionFilter](New-Action1AutomationActionFilter.md)
+[New-Action1AutomationAction](New-Action1AutomationAction.md)
+[New-Action1AutomationTarget](New-Action1AutomationTarget.md)
+[Remove-Action1AutomationSchedule](Remove-Action1AutomationSchedule.md)
+[Get-Action1Endpoints](../endpoint/Get-Action1Endpoints.md)
+[Get-Action1EndpointGroups](../endpointgroup/Get-Action1EndpointGroups.md)

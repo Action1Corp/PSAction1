@@ -46,39 +46,161 @@ Use **-WhatIf** to preview the operation without signing or sending the POST
 request. Use **-Force** to suppress confirmation prompts while still honoring
 **-WhatIf**.
 
+Build from scratch by resolving real endpoint/group IDs and constructing a
+filter, action, target, and **New-Action1AutomationDefinition**. Build from an
+existing object by reading one instance and passing it to that builder through
+ExistingAutomation. Supply missing action/target collections explicitly and
+choose a new configuration GUID and start time for the separate execution.
+
+The unsigned run-now definition is sometimes called an Automation Instance
+Definition. An Automation instance itself exists only after submission. Its
+execution ID, the API 4.0 configuration GUID, and a schedule resource ID have
+different roles. Discover the new instance from completed and active lists using
+the baseline IDs and a generated name, read it by that instance ID, then pass the
+same ID to **Stop-Action1Automation**. There is no public instance update or delete
+command; starting a revised definition creates a separate run.
+
+The API 4.0 examples use an authenticated session with an API 4.0 region,
+a default test organization, and signing credentials configured through
+**Set-Action1Credentials**, **Set-Action1Region**, **Set-Action1DefaultOrg**, and
+**Set-Action1Sign**. The definition's API version and organization must match
+the submission URI. The security-update action can install matching updates when
+started; its `auto_reboot = 'no'` parameter disables automatic reboot. Schedules
+in these examples remain `DISABLED`.
+
 ## EXAMPLES
 
-### Example 1: Start an automation from a prepared definition
+### Example 1: Build from scratch, start, discover, read, and stop one run
 
 ```powershell
-Start-Action1Automation -AutomationDefinition $automationDefinition
+$endpoints = @(Get-Action1Endpoints -Status Connected -ErrorAction Stop)
+if ($endpoints.Count -eq 0) { throw 'No connected test endpoint was returned.' }
+$target = New-Action1AutomationTarget -Id $endpoints[0].id -Type Endpoint
+
+$filter = New-Action1AutomationActionFilter -Name update_types `
+    -Values 'Security Updates' -Operator include
+$action = New-Action1AutomationAction -Name 'Security updates' `
+    -TemplateId deploy_update -Parameters @{
+        scope = 'MatchingFilters'
+        filters = @($filter)
+        reboot_options = @{ auto_reboot = 'no' }
+    }
+
+$runName = 'Documentation run ' + [guid]::NewGuid().ToString('N')
+$definition = New-Action1AutomationDefinition -Name $runName `
+    -Actions @($action) -Endpoints @($target) -RetryMinutes 10 `
+    -ApiVersion '4.0' -OrganizationId (Get-Action1DefaultOrgId) `
+    -StartTime ([DateTimeOffset]::UtcNow)
+
+# Save both completed and active IDs before submitting the definition.
+$beforeIds = @(
+    @(Get-Action1AutomationInstances -ErrorAction Stop) +
+    @(Get-Action1AutomationInstances -NotCompleted -ErrorAction Stop) |
+        Select-Object -ExpandProperty id -Unique
+)
+$startResponse = Start-Action1Automation -AutomationDefinition $definition `
+    -Force -ErrorAction Stop
+
+$created = $null
+for ($attempt = 1; $attempt -le 6; $attempt++) {
+    $instances = @(
+        @(Get-Action1AutomationInstances -ErrorAction Stop) +
+        @(Get-Action1AutomationInstances -NotCompleted -ErrorAction Stop) |
+            Sort-Object -Property id -Unique
+    )
+    $matches = @($instances | Where-Object {
+        $itemName = if ($_.configuration.name) { $_.configuration.name } else { $_.name }
+        $_.id -notin $beforeIds -and $itemName -ceq $runName
+    })
+    if ($matches.Count -gt 1) { throw 'More than one fresh run matches this name.' }
+    if ($matches.Count -eq 1) { $created = $matches[0]; break }
+    if ($attempt -lt 6) { Start-Sleep -Seconds 2 }
+}
+if ($null -eq $created) { throw 'The new run did not appear before the timeout.' }
+$instanceId = [string]$created.id
+$details = Get-Action1AutomationInstance -AutomationInstanceId $instanceId -ErrorAction Stop
+if ($null -eq $details -or $details.id -ne $instanceId) { throw 'Instance read-back failed.' }
+
+$stopResponse = Stop-Action1Automation -AutomationInstanceId $instanceId `
+    -Force -ErrorAction Stop
 ```
 
-Starts an automation in the current organization using a definition object built
-separately and prompts for confirmation.
+The builder returns an unsigned run-now definition. Start signs its final API 4.0
+configuration and submits POST. Bounded list discovery identifies the new instance
+even if it completes quickly. Read-back and stop use the discovered instance ID.
+The stop response acknowledges the request; it does not delete execution history.
 
-### Example 2: Start an automation from a JSON file
+### Example 2: Build from an existing instance and start a separate run
 
 ```powershell
-$automationDefinition = Get-Content `
-    -LiteralPath '.\AutomationDefinition.json' `
-    -Raw | ConvertFrom-Json
+$instances = @(
+    @(Get-Action1AutomationInstances -ErrorAction Stop) +
+    @(Get-Action1AutomationInstances -NotCompleted -ErrorAction Stop) |
+        Sort-Object -Property id -Unique
+)
+if ($instances.Count -eq 0) { throw 'No source instance was returned.' }
+$source = Get-Action1AutomationInstance `
+    -AutomationInstanceId $instances[0].id -ErrorAction Stop
 
-$automationInstance = Start-Action1Automation `
-    -AutomationDefinition $automationDefinition `
-    -Force
+$runName = 'Documentation cloned run ' + [guid]::NewGuid().ToString('N')
+$definition = New-Action1AutomationDefinition -ExistingAutomation $source `
+    -Name $runName -Actions @($action) -Endpoints @($target) -RetryMinutes 10 `
+    -ApiVersion '4.0' -OrganizationId (Get-Action1DefaultOrgId) `
+    -ConfigurationId ([guid]::NewGuid().ToString()) `
+    -StartTime ([DateTimeOffset]::UtcNow)
+
+# Save both completed and active IDs before submitting the definition.
+$beforeIds = @(
+    @(Get-Action1AutomationInstances -ErrorAction Stop) +
+    @(Get-Action1AutomationInstances -NotCompleted -ErrorAction Stop) |
+        Select-Object -ExpandProperty id -Unique
+)
+$startResponse = Start-Action1Automation -AutomationDefinition $definition `
+    -Force -ErrorAction Stop
+
+$created = $null
+for ($attempt = 1; $attempt -le 6; $attempt++) {
+    $instances = @(
+        @(Get-Action1AutomationInstances -ErrorAction Stop) +
+        @(Get-Action1AutomationInstances -NotCompleted -ErrorAction Stop) |
+            Sort-Object -Property id -Unique
+    )
+    $matches = @($instances | Where-Object {
+        $itemName = if ($_.configuration.name) { $_.configuration.name } else { $_.name }
+        $_.id -notin $beforeIds -and $itemName -ceq $runName
+    })
+    if ($matches.Count -gt 1) { throw 'More than one fresh run matches this name.' }
+    if ($matches.Count -eq 1) { $created = $matches[0]; break }
+    if ($attempt -lt 6) { Start-Sleep -Seconds 2 }
+}
+if ($null -eq $created) { throw 'The new run did not appear before the timeout.' }
+$instanceId = [string]$created.id
+$details = Get-Action1AutomationInstance -AutomationInstanceId $instanceId -ErrorAction Stop
+if ($null -eq $details -or $details.id -ne $instanceId) { throw 'Instance read-back failed.' }
+
+$stopResponse = Stop-Action1Automation -AutomationInstanceId $instanceId `
+    -Force -ErrorAction Stop
 ```
 
-Reads a prepared JSON request definition, starts the automation without prompting
-for confirmation, and stores the returned automation instance.
+Uses the freshly built `$action` and real `$target` from Example 1 to supplement or
+replace source collections. It explicitly replaces configuration identity and start
+time. This creates a new execution; it does not update the original instance.
+When the source has complete usable collections, Actions and Endpoints can be omitted.
 
-### Example 3: Preview starting an automation
+### Example 3: Load a saved definition, rebuild it, and preview submission
 
 ```powershell
-Start-Action1Automation -AutomationDefinition $automationDefinition -WhatIf
+$saved = Get-Content -LiteralPath '.\AutomationDefinition.json' -Raw | ConvertFrom-Json
+$definition = New-Action1AutomationDefinition -ExistingAutomation $saved `
+    -Name ('Preview run ' + [guid]::NewGuid().ToString('N')) `
+    -ConfigurationId ([guid]::NewGuid().ToString()) `
+    -StartTime ([DateTimeOffset]::UtcNow) -ApiVersion '4.0'
+Start-Action1Automation -AutomationDefinition $definition -Force -WhatIf
 ```
 
-Shows the start operation without sending an API request.
+The file must contain a complete definition for the configured organization.
+The builder returns an unsigned object. WhatIf skips signing and submission,
+including when Force is present; it does not skip the earlier file read or builder.
 
 ## PARAMETERS
 
@@ -169,9 +291,10 @@ You cannot pipe input to this command.
 
 ### System.Object
 
-Returns the Action1 API response for the started automation instance without
-changing its properties, including `id`, `type`, `self`, `configuration`,
-`endpoints`, and `signatures` when returned by the API.
+Returns the Action1 API submission response without changing its properties.
+The response shape depends on the service. Use the completed/active list
+difference and detail getter shown above to obtain the new instance resource
+ID rather than assuming a response ID is that execution ID.
 
 ## NOTES
 
@@ -188,3 +311,9 @@ The command reports an error if the request helper returns a null response.
 [New-Action1AutomationSchedule](New-Action1AutomationSchedule.md)
 [Set-Action1DefaultOrg](../configuration/Set-Action1DefaultOrg.md)
 [Set-Action1Sign](../configuration/Set-Action1Sign.md)
+[New-Action1AutomationActionFilter](New-Action1AutomationActionFilter.md)
+[New-Action1AutomationAction](New-Action1AutomationAction.md)
+[New-Action1AutomationTarget](New-Action1AutomationTarget.md)
+[Stop-Action1Automation](Stop-Action1Automation.md)
+[Get-Action1Endpoints](../endpoint/Get-Action1Endpoints.md)
+[Get-Action1EndpointGroups](../endpointgroup/Get-Action1EndpointGroups.md)

@@ -68,63 +68,148 @@ An explicit version supports offline construction. RetryMinutes is a retry
 deadline/maintenance window, not an interval between attempts, and is serialized
 as a string.
 
+A run-now Automation definition is the request object used to create an
+Automation instance with **Start-Action1Automation**. There is no separate public
+Automation Instance Definition builder: this command supplies that role. The
+instance is the execution resource returned by the service and read with
+**Get-Action1AutomationInstance**. Its resource ID is used by
+**Stop-Action1Automation**, while the API 4.0 `configuration.id` identifies the
+signed configuration. Do not interchange those IDs.
+
+The construction flow is filter -> action -> real target reference -> unsigned
+definition -> Start -> instance discovery -> detail read -> Stop. For a source
+instance, retrieve its details first, then use ExistingAutomation and supply
+missing actions or targets. For a separate run, explicitly choose a fresh
+configuration GUID and current start time. See the complete examples below.
+
+The examples use API 4.0 and the configured default test organization.
+The endpoint and Automation getters contact Action1 and require an authenticated
+session; the builders themselves only construct objects locally. Configure
+**Set-Action1Sign** before submitting an API 4.0 definition. See the related
+submission command for the complete create/read/cleanup flow.
+
 ## EXAMPLES
 
-### Example 1: Build an API 3.0 request from scratch
+### Example 1: Build a run-now Automation definition from scratch
 
 ```powershell
-$action = New-Action1AutomationAction -Name 'Maintenance script' `
-    -TemplateId run_script -Parameters @{ run_script_id = 'maintenance_script_id' }
-$target = New-Action1AutomationTarget -Id 'maintenance_group' -Type EndpointGroup
-$definition = New-Action1AutomationDefinition -Name 'Maintenance' `
-    -Actions @($action) -Endpoints @($target) -RetryMinutes 60 -ApiVersion '3.0'
+$endpoints = @(Get-Action1Endpoints -Status Connected -ErrorAction Stop)
+if ($endpoints.Count -eq 0) { throw 'No connected test endpoint was returned.' }
+$target = New-Action1AutomationTarget -Id $endpoints[0].id -Type Endpoint
+
+$filter = New-Action1AutomationActionFilter -Name update_types `
+    -Values 'Security Updates' -Operator include
+$action = New-Action1AutomationAction -Name 'Security updates' `
+    -TemplateId deploy_update -Parameters @{
+        scope = 'MatchingFilters'
+        filters = @($filter)
+        reboot_options = @{ auto_reboot = 'no' }
+    }
+
+$runName = 'Documentation run ' + [guid]::NewGuid().ToString('N')
+$definition = New-Action1AutomationDefinition -Name $runName `
+    -Actions @($action) -Endpoints @($target) -RetryMinutes 10 `
+    -ApiVersion '4.0' -OrganizationId (Get-Action1DefaultOrgId) `
+    -StartTime ([DateTimeOffset]::UtcNow)
+
+$definition | ConvertTo-Json -Depth 100
 ```
 
-Builds a flat definition using the Create parameter set.
+Selects a real connected endpoint, then builds filter -> action -> target collection ->
+run-now definition. No instance is created until **Start-Action1Automation** is called.
+Create generates `configuration.id` when omitted and uses the supplied UTC start time.
 
-### Example 2: Build an API 4.0 request offline
+### Example 2: Build from an existing instance with a fresh identity and start time
 
 ```powershell
-$action = New-Action1AutomationAction -Name 'Maintenance script' `
-    -TemplateId run_script -Parameters @{ run_script_id = 'maintenance_script_id' }
-$target = New-Action1AutomationTarget -Id 'maintenance_group' -Type EndpointGroup
-$definition = New-Action1AutomationDefinition -Name 'Maintenance' `
-    -Actions @($action) -Endpoints @($target) -RetryMinutes 60 -ApiVersion '4.0' `
-    -OrganizationId '11111111-1111-1111-1111-111111111111'
+$instances = @(
+    @(Get-Action1AutomationInstances -ErrorAction Stop) +
+    @(Get-Action1AutomationInstances -NotCompleted -ErrorAction Stop) |
+        Sort-Object -Property id -Unique
+)
+if ($instances.Count -eq 0) { throw 'No source instance was returned.' }
+$source = Get-Action1AutomationInstance `
+    -AutomationInstanceId $instances[0].id -ErrorAction Stop
+
+$runName = 'Documentation cloned run ' + [guid]::NewGuid().ToString('N')
+$definition = New-Action1AutomationDefinition -ExistingAutomation $source `
+    -Name $runName -Actions @($action) -Endpoints @($target) -RetryMinutes 10 `
+    -ApiVersion '4.0' -OrganizationId (Get-Action1DefaultOrgId) `
+    -ConfigurationId ([guid]::NewGuid().ToString()) `
+    -StartTime ([DateTimeOffset]::UtcNow)
 ```
 
-Create generates a configuration ID and current UTC start time. The organization ID is illustrative. Signing is separate.
+Uses `$action` and `$target` from Example 1 as explicit replacements. This also covers
+instance responses whose actions or targets are empty. The source execution ID is
+not treated as a configuration GUID. Other available definition fields are inherited;
+response metadata and signatures are omitted.
 
-### Example 3: Reuse an instance and override selected properties
+### Example 3: Start the definition, discover its instance, read it, and stop it
 
 ```powershell
-$existing = Get-Action1AutomationInstance -AutomationInstanceId $instanceId
-$definition = New-Action1AutomationDefinition -ExistingAutomation $existing `
-    -Name 'Revised maintenance' -RetryMinutes 120 -ApiVersion '3.0'
+# Save both completed and active IDs before submitting the definition.
+$beforeIds = @(
+    @(Get-Action1AutomationInstances -ErrorAction Stop) +
+    @(Get-Action1AutomationInstances -NotCompleted -ErrorAction Stop) |
+        Select-Object -ExpandProperty id -Unique
+)
+$startResponse = Start-Action1Automation -AutomationDefinition $definition `
+    -Force -ErrorAction Stop
+
+$created = $null
+for ($attempt = 1; $attempt -le 6; $attempt++) {
+    $instances = @(
+        @(Get-Action1AutomationInstances -ErrorAction Stop) +
+        @(Get-Action1AutomationInstances -NotCompleted -ErrorAction Stop) |
+            Sort-Object -Property id -Unique
+    )
+    $matches = @($instances | Where-Object {
+        $itemName = if ($_.configuration.name) { $_.configuration.name } else { $_.name }
+        $_.id -notin $beforeIds -and $itemName -ceq $runName
+    })
+    if ($matches.Count -gt 1) { throw 'More than one fresh run matches this name.' }
+    if ($matches.Count -eq 1) { $created = $matches[0]; break }
+    if ($attempt -lt 6) { Start-Sleep -Seconds 2 }
+}
+if ($null -eq $created) { throw 'The new run did not appear before the timeout.' }
+$instanceId = [string]$created.id
+$details = Get-Action1AutomationInstance -AutomationInstanceId $instanceId -ErrorAction Stop
+if ($null -eq $details -or $details.id -ne $instanceId) { throw 'Instance read-back failed.' }
+
+$stopResponse = Stop-Action1Automation -AutomationInstanceId $instanceId `
+    -Force -ErrorAction Stop
 ```
 
-Inherits the available fields, including the source ID and start time. If the getter returns empty actions, also supply Actions. The caller chooses the eventual submission operation.
+Continues with `$definition` and `$runName` from Example 1 or 2. List discovery uses
+both completed and active runs because the default getter returns completed runs.
+The fresh instance ID comes from the list difference and exact generated name,
+rather than from `configuration.id` or an assumed submission-response field.
+Stopping leaves execution history readable and does not undo completed actions.
 
-### Example 4: Reuse a complete API 4.0 definition
+### Example 4: Rebuild an unsigned definition from saved JSON
 
 ```powershell
-$existing = Get-Content -LiteralPath '.\AutomationDefinition.json' -Raw |
-    ConvertFrom-Json
-$definition = New-Action1AutomationDefinition -ExistingAutomation $existing `
-    -RetryMinutes 120 -ApiVersion '4.0'
+$saved = Get-Content -LiteralPath '.\AutomationDefinition.json' -Raw | ConvertFrom-Json
+$definition = New-Action1AutomationDefinition -ExistingAutomation $saved `
+    -Name ('Rebuilt run ' + [guid]::NewGuid().ToString('N')) -RetryMinutes 11 `
+    -ConfigurationId ([guid]::NewGuid().ToString()) `
+    -StartTime ([DateTimeOffset]::UtcNow) -ApiVersion '4.0'
 ```
 
-Changes only retry_minutes among inherited configuration fields. Existing IDs and start_time are preserved; old signatures are omitted.
+Requires a saved API 4.0 definition with usable actions, targets, and organization ID.
+A new configuration identity and timestamp are explicit caller choices. The builder
+returns an unsigned object; submission signs the final configuration again.
 
-### Example 5: Supply missing fields from an API 4.0 instance response
+### Example 5: Build the equivalent API 3.0 body
 
 ```powershell
-$definition = New-Action1AutomationDefinition -ExistingAutomation $existing `
-    -Actions @($action) -ConfigurationId $configurationId `
-    -OrganizationId $organizationId -ApiVersion '4.0'
+$legacyDefinition = New-Action1AutomationDefinition -Name 'Legacy test run' `
+    -Actions @($action) -Endpoints @($target) -RetryMinutes 10 -ApiVersion '3.0'
 ```
 
-Uses caller-provided configuration identity and actions when the source contains only execution metadata or an empty action array.
+Uses the action and real target from Example 1. API 3.0 output is flat; omit the
+API 4.0-only OrganizationId, ConfigurationId, and StartTime parameters. Submit
+this body only through a session configured for API 3.0.
 
 ## PARAMETERS
 
@@ -355,8 +440,8 @@ is checked for format; an absent source start time is not invented.
 **Start-Action1Automation** signs the completed API 4.0 configuration and attaches
 root-level signatures using credentials configured with **Set-Action1Sign**.
 Changing a configuration requires a new signature. Generated Create timestamps
-use UTC as the module convention; live API timezone/required-field behavior has
-not been verified. Structural validation does not prove server acceptance.
+use UTC as the module convention. The service validates submitted action
+parameters and required fields; structural validation does not prove server acceptance.
 
 ## RELATED LINKS
 
@@ -365,3 +450,8 @@ not been verified. Structural validation does not prove server acceptance.
 [New-Action1AutomationScheduleDefinition](New-Action1AutomationScheduleDefinition.md)
 [Get-Action1AutomationInstance](Get-Action1AutomationInstance.md)
 [Start-Action1Automation](Start-Action1Automation.md)
+[New-Action1AutomationActionFilter](New-Action1AutomationActionFilter.md)
+[Get-Action1AutomationInstances](Get-Action1AutomationInstances.md)
+[Stop-Action1Automation](Stop-Action1Automation.md)
+[Get-Action1Endpoints](../endpoint/Get-Action1Endpoints.md)
+[Get-Action1EndpointGroups](../endpointgroup/Get-Action1EndpointGroups.md)
